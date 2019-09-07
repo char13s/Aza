@@ -177,7 +177,7 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (!Attacking && !Climbing1 && Grounded && !pickUp)
+        if ( !Climbing1 && Grounded && !pickUp && HitCounter<=0 &&BattleStuff.Enemies.Count==0)
         {
             GetInput();
         }
@@ -192,7 +192,7 @@ public class Player : MonoBehaviour
         {
             Timer--;
         }
-        if (Input.GetAxis("SkillButton") > 0) {
+        if (attacking&&Input.GetAxis("SkillButton") > 0) {
             
             skillButton = true;
         }
@@ -361,10 +361,10 @@ public class Player : MonoBehaviour
 
         if (Attacking)
         {
-            if (BattleStuff1.Enemies.Count == 0)
+            /*if (BattleStuff1.Enemies.Count == 0)
             {
                 Attacking = false;
-            }
+            }*/
             if (Input.GetButtonDown("Square"))
             {
                 PerfectGuard = true;
@@ -473,8 +473,6 @@ public class Player : MonoBehaviour
         {
             if (Input.GetButtonDown("X"))
             {
-                Debug.Log("ok and?");
-
                 Chopping = true;
 
             }

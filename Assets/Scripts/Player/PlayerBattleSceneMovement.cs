@@ -153,7 +153,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     void CameraControls()
     {
-        if (Input.GetButtonDown("SwitchViews"))
+        if (Input.GetButtonDown("L1"))
         {
             if (!battleCam.activeSelf)
             {
