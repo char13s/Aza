@@ -10,14 +10,14 @@ public class AzaAi : MonoBehaviour
     private NavMeshAgent navi;
     private Animator anim;
     private bool loaded;
-    private int animation;
+    private int animations;
     private static AzaAi instance;
 
     internal Stats stats = new Stats();
 
     public bool Loaded { get => loaded; set { loaded = value; Navi.enabled = true; } }
     public NavMeshAgent Navi { get => navi; set => navi = value; }
-    public int Animation { get => animation; set { animation = value; anim.SetInteger("Animation", Animation); } }
+    public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", Animations); } }
 
     public static AzaAi GetAza() => instance.GetComponent<AzaAi>();
     private void Awake()
@@ -30,16 +30,13 @@ public class AzaAi : MonoBehaviour
         {
             instance = this;
         }
-
-
     }
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         stats.Start();
         Navi = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-
     }
     private void OnEnable()
     {
@@ -47,7 +44,7 @@ public class AzaAi : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         
     }
@@ -57,21 +54,18 @@ public class AzaAi : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             StateChange();
-
         }
     }
-    void StateChange()
+    private void StateChange()
     {
-
         if (Vector3.Distance(Player.GetPlayer().transform.position, transform.position) > 3)
         {
             state = AzaAiStates.FindZend;
         }
         StateControl();
     }
-    void StateControl()
+    private void StateControl()
     {
-
         switch (state)
         {
             case AzaAiStates.Idle:
@@ -80,32 +74,22 @@ public class AzaAi : MonoBehaviour
             case AzaAiStates.FindZend:
                 FindZend();
                 break;
-
-
-
-
-
-
         }
-
     }
-    void Idle()
+    private void Idle()
     {
-        Animation = 0;
+        Animations = 0;
         if (Loaded) { 
         Navi.SetDestination(transform.position);}
     }
-    void FindZend()
+    private void FindZend()
     {
-        Animation = 1;
+        Animations = 1;
         transform.rotation = Quaternion.LookRotation( Player.GetPlayer().transform.position- transform.position);
         Navi.SetDestination(Player.GetPlayer().transform.position);
         if (Vector3.Distance(Player.GetPlayer().transform.position, transform.position) < 3)
         {
-
             state = AzaAiStates.Idle;
-
         }
-
     }
 }

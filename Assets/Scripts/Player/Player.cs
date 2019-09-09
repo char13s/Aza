@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject hitBox;
     private bool attacking;
     private bool skillButton;
+    private bool lockedOn;
     [SerializeField] private GameObject swordSpawn;
     [SerializeField] private GameObject swordDSpawn;
     private bool swordIN;
@@ -29,7 +30,7 @@ public class Player : MonoBehaviour
     [Space]
     [Header("Items")]
     //public List<Items> inventory;
-    [SerializeField] private GameObject sword;
+    [SerializeField] private GameObject demonSword;
     [SerializeField] private GameObject pickAxe;
     [SerializeField] private GameObject guitar;
 
@@ -52,6 +53,7 @@ public class Player : MonoBehaviour
     private bool stop;
     private int skillId;
     private bool attack;
+    private int animations;
     [Space]
     [Header("OtherFunctions")]
     private Rigidbody rBody;
@@ -59,6 +61,11 @@ public class Player : MonoBehaviour
     private int guitarTimer = 150;
     private byte timer;
     private bool loaded;
+    [SerializeField] private GameObject aza;
+    [SerializeField] private GameObject zend;
+
+    [SerializeField] private RuntimeAnimatorController azaAnimatorController;
+
     [SerializeField] private Material fader;
     [SerializeField] private Material normal;
     [SerializeField] private Material handle;
@@ -89,10 +96,12 @@ public class Player : MonoBehaviour
     private NavMeshAgent nav;
     private PlayerBattleSceneMovement BattleStuff;
     private Animator anim;
+    private Vector3 displacement;
 
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
-
+    public static event UnityAction playerIsLockedOn;
+    //Optimize these to use only one Animation parameter
     public bool RockOut { get => rockOut; set { rockOut = value; anim.SetBool("RockOut", rockOut); } }
     public bool PickUp1 { get => pickUp; set { pickUp = value; anim.SetBool("PickUp", pickUp); } }
     public bool Wall { get => wall; set => wall = value; }
@@ -101,7 +110,7 @@ public class Player : MonoBehaviour
     public bool WallMoving { get => wallMoving; set { wallMoving = value; anim.SetBool("WallMoving", wallMoving); } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
     public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
-    public bool Guard { get => guard; set { guard = value; shield.SetActive(value); anim.SetBool("Guard", guard); } }
+    public bool Guard { get => guard; set { guard = value; if (value) Moving = false; shield.SetActive(value); anim.SetBool("Guard", guard); } }
     public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking); } }
     public bool Moving { get => moving; set { moving = value; anim.SetBool("Moving", moving); } }
     public int HitCounter { get => hitCounter; set { hitCounter = value; anim.SetInteger("counter", hitCounter); } }
@@ -119,7 +128,7 @@ public class Player : MonoBehaviour
     public GameObject FireCaster { get => fireCaster; set => fireCaster = value; }
 
     public PlayerBattleSceneMovement BattleStuff1 { get => BattleStuff; set => BattleStuff = value; }
-    public GameObject Sword1 { get => sword; set => sword = value; }
+    public GameObject DemonSword { get => demonSword; set => demonSword = value; }
     public GameObject HitBox { get => hitBox; set => hitBox = value; }
     public bool Attack { get => attack; set { attack = value; anim.SetBool("Attack", attack); } }
     public int SkillId { get => skillId; set { skillId = value; anim.SetInteger("Skill ID", skillId); } }
@@ -133,6 +142,9 @@ public class Player : MonoBehaviour
     public GameObject ForwardHitbox { get => forwardHitbox; set => forwardHitbox = value; }
     public GameObject FireTrail { get => fireTrail; set => fireTrail = value; }
     public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
+    public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); } }
+
+    public bool LockedOn { get => lockedOn; set { lockedOn = value; } }
 
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -147,7 +159,6 @@ public class Player : MonoBehaviour
             instance = this;
         }
         Anim = GetComponent<Animator>();
-
     }
 
     void Start()
@@ -160,7 +171,7 @@ public class Player : MonoBehaviour
         Nav = GetComponent<NavMeshAgent>();
         Anim = GetComponent<Animator>();
         BattleStuff1 = GetComponent<PlayerBattleSceneMovement>();
-        
+
     }
     private void OnEnable()
     {
@@ -169,17 +180,22 @@ public class Player : MonoBehaviour
             onPlayerEnabled();
         }
         StartCoroutine(StaminaRec());
-        //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 0);
-        //Delta = Cam.transform.position - body.transform.position;
-
     }
     // Update is called once per frame
     void Update()
     {
-
-        if ( !Climbing1 && Grounded && !pickUp && HitCounter<=0 &&BattleStuff.Enemies.Count==0)
+        Debug.Log(Input.GetAxis("SkillButton"));
+        if (!Climbing1 && Grounded && !pickUp && HitCounter <= 0 && !guard&&!LockedOn)
         {
             GetInput();
+        }
+        if (Input.GetAxis("SkillButton") > 0.01 && BattleStuff1.Enemies.Count>0)
+        {
+            LockedOn = true;
+        }
+        else
+        { 
+            LockedOn = false;
         }
 
         Sword();
@@ -192,10 +208,13 @@ public class Player : MonoBehaviour
         {
             Timer--;
         }
-        if (attacking&&Input.GetAxis("SkillButton") > 0) {
-            
+        if (attacking && Input.GetAxis("SkillButton") > 0)
+        {
+
             skillButton = true;
         }
+        else
+            skillButton = false;
         //if (Input.GetKey(KeyCode.P)) { stats.Level += 10; }
     }
     void OnDead()
@@ -213,65 +232,60 @@ public class Player : MonoBehaviour
         BattleStuff1.Enemies.Clear();
         Dead = false;
     }
+    void SwitchCharacter()
+    {
+        zend.SetActive(false);
+        Instantiate(aza, transform);
+        transform.localScale = new Vector3(1, 1, 1);
+    }
     void GetInput()
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
-        RotatePlayer(x, y);
-        MoveIt(x * moveSpeed * Time.deltaTime, y * moveSpeed * Time.deltaTime);
+        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
+        float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
+        displacement = Vector3.Normalize(new Vector3(x, 0, y));
+        if (ThreeDCamera.IsActive) { 
+            displacement = ThreeDCamera.XZOrientation.TransformDirection(displacement);}
+        if (Input.GetButtonDown("R3"))
+        {
+            SwitchCharacter();
+        }
+        
+        
+        MoveIt(x, y);
     }
     private void MoveIt(float x, float y)
     {
-        if (x != 0 && !Wall || y != 0 && !Wall)
+        if (x != 0 || y != 0)
         {
-
             Moving = true;
-
+            Animations = 1;
+            transform.position += displacement * moveSpeed * Time.deltaTime;
+            if (Vector3.SqrMagnitude(displacement) > 0.01f)
+            {
+                transform.forward = displacement;
+            }
         }
         else
         {
+            Animations = 0;
             Moving = false;
         }
-        if (!Wall)
-        {
-            transform.position += new Vector3(x, 0, y);
-        }
     }
 
-    private void RotatePlayer(float x, float y)
-    {
-        if (Mathf.Abs(x) < 0.01 && Mathf.Abs(y) < 0.01) return;
-        Vector3 forward = new Vector3(x, 0, y);
-        Quaternion nextRotation = Quaternion.LookRotation(forward, Vector3.up);
-        transform.rotation = nextRotation;
-    }
-    private void Climbing()
-    {
-
-        float x = Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * moveSpeed / 2 * Time.deltaTime;
-
-    }
-    void Gliding()
-    {
-
-
-    }
     public void MoveUp() => transform.position += new Vector3(0.5f, 1.2f, 0);
     private void Inventory()
     {
-
         if (items.PocketActive)
         {
             if (Input.GetKeyDown(KeyCode.E) && items.Page < 3)
             {
-                
+
                 items.Page++; Debug.Log(items.Page);
                 items.DisplayInventory();
             }
             if (Input.GetButtonDown("L1") && items.Page > 0)
             {
-                
+
                 items.Page--; Debug.Log(items.Page);
                 items.DisplayInventory();
             }
@@ -294,7 +308,7 @@ public class Player : MonoBehaviour
             SkillId = 3;
             stats.StaminaLeft -= 15;
         }
-        if (skillButton&&stats.StaminaLeft>=10&&Input.GetButtonDown("Circle"))
+        if (skillButton && stats.StaminaLeft >= 10 && Input.GetButtonDown("Circle"))
         {
             SkillId = 1;
             stats.StaminaLeft -= 10;
@@ -303,13 +317,11 @@ public class Player : MonoBehaviour
     }
     void Guitar()
     {
-
         if (Input.GetKey(KeyCode.R) && items.HasItem(2))
         {
 
             RockOut = true;
         }
-
     }
     private IEnumerator GuardCoroutine()
     {
@@ -354,17 +366,14 @@ public class Player : MonoBehaviour
 
         if (Attacking && !swordIN)
         {
-            Instantiate(swordSpawn, Sword1.transform);
+            Instantiate(swordSpawn, DemonSword.transform);
             Timer = 60;
             swordIN = true;
         }
 
         if (Attacking)
         {
-            /*if (BattleStuff1.Enemies.Count == 0)
-            {
-                Attacking = false;
-            }*/
+            
             if (Input.GetButtonDown("Square"))
             {
                 PerfectGuard = true;
@@ -401,9 +410,9 @@ public class Player : MonoBehaviour
 
             if (Timer == 0)
             {
-                Sword1.GetComponent<MeshRenderer>().material = blade;
+                DemonSword.GetComponent<MeshRenderer>().material = blade;
             }
-            Sword1.SetActive(true);
+            DemonSword.SetActive(true);
             trail.SetActive(true);
 
             if (Input.GetButtonDown("X") && stats.StaminaLeft > 0)
@@ -413,7 +422,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Sword1.GetComponent<MeshRenderer>().material = handle;
+            DemonSword.GetComponent<MeshRenderer>().material = handle;
             trail.SetActive(false);
             HitBox.SetActive(false);
             skillId = 0;
@@ -421,7 +430,7 @@ public class Player : MonoBehaviour
         if (Input.GetButtonUp("R1"))
         {
             byte stimer = 60;
-            Instantiate(swordDSpawn, Sword1.transform);
+            Instantiate(swordDSpawn, DemonSword.transform);
             swordIN = false;
             if (stimer > 0)
             {
@@ -429,7 +438,7 @@ public class Player : MonoBehaviour
             }
             if (stimer <= 0)
             {
-                Sword1.SetActive(false);
+                DemonSword.SetActive(false);
             }
         }
     }
@@ -464,18 +473,6 @@ public class Player : MonoBehaviour
         {
             items.AddItem(other.gameObject.GetComponent<Items>().data);
             other.gameObject.SetActive(false);
-        }
-
-    }
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("Log"))
-        {
-            if (Input.GetButtonDown("X"))
-            {
-                Chopping = true;
-
-            }
         }
     }
 }

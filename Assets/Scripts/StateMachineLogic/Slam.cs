@@ -20,7 +20,7 @@ public class Slam : StateMachineBehaviour
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Instantiate(boom, Player.GetPlayer().Sword1.transform.position, Quaternion.identity);
+        Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
         AoeHitbox.SetActive(false);
     }
 }

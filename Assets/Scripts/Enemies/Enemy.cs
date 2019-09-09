@@ -166,7 +166,7 @@ public class Enemy : MonoBehaviour
 
         }
     }
-    public virtual void FixedUpdate() { StateSwitch(); canvas.transform.rotation = Quaternion.LookRotation(transform.position - pb.BattleCam.transform.position); }
+    public virtual void FixedUpdate() { StateSwitch(); canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position); }
     void Attacking()
     {
 
@@ -260,14 +260,6 @@ public class Enemy : MonoBehaviour
         }
     }
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-
-        }
-    }
 
     public void OnDefeat()
     {
