@@ -12,7 +12,7 @@ public class Items : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        Debug.Log("started!");
+
         data.Start();
         CraftingTable.crafting += Crafting;
         UiManager.notCrafting += NotCrafting;

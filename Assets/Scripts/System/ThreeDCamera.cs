@@ -13,8 +13,6 @@ public class ThreeDCamera : CameraLogic
     private float minXRotation = 10;
     public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
-    
-    private Vector3 displacement;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -32,6 +30,7 @@ public class ThreeDCamera : CameraLogic
         currentEulerAngles = transform.eulerAngles;
         currentEulerAngles.x = 10;
         transform.eulerAngles = currentEulerAngles;
+        
     }
 
     public override void  Update()
@@ -67,11 +66,6 @@ public class ThreeDCamera : CameraLogic
 
         target.y = EnsureAngleIs0To360(target.y+deltaFromInputX);
         target.x = EnsureAngleIs0To360(target.x + deltaFromInputY);
-        //This works when minXRotation is 0 or negative and maxXRotation is 0 or positive
-        //if (target.x > maxXRotation && target.x <= 180)
-        //    target.x = maxXRotation;
-        //else if (target.x < 360 +minXRotation && target.x > 180)
-        //    target.x = 360 +minXRotation;
         target.x = Mathf.Clamp(target.x, minXRotation, maxXRotation);
     }
     private void RotateCamera(float x, float y)

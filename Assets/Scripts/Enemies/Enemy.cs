@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour
     private Coroutine hitCoroutine;
     private Coroutine attackCoroutine;
     private Coroutine attackingCoroutine;
+    private Coroutine recoveryCoroutine;
     private Coroutine guardCoroutine;
     private bool attacking;
     private bool attack;
@@ -47,7 +48,7 @@ public class Enemy : MonoBehaviour
     public bool Attack { get => attack; set { attack = value; anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; anim.SetBool("Walking", walk); } }
 
-    public bool Hit { get => hit; set { hit = value; anim.SetBool("Hurt", hit); } }
+    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine());  GetComponent<Rigidbody>().isKinematic = false;hitCoroutine = StartCoroutine(HitCoroutine());} anim.SetBool("Hurt", hit); } }
 
     public bool LockedOn { get => lockedOn; set => lockedOn = value; }
     public bool Dead
@@ -117,7 +118,7 @@ public class Enemy : MonoBehaviour
     }
     void StateSwitch()
     {
-        if (state != EnemyAiStates.Chasing)
+        if (state != EnemyAiStates.Chasing&&nav.enabled)
         {
             Walk = false;
             nav.SetDestination(transform.position);
@@ -131,14 +132,16 @@ public class Enemy : MonoBehaviour
         {
 
             state = EnemyAiStates.Attacking;
+            
         }
-        if (Distance > 1.1f && Distance < 6f && !dead)
+
+        if (Distance > 1.1f && Distance < 6f && !dead && nav.enabled)
         {
             //Debug.Log("fuk");
             state = EnemyAiStates.Chasing;
         }
         
-            if (Hit) { state = EnemyAiStates.Hit; }
+        if (Hit) { state = EnemyAiStates.Hit; }
         if (Dead) { state = EnemyAiStates.Dead; }
         States();
     }
@@ -163,13 +166,14 @@ public class Enemy : MonoBehaviour
                 break;
             case EnemyAiStates.Dead:
                 break;
-
+            case EnemyAiStates.Hit:
+                break;
         }
     }
     public virtual void FixedUpdate() { StateSwitch(); canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position); }
     void Attacking()
     {
-
+        
         Attack = true;
         attackCoroutine = StartCoroutine(AttackCoroutine());
         hitBox.SetActive(true);
@@ -235,9 +239,18 @@ public class Enemy : MonoBehaviour
     private IEnumerator HitCoroutine()
     {
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(4);
         Hit = false;
-        StopCoroutine(hitCoroutine);
+        
+    }
+    private IEnumerator RecoveryCoroutine()
+    {
+
+        yield return new WaitForSeconds(3);
+        Debug.Log("nav");
+        GetComponent<Rigidbody>().isKinematic = true;
+        nav.enabled = true;
+        
     }
     private IEnumerator AttackCoroutine()
     {
@@ -245,7 +258,7 @@ public class Enemy : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(transform.position - pc.transform.position);
         Attack = false;
         hitBox.SetActive(false);
-        StopCoroutine(attackCoroutine);
+        
     }
     private IEnumerator AttackingCoroutine()
     {
@@ -278,7 +291,7 @@ public class Enemy : MonoBehaviour
         HealthLeft -= Mathf.Abs(level - (int)(1.3f * pc.stats.Attack));
         Hit = true;
         OnHit();
-        hitCoroutine = StartCoroutine(HitCoroutine());
+        
     }
     public void CalculateAttack(int n) { pc.stats.HealthLeft -= (Mathf.Max(1, (int)(Mathf.Pow(8 * level - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
 }

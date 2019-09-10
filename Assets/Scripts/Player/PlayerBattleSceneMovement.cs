@@ -16,10 +16,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     {
         Enemy.onAnyDefeated += RemoveTheDead;
         Player.onPlayerDeath += RemoveAllEnemies;
+        
         GameController.onGameWasStarted += RemoveAllEnemies;
         T = 0;
         pc = Player.GetPlayer();
-
+        
     }
     private void RemoveTheDead(Enemy enemy)
     {
@@ -29,7 +30,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     {
         Enemies.Clear();
     }
-
+    
     void Update()
     {
         Vector3 position = transform.position;
@@ -59,7 +60,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     void GetInput()
     {
         float x = Input.GetAxisRaw("Horizontal") * 20 * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * 60 * Time.deltaTime;
+        float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         float mH = Input.GetAxisRaw("MouseX");
         float jH = Input.GetAxisRaw("Camera");
         if (Enemies.Count > 0)
@@ -98,10 +99,10 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
         if (y < 0)//back
         {
-            
+
             pc.Direction = 2;
         }
-       
+
         if (x > 0)//right
         {
             pc.Direction = 3;
@@ -121,12 +122,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         }
         if (!Enemies[T].Dead)
         {
-            transform.rotation = Quaternion.LookRotation(Enemies[T].transform.position - pc.transform.position);
-            if (!pc.Wall)
-            {
-                transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up, -30 * x * Time.deltaTime);
-                transform.position = Vector3.MoveTowards(transform.position, Enemies[T].transform.position, 10 * y * Time.deltaTime);
-            }
+            Vector3 delta = Enemies[T].transform.position - pc.transform.position;
+            delta.y = 0;
+            transform.rotation = Quaternion.LookRotation(delta,Vector3.up);
+            //transform.LookAt(Enemies[T].transform.position,Vector3.up);
+            transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up,  -x *80* Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, Enemies[T].transform.position, 160 * y * Time.deltaTime);
+            
         }
     }
 

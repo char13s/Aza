@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167133985313805}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 2313167134214088865}
   - component: {fileID: 2313167134214088895}
   - component: {fileID: 2313167134214088894}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167134409014780}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: 0.0058298, y: 0}
+  m_AnchoredPosition: {x: 0.005829811, y: 0}
   m_SizeDelta: {x: -0.024219, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2313167134663449198
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 2313167134663449194}
   - component: {fileID: 2313167134663449197}
   - component: {fileID: 2313167134663449196}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167134750489985}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: joint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167134750489987}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: joint1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,7 +322,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167134750489989}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: joint4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +352,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167134750489991}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: joint3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167134750489993}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: joint6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -413,7 +413,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2313167134750489995}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: joint5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -445,7 +445,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2313167134750489997}
   - component: {fileID: 2313167134739279011}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Slime:Slime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -460,7 +460,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2313167134750843309}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.13255136, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 5.455254, y: 5.455254, z: 5.455254}
   m_Children: []
   m_Father: {fileID: 2313167134750489999}
@@ -537,7 +537,7 @@ GameObject:
   - component: {fileID: 315469229382681046}
   - component: {fileID: 5052483079137612084}
   - component: {fileID: 706547733697312381}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Slime
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -593,8 +593,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.4733597, z: 1}
-  m_Center: {x: 0, y: 0.26332015, z: 0}
+  m_Size: {x: 1, y: 0.50997484, z: 1}
+  m_Center: {x: 0, y: 0.24501258, z: 0}
 --- !u!114 &2313167133622813292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,8 +626,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.4957924, y: 0.66316795, z: 0.8903966}
-  m_Center: {x: 0.014959335, y: 0.16841602, z: 0.054801702}
+  m_Size: {x: 0.4957924, y: 0.66316795, z: 0.62407005}
+  m_Center: {x: 0.014959335, y: 0.16841602, z: 0.025693715}
 --- !u!54 &5052483079137612084
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -642,7 +642,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 4
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!195 &706547733697312381
 NavMeshAgent:
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 2313167134791938848}
   - component: {fileID: 2313167134791938878}
   - component: {fileID: 2313167134791938849}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -752,7 +752,7 @@ GameObject:
   - component: {fileID: 2313167134896941310}
   - component: {fileID: 2313167134896941308}
   - component: {fileID: 2313167134896941311}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -827,7 +827,7 @@ GameObject:
   - component: {fileID: 2313167135049804143}
   - component: {fileID: 2313167135049804141}
   - component: {fileID: 2313167135049804140}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -901,7 +901,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2313167135260982765}
   - component: {fileID: 2313167135260982762}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnemyHealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1093,7 +1093,7 @@ GameObject:
   - component: {fileID: 3191117239086068124}
   - component: {fileID: 8083637988608639652}
   - component: {fileID: 7947766348158846086}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}

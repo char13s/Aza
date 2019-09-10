@@ -11,10 +11,15 @@ public class AttackingBehavior : StateMachineBehaviour
     {
         pressed = false;
         Player.GetPlayer().HitBox.SetActive(true);
-       //current = ;
+        //current = ;
+        Player.GetPlayer().RBody.isKinematic = false;
+        
+        Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward+new Vector3(0,0,1),ForceMode.VelocityChange);
+        
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (stateInfo.normalizedTime > 0.9) {Player.GetPlayer().RBody.isKinematic = true;}
         float time=1f;
         if (Input.GetButtonDown("X") && Player.GetPlayer().stats.StaminaLeft > 0&&!pressed)
         {
@@ -27,10 +32,12 @@ public class AttackingBehavior : StateMachineBehaviour
                 time = 0.4f;
                 break;
             case 1:
-                time = 0.4f;
+                time = 0.8f;
                 break;
             case 2:
-                time = 1f;
+                time = 0.5f;
+                
+                
                 //Time.timeScale = 0.5f;
                 break;
         }

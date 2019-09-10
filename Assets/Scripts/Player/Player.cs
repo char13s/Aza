@@ -144,7 +144,7 @@ public class Player : MonoBehaviour
     public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
     public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); } }
 
-    public bool LockedOn { get => lockedOn; set { lockedOn = value; } }
+    public bool LockedOn { get => lockedOn; set { lockedOn = value; if (LockedOn) { if (playerIsLockedOn != null) playerIsLockedOn(); } if (!LockedOn) Direction = 0; } }
 
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -184,19 +184,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Input.GetAxis("SkillButton"));
-        if (!Climbing1 && Grounded && !pickUp && HitCounter <= 0 && !guard&&!LockedOn)
+
+        if (!Climbing1 && Grounded && !pickUp && HitCounter <= 0 && !guard && !LockedOn)
         {
             GetInput();
         }
-        if (Input.GetAxis("SkillButton") > 0.01 && BattleStuff1.Enemies.Count>0)
-        {
-            LockedOn = true;
-        }
-        else
-        { 
-            LockedOn = false;
-        }
+
 
         Sword();
         Inventory();
@@ -243,17 +236,19 @@ public class Player : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive) { 
-            displacement = ThreeDCamera.XZOrientation.TransformDirection(displacement);}
+        if (ThreeDCamera.IsActive && !lockedOn)
+        {
+            displacement = ThreeDCamera.XZOrientation.TransformDirection(displacement);
+        }
         if (Input.GetButtonDown("R3"))
         {
             SwitchCharacter();
         }
-        
-        
+
+
         MoveIt(x, y);
     }
-    private void MoveIt(float x, float y)
+    public void MoveIt(float x, float y)
     {
         if (x != 0 || y != 0)
         {
@@ -293,7 +288,7 @@ public class Player : MonoBehaviour
     }
     void Skills()
     {
-        if (skillButton && stats.StaminaLeft >= 1 && Input.GetButtonDown("Triangle") && Input.GetButtonDown("Square"))
+        if (skillButton && stats.StaminaLeft >= 1 && Input.GetButton("Triangle") && Input.GetButton("Square"))
         {
             SkillId = 2;
 
@@ -373,7 +368,16 @@ public class Player : MonoBehaviour
 
         if (Attacking)
         {
-            
+            if (Input.GetAxis("SkillButton") > 0.01 && BattleStuff1.Enemies.Count > 0)
+            {
+                LockedOn = true;
+            }
+            else
+            {
+
+                LockedOn = false;
+            }
+
             if (Input.GetButtonDown("Square"))
             {
                 PerfectGuard = true;
@@ -391,16 +395,12 @@ public class Player : MonoBehaviour
             if (skillButton && Input.GetAxis("Horizontal") < 0 && !leftDash && stats.StaminaLeft >= 5)
             {
 
-                dodgeCoroutine = StartCoroutine(Dodging());
-                LeftDash = true;
-                stats.StaminaLeft -= 5;
+
             }
 
             if (skillButton && Input.GetAxis("Horizontal") > 0 && !rightDash && stats.StaminaLeft >= 5)
             {
-                dodgeCoroutine = StartCoroutine(Dodging());
-                RightDash = true;
-                stats.StaminaLeft -= 5;
+
             }
 
             if (Input.GetButtonDown("R1"))
@@ -415,7 +415,7 @@ public class Player : MonoBehaviour
             DemonSword.SetActive(true);
             trail.SetActive(true);
 
-            if (Input.GetButtonDown("X") && stats.StaminaLeft > 0)
+            if (Input.GetButtonDown("X"))
             {
                 Attack = true;
             }

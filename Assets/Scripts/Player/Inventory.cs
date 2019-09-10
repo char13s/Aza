@@ -172,7 +172,7 @@ public class Inventory
         //c.transform.localPosition = new Vector3(0, 0, 2);
         string d = i.ItemDescription;
         c.GetComponent<Button>().onClick.AddListener(c.GetComponent<Items>().IconClick);
-        c.AddComponent<SelfDestruct>();
+        
 
         //c.AddComponent<CanvasGroup>();
         //c.GetComponent<CanvasGroup>().interactable=false;
