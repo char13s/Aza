@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     [Header("Items")]
     //public List<Items> inventory;
     [SerializeField] private GameObject demonSword;
-    [SerializeField] private GameObject pickAxe;
+    [SerializeField] private GameObject demonSwordBack;
     [SerializeField] private GameObject guitar;
 
     [Space]
@@ -92,6 +92,7 @@ public class Player : MonoBehaviour
     //private Vector3 delta;
     internal Inventory items = new Inventory();
     internal Stats stats = new Stats();
+    private AxisButton dPadUp =new AxisButton("DPad Up");
     private bool perfectGuard;
     private NavMeshAgent nav;
     private PlayerBattleSceneMovement BattleStuff;
@@ -101,7 +102,7 @@ public class Player : MonoBehaviour
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
-    //Optimize these to use only one Animation parameter
+    //Optimize these to use only one Animation parameter in 9/11
     public bool RockOut { get => rockOut; set { rockOut = value; anim.SetBool("RockOut", rockOut); } }
     public bool PickUp1 { get => pickUp; set { pickUp = value; anim.SetBool("PickUp", pickUp); } }
     public bool Wall { get => wall; set => wall = value; }
@@ -185,23 +186,17 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (!Climbing1 && Grounded && !pickUp && HitCounter <= 0 && !guard && !LockedOn)
+        if (Grounded && !pickUp && HitCounter <= 0 && !guard && !LockedOn)
         {
             GetInput();
         }
-
-
         Sword();
         Inventory();
         Guitar();
         OnPause();
         Skills();
 
-        if (Timer > 0)
-        {
-            Timer--;
-        }
-        if (attacking && Input.GetAxis("SkillButton") > 0)
+        if (attacking && Input.GetButton("R1"))
         {
 
             skillButton = true;
@@ -242,7 +237,7 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonDown("R3"))
         {
-            SwitchCharacter();
+            //SwitchCharacter();
         }
 
 
@@ -333,13 +328,6 @@ public class Player : MonoBehaviour
         Hit = false;
         StopCoroutine(hitDefuse);
     }
-    private IEnumerator Dodging()
-    {
-        yield return null;
-        LeftDash = false;
-        RightDash = false;
-        StopCoroutine(dodgeCoroutine);
-    }
     private IEnumerator StaminaRec()
     {
         while (isActiveAndEnabled)
@@ -351,30 +339,21 @@ public class Player : MonoBehaviour
     }
     private void Sword()
     {
-
-        if (Input.GetButtonDown("R1") && !Attacking)
+        
+        if ( Input.GetButtonDown("L1")&& !Attacking)
         {
             Attacking = true;
-
+            demonSwordBack.SetActive(false);
             return;
         }
-
-        if (Attacking && !swordIN)
-        {
-            Instantiate(swordSpawn, DemonSword.transform);
-            Timer = 60;
-            swordIN = true;
-        }
-
         if (Attacking)
         {
-            if (Input.GetAxis("SkillButton") > 0.01 && BattleStuff1.Enemies.Count > 0)
+            if (Input.GetButton("R1") && BattleStuff1.Enemies.Count > 0)
             {
                 LockedOn = true;
             }
             else
             {
-
                 LockedOn = false;
             }
 
@@ -392,26 +371,19 @@ public class Player : MonoBehaviour
                 Guard = false;
             }
 
-            if (skillButton && Input.GetAxis("Horizontal") < 0 && !leftDash && stats.StaminaLeft >= 5)
+            if (Input.GetButton("Circle") && stats.StaminaLeft >= 5)
             {
 
 
             }
 
-            if (skillButton && Input.GetAxis("Horizontal") > 0 && !rightDash && stats.StaminaLeft >= 5)
+            if (Input.GetButtonDown("L1"))
             {
-
-            }
-
-            if (Input.GetButtonDown("R1"))
-            {
+                Debug.Log("attacking is false");
                 Attacking = false;
+                return;
             }
 
-            if (Timer == 0)
-            {
-                DemonSword.GetComponent<MeshRenderer>().material = blade;
-            }
             DemonSword.SetActive(true);
             trail.SetActive(true);
 
@@ -422,24 +394,12 @@ public class Player : MonoBehaviour
         }
         else
         {
-            DemonSword.GetComponent<MeshRenderer>().material = handle;
+            
             trail.SetActive(false);
             HitBox.SetActive(false);
             skillId = 0;
-        }
-        if (Input.GetButtonUp("R1"))
-        {
-            byte stimer = 60;
-            Instantiate(swordDSpawn, DemonSword.transform);
-            swordIN = false;
-            if (stimer > 0)
-            {
-                stimer--;
-            }
-            if (stimer <= 0)
-            {
-                DemonSword.SetActive(false);
-            }
+            DemonSword.SetActive(false);
+            demonSwordBack.SetActive(true);
         }
     }
     private void OnPause()

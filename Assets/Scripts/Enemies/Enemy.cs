@@ -7,8 +7,9 @@ using UnityEngine.Events;
 #pragma warning disable 0649
 public class Enemy : MonoBehaviour
 {
+
     private EnemyAiStates state;
-    public enum EnemyAiStates { Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit };
+    public enum EnemyAiStates { Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, Canniblize, Transform, GetHelp, PlantSlimeTree };
     [SerializeField] private int level;
     [SerializeField] private int baseExpYield;
     [SerializeField] private int baseHealth;
@@ -17,12 +18,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject levelText;
     [SerializeField] private GameObject drop;
     [SerializeField] private Slider EnemyHp;
+    private byte eaten;
     private Player pc;
     private PlayerBattleSceneMovement pb;
     private Animator anim;
 
     private Vector3 startLocation;
-
+    [SerializeField] private GameObject slimeTree;
+    [SerializeField] private GameObject slime;
     private int health;
     private int healthLeft;
     private NavMeshAgent nav;
@@ -37,28 +40,41 @@ public class Enemy : MonoBehaviour
     private bool hit;
     private bool lockedOn;
     private bool dead;
-
+    private bool lowHealth;
     private static List<Enemy> enemies = new List<Enemy>(32);
+    private int behavior;
+
     public static event UnityAction<Enemy> onAnyDefeated;
     public static event UnityAction onAnyEnemyDead;
 
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
-    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Max(0, value); if (healthLeft <= 0 && !Dead) { Dead = true; } } }
+    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Max(0, value); UIMaintence(); if (healthLeft <= 0 && !Dead) { Dead = true; } } }
 
     public bool Attack { get => attack; set { attack = value; anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; anim.SetBool("Walking", walk); } }
 
-    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine());  GetComponent<Rigidbody>().isKinematic = false;hitCoroutine = StartCoroutine(HitCoroutine());} anim.SetBool("Hurt", hit); } }
+    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine()); GetComponent<Rigidbody>().isKinematic = false; hitCoroutine = StartCoroutine(HitCoroutine()); } anim.SetBool("Hurt", hit); } }
 
-    public bool LockedOn { get => lockedOn; set => lockedOn = value; }
+    public bool LockedOn
+    {
+        get => lockedOn; set
+        {
+            lockedOn = value; if (lockedOn)
+            {
+                canvas.SetActive(true);
+            }
+            else
+            {
+                canvas.SetActive(false);
+            }
+        }
+    }
     public bool Dead
     {
         get => dead;
         private set
         {
             dead = value;
-
-
             if (dead)
             {
 
@@ -98,13 +114,15 @@ public class Enemy : MonoBehaviour
         HealthLeft = health;
         attackingCoroutine = StartCoroutine(AttackingCoroutine());
     }
+    public EnemyAiStates State { get => state; set => state = value; }
 
 
     // Update is called once per frame
     public virtual void Update()
     {
 
-        UIMaintence();
+        StateSwitch();
+        canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position);
     }
     public static Enemy GetEnemy(int i) { return enemies[i]; }
     public void OnPlayerDeath()
@@ -118,36 +136,41 @@ public class Enemy : MonoBehaviour
     }
     void StateSwitch()
     {
-        if (state != EnemyAiStates.Chasing&&nav.enabled)
-        {
-            Walk = false;
-            nav.SetDestination(transform.position);
-        }
-        if (state != EnemyAiStates.Attacking)
-        {
-            attacking = false;
 
-        }
-        if (Distance < 1f && !dead && !hit)
+        if (State != EnemyAiStates.LowHealth)
         {
+            if (State != EnemyAiStates.Chasing && nav.enabled)
+            {
+                Walk = false;
+                nav.SetDestination(transform.position);
+            }
+            if (State != EnemyAiStates.Attacking)
+            {
+                attacking = false;
 
-            state = EnemyAiStates.Attacking;
-            
+            }
+            if (Distance < 1f && !dead && !hit)
+            {
+
+                State = EnemyAiStates.Attacking;
+
+            }
+
+            if (Distance > 1.1f && Distance < 6f && !dead && nav.enabled)
+            {
+                //Debug.Log("fuk");
+                State = EnemyAiStates.Chasing;
+            }
+
+            if (Hit) { State = EnemyAiStates.Hit; }
+            if (Dead) { State = EnemyAiStates.Dead; }
         }
 
-        if (Distance > 1.1f && Distance < 6f && !dead && nav.enabled)
-        {
-            //Debug.Log("fuk");
-            state = EnemyAiStates.Chasing;
-        }
-        
-        if (Hit) { state = EnemyAiStates.Hit; }
-        if (Dead) { state = EnemyAiStates.Dead; }
         States();
     }
     void States()
     {
-        switch (state)
+        switch (State)
         {
             case EnemyAiStates.Idle:
                 Idle();
@@ -164,65 +187,109 @@ public class Enemy : MonoBehaviour
             case EnemyAiStates.Chasing:
                 Chasing();
                 break;
-            case EnemyAiStates.Dead:
-                break;
-            case EnemyAiStates.Hit:
-                break;
+
         }
     }
-    public virtual void FixedUpdate() { StateSwitch(); canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position); }
-    void Attacking()
+    //public virtual void FixedUpdate() {  }
+    private void Attacking()
     {
-        
+
         Attack = true;
         attackCoroutine = StartCoroutine(AttackCoroutine());
         hitBox.SetActive(true);
     }
-    void Idle()
+    private void Idle()
     {
         Walk = false;
     }
-    void LowHealth()
+    private void LowHealth()
+    {
+        switch (behavior)
+        {
+            case 1:
+                Flee();
+                break;
+
+            case 4:
+                GetHelp();
+                break;
+        }
+    }
+    private void Flee()
+    {
+        int rand = Random.Range(1, enemies.Count);
+        Enemy target = GetEnemy(rand % enemies.Count);
+        if (target != null)
+        {
+            nav.SetDestination(target.transform.position);
+            if (Vector3.Distance(target.transform.position, transform.position) < 1f)
+            {
+                Canniblize(target);
+            }
+        }
+        else
+            State = EnemyAiStates.Idle;
+    }
+    private void PlantATree()
+    {
+        Instantiate(slimeTree, transform.position + new Vector3(4, 0.14f, 0), Quaternion.identity);
+        slimeTree.transform.position = transform.position;
+        State = EnemyAiStates.Idle;
+        
+    }
+    private void SpawnAFriend()
+    {
+        Instantiate(slime, transform.position + new Vector3(4, 0.14f, 0), Quaternion.identity);
+        slime.transform.position = transform.position;
+        State = EnemyAiStates.Idle;
+    }
+    private void GetHelp()
     {
 
     }
-    void ReturnToSpawn()
+    private void Canniblize(Enemy target)
+    {
+        //int rand = Random.Range(1,enemies.Count);
+        level += Mathf.Min(1, (int)(0.10f * (target.level))); ;
+        HealthLeft += Health;
+        target.OnDefeat();
+        //eaten++;
+        if (eaten >= 5)
+        {
+            State = EnemyAiStates.Transform;
+        }
+    }
+    private void SlimeGolem()
+    {
+
+    }
+    private void ReturnToSpawn()
     {
         nav.SetDestination(startLocation);
         Walk = true;
-        if (Vector3.Distance(startLocation,transform.position)<1f) {
-            Debug.Log("reached!");
-            state = EnemyAiStates.Idle;
-
+        if (Vector3.Distance(startLocation, transform.position) < 1f)
+        {
+            State = EnemyAiStates.Idle;
         }
     }
-    void Chasing()
+    private void Chasing()
     {
         Walk = true;
         //transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 1 * Time.deltaTime);
         if (Distance > 6 && !dead)
         {
-            state = EnemyAiStates.ReturnToSpawn;
+            State = EnemyAiStates.ReturnToSpawn;
         }
         nav.SetDestination(Player.GetPlayer().transform.position);
     }
     private void UIMaintence()
     {
-        if (lockedOn)
-        {
-            canvas.SetActive(true);
-        }
-        else
-        {
-            canvas.SetActive(false);
-        }
         levelText.GetComponent<Text>().text = "Lv. " + level;
         EnemyHp.maxValue = health;
         EnemyHp.value = healthLeft;
     }
     private void OnHit()
     {
-
         GameObject d = new GameObject();
         d.transform.SetParent(canvas.transform);
         d.transform.localPosition = new Vector3(0.4F, 0, 0);
@@ -241,7 +308,7 @@ public class Enemy : MonoBehaviour
 
         yield return new WaitForSeconds(4);
         Hit = false;
-        
+
     }
     private IEnumerator RecoveryCoroutine()
     {
@@ -250,7 +317,7 @@ public class Enemy : MonoBehaviour
         Debug.Log("nav");
         GetComponent<Rigidbody>().isKinematic = true;
         nav.enabled = true;
-        
+
     }
     private IEnumerator AttackCoroutine()
     {
@@ -258,7 +325,7 @@ public class Enemy : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(transform.position - pc.transform.position);
         Attack = false;
         hitBox.SetActive(false);
-        
+
     }
     private IEnumerator AttackingCoroutine()
     {
@@ -272,16 +339,31 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+    private IEnumerator StateControlCoroutine()
+    {
+        yield return new WaitForSeconds(3.5f);
+        State = EnemyAiStates.LowHealth;
+        LowHealth();
+        behavior = Random.Range(1, 4);
+        StateControl();
+        lowHealth = true;
+    }
+    private void StateControl()
+    {
+        switch (behavior)
+        {
+            case 2:
+                PlantATree();
+                break;
+            case 3:
+                SpawnAFriend();
+                break;
+        }
+    }
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);
-
     public void OnDefeat()
     {
         //onAnyDefeated(this);
-
-        int exp = level * baseExpYield;
-        pc.stats.AddExp(exp);
-        Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
-        drop.transform.position = transform.position;
         enemies.Remove(this);
         Destroy(gameObject, 4f);
         //drop.transform.SetParent(null);
@@ -290,8 +372,23 @@ public class Enemy : MonoBehaviour
     {
         HealthLeft -= Mathf.Abs(level - (int)(1.3f * pc.stats.Attack));
         Hit = true;
+        if (HealthLeft <= 0)
+        {
+            int exp = level * baseExpYield;
+            pc.stats.AddExp(exp);
+            Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
+            drop.transform.position = transform.position;
+        }
+
+        if (HealthLeft <= Health / 4 && !lowHealth)
+        {
+            Debug.Log("ouchie slime");
+            StartCoroutine(StateControlCoroutine());
+            lowHealth = true;
+        }
         OnHit();
-        
     }
     public void CalculateAttack(int n) { pc.stats.HealthLeft -= (Mathf.Max(1, (int)(Mathf.Pow(8 * level - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
+
+
 }

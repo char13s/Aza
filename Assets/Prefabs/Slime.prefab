@@ -615,6 +615,9 @@ MonoBehaviour:
   levelText: {fileID: 2313167134214088864}
   drop: {fileID: 4012060356533637717, guid: 12c09df2632e1e145b9c45c838dcb645, type: 3}
   EnemyHp: {fileID: 2313167135260982762}
+  slimeTree: {fileID: 254266463050560927, guid: a41171153c4bb7944916e09b787b2452,
+    type: 3}
+  slime: {fileID: 2313167134750843311}
 --- !u!65 &315469229382681046
 BoxCollider:
   m_ObjectHideFlags: 0

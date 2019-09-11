@@ -81,7 +81,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     {
         foreach (Enemy en in Enemies)
         {
-            if (Enemies[T] != en)
+            if (Enemy.GetEnemy(T) != en)
             {
                 en.LockedOn = false;
             }
@@ -90,7 +90,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     void LockOn(float x, float y, float mH, float jH)
     {
-        Enemies[T].LockedOn = true;
+        Enemy.GetEnemy(T).LockedOn = true;
         LockOff();
         if (y > 0)//forward
         {

@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
     public static event UnityAction onNewGame;
     public static event UnityAction onGameWasStarted;
     public static event UnityAction onQuitGame;
+    public static event UnityAction update;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
     public static AzaAi Aza => (instance == null) ? null : instance.aza;
@@ -36,20 +37,16 @@ public class GameController : MonoBehaviour
             return;
         }
         instance = this;
-
     }
 
     void OnEnable()
     {
-
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
         onNewGame += OnNewGame;
-
     }
 
     void OnDisable()
     {
-
         SceneManager.sceneLoaded -= OnLevelFinishedLoading;
         onNewGame -= OnNewGame;
     }
@@ -59,9 +56,7 @@ public class GameController : MonoBehaviour
 
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0))
         {
-
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-
         }
         pc = Player.GetPlayer();
     }
@@ -69,9 +64,10 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (update != null)
+            update();
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
         {
-
             pc.gameObject.SetActive(false);
             AzaAi.GetAza().gameObject.SetActive(false);
             eventSystem.gameObject.SetActive(false);
@@ -81,11 +77,8 @@ public class GameController : MonoBehaviour
             AzaAi.GetAza().gameObject.SetActive(true);
             eventSystem.gameObject.SetActive(true);
         }
-        //st.Sales();
-
         if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null)
         {
-
             SceneManager.MoveGameObjectToScene(pc.gameObject, SceneManager.GetSceneByBuildIndex(0));
         }
     }
@@ -194,16 +187,12 @@ public class GameController : MonoBehaviour
             }
             foreach (ItemData it in data.Items)
             {
-
                 pc.items.Items.Add(it);
                 pc.items.ButtonCreation(it);
                 Debug.Log("ouchie ouch");
             }
-
             instance.load = false;
         }
-
-
     }
     public void NewGame()
     {

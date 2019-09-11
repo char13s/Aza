@@ -24,12 +24,7 @@ public class Slime : Enemy
         //anim.SetBool("Walking", Walk);
 
     }
-    public override void FixedUpdate()
-    {
-        base.FixedUpdate();
-
-        
-    }
+    
     void MegaSlime()
     {
 
