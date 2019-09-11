@@ -6,9 +6,10 @@ TagManager:
   tags:
   - Enemy
   - Item
-  - wall
-  - ClimbableWall
   - SlimeTree
+  - Enviroment
+  - Log
+  - ClimbableWall
   layers:
   - Default
   - TransparentFX

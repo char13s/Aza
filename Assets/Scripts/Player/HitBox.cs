@@ -30,7 +30,7 @@ public class HitBox : MonoBehaviour
             case 7:
                 Debug.Log("wth");
                 return transform.forward + new Vector3(0,10,-3);
-            default: return transform.forward+new Vector3(0, 0, -5);
+            default: return transform.forward+new Vector3(0, 0, -2.5f);
         }
     }
     

@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
     //private Vector3 delta;
     internal Inventory items = new Inventory();
     internal Stats stats = new Stats();
-    private AxisButton dPadUp =new AxisButton("DPad Up");
+    private AxisButton dPadUp = new AxisButton("DPad Up");
     private bool perfectGuard;
     private NavMeshAgent nav;
     private PlayerBattleSceneMovement BattleStuff;
@@ -164,6 +164,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
         onPlayerDeath += OnDead;
         GameController.onNewGame += SetDefault;
         stats.Start();
@@ -191,8 +192,8 @@ public class Player : MonoBehaviour
             GetInput();
         }
         Sword();
-        Inventory();
-        Guitar();
+        //Inventory();
+        //Guitar();
         OnPause();
         Skills();
 
@@ -303,7 +304,7 @@ public class Player : MonoBehaviour
             SkillId = 1;
             stats.StaminaLeft -= 10;
         }
-        if (stats.StaminaLeft >= 5 && Input.GetButtonDown("Circle") && (Input.GetAxis("Horizontal")!=0|| Input.GetAxis("Vertical") !=0))
+        if (stats.StaminaLeft >= 5 && Input.GetButtonDown("Circle") && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
             SkillId = 10;
             stats.StaminaLeft -= 2;
@@ -319,12 +320,11 @@ public class Player : MonoBehaviour
     }
     private IEnumerator GuardCoroutine()
     {
-        while (isActiveAndEnabled)
-        {
-            yield return new WaitForSeconds(1f);
-            PerfectGuard = false;
-            StopCoroutine(guardCoroutine);
-        }
+
+        yield return new WaitForSeconds(1f);
+        PerfectGuard = false;
+        StopCoroutine(guardCoroutine);
+
     }
     private IEnumerator HitDefuse()
     {
@@ -334,17 +334,21 @@ public class Player : MonoBehaviour
     }
     private IEnumerator StaminaRec()
     {
+
         while (isActiveAndEnabled)
         {
             yield return new WaitForSeconds(5);
-
-            stats.StaminaLeft += 5;
+            if (stats.StaminaLeft < stats.Stamina)
+            {
+                stats.StaminaLeft += 5;
+            }
         }
+
     }
     private void Sword()
     {
-        
-        if ( Input.GetButtonDown("L1")&& !Attacking)
+
+        if (Input.GetButtonDown("L1") && !Attacking)
         {
             Attacking = true;
             demonSwordBack.SetActive(false);
@@ -399,7 +403,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            
+
             trail.SetActive(false);
             HitBox.SetActive(false);
             skillId = 0;
@@ -430,8 +434,8 @@ public class Player : MonoBehaviour
 
         Timer = 5;
         items.AddItem(other.gameObject.GetComponent<Items>().data);
-        
-        
+
+
     }
     private void OnTriggerEnter(Collider other)
     {

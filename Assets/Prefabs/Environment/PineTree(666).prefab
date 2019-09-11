@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4406179377186647891}
   m_Layer: 12
   m_Name: PineTree(666)
-  m_TagString: Untagged
+  m_TagString: Enviroment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -55,6 +55,32 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6070045304724269799}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
+        type: 3}
+      propertyPath: m_Name
+      value: PineTree 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5178661895559278292, guid: 211d5906402e67d40a1c80e64eb41c47,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 3321238092727456677, guid: 211d5906402e67d40a1c80e64eb41c47,
+        type: 3}
     - target: {fileID: -4216859302048453862, guid: 211d5906402e67d40a1c80e64eb41c47,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -110,32 +136,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
-        type: 3}
-      propertyPath: m_Name
-      value: PineTree 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
-        type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 211d5906402e67d40a1c80e64eb41c47,
-        type: 3}
-      propertyPath: m_NavMeshLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -5178661895559278292, guid: 211d5906402e67d40a1c80e64eb41c47,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 3321238092727456677, guid: 211d5906402e67d40a1c80e64eb41c47,
-        type: 3}
     - target: {fileID: -1504981713932161579, guid: 211d5906402e67d40a1c80e64eb41c47,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
