@@ -4,6 +4,7 @@ using UnityEngine;
 #pragma warning disable 0649
 public class SlimeSpawner : MonoBehaviour
 {
+    private static List<SlimeSpawner> slimeTrees = new List<SlimeSpawner>(10);
     [SerializeField] private Enemy slime;
     [SerializeField] private GameObject spawnPoint;
     private List<Enemy> spawnedEnemies;
@@ -14,7 +15,7 @@ public class SlimeSpawner : MonoBehaviour
         spawnedEnemies=new List<Enemy>();
         StartCoroutine(Spawn());
         Enemy.onAnyDefeated += RemoveTheDead;
-
+        slimeTrees.Add(this);
     }
 
     // Update is called once per frame

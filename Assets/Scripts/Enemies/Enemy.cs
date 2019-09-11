@@ -63,10 +63,7 @@ public class Enemy : MonoBehaviour
             {
                 canvas.SetActive(true);
             }
-            else
-            {
-                canvas.SetActive(false);
-            }
+
         }
     }
     public bool Dead
@@ -108,7 +105,7 @@ public class Enemy : MonoBehaviour
         pb = pc.GetComponent<PlayerBattleSceneMovement>();
         nav = GetComponent<NavMeshAgent>();
         //InvokeRepeating("Attacking", 2f, 2f);
-        //level += Player.GetPlayer().stats.Level;
+        level += Player.GetPlayer().stats.Level;
         health = level * baseHealth;
         startLocation = transform.position;
         HealthLeft = health;
@@ -217,9 +214,9 @@ public class Enemy : MonoBehaviour
     }
     private void Flee()
     {
-        int rand = Random.Range(1, enemies.Count);
+        int rand = Random.Range(1, enemies.Count - 1);
         Enemy target = GetEnemy(rand % enemies.Count);
-        if (target != null)
+        if (target != null && !Dead && nav.enabled)
         {
             nav.SetDestination(target.transform.position);
             if (Vector3.Distance(target.transform.position, transform.position) < 1f)
@@ -235,7 +232,7 @@ public class Enemy : MonoBehaviour
         Instantiate(slimeTree, transform.position + new Vector3(4, 0.14f, 0), Quaternion.identity);
         slimeTree.transform.position = transform.position;
         State = EnemyAiStates.Idle;
-        
+
     }
     private void SpawnAFriend()
     {
@@ -284,6 +281,7 @@ public class Enemy : MonoBehaviour
     }
     private void UIMaintence()
     {
+
         levelText.GetComponent<Text>().text = "Lv. " + level;
         EnemyHp.maxValue = health;
         EnemyHp.value = healthLeft;
@@ -350,36 +348,32 @@ public class Enemy : MonoBehaviour
     }
     private void StateControl()
     {
-        switch (behavior)
+        if (!dead)
         {
-            case 2:
-                PlantATree();
-                break;
-            case 3:
-                SpawnAFriend();
-                break;
+            switch (behavior)
+            {
+                case 2:
+                    PlantATree();
+                    break;
+                case 3:
+                    SpawnAFriend();
+                    break;
+            }
         }
     }
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);
     public void OnDefeat()
     {
         //onAnyDefeated(this);
+        SlimeHasDied();
         enemies.Remove(this);
         Destroy(gameObject, 4f);
         //drop.transform.SetParent(null);
     }
     public void CalculateDamage()
     {
-        HealthLeft -= Mathf.Abs(level - (int)(1.3f * pc.stats.Attack));
+        HealthLeft -= Mathf.Abs(level - (int)(1.7f * pc.stats.Attack));
         Hit = true;
-        if (HealthLeft <= 0)
-        {
-            int exp = level * baseExpYield;
-            pc.stats.AddExp(exp);
-            Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
-            drop.transform.position = transform.position;
-        }
-
         if (HealthLeft <= Health / 4 && !lowHealth)
         {
             Debug.Log("ouchie slime");
@@ -389,6 +383,13 @@ public class Enemy : MonoBehaviour
         OnHit();
     }
     public void CalculateAttack(int n) { pc.stats.HealthLeft -= (Mathf.Max(1, (int)(Mathf.Pow(8 * level - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
+    public void SlimeHasDied()
+    {
+        int exp = level * baseExpYield;
+        pc.stats.AddExp(exp);
+        Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
+        drop.transform.position = transform.position;
 
+    }
 
 }

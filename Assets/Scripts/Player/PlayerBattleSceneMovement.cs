@@ -49,10 +49,9 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             }
         }
 
-        if (Enemies.Count > 0 && pc.LockedOn)
+        if (Enemies.Count > 0 && pc.LockedOn && pc.HitCounter<=0)
         {
             SwitchLockOn();
-
             GetInput();
         }
     }
@@ -134,7 +133,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     public void SwitchLockOn()
     {
-        if (Input.GetButtonDown("L1"))
+        if (Input.GetButtonDown("L2"))
         {
             T++;
         }

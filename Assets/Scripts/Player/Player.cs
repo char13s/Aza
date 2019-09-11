@@ -303,7 +303,11 @@ public class Player : MonoBehaviour
             SkillId = 1;
             stats.StaminaLeft -= 10;
         }
-
+        if (stats.StaminaLeft >= 5 && Input.GetButtonDown("Circle") && (Input.GetAxis("Horizontal")!=0|| Input.GetAxis("Vertical") !=0))
+        {
+            SkillId = 10;
+            stats.StaminaLeft -= 2;
+        }
     }
     void Guitar()
     {
@@ -381,6 +385,7 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("attacking is false");
                 Attacking = false;
+                LockedOn = false;
                 return;
             }
 
@@ -400,6 +405,7 @@ public class Player : MonoBehaviour
             skillId = 0;
             DemonSword.SetActive(false);
             demonSwordBack.SetActive(true);
+            hitCounter = 0;
         }
     }
     private void OnPause()
@@ -424,8 +430,8 @@ public class Player : MonoBehaviour
 
         Timer = 5;
         items.AddItem(other.gameObject.GetComponent<Items>().data);
-        other.gameObject.SetActive(false);
-        Destroy(other);
+        
+        
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -433,6 +439,7 @@ public class Player : MonoBehaviour
         {
             items.AddItem(other.gameObject.GetComponent<Items>().data);
             other.gameObject.SetActive(false);
+            Destroy(other);
         }
     }
 }

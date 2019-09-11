@@ -13,10 +13,11 @@ public class CameraLogic : MonoBehaviour
     private Player body;
     private bool playerEnabled;
     private bool buttonOn;
-
+    private static bool switchable;//write optimization later itll help in other places too
     public static UnityAction overHeadCamActive;
     public static Camera PrespCam { get => prespCam; set => prespCam = value; }
     public Player Body { get => body; set => body = value; }
+    public static bool Switchable { get => switchable; set => switchable = value; }
 
     private void Awake()
     {
@@ -24,7 +25,8 @@ public class CameraLogic : MonoBehaviour
     }
     public virtual void Start()
     {
-        prespCam=prespCamPrefab;
+        prespCam = prespCamPrefab;
+        Player.onPlayerDeath += OverheadCam;
         Body = Player.GetPlayer();
         Player.onPlayerEnabled += CalculateDelta;
         //InvokeRepeating("", 1f, 1f);
@@ -39,7 +41,10 @@ public class CameraLogic : MonoBehaviour
     public virtual void Update()
     {
         CameraAi();
-        GetInput();
+        if (switchable)
+        {
+            GetInput();
+        }
     }
 
     void CameraAi()
@@ -52,7 +57,7 @@ public class CameraLogic : MonoBehaviour
     void GetInput()
     {
 
-        if (Input.GetAxis("L2")>0.05&&!buttonOn)
+        if (Input.GetAxis("L3") > 0.05 && !buttonOn)//Use AxisButton optimizeeeeeeeeeeeeeeeeeeeeee
         {
 
             buttonOn = true;
@@ -60,12 +65,14 @@ public class CameraLogic : MonoBehaviour
             {
                 PrespheadCam();
             }
-            else {
+            else
+            {
                 OverheadCam();
-                
+
             }
         }
-        if (Input.GetAxis("L2") < 0.05) {
+        if (Input.GetAxis("L3") < 0.05)
+        {
             buttonOn = false;
         }
     }
@@ -74,7 +81,7 @@ public class CameraLogic : MonoBehaviour
         if (overHeadCamActive != null)
             overHeadCamActive();
         overheadCamera.gameObject.SetActive(true);
-        
+
         canvas.transform.SetParent(overheadCamera.transform);
         canvas.transform.localPosition = new Vector3(0, 0, 0);
         prespCam.gameObject.SetActive(false);
@@ -82,13 +89,13 @@ public class CameraLogic : MonoBehaviour
     private void PrespheadCam()
     {
         prespCam.gameObject.SetActive(true);
-        
+
         canvas.transform.SetParent(prespCam.transform);
         canvas.transform.localPosition = new Vector3(0, 0, 0);
         overheadCamera.gameObject.SetActive(false);
 
     }
-    
+
 
     private void MoveIt(float x, float y)
     {

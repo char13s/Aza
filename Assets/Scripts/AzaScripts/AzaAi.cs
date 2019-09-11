@@ -19,7 +19,7 @@ public class AzaAi : MonoBehaviour
     public NavMeshAgent Navi { get => navi; set => navi = value; }
     public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", Animations); } }
 
-    public static AzaAi GetAza() => instance.GetComponent<AzaAi>();
+    //public static AzaAi GetAza() => instance.GetComponent<AzaAi>();
     private void Awake()
     {
         if (instance != null && instance != this)

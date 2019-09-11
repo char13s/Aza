@@ -8,7 +8,7 @@ public class HitBox : MonoBehaviour
     private Player pc;
     [SerializeField] private AudioClip hit;
     [SerializeField] private GameObject effects;
-    
+    [SerializeField] private GameObject fire;
     private new AudioSource audio;
 
     
@@ -46,5 +46,10 @@ public class HitBox : MonoBehaviour
             
             //Debug.Log(other.gameObject.GetComponent<Enemy>().HealthLeft);
         }
-    }
+        if (other.gameObject.CompareTag("SlimeTree"))
+        {
+            Instantiate(fire, other.gameObject.transform);
+            Destroy(other.gameObject, 4);
+        }
+        }
 }

@@ -42,9 +42,10 @@ GameObject:
   - component: {fileID: 254266463049722271}
   - component: {fileID: 254266463048624991}
   - component: {fileID: 254266462038512566}
+  - component: {fileID: 2122444341995792011}
   m_Layer: 12
   m_Name: SlimeTree
-  m_TagString: Untagged
+  m_TagString: SlimeTree
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -57,7 +58,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 254266463050560927}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 106.56227, y: -1.7476745, z: -21.069386}
+  m_LocalPosition: {x: 103.47167, y: -2.0864365, z: -43.588333}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 254266462820815454}
@@ -125,6 +126,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slime: {fileID: 2313167133622813292, guid: e4e1576c7c45eb146ba9b4189cf369ca, type: 3}
   spawnPoint: {fileID: 254266462820815449}
+--- !u!65 &2122444341995792011
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254266463050560927}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.0804293, y: 3.0110607, z: 1.9954659}
+  m_Center: {x: 0.008632064, y: -0.1443699, z: -0.007620275}
 --- !u!1 &3713913708776521469
 GameObject:
   m_ObjectHideFlags: 0
