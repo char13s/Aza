@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject pocket;
     [SerializeField] private GameObject close;
     [SerializeField] private GameObject normalCamera;
+    
     private bool load;
     private static GameController instance;
     private Coroutine loadCoroutine;
@@ -27,7 +28,7 @@ public class GameController : MonoBehaviour
     public static event UnityAction update;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
-    //public static AzaAi Aza => (instance == null) ? null : instance.aza;
+    public static AzaAi Aza => (instance == null) ? null : instance.aza;
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake()
     {
@@ -70,13 +71,13 @@ public class GameController : MonoBehaviour
         {
             CameraLogic.Switchable = false;
             pc.gameObject.SetActive(false);
-            //AzaAi.GetAza().gameObject.SetActive(false);
+            AzaAi.GetAza().gameObject.SetActive(false);
             eventSystem.gameObject.SetActive(false);
         }
         else {
             
             pc.gameObject.SetActive(true);
-            //AzaAi.GetAza().gameObject.SetActive(true);
+            AzaAi.GetAza().gameObject.SetActive(true);
             eventSystem.gameObject.SetActive(true);
         }
         if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null)
@@ -155,7 +156,7 @@ public class GameController : MonoBehaviour
             CameraLogic.Switchable = true;
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
             pc.Loaded = true;
-            //AzaAi.GetAza().Loaded = true;
+            AzaAi.GetAza().Loaded = true;
             //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 0);
 
             foreach (GameObject b in pc.items.Buttons)
@@ -216,7 +217,7 @@ public class GameController : MonoBehaviour
         position.x = 80.83f;
         position.y = -1.918f;
         position.z = -30.16f;
-        pc.Grounded = false;
+        //pc.Grounded = false;
         normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
         pc.transform.position = position;
         pc.items.Items = new List<ItemData>();
@@ -263,6 +264,7 @@ public class GameController : MonoBehaviour
         }
         Debug.Log(pc.items.Items.Count);
     }
+
     public void StartGame()
     {
         SceneManager.UnloadSceneAsync(1);
@@ -271,12 +273,7 @@ public class GameController : MonoBehaviour
 
 
     }
-    public void PutUpForSell()
-    {
-
-
-
-    }
+    
     public void BackToMainMenu()
     {
         if (onQuitGame != null)

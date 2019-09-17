@@ -20,8 +20,8 @@ public class AttackingBehavior : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (stateInfo.normalizedTime > 0.9) {Player.GetPlayer().RBody.isKinematic = true;}
-        float time=1f;
-        if (Input.GetButtonDown("X") && Player.GetPlayer().stats.StaminaLeft > 0&&!pressed)
+        float time=0;
+        if (Input.GetButtonDown("X") && !pressed)
         {
             pressed=true;
             Player.GetPlayer().HitCounter++;
@@ -29,16 +29,16 @@ public class AttackingBehavior : StateMachineBehaviour
         switch(Player.GetPlayer().HitCounter)
         {
             case 0:
-                time = 0.4f;
-                break;
-            case 1:
                 time = 0.8f;
                 break;
+            case 1:
+                time = 0.9f;
+                break;
             case 2:
+                time = 0.9f;
+                break;
+            case 3:
                 time = 0.5f;
-                
-                
-                //Time.timeScale = 0.5f;
                 break;
         }
         if (stateInfo.normalizedTime > time) {Player.GetPlayer().HitBox.SetActive(false);  }

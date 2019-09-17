@@ -29,6 +29,22 @@ public class SlimeSpawner : MonoBehaviour
         spawnedEnemies.Remove(enemy);
         
     }
+    private Vector3 SpawnPointOffset(){
+
+        switch (spawnedEnemies.Count-1) {
+            case 0:
+                return new Vector3(1,0,0);
+            case 1:
+                return new Vector3(1, 0, 1);
+            case 2:
+                return new Vector3(0,0,1);
+            case 3:
+                return new Vector3(-1,0,0);
+            case 4:
+                return new Vector3(0,0,-1);
+        }
+        return new Vector3(0, 0, 0);
+    }
     private IEnumerator Spawn()
     {
         while (isActiveAndEnabled)
@@ -39,7 +55,7 @@ public class SlimeSpawner : MonoBehaviour
             if (spawnedEnemies.Count < 5)
             {
                 
-                spawnedEnemies.Add(Instantiate(slime, spawnPoint.transform.position, Quaternion.identity).GetComponent<Slime>());
+                spawnedEnemies.Add(Instantiate(slime, spawnPoint.transform.position+SpawnPointOffset(), Quaternion.identity).GetComponent<Slime>());
             }
         }
     }

@@ -9,9 +9,12 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     private List<Enemy> enemies = new List<Enemy>(16);
     private Player pc;
     private int t;//targeted enemy in the array of enemies
+    private Enemy enemyTarget;
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
     public int T { get => t; set => t = value; }
+    public Enemy EnemyTarget { get => enemyTarget; set => enemyTarget = value; }
 
+    private AxisButton dPadDown = new AxisButton("DPad Down");
     void Start()
     {
         Enemy.onAnyDefeated += RemoveTheDead;
@@ -66,14 +69,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         {
             LockOn(x, y, mH, jH);
         }
-        if (pc.LeftDash)
-        {
-            transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up, 80 * Time.deltaTime);
-        }
-        if (pc.RightDash)
-        {
-            transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up, -80 * Time.deltaTime);
-        }
+
     }
 
     void LockOff()
@@ -86,10 +82,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             }
         }
     }
-
+    private void EnemyLockedTo() {
+        EnemyTarget=Enemy.GetEnemy(T);
+    }
     void LockOn(float x, float y, float mH, float jH)
     {
         Enemy.GetEnemy(T).LockedOn = true;
+        EnemyLockedTo();
         LockOff();
         if (y > 0)//forward
         {
@@ -133,7 +132,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     public void SwitchLockOn()
     {
-        if (Input.GetButtonDown("L2"))
+        if (dPadDown.GetButtonDown())
         {
             T++;
         }

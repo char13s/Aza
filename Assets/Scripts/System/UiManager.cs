@@ -32,6 +32,10 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Slider expBar;
     [SerializeField] private GameObject abilityClose;
     [Space]
+    [Header("AzaUI")]
+    [SerializeField] private Text azaMP;
+    [SerializeField] private Slider azaMPBar;
+    [Space]
     [Header("Abilities")]
     [SerializeField] private Text attack;
     [SerializeField] private Text defense;
@@ -75,6 +79,10 @@ public class UiManager : MonoBehaviour
     private static Button itemDescriptionButton;
     private static Button giveButton;
     private static Button dropButton;
+    [Space]
+    [Header("SkillAssignMenu")]
+    [SerializeField] private GameObject skillAssignMenuPrefab;
+    private static GameObject skillAssignMenu;
     private static UiManager instance;
 
     StoreManager store = new StoreManager();
@@ -89,6 +97,7 @@ public class UiManager : MonoBehaviour
     public static GameObject CraftMenu { get => craftMenu; set => craftMenu = value; }
     public static Image ItemList { get => itemList; set => itemList = value; }
     public static GameObject StoreMenu { get => storeMenu; set => storeMenu = value; }
+    public static GameObject SkillAssignMenu { get => skillAssignMenu; set => skillAssignMenu = value; }
 
 
     //public static event UnityAction movementTutorialActive;
@@ -113,6 +122,7 @@ public class UiManager : MonoBehaviour
         CraftMenu = craftMenuPrefab;
         ItemList = itemListPrefab;
         storeMenu = StoreMenuPrefab;
+        SkillAssignMenu = skillAssignMenuPrefab;
     }
     void Start()
     {
@@ -121,7 +131,7 @@ public class UiManager : MonoBehaviour
         Player.GetPlayer().items.PageNum = pageNum;
         Stats.onLevelUp += StatsUpdate;
         Stats.onShowingStats += ViewStats;
-        Stats.onStaminaChange += StaminaChange;
+        Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
         Enemy.onAnyEnemyDead += EnemyDeath;
 
@@ -235,14 +245,14 @@ public class UiManager : MonoBehaviour
     void StatsUpdate()
     {
         health.text = "Hp: " + Player.GetPlayer().stats.HealthLeft + "/" + Player.GetPlayer().stats.Health;
-        stamina.text = "Sta: " + Player.GetPlayer().stats.Stamina;
+        stamina.text = "Mp: " + Player.GetPlayer().stats.MP;
         exp.text = "Exp: " + Player.GetPlayer().stats.Exp;
         expBar.value = Player.GetPlayer().stats.Exp;
         money.text = store.Money.ToString();
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
-        staminaBar.maxValue = Player.GetPlayer().stats.Stamina;
-        staminaBar.value = Player.GetPlayer().stats.StaminaLeft;
+        staminaBar.maxValue = Player.GetPlayer().stats.MP;
+        staminaBar.value = Player.GetPlayer().stats.MPLeft;
         expBar.maxValue = Player.GetPlayer().stats.CalculateExpNeed();
 
         level.text = "LV. " + Player.GetPlayer().stats.Level;
@@ -252,7 +262,7 @@ public class UiManager : MonoBehaviour
         attack.text = "Attack = " + Player.GetPlayer().stats.Attack.ToString();
         defense.text = "Defense = " + Player.GetPlayer().stats.Defense.ToString();
         healthAb.text = "Health = " + Player.GetPlayer().stats.Health.ToString();
-        staminaAb.text = "Stamina = " + Player.GetPlayer().stats.StaminaLeft.ToString();
+        staminaAb.text = "Stamina = " + Player.GetPlayer().stats.MPLeft.ToString();
         intelligence.text = "Intellect = " + Player.GetPlayer().stats.Intellect.ToString();
     }
     void HealthChange()
@@ -263,15 +273,17 @@ public class UiManager : MonoBehaviour
 
 
     }
-    void StaminaChange()
+    void MPChange()
     {
-        staminaBar.maxValue = Player.GetPlayer().stats.Stamina;
-        staminaBar.value = Player.GetPlayer().stats.StaminaLeft;
-        stamina.text = "Sta: " + Player.GetPlayer().stats.StaminaLeft;
+        staminaBar.maxValue = Player.GetPlayer().stats.MP;
+        staminaBar.value = Player.GetPlayer().stats.MPLeft;
+        stamina.text = "Mp: " + Player.GetPlayer().stats.MPLeft;
+        azaMP.text="Mp: " + AzaAi.GetAza().stats.MPLeft;
+        azaMPBar.maxValue = AzaAi.GetAza().stats.MP;
+        azaMPBar.value = AzaAi.GetAza().stats.MPLeft;
     }
     void EnemyDeath()
     {
-
         exp.text = "Exp: " + Player.GetPlayer().stats.Exp;
         expBar.value = Player.GetPlayer().stats.Exp;
     }

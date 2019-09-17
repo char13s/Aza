@@ -8,7 +8,7 @@ public class ShootBehavior : StateMachineBehaviour
     [SerializeField] private GameObject explosion;
     [SerializeField] private GameObject flameTornado;
     private GameObject castingFlame;
-
+    
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         castingFlame = Player.GetPlayer().FireCaster;
@@ -26,7 +26,7 @@ public class ShootBehavior : StateMachineBehaviour
                 fireball.transform.position = animator.rootPosition;
                 break;
             case 2:
-                Instantiate(explosion, Player.GetPlayer().BattleStuff1.Enemies[Player.GetPlayer().BattleStuff1.T].transform.position, Quaternion.identity);
+                Instantiate(explosion, Player.GetPlayer().BattleMode.Enemies[Player.GetPlayer().BattleMode.T].transform.position, Quaternion.identity);
                 break;
             case 3:
                 Instantiate(flameTornado, animator.rootPosition, Quaternion.identity);
@@ -37,7 +37,7 @@ public class ShootBehavior : StateMachineBehaviour
 
         }
         Player.GetPlayer().SkillId = 0;
-
+        Player.GetPlayer().SkillIsActive = false;
 
     }
 

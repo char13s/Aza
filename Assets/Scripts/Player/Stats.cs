@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 [System.Serializable]
 public class Stats
 {
@@ -9,25 +8,27 @@ public class Stats
     private int health;
     private int attack;
     private int defense;
-    private int stamina;
+    [FormerlySerializedAs("stamina")]
+    private int mp;
     private int intellect;
     private int healthLeft;
-    private int staminaLeft;
+    [FormerlySerializedAs("staminaLeft")]
+    private int mpLeft;
     private byte level = 1;
     private int exp = 0;
     //Events
     public static event UnityAction onHealthChange;
-    public static event UnityAction onStaminaChange;
+    public static event UnityAction onMPLeft;
     public static event UnityAction onLevelUp;
     public static event UnityAction onShowingStats;
     //Properties
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);if (onHealthChange != null) { onHealthChange(); } if (healthLeft<=0) { Player.GetPlayer().Dead = true; }} }
-    public int StaminaLeft { get { return staminaLeft; } set { staminaLeft = Mathf.Clamp(value, 0, stamina); if (onStaminaChange != null) { onStaminaChange(); } } }
+    public int MPLeft { get { return mpLeft; } set { mpLeft = Mathf.Clamp(value, 0, mp); if (onMPLeft != null) { onMPLeft(); } } }
 
     public int Attack { get { return attack; } set { attack = value; } }
     public int Defense { get { return defense; } set { defense = value; } }
-    public int Stamina { get { return stamina; } set { stamina = value; } }
+    public int MP { get { return mp; } set { mp = value; } }
     public int Intellect { get { return intellect; } set { intellect = value; } }
 
     public byte Level { get => level; set => level = value; }
@@ -58,7 +59,7 @@ public class Stats
             Health += 3;
             Attack += 2;
             Defense += 2;
-            Stamina += 5;
+            MP += 5;
 
         }
         if (Level > 20 && Level <= 50)
@@ -66,14 +67,14 @@ public class Stats
             Health += 5;
             Attack += 3;
             Defense += 4;
-            Stamina += 5;
+            MP += 5;
         }
         if (Level > 50 && Level < 99)
         {
             Health += 7;
             Attack += 6;
             Defense += 6;
-            Stamina += 5;
+            MP += 5;
         }
         
     }
@@ -88,8 +89,8 @@ public class Stats
     {
         health = 22;
         healthLeft = health;
-        stamina = 10;
-        staminaLeft = stamina;
+        mp = 10;
+        mpLeft = mp;
         attack = 6;
         defense = 5;
         intellect = 6;
@@ -100,9 +101,9 @@ public class Stats
         {
             onHealthChange();
         }
-        if (onStaminaChange != null)
+        if (onMPLeft != null)
         {
-            onStaminaChange();
+            onMPLeft();
         }
         if (onLevelUp != null) { onLevelUp(); }
     }
@@ -111,9 +112,9 @@ public class Stats
         {
             onHealthChange();
         }
-        if (onStaminaChange != null)
+        if (onMPLeft != null)
         {
-            onStaminaChange();
+            onMPLeft();
         }
         if (onLevelUp != null) { onLevelUp(); }
     }
