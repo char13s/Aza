@@ -177,6 +177,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        
         //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
         onPlayerDeath += OnDead;
         GameController.onNewGame += SetDefault;
