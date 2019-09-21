@@ -116,14 +116,11 @@ public class AzaAi : MonoBehaviour
     }
     private void ShootArrows()
     {
-        if (Player.GetPlayer().BattleMode.EnemyTarget != null) {
-            State = AzaAiStates.Idle;
-        }
+        
         Vector3 delta;
         Animations = 4;
         if (Player.GetPlayer().BattleMode.EnemyTarget != null)
         {
-
             delta = Player.GetPlayer().BattleMode.EnemyTarget.transform.position - transform.position;
         }
         else
@@ -132,6 +129,9 @@ public class AzaAi : MonoBehaviour
         }
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
+        if (Player.GetPlayer().BattleMode.EnemyTarget == null) {
+            State = AzaAiStates.Idle;
+        }
         Debug.Log("Yah");
     }
     private void FireBall()
@@ -169,7 +169,7 @@ public class AzaAi : MonoBehaviour
         {
             Navi.SetDestination(transform.position);
         }
-        if (State != AzaAiStates.Casting && Player.GetPlayer().BattleMode.EnemyTarget!=null) {
+        if (State != AzaAiStates.Casting && Player.GetPlayer().BattleMode.EnemyTarget!=null &&Player.GetPlayer().Attacking) {
             State = AzaAiStates.Attacking;
         }
         if (State != AzaAiStates.Casting && Vector3.Distance(Player.GetPlayer().transform.position, transform.position) > 3)

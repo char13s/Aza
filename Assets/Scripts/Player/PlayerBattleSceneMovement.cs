@@ -83,7 +83,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         }
     }
     private void EnemyLockedTo() {
-        EnemyTarget=Enemy.GetEnemy(T);
+        EnemyTarget = enemies[T]; //Enemy.GetEnemy(enemies.IndexOf(enemies[T])); stupid code -_-
     }
     void LockOn(float x, float y, float mH, float jH)
     {
@@ -93,6 +93,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         if (y > 0)//forward
         {
             pc.Direction = 0;
+
         }
 
         if (y < 0)//back
@@ -113,10 +114,12 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001)
         {
             pc.Moving = true;
+            pc.Animations = 1;
         }
         else
         {
             pc.Moving = false;
+            pc.Animations = 0;
         }
         if (!Enemies[T].Dead)
         {

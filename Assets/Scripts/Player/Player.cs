@@ -205,6 +205,7 @@ public class Player : MonoBehaviour
         {
             GetInput();
         }
+        
         Sword();
         //Inventory();
         //Guitar();
@@ -307,6 +308,8 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= triangle.MpRequired;
                 triangle.UseSkill();
                 skillIsActive = true;
+                Attack = false;
+                Guard = false;
             }
 
         }
@@ -318,6 +321,8 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= square.MpRequired;
                 square.UseSkill();
                 skillIsActive = true;
+                Attack = false;
+                Guard = false;
             }
 
         }
@@ -328,6 +333,8 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= circle.MpRequired;
                 circle.UseSkill();
                 skillIsActive = true;
+                Attack = false;
+                Guard = false;
             }
 
         }
@@ -338,6 +345,8 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= x.MpRequired;
                 x.UseSkill();
                 skillIsActive = true;
+                Attack = false;
+                Guard = false;
             }
 
         }
@@ -346,6 +355,8 @@ public class Player : MonoBehaviour
             SkillId = 10;
             stats.MPLeft -= 2;
             skillIsActive = true;
+            Attack = false;
+            Guard = false;
         }
     }
     void Guitar()
@@ -413,7 +424,7 @@ public class Player : MonoBehaviour
                 PerfectGuard = true;
                 guardCoroutine = StartCoroutine(GuardCoroutine());
             }
-            if (Input.GetButton("Square"))
+            if (Input.GetButton("Square") && !skillIsActive)
             {
                 Guard = true;
             }
@@ -433,7 +444,7 @@ public class Player : MonoBehaviour
             DemonSword.SetActive(true);
             trail.SetActive(true);
 
-            if (Input.GetButtonDown("X"))
+            if (Input.GetButtonDown("X")&&!skillIsActive)
             {
                 Attack = true;
             }

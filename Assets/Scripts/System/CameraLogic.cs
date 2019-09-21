@@ -18,7 +18,7 @@ public class CameraLogic : MonoBehaviour
     public static Camera PrespCam { get => prespCam; set => prespCam = value; }
     public Player Body { get => body; set => body = value; }
     public static bool Switchable { get => switchable; set => switchable = value; }
-
+    AxisButton L3 = new AxisButton("R3");
     private void Awake()
     {
         //body.Delta = transform.position - body.transform.position;
@@ -35,18 +35,15 @@ public class CameraLogic : MonoBehaviour
     {
         playerEnabled = true;
         delta = transform.position - Body.transform.position;
-
     }
     // Update is called once per frame
     public virtual void Update()
     {
         CameraAi();
-        if (switchable)
-        {
+        if(switchable)
             GetInput();
-        }
+        
     }
-
     void CameraAi()
     {
         if (playerEnabled)
@@ -56,11 +53,10 @@ public class CameraLogic : MonoBehaviour
     }
     void GetInput()
     {
-
-        if (Input.GetAxis("L3") > 0.05 && !buttonOn)//Use AxisButton optimizeeeeeeeeeeeeeeeeeeeeee
+        if (Input.GetButtonDown("L3"))
         {
-
-            buttonOn = true;
+            Debug.Log("L3 works");
+            Debug.Log(switchable);
             if (overheadCamera.gameObject.activeSelf)
             {
                 PrespheadCam();
@@ -68,18 +64,11 @@ public class CameraLogic : MonoBehaviour
             else
             {
                 OverheadCam();
-
             }
-        }
-        if (Input.GetAxis("L3") < 0.05)
-        {
-            buttonOn = false;
         }
     }
     private void OverheadCam()
     {
-        if (overHeadCamActive != null)
-            overHeadCamActive();
         overheadCamera.gameObject.SetActive(true);
 
         canvas.transform.SetParent(overheadCamera.transform);
@@ -93,12 +82,6 @@ public class CameraLogic : MonoBehaviour
         canvas.transform.SetParent(prespCam.transform);
         canvas.transform.localPosition = new Vector3(0, 0, 0);
         overheadCamera.gameObject.SetActive(false);
-
-    }
-
-
-    private void MoveIt(float x, float y)
-    {
 
     }
 }

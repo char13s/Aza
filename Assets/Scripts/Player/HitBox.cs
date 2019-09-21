@@ -43,10 +43,10 @@ public class HitBox : MonoBehaviour
                         return transform.forward + new Vector3(0, 0, 0.5f);
                     case 2:
                         Debug.Log("Fly bitch2");
-                        return transform.forward + new Vector3(-15.5f, 0, 0);
+                        return transform.forward + new Vector3(0, 0, 0.5f);
                     case 3:
                         Debug.Log("Fly bitch");
-                        return transform.forward + new Vector3(-15.5f, 0, 0);
+                        return transform.forward + new Vector3(0, 0, -15.5f);
                 }
                 return transform.forward + new Vector3(0, 0, 0);
             case 7:
