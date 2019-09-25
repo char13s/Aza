@@ -35,18 +35,20 @@ public class HitBox : MonoBehaviour
         switch (pc.SkillId)
         {
             case 0:
-                switch (pc.HitCounter)
+                switch (KnockBackBehavior.AnimationId)
                 {
                     case 0:
-                        return transform.forward + new Vector3(0, 0, 0.5f);
+                        Debug.Log("firstAttack");
+                        return transform.forward *-10;
                     case 1:
-                        return transform.forward + new Vector3(0, 0, 0.5f);
+                        Debug.Log("firstAttack2");
+                        return transform.forward * 5;
                     case 2:
                         Debug.Log("Fly bitch2");
-                        return transform.forward + new Vector3(0, 0, 0.5f);
+                        return transform.forward * 5;
                     case 3:
-                        Debug.Log("Fly bitch");
-                        return transform.forward + new Vector3(0, 0, -15.5f);
+                        Debug.Log("Fly bitch3");
+                        return transform.forward *15.5f;
                 }
                 return transform.forward + new Vector3(0, 0, 0);
             case 7:
@@ -55,13 +57,14 @@ public class HitBox : MonoBehaviour
             default: return transform.forward + new Vector3(0, 0, -2.5f);
         }
     }
-    
-    
+
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            enemyImAttacking = other.gameObject;
+
+            EnemyImAttacking = other.gameObject;
             Instantiate(effects, other.gameObject.transform);
             audio.PlayOneShot(hit);
             other.gameObject.GetComponent<Enemy>().CalculateDamage();
@@ -75,5 +78,9 @@ public class HitBox : MonoBehaviour
             Instantiate(fire, other.gameObject.transform);
             Destroy(other.gameObject, 4);
         }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        EnemyImAttacking = null;
     }
 }

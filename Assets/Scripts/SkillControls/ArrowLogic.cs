@@ -24,7 +24,7 @@ public class ArrowLogic : MonoBehaviour
         {
             other.gameObject.GetComponent<Enemy>().CalculateDamage();
 
-            Debug.Log("dafguq");
+
             Instantiate(boom, transform.position, transform.rotation);
             Destroy(gameObject);
         }

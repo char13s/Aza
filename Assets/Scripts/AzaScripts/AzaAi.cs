@@ -132,7 +132,7 @@ public class AzaAi : MonoBehaviour
         if (Player.GetPlayer().BattleMode.EnemyTarget == null) {
             State = AzaAiStates.Idle;
         }
-        Debug.Log("Yah");
+
     }
     private void FireBall()
     {

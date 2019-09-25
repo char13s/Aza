@@ -312,7 +312,7 @@ public class Enemy : MonoBehaviour
     {
 
         yield return new WaitForSeconds(3);
-        Debug.Log("nav");
+
         GetComponent<Rigidbody>().isKinematic = true;
         nav.enabled = true;
 
@@ -376,7 +376,7 @@ public class Enemy : MonoBehaviour
         Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
         {
-            Debug.Log("ouchie slime");
+
             StartCoroutine(StateControlCoroutine());
             lowHealth = true;
         }

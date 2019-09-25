@@ -13,20 +13,21 @@ public class AttackingBehavior : StateMachineBehaviour
         Player.GetPlayer().HitBox.SetActive(true);
         //current = ;
         Player.GetPlayer().RBody.isKinematic = false;
-        
-        Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward+new Vector3(0,0,1),ForceMode.VelocityChange);
-        
+
+        Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * 105, ForceMode.VelocityChange);
+
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (stateInfo.normalizedTime > 0.9) {Player.GetPlayer().RBody.isKinematic = true;}
-        float time=0;
+
+        if (stateInfo.normalizedTime > 0.9) { Player.GetPlayer().RBody.isKinematic = true; }
+        float time = 0;
         if (Input.GetButtonDown("X") && !pressed)
         {
-            pressed=true;
+            pressed = true;
             Player.GetPlayer().HitCounter++;
         }
-        switch(Player.GetPlayer().HitCounter)
+        switch (Player.GetPlayer().HitCounter)
         {
             case 0:
                 time = 0.8f;
@@ -41,7 +42,7 @@ public class AttackingBehavior : StateMachineBehaviour
                 time = 0.5f;
                 break;
         }
-        if (stateInfo.normalizedTime > time) {Player.GetPlayer().HitBox.SetActive(false);  }
+        if (stateInfo.normalizedTime > time) { Player.GetPlayer().HitBox.SetActive(false); }
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -49,16 +50,16 @@ public class AttackingBehavior : StateMachineBehaviour
         if (!pressed)
         {
             Player.GetPlayer().HitCounter = 0;
-            Player.GetPlayer().Attack = false;
+
         }
-        if (Player.GetPlayer().HitCounter == 3)
+        if (Player.GetPlayer().HitCounter >= 3)
         {
             Player.GetPlayer().HitCounter = 0;
-            
-            Player.GetPlayer().Attack = false;
+
+
         }
         pressed = false;
-        
+
     }
-    
+
 }

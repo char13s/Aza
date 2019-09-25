@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
     private int direction;
     private bool stop;
     private int skillId;
-    private bool attack;
+    
     private int animations;
     [Space]
     [Header("OtherFunctions")]
@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
     public PlayerBattleSceneMovement BattleMode { get => battleMode; set => battleMode = value; }
     public GameObject DemonSword { get => demonSword; set => demonSword = value; }
     public GameObject HitBox { get => hitBox; set => hitBox = value; }
-    public bool Attack { get => attack; set { attack = value; anim.SetBool("Attack", attack); } }
+    
     public int SkillId { get => skillId; set { skillId = value; anim.SetInteger("Skill ID", skillId); } }
     public Rigidbody RBody { get => rBody; set => rBody = value; }
     public NavMeshAgent Nav { get => nav; set { nav = value; } }
@@ -211,7 +211,7 @@ public class Player : MonoBehaviour
         //Guitar();
         OnPause();
         Skills();
-
+        
         if (attacking && R2.GetButton())
         {
             skillButton = true;
@@ -263,14 +263,10 @@ public class Player : MonoBehaviour
         {
             //Moving = true;
             Animations = 1;
-            transform.position += displacement * moveSpeed * Time.deltaTime;
-            if (Vector3.SqrMagnitude(displacement) > 0.01f)
-            {
-                transform.forward = displacement;
-            }
+            Move(moveSpeed);
             if (attacking && Input.GetButtonDown("X"))
             {
-
+                
             }
         }
         else
@@ -279,6 +275,15 @@ public class Player : MonoBehaviour
             //Moving = false;
         }
     }
+    public void Move(float speed)
+    {
+        transform.position += displacement * speed * Time.deltaTime;
+        if (Vector3.SqrMagnitude(displacement) > 0.01f)
+        {
+            transform.forward = displacement;
+        }
+    }
+    
     private void Inventory()
     {
         if (items.PocketActive)
@@ -308,7 +313,7 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= triangle.MpRequired;
                 triangle.UseSkill();
                 skillIsActive = true;
-                Attack = false;
+                
                 Guard = false;
             }
 
@@ -321,7 +326,7 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= square.MpRequired;
                 square.UseSkill();
                 skillIsActive = true;
-                Attack = false;
+                
                 Guard = false;
             }
 
@@ -333,7 +338,7 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= circle.MpRequired;
                 circle.UseSkill();
                 skillIsActive = true;
-                Attack = false;
+                
                 Guard = false;
             }
 
@@ -345,7 +350,7 @@ public class Player : MonoBehaviour
                 stats.MPLeft -= x.MpRequired;
                 x.UseSkill();
                 skillIsActive = true;
-                Attack = false;
+                
                 Guard = false;
             }
 
@@ -355,7 +360,7 @@ public class Player : MonoBehaviour
             SkillId = 10;
             stats.MPLeft -= 2;
             skillIsActive = true;
-            Attack = false;
+            
             Guard = false;
         }
     }
@@ -444,9 +449,9 @@ public class Player : MonoBehaviour
             DemonSword.SetActive(true);
             trail.SetActive(true);
 
-            if (Input.GetButtonDown("X")&&!skillIsActive)
+            if (Input.GetButtonDown("X")&&!skillIsActive&&hitCounter==0)
             {
-                Attack = true;
+                HitCounter = 1;
             }
         }
         else

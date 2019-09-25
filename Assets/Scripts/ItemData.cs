@@ -43,7 +43,7 @@ public class ItemData
     //public GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public void Start()
     {
-        Debug.Log("started!");
+
         
         
     }

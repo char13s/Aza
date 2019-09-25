@@ -20,6 +20,11 @@ public class PhysicalSkillBehavoir : StateMachineBehaviour
                 hitbox = Player.GetPlayer().HitBox;
                 hitbox.SetActive(true);
                 break;
+            case 9:
+                hitbox = Player.GetPlayer().HitBox;
+                hitbox.SetActive(true);
+
+                break;
         }
 
     }
@@ -35,6 +40,9 @@ public class PhysicalSkillBehavoir : StateMachineBehaviour
                     break;
                 case 7:
                     Debug.Log("Hit box should be off");
+                    hitbox.SetActive(false);
+                    break;
+                case 9:
                     hitbox.SetActive(false);
                     break;
             }

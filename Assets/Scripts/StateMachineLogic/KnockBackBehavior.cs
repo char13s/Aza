@@ -4,23 +4,16 @@ using UnityEngine;
 
 public class KnockBackBehavior : StateMachineBehaviour
 {
-    [SerializeField] private Vector3 knockBack;
+    //[SerializeField] private Vector3 knockBack;
+    private static int animationId;
+
+    public static int AnimationId { get => animationId; set => animationId = value; }
+
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (HitBox.GetHitBox().EnemyImAttacking != null) {
+        AnimationId = Player.GetPlayer().HitCounter;
+        /*if (HitBox.GetHitBox().EnemyImAttacking != null) {
 
-        }
-
-       
-    }
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        
-    }
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-
-        
-
+        }*/
     }
 }
