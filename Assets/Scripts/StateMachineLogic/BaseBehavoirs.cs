@@ -7,11 +7,13 @@ public class BaseBehavoirs : StateMachineBehaviour
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        
+        Player.GetPlayer().SkillId = 0;
+        Player.GetPlayer().CmdInput = 0;
+        Player.GetPlayer().MoveSpeed = 5;
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().HitCounter = 0;
+        
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

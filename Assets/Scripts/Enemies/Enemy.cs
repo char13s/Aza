@@ -136,7 +136,7 @@ public class Enemy : MonoBehaviour
 
         if (State != EnemyAiStates.LowHealth)
         {
-            if (State != EnemyAiStates.Chasing && nav.enabled)
+            if (State != EnemyAiStates.Chasing && nav.enabled && !dead)
             {
                 Walk = false;
                 nav.SetDestination(transform.position);
@@ -215,7 +215,7 @@ public class Enemy : MonoBehaviour
     private void Flee()
     {
         int rand = Random.Range(1, enemies.Count - 1);
-        Enemy target = GetEnemy(rand % enemies.Count);
+        Enemy target = GetEnemy(rand);
         if (target != null && !Dead && nav.enabled)
         {
             nav.SetDestination(target.transform.position);

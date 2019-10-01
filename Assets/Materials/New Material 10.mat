@@ -78,5 +78,6 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_3C87525: {r: 0.990566, g: 0.9343588, b: 0.4251958, a: 0}
+    - Vector4_370BAB82: {r: 1, g: 1, b: 0, a: 0}
     - _Color: {r: 0.3584906, g: 0.3135126, b: 0.103150584, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

@@ -14,7 +14,7 @@ public class AttackingBehavior : StateMachineBehaviour
         //current = ;
         Player.GetPlayer().RBody.isKinematic = false;
 
-        Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * 105, ForceMode.VelocityChange);
+        //Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * 105, ForceMode.VelocityChange);
 
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -22,7 +22,7 @@ public class AttackingBehavior : StateMachineBehaviour
 
         if (stateInfo.normalizedTime > 0.9) { Player.GetPlayer().RBody.isKinematic = true; }
         float time = 0;
-        if (Input.GetButtonDown("X") && !pressed)
+        /*if (Input.GetButtonDown("Square") && !pressed)
         {
             pressed = true;
             Player.GetPlayer().HitCounter++;
@@ -42,12 +42,13 @@ public class AttackingBehavior : StateMachineBehaviour
                 time = 0.5f;
                 break;
         }
-        if (stateInfo.normalizedTime > time) { Player.GetPlayer().HitBox.SetActive(false); }
+        if (stateInfo.normalizedTime > time) {  }*/
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        Player.GetPlayer().HitBox.SetActive(false);
         //Debug.Log("Pressed: "+pressed);
-        if (!pressed)
+        /*if (!pressed)
         {
             Player.GetPlayer().HitCounter = 0;
 
@@ -57,7 +58,7 @@ public class AttackingBehavior : StateMachineBehaviour
             Player.GetPlayer().HitCounter = 0;
 
 
-        }
+        }*/
         pressed = false;
 
     }

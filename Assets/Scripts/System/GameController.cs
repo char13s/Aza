@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class GameController : MonoBehaviour
 {
     private Player pc;
-    private AzaAi aza;
+    private PlayableAza aza;
     [SerializeField] private GameObject ability;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private EventSystem eventSystem;
@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
     public static event UnityAction update;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
-    public static AzaAi Aza => (instance == null) ? null : instance.aza;
+    public static PlayableAza Aza => (instance == null) ? null : instance.aza;
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake()
     {
@@ -71,13 +71,13 @@ public class GameController : MonoBehaviour
         {
             CameraLogic.Switchable = false;
             pc.gameObject.SetActive(false);
-            AzaAi.GetAza().gameObject.SetActive(false);
+            
             eventSystem.gameObject.SetActive(false);
         }
         else {
             
             pc.gameObject.SetActive(true);
-            AzaAi.GetAza().gameObject.SetActive(true);
+            
             eventSystem.gameObject.SetActive(true);
         }
         if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null)
@@ -156,7 +156,7 @@ public class GameController : MonoBehaviour
             CameraLogic.Switchable = true;
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
             pc.Loaded = true;
-            AzaAi.GetAza().Loaded = true;
+            
             //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 0);
 
             foreach (GameObject b in pc.items.Buttons)

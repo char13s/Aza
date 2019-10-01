@@ -278,9 +278,9 @@ public class UiManager : MonoBehaviour
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
         staminaBar.value = Player.GetPlayer().stats.MPLeft;
         stamina.text = "Mp: " + Player.GetPlayer().stats.MPLeft;
-        azaMP.text="Mp: " + AzaAi.GetAza().stats.MPLeft;
+        /*azaMP.text="Mp: " + AzaAi.GetAza().stats.MPLeft;
         azaMPBar.maxValue = AzaAi.GetAza().stats.MP;
-        azaMPBar.value = AzaAi.GetAza().stats.MPLeft;
+        azaMPBar.value = AzaAi.GetAza().stats.MPLeft;*/
     }
     void EnemyDeath()
     {

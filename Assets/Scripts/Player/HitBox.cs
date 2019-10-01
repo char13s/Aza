@@ -35,26 +35,24 @@ public class HitBox : MonoBehaviour
         switch (pc.SkillId)
         {
             case 0:
-                switch (KnockBackBehavior.AnimationId)
+                switch (KnockBackBehavior.HitId)
                 {
-                    case 0:
-                        Debug.Log("firstAttack");
-                        return transform.forward *-10;
                     case 1:
-                        Debug.Log("firstAttack2");
-                        return transform.forward * 5;
+                        
+                        return transform.forward * -1.3f;
                     case 2:
-                        Debug.Log("Fly bitch2");
-                        return transform.forward * 5;
+                        
+                        return transform.forward * 2;
                     case 3:
-                        Debug.Log("Fly bitch3");
+                        
                         return transform.forward *15.5f;
+                    case 4:
+                        
+                        return transform.forward + new Vector3(0, 10, 0);
                 }
                 return transform.forward + new Vector3(0, 0, 0);
-            case 7:
-                Debug.Log("wth");
-                return transform.forward + new Vector3(0, 10, -3);
-            default: return transform.forward + new Vector3(0, 0, -2.5f);
+            
+            default: return transform.forward * -2;
         }
     }
 
