@@ -205,7 +205,7 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (grounded && !guard && !lockedOn)
+        if (grounded && !guard && !lockedOn&&cmdInput<=0)
         {
             GetInput();
         }
@@ -265,11 +265,11 @@ public class Player : MonoBehaviour
         {
             displacement = ThreeDCamera.XZOrientation.TransformDirection(displacement);
         }
-        if (Input.GetButtonDown("R3"))
+        /*if (Input.GetButtonDown("R3"))
         {
             //Grounded = true;
             SwitchCharacter();
-        }
+        }*/
        
             MoveIt(x, y);
         
