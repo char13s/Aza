@@ -6,6 +6,7 @@ public class KnockBackBehavior : StateMachineBehaviour
 {
     // private Vector3 knockBack;
     [SerializeField]private int attackId;
+    
     private static int hitId;
     private static int animationId;
 
@@ -18,4 +19,6 @@ public class KnockBackBehavior : StateMachineBehaviour
 
         }*/
     }
+
+    
 }

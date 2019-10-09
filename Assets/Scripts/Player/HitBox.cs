@@ -35,24 +35,31 @@ public class HitBox : MonoBehaviour
         switch (pc.SkillId)
         {
             case 0:
+                
                 switch (KnockBackBehavior.HitId)
                 {
                     case 1:
                         
-                        return transform.forward * -1.3f;
+                        return Player.GetPlayer().transform.forward * -1.3f;
                     case 2:
                         
-                        return transform.forward * 2;
+                        return Player.GetPlayer().transform.forward * 1.1f;
                     case 3:
                         
-                        return transform.forward *15.5f;
+                        return Player.GetPlayer().transform.forward *7.5f;
                     case 4:
                         
-                        return transform.forward + new Vector3(0, 10, 0);
+                        return Player.GetPlayer().transform.forward + new Vector3(0, 5, 0);
+                    case 5:
+                        Debug.Log("fuck you slime");
+                        return Player.GetPlayer().transform.forward *12;
+                    case 6:
+                        Debug.Log("fuck you slime");
+                        return Player.GetPlayer().transform.forward * 6;
                 }
                 return transform.forward + new Vector3(0, 0, 0);
             
-            default: return transform.forward * -2;
+            default: return Player.GetPlayer().transform.forward * -2;
         }
     }
 
@@ -65,9 +72,9 @@ public class HitBox : MonoBehaviour
             EnemyImAttacking = other.gameObject;
             Instantiate(effects, other.gameObject.transform);
             audio.PlayOneShot(hit);
-            other.gameObject.GetComponent<Enemy>().CalculateDamage();
-            other.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-            other.gameObject.GetComponent<Rigidbody>().AddForce(HitKnockback(), ForceMode.VelocityChange);
+            other.GetComponent<Enemy>().CalculateDamage();
+            other.GetComponent<NavMeshAgent>().enabled = false;
+            other.GetComponent<Rigidbody>().AddForce(HitKnockback(), ForceMode.VelocityChange);
 
             //Debug.Log(other.gameObject.GetComponent<Enemy>().HealthLeft);
         }

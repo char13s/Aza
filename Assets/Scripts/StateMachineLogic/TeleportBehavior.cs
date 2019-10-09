@@ -8,14 +8,14 @@ public class TeleportBehavior : StateMachineBehaviour
     [SerializeField] private Vector3 teleportEndPoint;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        /*if (Player.GetPlayer().BattleMode.EnemyTarget != null)
+        if (Player.GetPlayer().BattleMode.EnemyTarget != null)
         {
             Player.GetPlayer().transform.position = Player.GetPlayer().BattleMode.EnemyTarget.transform.position ;
-        }*/
+        }
 
-
+        Debug.Log(Player.GetPlayer().BattleMode.EnemyTarget);
     }
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    /*override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
         if (Player.GetPlayer().BattleMode.EnemyTarget != null)
@@ -23,7 +23,7 @@ public class TeleportBehavior : StateMachineBehaviour
             if (stateInfo.normalizedTime == time)
             {
 
-                Player.GetPlayer().transform.position = Player.GetPlayer().BattleMode.EnemyTarget.transform.position + teleportEndPoint;
+                Player.GetPlayer().transform.position = Player.GetPlayer().BattleMode.EnemyTarget.transform.position ;
             }
 
         }
@@ -32,5 +32,5 @@ public class TeleportBehavior : StateMachineBehaviour
 
 
 
-    }
+    }*/
 }

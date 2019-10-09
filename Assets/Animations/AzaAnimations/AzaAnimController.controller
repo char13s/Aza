@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c574c3e3c805bf646ad8629f13f0c570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 5606360365806681629, guid: 0d051c7373655d14ebcb245f429de3f3, type: 3}
-  fireball: {fileID: 4922693137165824928, guid: cc030df3727680945ad773fb604a144f,
-    type: 3}
   arrow: {fileID: 6132814928186097027, guid: 233921858107a2749887493da465fb79, type: 3}
 --- !u!1101 &-5461574848015105272
 AnimatorStateTransition:
@@ -33,7 +30,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.01971376
   m_TransitionOffset: 0
   m_ExitTime: 0.40000004
   m_HasExitTime: 0
@@ -409,7 +406,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 6
+    m_ConditionEvent: Animations
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5872212219438823251}
   m_Solo: 0
@@ -617,7 +617,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.030240238
   m_TransitionOffset: 0
   m_ExitTime: 0.8
   m_HasExitTime: 0

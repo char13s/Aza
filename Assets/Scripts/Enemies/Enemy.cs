@@ -5,17 +5,22 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using UnityEngine.Events;
 #pragma warning disable 0649
+
+
 public class Enemy : MonoBehaviour
 {
 
     private EnemyAiStates state;
+    public enum EnemyType { Slime, Samurai };
+    [SerializeField] private EnemyType type;
     public enum EnemyAiStates { Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, Canniblize, Transform, GetHelp, PlantSlimeTree };
     [SerializeField] private int level;
+    [SerializeField] private int attackDelay;
     [SerializeField] private int baseExpYield;
     [SerializeField] private int baseHealth;
     [SerializeField] private GameObject hitBox;
     [SerializeField] private GameObject canvas;
-    [SerializeField] private GameObject levelText;
+    [SerializeField] private Text levelText;
     [SerializeField] private GameObject drop;
     [SerializeField] private Slider EnemyHp;
     private byte eaten;
@@ -41,6 +46,7 @@ public class Enemy : MonoBehaviour
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
+    [SerializeField] private int flip;
     private static List<Enemy> enemies = new List<Enemy>(32);
     private int behavior;
 
@@ -49,7 +55,7 @@ public class Enemy : MonoBehaviour
 
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Max(0, value); UIMaintence(); if (healthLeft <= 0 && !Dead) { Dead = true; } } }
-
+    
     public bool Attack { get => attack; set { attack = value; anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; anim.SetBool("Walking", walk); } }
 
@@ -91,22 +97,31 @@ public class Enemy : MonoBehaviour
     }
     public static int TotalCount => enemies.Count;
 
-
-    // Start is called before the first frame update
-
-    public virtual void Start()
+    private void Awake()
     {
         anim = GetComponent<Animator>();
+        nav = GetComponent<NavMeshAgent>();
+
+    }
+    // Start is called before the first frame update
+    public void OnEnable()
+    {
+        EnemyHitBoxBehavior[] behaviours = anim.GetBehaviours<EnemyHitBoxBehavior>();
+        for (int i = 0; i < behaviours.Length; i++)
+            behaviours[i].HitBox=hitBox;
+    }
+    public virtual void Start()
+    {
+        
         pc = Player.GetPlayer();
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
         onAnyDefeated += EnemyDeath;
         enemies.Add(this);
         pb = pc.GetComponent<PlayerBattleSceneMovement>();
-        nav = GetComponent<NavMeshAgent>();
         //InvokeRepeating("Attacking", 2f, 2f);
         level += Player.GetPlayer().stats.Level;
-        health = level * baseHealth;
+        Health = level * baseHealth;
         startLocation = transform.position;
         HealthLeft = health;
         attackingCoroutine = StartCoroutine(AttackingCoroutine());
@@ -193,7 +208,7 @@ public class Enemy : MonoBehaviour
 
         Attack = true;
         attackCoroutine = StartCoroutine(AttackCoroutine());
-        hitBox.SetActive(true);
+        //hitBox.SetActive(true);
     }
     private void Idle()
     {
@@ -303,26 +318,27 @@ public class Enemy : MonoBehaviour
     }
     private IEnumerator HitCoroutine()
     {
-
-        yield return new WaitForSeconds(4);
+        YieldInstruction wait=new WaitForSeconds(4);
+        yield return wait;
         Hit = false;
 
     }
     private IEnumerator RecoveryCoroutine()
     {
 
-        yield return new WaitForSeconds(3);
-
+        YieldInstruction wait = new WaitForSeconds(3);
+        yield return wait;
         GetComponent<Rigidbody>().isKinematic = true;
         nav.enabled = true;
 
     }
     private IEnumerator AttackCoroutine()
     {
-        yield return new WaitForSeconds(0.2f);
-        transform.rotation = Quaternion.LookRotation(transform.position - pc.transform.position);
+        YieldInstruction wait = new WaitForSeconds(0.2f);
+        yield return wait;
+        transform.rotation = Quaternion.LookRotation( (flip)*(transform.position- pc.transform.position));
         Attack = false;
-        hitBox.SetActive(false);
+        //hitBox.SetActive(false);
 
     }
     private IEnumerator AttackingCoroutine()
@@ -330,16 +346,19 @@ public class Enemy : MonoBehaviour
 
         while (isActiveAndEnabled)
         {
-            yield return new WaitForSeconds(2f);
+            YieldInstruction wait = new WaitForSeconds(attackDelay);
+            yield return wait;
             if (attacking)
             {
                 Attacking();
+
             }
         }
     }
     private IEnumerator StateControlCoroutine()
     {
-        yield return new WaitForSeconds(3.5f);
+        YieldInstruction wait = new WaitForSeconds(3.5f);
+        yield return wait;
         State = EnemyAiStates.LowHealth;
         LowHealth();
         behavior = Random.Range(1, 4);
@@ -362,6 +381,9 @@ public class Enemy : MonoBehaviour
         }
     }
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);
+
+    
+
     public void OnDefeat()
     {
         //onAnyDefeated(this);
@@ -372,7 +394,7 @@ public class Enemy : MonoBehaviour
     }
     public void CalculateDamage()
     {
-        HealthLeft -= Mathf.Abs(level - (int)(1.7f * pc.stats.Attack));
+        HealthLeft -= (int)(1.7f * pc.stats.Attack);//WRITE THE FUCKING ENEMY'S STATS CLASS
         Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
         {

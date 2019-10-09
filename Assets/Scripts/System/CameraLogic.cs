@@ -29,6 +29,7 @@ public class CameraLogic : MonoBehaviour
         Player.onPlayerDeath += OverheadCam;
         Body = Player.GetPlayer();
         Player.onPlayerEnabled += CalculateDelta;
+        Player.onCharacterSwitch += SwitchTarget;
         //InvokeRepeating("", 1f, 1f);
     }
     void CalculateDelta()
@@ -44,19 +45,23 @@ public class CameraLogic : MonoBehaviour
             GetInput();
         
     }
-    void CameraAi()
+    private void CameraAi()
     {
         if (playerEnabled)
         {
             transform.position = Body.transform.position + delta;
         }
     }
+    private void SwitchTarget() {
+        //Body = PlayableAza.GetAza();
+
+    }
     void GetInput()
     {
         if (Input.GetButtonDown("L3"))
         {
-            Debug.Log("L3 works");
-            Debug.Log(switchable);
+
+
             if (overheadCamera.gameObject.activeSelf)
             {
                 PrespheadCam();

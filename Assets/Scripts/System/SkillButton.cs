@@ -26,14 +26,14 @@ public class SkillButton : MonoBehaviour
     }
     public void SetSkill() {
         
-        Debug.Log("This happens");
+
         UiManager.SkillAssignMenu.SetActive(false);
     }
     private void GetSkill() {
-        Debug.Log("Get skill happens");
+
         SkillAssigned = Skill.LastSkillSelected;
         skillName.text = Skill.LastSkillSelected.SkillName;
-        Debug.Log("Last selected skill was "+Skill.LastSkillSelected.SkillName);
+
         MpRequired = Skill.LastSkillSelected.MpCost;
     }
     public void UseSkill() {

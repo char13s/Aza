@@ -23,7 +23,7 @@ public class LungeBehavior : StateMachineBehaviour
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().HitCounter = 0;
+        
         Player.GetPlayer().SkillId = 0;
     }
 }

@@ -8,26 +8,40 @@ public class PlayableAza : MonoBehaviour
     private Vector3 displacement;
     private int animations;
     private Animator anim;
+    private static PlayableAza instance;
+    [SerializeField] private GameObject azaBow;
+    internal Stats stats = new Stats();
     public int Animations { get => animations; set { animations = value;anim.SetInteger("Animations",animations); } }
-
-    // Start is called before the first frame update
-    void Start()
+    public static PlayableAza GetAza() => instance.GetComponent<PlayableAza>();
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+    private void Start()
     {
         anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         GetInput();
+        Attack();
     }
-    void GetInput()
+    private void GetInput()
     {
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         //RotatePlayer(x, y);
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        displacement = ThreeDCamera.XZOrientation.TransformDirection(displacement);
+        //displacement = Vector3.Normalize(new Vector3(x, 0, y));
+        //displacement = ThreeDCamera.XZOrientation.TransformDirection(displacement);
         
         MoveIt(x, y);
     }
@@ -37,16 +51,26 @@ public class PlayableAza : MonoBehaviour
         {
             
             Animations = 1;
-            transform.position += displacement * moveSpeed * Time.deltaTime;
-            if (Vector3.SqrMagnitude(displacement) > 0.01f)
-            {
-                transform.forward = displacement;
-            }
+            //transform.position += displacement * moveSpeed * Time.deltaTime;
+            //if (Vector3.SqrMagnitude(displacement) > 0.01f)
+            //{
+                //transform.forward = displacement;
+            //}
         }
         else
         {
             Animations = 0;
             
+        }
+    }
+    private void Attack() {
+
+        if (Input.GetButton("Square")) {
+            Animations = 4;
+        }
+        if (Input.GetButtonUp("Square"))
+        {
+            Animations = 0;
         }
     }
 }

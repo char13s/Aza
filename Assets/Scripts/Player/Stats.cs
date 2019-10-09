@@ -8,11 +8,11 @@ public class Stats
     private int health;
     private int attack;
     private int defense;
-    [FormerlySerializedAs("stamina")]
+    
     private int mp;
     private int intellect;
     private int healthLeft;
-    [FormerlySerializedAs("staminaLeft")]
+    
     private int mpLeft;
     private byte level = 1;
     private int exp = 0;

@@ -44,7 +44,7 @@ public class Inventory
         if (HasItem(item.ID))
         {
             ItemData i = GetItem(item);
-            Debug.Log("OKay");
+
             i.Quantity++;
             //inventory.Add(item);
         }
@@ -210,7 +210,8 @@ public class Inventory
             foreach (GameObject b in Buttons)
             {
                 GetQuantity(b.GetComponentInChildren<Text>(), b.GetComponent<Items>().data);
-                Debug.Log("Invent was updated");
+
+
                 if (b.GetComponent<Items>().data.Quantity == 0)
                 {
                     Debug.Log("Item was removed");

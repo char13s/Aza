@@ -53,6 +53,7 @@ public class Player : MonoBehaviour
     private int direction;
     private bool stop;
     private int skillId;
+    private bool powerUp;
 
     private int cmdInput;
     private int animations;
@@ -65,6 +66,7 @@ public class Player : MonoBehaviour
     private bool loaded;
     [SerializeField] private GameObject aza;
     [SerializeField] private GameObject zend;
+    [SerializeField] private GameObject zendHair;
 
     [SerializeField] private RuntimeAnimatorController azaAnimatorController;
 
@@ -113,12 +115,14 @@ public class Player : MonoBehaviour
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
+    public static event UnityAction onCharacterSwitch;
+
     //Optimize these to use only one Animation parameter in 9/14
     public bool RockOut { get => rockOut; set { rockOut = value; anim.SetBool("RockOut", rockOut); } }
     public bool PickUp1 { get => pickUp; set { pickUp = value; anim.SetBool("PickUp", pickUp); } }
     public bool Wall { get => wall; set => wall = value; }
     public bool Climbing1 { get => climbing; set { climbing = value; anim.SetBool("Climbing", climbing); } }
-    public bool Grounded { get => grounded; set { Debug.Log(value); grounded = value; anim.SetBool("Grounded", grounded); } }
+    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); } }
 
     public bool WallMoving { get => wallMoving; set { wallMoving = value; anim.SetBool("WallMoving", wallMoving); } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
@@ -126,7 +130,7 @@ public class Player : MonoBehaviour
     public bool Guard { get => guard; set { guard = value; if (value) Moving = false; shield.SetActive(value); anim.SetBool("Guard", guard); } }
     public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking); } }
     public bool Moving { get => moving; set { moving = value; anim.SetBool("Moving", moving); } }
-    public int HitCounter { get => hitCounter; set { hitCounter = value; anim.SetInteger("counter", hitCounter); } }
+
     public byte Timer { get => timer; set => timer = value; }
     public GameObject Body { get => body; set => body = value; }
     public bool Hit { get => hit; set { hit = value; anim.SetBool("Hurt", hit); if (hit) { hitDefuse = StartCoroutine(HitDefuse()); } } }
@@ -163,6 +167,9 @@ public class Player : MonoBehaviour
     public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }
 
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
+    public bool PowerUp { get => powerUp; set { powerUp = value; anim.SetBool("PowerUp",powerUp); } }
+
+    public GameObject ZendHair { get => zendHair; set => zendHair = value; }
 
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -177,6 +184,10 @@ public class Player : MonoBehaviour
             instance = this;
         }
         Anim = GetComponent<Animator>();
+        rBody = GetComponent<Rigidbody>();
+        nav = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
+        battleMode = GetComponent<PlayerBattleSceneMovement>();
     }
 
     void Start()
@@ -187,10 +198,7 @@ public class Player : MonoBehaviour
         GameController.onNewGame += SetDefault;
         stats.Start();
         items.Start();
-        rBody = GetComponent<Rigidbody>();
-        nav = GetComponent<NavMeshAgent>();
-        anim = GetComponent<Animator>();
-        battleMode = GetComponent<PlayerBattleSceneMovement>();
+        
         grounded = anim.GetBool("Grounded");
     }
     private void OnEnable()
@@ -233,7 +241,7 @@ public class Player : MonoBehaviour
     void SetDefault()
     {
         Attacking = false;
-        HitCounter = 0;
+        
         stats.Start();
         //GetComponentInChildren<SkinnedMeshRenderer>().material = normal;
         battleMode.Enemies.Clear();
@@ -244,14 +252,14 @@ public class Player : MonoBehaviour
         if (zend.activeSelf)
         {
             zend.SetActive(false);
-            Instantiate(aza, transform);
+            aza.SetActive(true);
             transform.localScale = new Vector3(1, 1, 1);
             return;
         }
         else
         {
             zend.SetActive(true);
-            //Destroy(aza);
+            aza.SetActive(false);
             transform.localScale = new Vector3(0.65f, 0.65f, 0.65f);
             return;
         }
@@ -268,9 +276,15 @@ public class Player : MonoBehaviour
         /*if (Input.GetButtonDown("R3"))
         {
             //Grounded = true;
+            if (onCharacterSwitch != null)
+                onCharacterSwitch();
             SwitchCharacter();
         }*/
-       
+        if (Input.GetButtonDown("R3")) {
+            PowerUp = true;
+
+        }
+
             MoveIt(x, y);
         
 
@@ -394,14 +408,16 @@ public class Player : MonoBehaviour
     private IEnumerator GuardCoroutine()
     {
 
-        yield return new WaitForSeconds(1f);
+        YieldInstruction wait = new WaitForSeconds(1f);
+        yield return
         PerfectGuard = false;
         StopCoroutine(guardCoroutine);
 
     }
     private IEnumerator HitDefuse()
     {
-        yield return new WaitForSeconds(0.3f);
+        YieldInstruction wait = new WaitForSeconds(0.3f);
+        yield return
         Hit = false;
         StopCoroutine(hitDefuse);
     }
@@ -410,7 +426,8 @@ public class Player : MonoBehaviour
 
         while (isActiveAndEnabled)
         {
-            yield return new WaitForSeconds(5);
+            YieldInstruction wait = new WaitForSeconds(5);
+            yield return wait;
             if (stats.MPLeft < stats.MP)
             {
                 stats.MPLeft += 5;
@@ -482,7 +499,7 @@ public class Player : MonoBehaviour
             SkillId = 0;
             DemonSword.SetActive(false);
             demonSwordBack.SetActive(true);
-            HitCounter = 0;
+            
         }
     }
     private void OnPause()

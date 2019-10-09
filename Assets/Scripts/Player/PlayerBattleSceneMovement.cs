@@ -52,7 +52,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             }
         }
 
-        if (Enemies.Count > 0 && pc.LockedOn && pc.HitCounter<=0)
+        if (Enemies.Count > 0 && pc.LockedOn )
         {
             SwitchLockOn();
             GetInput();
@@ -121,7 +121,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             pc.Moving = false;
             pc.Animations = 0;
         }
-        if (!Enemies[T].Dead)
+        if (Enemies[T]!=null)
         {
             Vector3 delta = Enemies[T].transform.position - pc.transform.position;
             delta.y = 0;
