@@ -1,24 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class StoreManager 
+using UnityEngine.Events;
+public class StoreManager:MonoBehaviour 
 {
-    private int money;
-    public int Money { get {return money; } set { money = value; } }
-    private List<Items> itemsForSale = new List<Items>();
-    
-    public void PutUpForSale(Items i)
+    public static UnityAction itemWasBought; 
+    [SerializeField] private Items hpPotion;
+    private Player player;
+    private void Awake()
     {
-        itemsForSale.Add(i);
+        
     }
-    public void Sales()
+    private void Start()
     {
-        if (itemsForSale.Count > 0)
-        {
-            Items i = itemsForSale[0];
-            Money += i.data.SellableValue;
-        }
+        player = Player.GetPlayer();
     }
+    public void BuyItem() {
+        if (player.Money >= 200) {
+            player.Money -= 200;
+        player.items.AddItem(hpPotion.data);}
+        if (itemWasBought != null) {
+            itemWasBought();
 
+        }
+        
+    }
 }

@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 1573687510598441902}
   - component: {fileID: 7533918317451370904}
   - component: {fileID: 4301311067297193313}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: RockyBridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1573687510598441902
 Transform:

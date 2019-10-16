@@ -46,13 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     id: 100
-    quantity: 0
+    quantity: 3
     sellableValue: 250
     keyItem: 1
     recipe: 0
     weapon: 0
     selling: 0
-    itemDescription: Heals 5 Hp
+    itemDescription: Heals 50 Hp
 --- !u!114 &7603766967305908495
 MonoBehaviour:
   m_ObjectHideFlags: 0

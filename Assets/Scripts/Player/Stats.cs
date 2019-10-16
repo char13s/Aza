@@ -23,7 +23,7 @@ public class Stats
     public static event UnityAction onShowingStats;
     //Properties
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
-    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);if (onHealthChange != null) { onHealthChange(); } if (healthLeft<=0) { Player.GetPlayer().Dead = true; }} }
+    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);if (onHealthChange != null) { onHealthChange(); } } }
     public int MPLeft { get { return mpLeft; } set { mpLeft = Mathf.Clamp(value, 0, mp); if (onMPLeft != null) { onMPLeft(); } } }
 
     public int Attack { get { return attack; } set { attack = value; } }

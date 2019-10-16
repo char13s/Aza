@@ -102,12 +102,12 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             pc.Direction = 2;
         }
 
-        if (x > 0)//right
+        if (x > 0.3)//right
         {
             pc.Direction = 3;
         }
 
-        if (x < 0)//left
+        if (x < -0.3)//left
         {
             pc.Direction = 1;
         }
@@ -127,8 +127,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             delta.y = 0;
             transform.rotation = Quaternion.LookRotation(delta,Vector3.up);
             //transform.LookAt(Enemies[T].transform.position,Vector3.up);
-            transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up,  -x *80* Time.deltaTime);
-            transform.position = Vector3.MoveTowards(transform.position, Enemies[T].transform.position, 160 * y * Time.deltaTime);
+            transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up,  -x *180* Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, Enemies[T].transform.position, 320 * y * Time.deltaTime);
             
         }
     }

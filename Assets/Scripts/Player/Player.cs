@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     private bool moving;
     //public float speed;
     [SerializeField] private float moveSpeed;
-
+    private int money;
     [Space]
     [Header("Attacking")]
     [SerializeField] private GameObject hitBox;
@@ -60,6 +60,8 @@ public class Player : MonoBehaviour
     [Space]
     [Header("OtherFunctions")]
     private Rigidbody rBody;
+    private AudioSource sfx;
+    private AudioSource clothesSfx;
     private bool pause;
     
     private byte timer;
@@ -81,6 +83,7 @@ public class Player : MonoBehaviour
     [SerializeField] private SkillButton square;
     [SerializeField] private SkillButton x;
 
+    [SerializeField] private GameObject mask;
     [SerializeField] private GameObject trail;
     [SerializeField] private GameObject shield;
     [SerializeField] private GameObject axe;
@@ -111,6 +114,7 @@ public class Player : MonoBehaviour
     private PlayerBattleSceneMovement battleMode;
     private Animator anim;
     private Vector3 displacement;
+    private bool poweredUp;
 
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
@@ -159,7 +163,7 @@ public class Player : MonoBehaviour
     public GameObject ForwardHitbox { get => forwardHitbox; set => forwardHitbox = value; }
     public GameObject FireTrail { get => fireTrail; set => fireTrail = value; }
     public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
-    public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); } }
+    public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); if (animations == 1) { Debug.Log(clothesSfx); clothesSfx.volume = 0.5f; } else { clothesSfx.time = 0; clothesSfx.volume = 0; } } }
 
     public bool LockedOn { get => lockedOn; set { lockedOn = value; if (LockedOn) { if (playerIsLockedOn != null) playerIsLockedOn(); } if (!LockedOn) Direction = 0; } }
 
@@ -170,6 +174,8 @@ public class Player : MonoBehaviour
     public bool PowerUp { get => powerUp; set { powerUp = value; anim.SetBool("PowerUp",powerUp); } }
 
     public GameObject ZendHair { get => zendHair; set => zendHair = value; }
+    public AudioSource Sfx { get => sfx; set => sfx = value; }
+    public int Money { get => money; set => money = value; }
 
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -183,22 +189,27 @@ public class Player : MonoBehaviour
         {
             instance = this;
         }
+        sfx = GetComponent<AudioSource>();
+        clothesSfx = zend.GetComponent<AudioSource>();
         Anim = GetComponent<Animator>();
         rBody = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
+        GameController.onNewGame += SetDefault;
+        onPlayerDeath += OnDead;
+        
     }
 
     void Start()
     {
 
         //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
-        onPlayerDeath += OnDead;
-        GameController.onNewGame += SetDefault;
+        
+        
         stats.Start();
         items.Start();
-        
+        Stats.onHealthChange += CheckPlayerHealth;
         grounded = anim.GetBool("Grounded");
     }
     private void OnEnable()
@@ -207,6 +218,7 @@ public class Player : MonoBehaviour
         {
             onPlayerEnabled();
         }
+        
         StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
@@ -241,12 +253,16 @@ public class Player : MonoBehaviour
     void SetDefault()
     {
         Attacking = false;
-        
+        CmdInput = 0;
+        MoveSpeed = 5;
+        LockedOn = false;
         stats.Start();
         //GetComponentInChildren<SkinnedMeshRenderer>().material = normal;
         battleMode.Enemies.Clear();
         Dead = false;
+        Money = 1000;
     }
+
     void SwitchCharacter()
     {
         if (zend.activeSelf)
@@ -281,7 +297,25 @@ public class Player : MonoBehaviour
             SwitchCharacter();
         }*/
         if (Input.GetButtonDown("R3")) {
-            PowerUp = true;
+            if (poweredUp)
+            {
+                poweredUp = false;
+                stats.Attack /= 2;
+                stats.Defense /= 2;
+                MoveSpeed /= 2;
+                GameObject aura =transform.GetChild(transform.childCount-1).gameObject;
+                Instantiate(swordDSpawn,transform);
+                FireTrail.SetActive(false);
+                mask.SetActive(false);
+                Destroy(aura);
+            }
+            else {
+                FireTrail.SetActive(true);
+                mask.SetActive(true);
+                poweredUp = true;
+                PowerUp = true;
+            }
+            
 
         }
 
@@ -333,6 +367,10 @@ public class Player : MonoBehaviour
                 items.DisplayInventory();
             }
         }
+    }
+    private void CheckPlayerHealth() {
+
+        if (stats.HealthLeft <= 0) { Dead = true; }
     }
     private void Skills()
     {

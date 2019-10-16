@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  level: 100
+  level: 10
   attackDelay: 2
   baseExpYield: 3000
   baseHealth: 19
@@ -739,10 +739,14 @@ MonoBehaviour:
   levelText: {fileID: 2184158784672293491}
   drop: {fileID: 4012060356533637717, guid: 12c09df2632e1e145b9c45c838dcb645, type: 3}
   EnemyHp: {fileID: 2184158785702344487}
+  deathEffect: {fileID: 6226294637186662721, guid: 968487dedef163e46b1dc9b44bfdaa38,
+    type: 3}
   slimeTree: {fileID: 254266463050560927, guid: a41171153c4bb7944916e09b787b2452,
     type: 3}
   slime: {fileID: 2313167134750843311, guid: e4e1576c7c45eb146ba9b4189cf369ca, type: 3}
   flip: -1
+  live: {fileID: 0}
+  fader: {fileID: 0}
 --- !u!54 &-1800228578723441690
 Rigidbody:
   m_ObjectHideFlags: 0

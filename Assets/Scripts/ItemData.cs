@@ -59,7 +59,7 @@ public class ItemData
                 Player.GetPlayer().stats.HealthLeft += 5;
                 break;
             case 100:
-                Player.GetPlayer().stats.HealthLeft += 20;
+                Player.GetPlayer().stats.HealthLeft += 50;
                 break;
 
         }

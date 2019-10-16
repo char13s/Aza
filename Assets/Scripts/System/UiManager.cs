@@ -20,6 +20,7 @@ public class UiManager : MonoBehaviour
     [Space]
     [Header("PlayerUI")]
     [SerializeField] private GameObject playerUi;
+    [SerializeField] private Image black;
     [SerializeField] private GameObject miniMap;
     [SerializeField] private Text exp;
     [SerializeField] private Text level;
@@ -98,6 +99,7 @@ public class UiManager : MonoBehaviour
     public static Image ItemList { get => itemList; set => itemList = value; }
     public static GameObject StoreMenu { get => storeMenu; set => storeMenu = value; }
     public static GameObject SkillAssignMenu { get => skillAssignMenu; set => skillAssignMenu = value; }
+    public Image Black { get => black; set => black = value; }
 
 
     //public static event UnityAction movementTutorialActive;
@@ -123,6 +125,7 @@ public class UiManager : MonoBehaviour
         ItemList = itemListPrefab;
         storeMenu = StoreMenuPrefab;
         SkillAssignMenu = skillAssignMenuPrefab;
+        StoreManager.itemWasBought += UpdateMoney;
     }
     void Start()
     {
@@ -209,6 +212,12 @@ public class UiManager : MonoBehaviour
         pauseTutorial.SetActive(false);
         combatTutorial.SetActive(false);
     }
+    public void CloseTheStore() {
+
+        storeMenu.SetActive(false);
+
+
+    }
     public void CloseCraftMenu()
     {
 
@@ -248,7 +257,7 @@ public class UiManager : MonoBehaviour
         stamina.text = "Mp: " + Player.GetPlayer().stats.MP;
         exp.text = "Exp: " + Player.GetPlayer().stats.Exp;
         expBar.value = Player.GetPlayer().stats.Exp;
-        money.text = store.Money.ToString();
+        money.text = "Munm: "+Player.GetPlayer().Money.ToString();
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
@@ -256,6 +265,11 @@ public class UiManager : MonoBehaviour
         expBar.maxValue = Player.GetPlayer().stats.CalculateExpNeed();
 
         level.text = "LV. " + Player.GetPlayer().stats.Level;
+    }
+    private void UpdateMoney() {
+        money.text ="Munn"+ Player.GetPlayer().Money.ToString();
+
+
     }
     void ViewStats()
     {

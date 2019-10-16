@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Text levelText;
     [SerializeField] private GameObject drop;
     [SerializeField] private Slider EnemyHp;
+    [SerializeField] private GameObject deathEffect;
     private byte eaten;
     private Player pc;
     private PlayerBattleSceneMovement pb;
@@ -50,6 +51,7 @@ public class Enemy : MonoBehaviour
     private static List<Enemy> enemies = new List<Enemy>(32);
     private int behavior;
 
+    
     public static event UnityAction<Enemy> onAnyDefeated;
     public static event UnityAction onAnyEnemyDead;
 
@@ -80,6 +82,7 @@ public class Enemy : MonoBehaviour
             dead = value;
             if (dead)
             {
+                GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_452897A1", 1);
 
                 OnDefeat();
                 anim.SetBool("Dead", dead);
@@ -389,6 +392,7 @@ public class Enemy : MonoBehaviour
         //onAnyDefeated(this);
         SlimeHasDied();
         enemies.Remove(this);
+        Instantiate(deathEffect,transform);
         Destroy(gameObject, 4f);
         //drop.transform.SetParent(null);
     }

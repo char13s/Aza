@@ -7,26 +7,36 @@ public class HitBox : MonoBehaviour
 {
     private Player pc;
     [SerializeField] private AudioClip hit;
+    [SerializeField] private AudioClip swing;
     [SerializeField] private GameObject effects;
     [SerializeField] private GameObject fire;
-    private new AudioSource audio;
-    private static HitBox instance;
+    [SerializeField] private GameObject smallFire;
+    private AudioSource audio;
+
     private GameObject enemyImAttacking;
 
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
+    public AudioClip Swing { get => swing; set => swing = value; }
 
-    public static HitBox GetHitBox() => instance.GetComponent<HitBox>();
+    
 
-
+    private void Awake()
+    {
+        audio = Player.GetPlayer().Sfx;
+    }
     // Start is called before the first frame update
     void Start()
     {
         pc = Player.GetPlayer();
-        audio = gameObject.GetComponent<AudioSource>();
+        
     }
-
-    // Update is called once per frame
-    void Update()
+    void OnEnable()
+    {
+        //Debug.Log("Swoosh");
+        //audio.PlayOneShot(swing);
+    }
+        // Update is called once per frame
+        void Update()
     {
 
     }
@@ -68,7 +78,8 @@ public class HitBox : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-
+            //GameObject burn=Instantiate(smallFire,other.transform);
+            //Destroy(burn,3f);
             EnemyImAttacking = other.gameObject;
             Instantiate(effects, other.gameObject.transform);
             audio.PlayOneShot(hit);
@@ -82,6 +93,11 @@ public class HitBox : MonoBehaviour
         {
             Instantiate(fire, other.gameObject.transform);
             Destroy(other.gameObject, 4);
+        }
+        if (other.gameObject.CompareTag("Dummy")) {
+            
+            Instantiate(effects, other.gameObject.transform);
+            other.GetComponent<Dummy>().Hit = true; 
         }
     }
     private void OnTriggerExit(Collider other)

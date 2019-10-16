@@ -19,14 +19,17 @@ public class CameraLogic : MonoBehaviour
     public Player Body { get => body; set => body = value; }
     public static bool Switchable { get => switchable; set => switchable = value; }
     AxisButton L3 = new AxisButton("R3");
+    [SerializeField] private GameObject audioMaster;
+    private AudioSource mainAudio;
     private void Awake()
     {
         //body.Delta = transform.position - body.transform.position;
     }
     public virtual void Start()
     {
+        mainAudio = GetComponentInChildren<AudioSource>();
         prespCam = prespCamPrefab;
-        Player.onPlayerDeath += OverheadCam;
+        //Player.onPlayerDeath += OverheadCam;
         Body = Player.GetPlayer();
         Player.onPlayerEnabled += CalculateDelta;
         Player.onCharacterSwitch += SwitchTarget;
@@ -41,8 +44,8 @@ public class CameraLogic : MonoBehaviour
     public virtual void Update()
     {
         CameraAi();
-        if(switchable)
-            GetInput();
+        /*if(switchable)
+            GetInput();*/
         
     }
     private void CameraAi()
@@ -75,7 +78,7 @@ public class CameraLogic : MonoBehaviour
     private void OverheadCam()
     {
         overheadCamera.gameObject.SetActive(true);
-
+        audioMaster.transform.SetParent(overheadCamera.transform);
         canvas.transform.SetParent(overheadCamera.transform);
         canvas.transform.localPosition = new Vector3(0, 0, 0);
         prespCam.gameObject.SetActive(false);
@@ -83,7 +86,7 @@ public class CameraLogic : MonoBehaviour
     private void PrespheadCam()
     {
         prespCam.gameObject.SetActive(true);
-
+        audioMaster.transform.SetParent(prespCam.transform);
         canvas.transform.SetParent(prespCam.transform);
         canvas.transform.localPosition = new Vector3(0, 0, 0);
         overheadCamera.gameObject.SetActive(false);

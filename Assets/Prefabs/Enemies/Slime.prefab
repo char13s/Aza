@@ -233,7 +233,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b636c4349bf6fd74e898d8cd7502306a, type: 2}
+  - {fileID: 2100000, guid: 51dd5fa0d2f1fc4409537d6a192295ad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -302,7 +302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2313167134750843311}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50.377106, y: -2.0873873, z: -26.309652}
+  m_LocalPosition: {x: 62.67917, y: -2.004149, z: -28.325382}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2313167134750489987}
@@ -367,10 +367,14 @@ MonoBehaviour:
   levelText: {fileID: 2313167134214088894}
   drop: {fileID: 4012060356533637717, guid: 12c09df2632e1e145b9c45c838dcb645, type: 3}
   EnemyHp: {fileID: 2313167135260982762}
+  deathEffect: {fileID: 6226294637186662721, guid: 968487dedef163e46b1dc9b44bfdaa38,
+    type: 3}
   slimeTree: {fileID: 254266463050560927, guid: a41171153c4bb7944916e09b787b2452,
     type: 3}
   slime: {fileID: 2313167134750843311}
   flip: 1
+  live: {fileID: 2100000, guid: 51dd5fa0d2f1fc4409537d6a192295ad, type: 2}
+  fader: {fileID: 0}
 --- !u!65 &315469229382681046
 BoxCollider:
   m_ObjectHideFlags: 0

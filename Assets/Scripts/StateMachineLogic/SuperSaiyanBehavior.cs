@@ -9,6 +9,10 @@ public class SuperSaiyanBehavior : StateMachineBehaviour
     [SerializeField] private GameObject gatherEnergy;
     [SerializeField] private GameObject release;
     [SerializeField] private GameObject aura;
+    
+    
+    public GameObject Aura { get => aura; set => aura = value; }
+    
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Instantiate(gatherEnergy, Player.GetPlayer().transform.position, Quaternion.identity);
@@ -20,10 +24,10 @@ public class SuperSaiyanBehavior : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Instantiate(release, Player.GetPlayer().transform.position,Quaternion.identity);
-        Instantiate(aura, Player.GetPlayer().transform);
+        Instantiate(Aura, Player.GetPlayer().transform);
         Player.GetPlayer().ZendHair.GetComponent<SkinnedMeshRenderer>().material= colorChange;
-        Player.GetPlayer().stats.Attack *= 50;
-        Player.GetPlayer().stats.Defense *= 50;
+        Player.GetPlayer().stats.Attack *= 2;
+        Player.GetPlayer().stats.Defense *= 2;
         Player.GetPlayer().MoveSpeed *= 2;
         Player.GetPlayer().PowerUp = false;
     }

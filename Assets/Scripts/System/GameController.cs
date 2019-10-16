@@ -15,12 +15,17 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject pocket;
     [SerializeField] private GameObject close;
     [SerializeField] private GameObject normalCamera;
-    
+    [Space]
+    [Header("Post Processors")]
+    [SerializeField] private GameObject forestProcessor;
+    [SerializeField] private GameObject graveyardProcessor;
+    [SerializeField] private GameObject spawn;
+    [Space]
     private bool load;
     private static GameController instance;
     private Coroutine loadCoroutine;
     private Coroutine deadCoroutine;
-    public StoreManager st = new StoreManager();
+    
 
     public static event UnityAction onNewGame;
     public static event UnityAction onGameWasStarted;
@@ -29,6 +34,10 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
     public static PlayableAza Aza => (instance == null) ? null : instance.aza;
+
+    public GameObject ForestProcessor { get => forestProcessor; set => forestProcessor = value; }
+    public GameObject GraveyardProcessor { get => graveyardProcessor; set => graveyardProcessor = value; }
+
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake()
     {
@@ -145,7 +154,9 @@ public class GameController : MonoBehaviour
     }
     public void UseItem()
     {
-        //pc.items.UseItem();
+        
+        
+        
     }
     public void SaveGame() => SaveLoad.Save(instance.pc);
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
@@ -220,6 +231,7 @@ public class GameController : MonoBehaviour
         //pc.Grounded = false;
         normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
         pc.transform.position = position;
+        pc.transform.position = spawn.transform.position;
         pc.items.Items = new List<ItemData>();
 
     }
@@ -276,6 +288,7 @@ public class GameController : MonoBehaviour
     
     public void BackToMainMenu()
     {
+        
         if (onQuitGame != null)
         {
             onQuitGame();
@@ -287,6 +300,7 @@ public class GameController : MonoBehaviour
 
         }
         pc.Loaded = false;
+        pc.stats.Start();
 
     }
 
