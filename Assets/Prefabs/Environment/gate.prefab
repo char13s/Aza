@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2084668209218542657}
   - component: {fileID: 2084668209219509889}
   - component: {fileID: 86863897341766756}
+  - component: {fileID: 3527147032645999614}
   m_Layer: 0
   m_Name: gate
   m_TagString: Untagged
@@ -95,3 +96,16 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.023000002, z: 0}
   m_TimeToStationary: 0.5
+--- !u!65 &3527147032645999614
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084668209221763137}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.44123545, y: 0.3956177, z: 0.69303274}
+  m_Center: {x: 0, y: 0.022808865, z: 0.00000010430813}

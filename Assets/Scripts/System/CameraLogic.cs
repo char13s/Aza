@@ -14,6 +14,7 @@ public class CameraLogic : MonoBehaviour
     private bool playerEnabled;
     private bool buttonOn;
     private static bool switchable;//write optimization later itll help in other places too
+
     public static UnityAction overHeadCamActive;
     public static Camera PrespCam { get => prespCam; set => prespCam = value; }
     public Player Body { get => body; set => body = value; }
@@ -31,6 +32,7 @@ public class CameraLogic : MonoBehaviour
         prespCam = prespCamPrefab;
         //Player.onPlayerDeath += OverheadCam;
         Body = Player.GetPlayer();
+        
         Player.onPlayerEnabled += CalculateDelta;
         Player.onCharacterSwitch += SwitchTarget;
         //InvokeRepeating("", 1f, 1f);
@@ -40,6 +42,7 @@ public class CameraLogic : MonoBehaviour
         playerEnabled = true;
         delta = transform.position - Body.transform.position;
     }
+    
     // Update is called once per frame
     public virtual void Update()
     {

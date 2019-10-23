@@ -393,6 +393,7 @@ public class Enemy : MonoBehaviour
         SlimeHasDied();
         enemies.Remove(this);
         Instantiate(deathEffect,transform);
+        deathEffect.transform.position = transform.position;
         Destroy(gameObject, 4f);
         //drop.transform.SetParent(null);
     }

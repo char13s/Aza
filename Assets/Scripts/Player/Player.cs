@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     private bool lockedOn;
     [SerializeField] private GameObject swordSpawn;
     [SerializeField] private GameObject swordDSpawn;
-    
+
     private bool skillIsActive;
     [Space]
     [Header("rotations")]
@@ -34,8 +34,9 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject demonSword;
     [SerializeField] private GameObject demonSwordBack;
     [SerializeField] private GameObject guitar;
+    [SerializeField] private GameObject bow;
+    [SerializeField] private GameObject attackBow;
 
-    [Space]
     [Header("Animation States")]
     private bool rockOut;
     private bool pickUp;
@@ -43,7 +44,7 @@ public class Player : MonoBehaviour
     private bool climbing;
     private bool chopping;
     private bool grounded;
-    
+
     private bool wallMoving;
     private bool leftDash;
     private bool rightDash;
@@ -57,13 +58,14 @@ public class Player : MonoBehaviour
 
     private int cmdInput;
     private int animations;
+    private bool bowUp;
     [Space]
     [Header("OtherFunctions")]
     private Rigidbody rBody;
     private AudioSource sfx;
     private AudioSource clothesSfx;
     private bool pause;
-    
+
     private byte timer;
     private bool loaded;
     [SerializeField] private GameObject aza;
@@ -116,6 +118,7 @@ public class Player : MonoBehaviour
     private Vector3 displacement;
     private bool poweredUp;
 
+    public static event UnityAction aiming;
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
@@ -150,7 +153,7 @@ public class Player : MonoBehaviour
 
     public PlayerBattleSceneMovement BattleMode { get => battleMode; set => battleMode = value; }
     public GameObject DemonSword { get => demonSword; set => demonSword = value; }
-    public GameObject HitBox { get => hitBox; set { hitBox = value;  } }
+    public GameObject HitBox { get => hitBox; set { hitBox = value; } }
 
     public int SkillId { get => skillId; set { skillId = value; anim.SetInteger("Skill ID", skillId); if (skillId == 0) { SkillIsActive = false; } } }
     public Rigidbody RBody { get => rBody; set => rBody = value; }
@@ -167,15 +170,18 @@ public class Player : MonoBehaviour
 
     public bool LockedOn { get => lockedOn; set { lockedOn = value; if (LockedOn) { if (playerIsLockedOn != null) playerIsLockedOn(); } if (!LockedOn) Direction = 0; } }
 
-    public bool SkillIsActive { get => skillIsActive; set { skillIsActive = value; if (skillIsActive) {Guard = false; } } }
+    public bool SkillIsActive { get => skillIsActive; set { skillIsActive = value; if (skillIsActive) { Guard = false; } } }
     public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }
 
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
-    public bool PowerUp { get => powerUp; set { powerUp = value; anim.SetBool("PowerUp",powerUp); } }
+    public bool PowerUp { get => powerUp; set { powerUp = value; anim.SetBool("PowerUp", powerUp); } }
 
     public GameObject ZendHair { get => zendHair; set => zendHair = value; }
     public AudioSource Sfx { get => sfx; set => sfx = value; }
     public int Money { get => money; set => money = value; }
+    public bool PoweredUp { get => poweredUp; set { poweredUp = value; } }
+
+    public bool BowUp { get => bowUp; set { bowUp = value; anim.SetBool("BowUp", bowUp); } }
 
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -198,15 +204,15 @@ public class Player : MonoBehaviour
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         GameController.onNewGame += SetDefault;
         onPlayerDeath += OnDead;
-        
+
     }
 
     void Start()
     {
 
         //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
-        
-        
+
+
         stats.Start();
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
@@ -218,19 +224,23 @@ public class Player : MonoBehaviour
         {
             onPlayerEnabled();
         }
-        
+
         StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
     void Update()
     {
 
-        if (grounded && !guard && !lockedOn&&cmdInput<=0)
+        if (grounded && !guard && !lockedOn && cmdInput <= 0)
         {
             GetInput();
         }
 
-        Sword();
+        if (!bowUp)
+        {
+            Sword();
+        }
+        Archery();
         //Inventory();
         //Guitar();
         OnPause();
@@ -252,6 +262,7 @@ public class Player : MonoBehaviour
     }
     void SetDefault()
     {
+        PostProcessorManager.GetProcessorManager().Default();
         Attacking = false;
         CmdInput = 0;
         MoveSpeed = 5;
@@ -296,31 +307,76 @@ public class Player : MonoBehaviour
                 onCharacterSwitch();
             SwitchCharacter();
         }*/
-        if (Input.GetButtonDown("R3")) {
-            if (poweredUp)
+        if (Input.GetButtonDown("R3"))
+        {
+            if (PoweredUp)
             {
-                poweredUp = false;
+                PostProcessorManager.GetProcessorManager().Default();
+                PoweredUp = false;
                 stats.Attack /= 2;
                 stats.Defense /= 2;
                 MoveSpeed /= 2;
-                GameObject aura =transform.GetChild(transform.childCount-1).gameObject;
-                Instantiate(swordDSpawn,transform);
+                GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
+                Instantiate(swordDSpawn, transform);
                 FireTrail.SetActive(false);
                 mask.SetActive(false);
                 Destroy(aura);
             }
-            else {
+            else
+            {
                 FireTrail.SetActive(true);
                 mask.SetActive(true);
-                poweredUp = true;
+                PoweredUp = true;
                 PowerUp = true;
             }
-            
+
+
+        }
+        WeaponSwitch();
+        
+        MoveIt(x, y);
+
+
+    }
+    private void WeaponSwitch()
+    {
+        if (dPadUp.GetButtonDown() || Input.GetKeyDown(KeyCode.F))
+        {
+            if (!bowUp&&!attacking)
+            {
+
+                Debug.Log("fuck");
+                //demonSwordBack.GetComponent<MeshFilter>().mesh = bow.GetComponentInChildren<MeshFilter>().sharedMesh;
+                BowUp = true;
+                attackBow.SetActive(true);
+
+            }
+            else
+            {
+                BowUp = false;
+                //bow.GetComponentInChildren<MeshFilter>().mesh =demonSwordBack.GetComponent<MeshFilter>().sharedMesh;
+                attackBow.SetActive(false);
+            }
+        }
+        
+
+
+
+    }
+    private void Archery()
+    {
+        if (bowUp) {
+            aiming();
+            if (Input.GetButton("Square")) {
+                CmdInput= 5;
+            }
+            if (Input.GetButtonUp("Square")) {
+                CmdInput=6;
+            }
+
 
         }
 
-            MoveIt(x, y);
-        
 
     }
     private void MoveIt(float x, float y)
@@ -368,7 +424,8 @@ public class Player : MonoBehaviour
             }
         }
     }
-    private void CheckPlayerHealth() {
+    private void CheckPlayerHealth()
+    {
 
         if (stats.HealthLeft <= 0) { Dead = true; }
     }
@@ -403,7 +460,7 @@ public class Player : MonoBehaviour
         }
         if (skillButton && Input.GetButtonDown("Circle") && !skillIsActive)
         {
-            
+
             if (circle.SkillAssigned != null && stats.MPLeft >= circle.MpRequired)
             {
                 stats.MPLeft -= circle.MpRequired;
@@ -537,7 +594,7 @@ public class Player : MonoBehaviour
             SkillId = 0;
             DemonSword.SetActive(false);
             demonSwordBack.SetActive(true);
-            
+
         }
     }
     private void OnPause()

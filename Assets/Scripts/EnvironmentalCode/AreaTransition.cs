@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 public class AreaTransition : MonoBehaviour
 {
 
@@ -15,8 +16,8 @@ public class AreaTransition : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        forestProcessor = GameController.GetGameController().ForestProcessor;
-        graveyardProcessor = GameController.GetGameController().GraveyardProcessor;
+        forestProcessor = PostProcessorManager.GetProcessorManager().ForestProcessor;
+        graveyardProcessor = PostProcessorManager.GetProcessorManager().GraveyardProcessor;
         black = UiManager.GetUiManager().Black;
     }
 

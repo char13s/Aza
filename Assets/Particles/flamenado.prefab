@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5410596322984292823}
   - component: {fileID: 6162082730259462435}
   - component: {fileID: 3304448534794077585}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: flamenado
   m_TagString: Untagged
   m_Icon: {fileID: 0}

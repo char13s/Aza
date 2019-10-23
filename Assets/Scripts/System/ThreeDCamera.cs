@@ -11,11 +11,13 @@ public class ThreeDCamera : CameraLogic
     private Vector3 currentEulerAngles;
     private float maxXRotation=40;
     private float minXRotation = 10;
+    private float distanceFromZend=5;
     public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
     // Start is called before the first frame update
     private void Awake()
     {
+        Player.aiming += Aiming;
         if (instance != null)
             Debug.LogWarning("Did someone put multiple " + GetType().Name + "'s in the scene?");
         instance = this;
@@ -28,7 +30,7 @@ public class ThreeDCamera : CameraLogic
         
         base.Start();
         currentEulerAngles = transform.eulerAngles;
-        currentEulerAngles.x = 10;
+        currentEulerAngles.x = 20;
         transform.eulerAngles = currentEulerAngles;
         
     }
@@ -42,12 +44,18 @@ public class ThreeDCamera : CameraLogic
     {
         //transform.rotation = Player.GetPlayer().transform.rotation; I need to set this when the camera is set active, but not before the player is active on main menu
     }
-    
+    private void Aiming()
+    {
+        distanceFromZend = 1f;
+
+    }
     void GetInput()
     {
+        
         float x = Input.GetAxis("RightStickX");
         float y = Input.GetAxis("RightStickY");
-
+        
+        //distanceFromZend += Input.mouseScrollDelta.y*Time.deltaTime;
 
         ApplyRotationOffset(x,y,ref currentEulerAngles);
         RotateCamera(x, y);
@@ -73,7 +81,7 @@ public class ThreeDCamera : CameraLogic
 
         
         transform.eulerAngles=currentEulerAngles;
-        transform.position=Calculate3rdPersonCameraPosition(Body.transform.position,5,currentEulerAngles);     
+        transform.position=Calculate3rdPersonCameraPosition(Body.transform.position,distanceFromZend,currentEulerAngles);     
         xZOrientation.eulerAngles = new Vector3(0,transform.eulerAngles.y,0); 
     }
     private Vector3 Calculate3rdPersonCameraPosition(Vector3 focusPosition, float distance, Vector3 eulerAngles) {

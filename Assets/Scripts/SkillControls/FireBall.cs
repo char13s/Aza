@@ -10,6 +10,7 @@ public class FireBall : MonoBehaviour
     void Start()
     {
         direction = Player.GetPlayer().transform.forward;
+        LayerMask.GetMask("Ground");
     }
 
     // Update is called once per frame
@@ -19,13 +20,17 @@ public class FireBall : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.name);
         if (other.gameObject.CompareTag("Enemy"))
         {
             other.gameObject.GetComponent<Enemy>().CalculateDamage();
        
-        Debug.Log("dafguq");
-        Instantiate(boom, transform.position, transform.rotation);
-        Destroy(gameObject);
+        
+        
         }
+        if (other != null) { 
+            Instantiate(boom, transform.position, transform.rotation);
+            Destroy(gameObject);}
+        
     }
 }

@@ -16,9 +16,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject close;
     [SerializeField] private GameObject normalCamera;
     [Space]
-    [Header("Post Processors")]
-    [SerializeField] private GameObject forestProcessor;
-    [SerializeField] private GameObject graveyardProcessor;
+    
     [SerializeField] private GameObject spawn;
     [Space]
     private bool load;
@@ -35,8 +33,7 @@ public class GameController : MonoBehaviour
     public static Player Zend => (instance == null) ? null : instance.pc;
     public static PlayableAza Aza => (instance == null) ? null : instance.aza;
 
-    public GameObject ForestProcessor { get => forestProcessor; set => forestProcessor = value; }
-    public GameObject GraveyardProcessor { get => graveyardProcessor; set => graveyardProcessor = value; }
+    
 
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake()
@@ -74,6 +71,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (update != null)
             update();
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
