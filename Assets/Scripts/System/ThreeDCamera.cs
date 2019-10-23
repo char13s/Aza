@@ -7,30 +7,39 @@ public class ThreeDCamera : CameraLogic
     
     //[SerializeField]private GameObject xZOrientationRef;
     private static Transform xZOrientation;
+    private static Transform retical;
     private static ThreeDCamera instance;
     private Vector3 currentEulerAngles;
     private float maxXRotation=40;
     private float minXRotation = 10;
-    private float distanceFromZend=5;
+    private float distanceFromZend=4;
+    [SerializeField] private Vector3 aimingPosition;
     public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
+
+    public static Transform Retical { get => retical; set => retical = value; }
+
     // Start is called before the first frame update
     private void Awake()
     {
         Player.aiming += Aiming;
+        Player.notAiming += NotAiming;
         if (instance != null)
             Debug.LogWarning("Did someone put multiple " + GetType().Name + "'s in the scene?");
         instance = this;
         xZOrientation = new GameObject("xZOrienatation").transform;
         xZOrientation.transform.SetParent(transform);
-         //xZOrientation= xZOrientationRef;
+        Retical = new GameObject("retical").transform;
+        Retical.transform.SetParent(transform);
+        Retical.transform.position = transform.position+new Vector3(0,1 , 10);
+        //xZOrientation= xZOrientationRef;
     }
     public override void Start()
     {
         
         base.Start();
         currentEulerAngles = transform.eulerAngles;
-        currentEulerAngles.x = 20;
+        currentEulerAngles.x = 10;
         transform.eulerAngles = currentEulerAngles;
         
     }
@@ -46,8 +55,11 @@ public class ThreeDCamera : CameraLogic
     }
     private void Aiming()
     {
-        distanceFromZend = 1f;
-
+        distanceFromZend = 2f;
+        currentEulerAngles.x = 0;
+    }
+    private void NotAiming() {
+        distanceFromZend = 4f;
     }
     void GetInput()
     {

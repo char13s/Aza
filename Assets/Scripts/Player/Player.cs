@@ -65,6 +65,7 @@ public class Player : MonoBehaviour
     private AudioSource sfx;
     private AudioSource clothesSfx;
     private bool pause;
+    private bool targeting;
 
     private byte timer;
     private bool loaded;
@@ -110,6 +111,7 @@ public class Player : MonoBehaviour
     internal Stats stats = new Stats();
     private AxisButton dPadUp = new AxisButton("DPad Up");
     private AxisButton R2 = new AxisButton("R2");
+    private AxisButton L2 = new AxisButton("L2");
 
     private bool perfectGuard;
     private NavMeshAgent nav;
@@ -123,6 +125,7 @@ public class Player : MonoBehaviour
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
     public static event UnityAction onCharacterSwitch;
+    public static event UnityAction notAiming;
 
     //Optimize these to use only one Animation parameter in 9/14
     public bool RockOut { get => rockOut; set { rockOut = value; anim.SetBool("RockOut", rockOut); } }
@@ -366,14 +369,28 @@ public class Player : MonoBehaviour
     private void Archery()
     {
         if (bowUp) {
-            aiming();
+            
             if (Input.GetButton("Square")) {
-                CmdInput= 5;
+                
             }
             if (Input.GetButtonUp("Square")) {
                 CmdInput=6;
             }
+            if (L2.GetButtonDown()) {
+                targeting = true;
+                
+                aiming();
+                CmdInput = 5;
+            }
+            if (L2.GetButtonUp()) {
+                notAiming();
+                targeting = false;
+            }
+            if (targeting) {
+                transform.LookAt(ThreeDCamera.Retical.position);
+                
 
+            }
 
         }
 
