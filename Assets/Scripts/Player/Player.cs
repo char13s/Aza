@@ -371,7 +371,7 @@ public class Player : MonoBehaviour
         if (bowUp) {
             
             if (Input.GetButton("Square")) {
-                
+                CmdInput = 5;
             }
             if (Input.GetButtonUp("Square")) {
                 CmdInput=6;
@@ -380,14 +380,14 @@ public class Player : MonoBehaviour
                 targeting = true;
                 
                 aiming();
-                CmdInput = 5;
+                
             }
             if (L2.GetButtonUp()) {
                 notAiming();
                 targeting = false;
             }
             if (targeting) {
-                transform.LookAt(ThreeDCamera.Retical.position);
+                transform.LookAt(AimingCamera.Retical.position);
                 
 
             }

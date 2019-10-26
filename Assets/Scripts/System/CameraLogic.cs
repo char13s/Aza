@@ -24,6 +24,7 @@ public class CameraLogic : MonoBehaviour
     private AudioSource mainAudio;
     private void Awake()
     {
+		Player.aiming += Aiming;
         //body.Delta = transform.position - body.transform.position;
     }
     public virtual void Start()
@@ -62,6 +63,14 @@ public class CameraLogic : MonoBehaviour
         //Body = PlayableAza.GetAza();
 
     }
+	private void Aiming() {
+
+		OverheadCam();
+	}
+	private void NotAiming() {
+
+		PrespheadCam();
+	}
     void GetInput()
     {
         if (Input.GetButtonDown("L3"))

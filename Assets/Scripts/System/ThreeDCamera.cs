@@ -13,6 +13,8 @@ public class ThreeDCamera : CameraLogic
     private float maxXRotation=40;
     private float minXRotation = 10;
     private float distanceFromZend=4;
+	private Vector3 target;
+	private bool aiming;
     [SerializeField] private Vector3 aimingPosition;
     public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
@@ -31,7 +33,8 @@ public class ThreeDCamera : CameraLogic
         xZOrientation.transform.SetParent(transform);
         Retical = new GameObject("retical").transform;
         Retical.transform.SetParent(transform);
-        Retical.transform.position = transform.position+new Vector3(0,1 , 10);
+       
+		
         //xZOrientation= xZOrientationRef;
     }
     public override void Start()
@@ -41,9 +44,10 @@ public class ThreeDCamera : CameraLogic
         currentEulerAngles = transform.eulerAngles;
         currentEulerAngles.x = 10;
         transform.eulerAngles = currentEulerAngles;
-        
+		StartCoroutine(WaitABitCoroutine());
+		Retical.transform.position = Body.transform.position+new Vector3(0,1.2f , 7);
     }
-
+	
     public override void  Update()
     {
         base.Update();
@@ -53,14 +57,28 @@ public class ThreeDCamera : CameraLogic
     {
         //transform.rotation = Player.GetPlayer().transform.rotation; I need to set this when the camera is set active, but not before the player is active on main menu
     }
-    private void Aiming()
+	private IEnumerator WaitABitCoroutine() {
+
+
+		yield return null;
+		target = Body.transform.position;
+
+	}
+	private void Aiming()
     {
-        distanceFromZend = 2f;
+		
         currentEulerAngles.x = 0;
+		distanceFromZend = 2;
+		aiming = true;
+		
+		//Debug.Log(maxXRotation);
     }
     private void NotAiming() {
-        distanceFromZend = 4f;
-    }
+		
+		distanceFromZend = 4;
+		currentEulerAngles.x = 10;
+		aiming = false;
+	}
     void GetInput()
     {
         
@@ -70,7 +88,13 @@ public class ThreeDCamera : CameraLogic
         //distanceFromZend += Input.mouseScrollDelta.y*Time.deltaTime;
 
         ApplyRotationOffset(x,y,ref currentEulerAngles);
-        RotateCamera(x, y);
+		if (!aiming) {
+			RotateCamera(x, y, Body.transform.position);
+
+		} else {
+			RotateCamera(x, y, Body.transform.position);
+		}
+        
     }
 
     private float EnsureAngleIs0To360(float angle) {
@@ -88,12 +112,12 @@ public class ThreeDCamera : CameraLogic
         target.x = EnsureAngleIs0To360(target.x + deltaFromInputY);
         target.x = Mathf.Clamp(target.x, minXRotation, maxXRotation);
     }
-    private void RotateCamera(float x, float y)
+    private void RotateCamera(float x, float y,Vector3 target)
     {
 
         
         transform.eulerAngles=currentEulerAngles;
-        transform.position=Calculate3rdPersonCameraPosition(Body.transform.position,distanceFromZend,currentEulerAngles);     
+        transform.position=Calculate3rdPersonCameraPosition(target,distanceFromZend,currentEulerAngles);     
         xZOrientation.eulerAngles = new Vector3(0,transform.eulerAngles.y,0); 
     }
     private Vector3 Calculate3rdPersonCameraPosition(Vector3 focusPosition, float distance, Vector3 eulerAngles) {

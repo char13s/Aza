@@ -41,6 +41,7 @@ using UnityEngine.Rendering.PostProcessing;
     }
     public void Default() {
         ForestProfile.GetSetting<ColorGrading>().hueShift.value = 0;
+		
     }
     public void Transformation() {
         ForestProfile.GetSetting<ColorGrading>().hueShift.value = -60;
