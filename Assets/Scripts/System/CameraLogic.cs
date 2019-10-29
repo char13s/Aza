@@ -65,11 +65,11 @@ public class CameraLogic : MonoBehaviour
     }
 	private void Aiming() {
 
-		OverheadCam();
+		//OverheadCam();
 	}
 	private void NotAiming() {
 
-		PrespheadCam();
+		//PrespheadCam();
 	}
     void GetInput()
     {

@@ -10,10 +10,11 @@ public class ThreeDCamera : CameraLogic
     private static Transform retical;
     private static ThreeDCamera instance;
     private Vector3 currentEulerAngles;
-    private float maxXRotation=40;
+    private readonly float maxXRotation=40;
     private float minXRotation = 10;
     private float distanceFromZend=4;
 	private Vector3 target;
+    private Vector3 offset;
 	private bool aiming;
     [SerializeField] private Vector3 aimingPosition;
     public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
@@ -48,7 +49,7 @@ public class ThreeDCamera : CameraLogic
 		Retical.transform.position = Body.transform.position+new Vector3(0,1.2f , 7);
     }
 	
-    public override void  Update()
+    public override void Update()
     {
         base.Update();
         GetInput();
@@ -67,18 +68,23 @@ public class ThreeDCamera : CameraLogic
 	private void Aiming()
     {
 		
-        currentEulerAngles.x = 0;
-		distanceFromZend = 2;
-		aiming = true;
-		
-		//Debug.Log(maxXRotation);
+        //currentEulerAngles.x = 0;
+		distanceFromZend = 2f;
+        offset = new Vector3(0.5f,0.5f,0);
+        //aiming = true;
+        //transform.position += new Vector3(0, 1, 0);
+        minXRotation = -90;
+		//Debug.Log();
     }
     private void NotAiming() {
-		
+        Debug.Log("not aiming");
 		distanceFromZend = 4;
-		currentEulerAngles.x = 10;
-		aiming = false;
-	}
+        offset = new Vector3(0, 0, 0);
+        //transform.position -= new Vector3(0, 1, 0);
+        //currentEulerAngles.x = 10;
+        minXRotation = 10;
+        //aiming = false;
+    }
     void GetInput()
     {
         
@@ -92,7 +98,7 @@ public class ThreeDCamera : CameraLogic
 			RotateCamera(x, y, Body.transform.position);
 
 		} else {
-			RotateCamera(x, y, Body.transform.position);
+			RotateCamera(x, y, Retical.position);
 		}
         
     }
@@ -109,7 +115,7 @@ public class ThreeDCamera : CameraLogic
         float deltaFromInputY = cameraVertical * 55 * Time.deltaTime;
 
         target.y = EnsureAngleIs0To360(target.y+deltaFromInputX);
-        target.x = EnsureAngleIs0To360(target.x + deltaFromInputY);
+        target.x = target.x + deltaFromInputY;
         target.x = Mathf.Clamp(target.x, minXRotation, maxXRotation);
     }
     private void RotateCamera(float x, float y,Vector3 target)
@@ -117,7 +123,7 @@ public class ThreeDCamera : CameraLogic
 
         
         transform.eulerAngles=currentEulerAngles;
-        transform.position=Calculate3rdPersonCameraPosition(target,distanceFromZend,currentEulerAngles);     
+        transform.position=Calculate3rdPersonCameraPosition(target,distanceFromZend,currentEulerAngles)+offset;     
         xZOrientation.eulerAngles = new Vector3(0,transform.eulerAngles.y,0); 
     }
     private Vector3 Calculate3rdPersonCameraPosition(Vector3 focusPosition, float distance, Vector3 eulerAngles) {

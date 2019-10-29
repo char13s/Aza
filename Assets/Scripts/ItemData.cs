@@ -8,7 +8,7 @@ public class ItemData
 {
     [FormerlySerializedAs("ID")]
     [SerializeField] private int id;
-    [SerializeField] private int quantity;
+    private int quantity;
     [SerializeField] private int sellableValue;
     [SerializeField] private bool keyItem;
     [SerializeField] private bool recipe;

@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
     private bool climbing;
     private bool chopping;
     private bool grounded;
-
+    private bool transforming;
     private bool wallMoving;
     private bool leftDash;
     private bool rightDash;
@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject aza;
     [SerializeField] private GameObject zend;
     [SerializeField] private GameObject zendHair;
+    [SerializeField] private GameObject zendHead;
 
     [SerializeField] private RuntimeAnimatorController azaAnimatorController;
 
@@ -186,6 +187,8 @@ public class Player : MonoBehaviour
 
     public bool BowUp { get => bowUp; set { bowUp = value; anim.SetBool("BowUp", bowUp); } }
 
+    public bool Transforming { get => transforming; set => transforming = value; }
+
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
     private void Awake()
@@ -212,10 +215,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-
         //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
-
-
         stats.Start();
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
@@ -227,23 +227,24 @@ public class Player : MonoBehaviour
         {
             onPlayerEnabled();
         }
-
         StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
     void Update()
     {
+        Archery();
 
-        if (grounded && !guard && !lockedOn && cmdInput <= 0)
+        if (grounded && !guard && !lockedOn && cmdInput <= 0&&moveSpeed>0)
         {
             GetInput();
         }
+
 
         if (!bowUp)
         {
             Sword();
         }
-        Archery();
+        
         //Inventory();
         //Guitar();
         OnPause();
@@ -271,6 +272,10 @@ public class Player : MonoBehaviour
         MoveSpeed = 5;
         LockedOn = false;
         stats.Start();
+        FireTrail.SetActive(false);
+        mask.SetActive(false);
+        GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
+        Destroy(aura);
         //GetComponentInChildren<SkinnedMeshRenderer>().material = normal;
         battleMode.Enemies.Clear();
         Dead = false;
@@ -310,7 +315,7 @@ public class Player : MonoBehaviour
                 onCharacterSwitch();
             SwitchCharacter();
         }*/
-        if (Input.GetButtonDown("R3"))
+        if (Input.GetButtonDown("R3")&&!transforming)
         {
             if (PoweredUp)
             {
@@ -341,9 +346,12 @@ public class Player : MonoBehaviour
 
 
     }
+    private void PowerDown() {
+
+    }
     private void WeaponSwitch()
     {
-        if (dPadUp.GetButtonDown() || Input.GetKeyDown(KeyCode.F))
+        if (L2.GetButtonDown() || Input.GetKeyDown(KeyCode.F))
         {
             if (!bowUp&&!attacking)
             {
@@ -356,38 +364,44 @@ public class Player : MonoBehaviour
             }
             else
             {
-                BowUp = false;
+                
                 //bow.GetComponentInChildren<MeshFilter>().mesh =demonSwordBack.GetComponent<MeshFilter>().sharedMesh;
-                attackBow.SetActive(false);
+                
             }
         }
-        
-
-
-
     }
     private void Archery()
     {
         if (bowUp) {
             
             if (Input.GetButton("Square")) {
-                CmdInput = 5;
+                
             }
             if (Input.GetButtonUp("Square")) {
-                CmdInput=6;
+                
             }
             if (L2.GetButtonDown()) {
-                targeting = true;
-                
+                //targeting = true;
+                CmdInput = 5;
                 aiming();
                 
             }
+            if (L2.GetButton())
+            {
+                targeting = true;
+                
+                
+
+            }
+
             if (L2.GetButtonUp()) {
-                notAiming();
+                
+                CmdInput=6;
                 targeting = false;
             }
+            transform.LookAt(ThreeDCamera.Retical.position);
             if (targeting) {
-                transform.LookAt(AimingCamera.Retical.position);
+                
                 
 
             }
@@ -402,7 +416,14 @@ public class Player : MonoBehaviour
         {
             //Moving = true;
             Animations = 1;
+            nav.enabled = true;
             Move(MoveSpeed);
+            if (bowUp&&!targeting) {notAiming();
+            attackBow.SetActive(false);
+            BowUp = false;
+
+            }
+            
             if (attacking && Input.GetButtonDown("Square"))
             {
 
@@ -410,6 +431,7 @@ public class Player : MonoBehaviour
         }
         else
         {
+            nav.enabled = false;
             Animations = 0;
             //Moving = false;
         }
@@ -550,7 +572,7 @@ public class Player : MonoBehaviour
     private void Sword()
     {
 
-        if (Input.GetButtonDown("L1") && !Attacking)
+        if (Input.GetButtonDown("Square") && !Attacking)
         {
             Attacking = true;
             demonSwordBack.SetActive(false);
@@ -601,6 +623,10 @@ public class Player : MonoBehaviour
             if (Input.GetButtonDown("Square") && !skillIsActive)
             {
                 CmdInput = 1;
+            }
+            if (Input.GetButtonDown("Triangle") && !skillIsActive)
+            {
+                CmdInput = 2;
             }
         }
         else

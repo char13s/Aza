@@ -215,7 +215,7 @@ public class UiManager : MonoBehaviour
     public void CloseTheStore() {
 
         storeMenu.SetActive(false);
-
+        Player.GetPlayer().MoveSpeed = 5;
 
     }
     public void CloseCraftMenu()

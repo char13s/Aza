@@ -231,7 +231,7 @@ public class GameController : MonoBehaviour
         pc.transform.position = position;
         pc.transform.position = spawn.transform.position;
         pc.items.Items = new List<ItemData>();
-
+        Player.GetPlayer().Pause = false;
     }
     public void MenuLoadGame()
     {
@@ -263,6 +263,7 @@ public class GameController : MonoBehaviour
         if (onGameWasStarted != null)
         {
             onGameWasStarted();
+           
             Debug.Log("Game was reloaded");
         }
         foreach (ItemData it in data.Items)

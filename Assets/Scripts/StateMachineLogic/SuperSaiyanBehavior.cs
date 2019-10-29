@@ -17,6 +17,8 @@ public class SuperSaiyanBehavior : StateMachineBehaviour
     {
         Instantiate(gatherEnergy, Player.GetPlayer().transform.position, Quaternion.identity);
         PostProcessorManager.GetProcessorManager().Transformation();
+        Player.GetPlayer().Transforming = true;
+        Player.GetPlayer().MoveSpeed *= 2;
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -28,10 +30,12 @@ public class SuperSaiyanBehavior : StateMachineBehaviour
         Instantiate(release, Player.GetPlayer().transform.position,Quaternion.identity);
         Instantiate(Aura, Player.GetPlayer().transform);
         Player.GetPlayer().ZendHair.GetComponent<SkinnedMeshRenderer>().material= colorChange;
-        Player.GetPlayer().stats.Attack *= 2;
+        
+        }Player.GetPlayer().stats.Attack *= 2;
         Player.GetPlayer().stats.Defense *= 2;
-        Player.GetPlayer().MoveSpeed *= 2;
-        Player.GetPlayer().PowerUp = false;}
+        
+        Player.GetPlayer().PowerUp = false;
+        Player.GetPlayer().Transforming = false;
     }
     void FuckYou() { }
     

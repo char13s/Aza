@@ -46,8 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     id: 100
-    quantity: 3
-    sellableValue: 250
+    sellableValue: 50
     keyItem: 1
     recipe: 0
     weapon: 0

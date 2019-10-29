@@ -31,6 +31,7 @@ public class Store : MonoBehaviour
     private void StoreUp() {
 
         UiManager.StoreMenu.SetActive(true);
+        Player.GetPlayer().MoveSpeed = 0;
         if (storeIsUp != null)
             storeIsUp(); 
     }
