@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Zend(Humanoid)
+  m_Controller: {fileID: 9100000, guid: ae3130e9cafcc374abb311fb7393d246, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: a60144354e3a944498c811539c9c8bf4, type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: cea8a9a81d186f04688163120ec5da3c, type: 3}
+  - m_OriginalClip: {fileID: 1408718784165213814, guid: 33c4b4fc92e8e744b9e8d30d5f06e52f,
+      type: 3}
+    m_OverrideClip: {fileID: 1408718784165213814, guid: bdaaaba069ecebf4aa94c54388c5e858,
+      type: 3}
+  - m_OriginalClip: {fileID: -998496362607748373, guid: e9c3fa8560965814398940966a3f8b5c,
+      type: 3}
+    m_OverrideClip: {fileID: -7931353496916959464, guid: bdaaaba069ecebf4aa94c54388c5e858,
+      type: 3}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: da1e45542ebd2754ead1e36a6f80412d,
+      type: 3}
+    m_OverrideClip: {fileID: -9121621101649706817, guid: bdaaaba069ecebf4aa94c54388c5e858,
+      type: 3}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: d11fb31f5373bbf469b5dc4017113f40,
+      type: 3}
+    m_OverrideClip: {fileID: -2341027594253812581, guid: bdaaaba069ecebf4aa94c54388c5e858,
+      type: 3}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: 15a85bab46039884ca90ab4d48af27f4,
+      type: 3}
+    m_OverrideClip: {fileID: 7656224139910124122, guid: bdaaaba069ecebf4aa94c54388c5e858,
+      type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 5c35c298cbbbfae4d8ac7bde0409b3a9, type: 3}
+    m_OverrideClip: {fileID: -9121621101649706817, guid: bdaaaba069ecebf4aa94c54388c5e858,
+      type: 3}
+  - m_OriginalClip: {fileID: 7400008, guid: a60144354e3a944498c811539c9c8bf4, type: 3}
+    m_OverrideClip: {fileID: -1966088731957406158, guid: bdaaaba069ecebf4aa94c54388c5e858,
+      type: 3}

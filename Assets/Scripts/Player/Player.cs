@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject attackBow;
 
     [Header("Animation States")]
+    [SerializeField] private int archeryLayerIndex = 1;
     private bool rockOut;
     private bool pickUp;
     private bool wall;
@@ -59,6 +60,7 @@ public class Player : MonoBehaviour
     private int cmdInput;
     private int animations;
     private bool bowUp;
+
     [Space]
     [Header("OtherFunctions")]
     private Rigidbody rBody;
@@ -120,6 +122,18 @@ public class Player : MonoBehaviour
     private Animator anim;
     private Vector3 displacement;
     private bool poweredUp;
+
+    [SerializeField] private Vector3 testPosition;
+    [Range(0, 1)]
+    [SerializeField] private float testWeight = 0;
+    [Range(0, 1)]
+    [SerializeField] private float testBodyWeight = 0;
+    [Range(0, 1)]
+    [SerializeField] private float testHeadWeight = 0;
+    [Range(0, 1)]
+    [SerializeField] private float testEyesWeight = 0;
+    [Range(0, 1)]
+    [SerializeField] private float testClampWeight = 0;
 
     public static event UnityAction aiming;
     public static event UnityAction onPlayerDeath;
@@ -234,7 +248,7 @@ public class Player : MonoBehaviour
     {
         Archery();
 
-        if (grounded && !guard && !lockedOn && cmdInput <= 0&&moveSpeed>0)
+        if (grounded && !guard && !lockedOn && moveSpeed > 0)
         {
             GetInput();
         }
@@ -244,7 +258,7 @@ public class Player : MonoBehaviour
         {
             Sword();
         }
-        
+
         //Inventory();
         //Guitar();
         OnPause();
@@ -315,7 +329,7 @@ public class Player : MonoBehaviour
                 onCharacterSwitch();
             SwitchCharacter();
         }*/
-        if (Input.GetButtonDown("R3")&&!transforming)
+        if (Input.GetButtonDown("R3") && !transforming)
         {
             if (PoweredUp)
             {
@@ -341,74 +355,101 @@ public class Player : MonoBehaviour
 
         }
         WeaponSwitch();
-        
+
         MoveIt(x, y);
 
 
     }
-    private void PowerDown() {
+    private void PowerDown()
+    {
 
     }
     private void WeaponSwitch()
     {
         if (L2.GetButtonDown() || Input.GetKeyDown(KeyCode.F))
         {
-            if (!bowUp&&!attacking)
+            if (!bowUp && !attacking)
             {
 
                 Debug.Log("fuck");
                 //demonSwordBack.GetComponent<MeshFilter>().mesh = bow.GetComponentInChildren<MeshFilter>().sharedMesh;
-                BowUp = true;
-                attackBow.SetActive(true);
 
             }
             else
             {
-                
+
                 //bow.GetComponentInChildren<MeshFilter>().mesh =demonSwordBack.GetComponent<MeshFilter>().sharedMesh;
-                
+
             }
         }
     }
     private void Archery()
     {
-        if (bowUp) {
-            
-            if (Input.GetButton("Square")) {
-                
-            }
-            if (Input.GetButtonUp("Square")) {
-                
-            }
-            if (L2.GetButtonDown()) {
-                //targeting = true;
-                CmdInput = 5;
-                aiming();
-                
-            }
-            if (L2.GetButton())
+
+
+        if (Input.GetButton("Square"))
+        {
+
+        }
+        if (Input.GetButtonUp("Square"))
+        {
+
+        }
+        if (L2.GetButtonDown())
+        {
+            //targeting = true;
+            BowUp = true;
+            attackBow.SetActive(true);
+
+            CmdInput = 5;
+            if (aiming != null)
             {
-                targeting = true;
-                
-                
-
+                aiming();
             }
 
-            if (L2.GetButtonUp()) {
-                
-                CmdInput=6;
-                targeting = false;
-            }
-            transform.LookAt(ThreeDCamera.Retical.position);
-            if (targeting) {
-                
-                
+            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f));
+        }
+        if (L2.GetButton())
+        {
+            targeting = true;
 
-            }
+
+
+        }
+
+        if (L2.GetButtonUp())
+        {
+
+            CmdInput = 6;
+            targeting = false;
+            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f));///GOOD CODE!!!!!
+        }
+        //anim.SetLookAtPosition(ThreeDCamera.Retical.position);
+        //anim.SetLookAtWeight(testWeight, testBodyWeight, testHeadWeight, testEyesWeight, testClampWeight);
+        //transform.LookAt(ThreeDCamera.Retical.position);
+        if (targeting)
+        {
+
+
 
         }
 
 
+
+    }
+    private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration)
+    {
+        float localTime = 0;
+        float start = anim.GetLayerWeight(layerIndex);
+        float deltaWeight = weight - start;
+        while (localTime < duration)
+        {
+
+            anim.SetLayerWeight(layerIndex, start + (localTime / duration) * (deltaWeight));
+            yield return null;
+            localTime += Time.deltaTime;
+        }
+        anim.SetLayerWeight(layerIndex, weight);
     }
     private void MoveIt(float x, float y)
     {
@@ -418,12 +459,18 @@ public class Player : MonoBehaviour
             Animations = 1;
             nav.enabled = true;
             Move(MoveSpeed);
-            if (bowUp&&!targeting) {notAiming();
-            attackBow.SetActive(false);
-            BowUp = false;
+            if (bowUp && !targeting)
+            {
+                //if (notAiming != null) {
+                //    notAiming();
+                //
+                //}
+                
+                //attackBow.SetActive(false);
+                //BowUp = false;
 
             }
-            
+
             if (attacking && Input.GetButtonDown("Square"))
             {
 
