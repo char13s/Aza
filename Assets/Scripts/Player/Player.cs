@@ -39,6 +39,10 @@ public class Player : MonoBehaviour
 
     [Header("Animation States")]
     [SerializeField] private int archeryLayerIndex = 1;
+    [SerializeField] private Transform movementBone;
+    //[SerializeField] private Vector3 moveBoneForward = new Vector3(0, 0, 1);
+    [SerializeField] private Vector3 moveBoneRight = new Vector3(1, 0, 0);
+
     private bool rockOut;
     private bool pickUp;
     private bool wall;
@@ -120,7 +124,7 @@ public class Player : MonoBehaviour
     private NavMeshAgent nav;
     private PlayerBattleSceneMovement battleMode;
     private Animator anim;
-    private Vector3 displacement;
+    private Vector3 displacement;//world space 
     private bool poweredUp;
 
     [SerializeField] private Vector3 testPosition;
@@ -252,6 +256,10 @@ public class Player : MonoBehaviour
         {
             GetInput();
         }
+        else {
+            displacement = Vector3.zero;
+        }
+        CalculateMoveDirection();
 
 
         if (!bowUp)
@@ -272,13 +280,26 @@ public class Player : MonoBehaviour
             skillButton = false;
         //if (Input.GetKey(KeyCode.P)) { stats.Level += 10; }
     }
-    void OnDead()
+    private void CalculateMoveDirection() {
+        Vector3 right; 
+        if (movementBone != null)
+        {
+            
+            right = movementBone.TransformDirection(moveBoneRight);
+        }
+        else {
+            right = transform.forward;
+        }
+        float dot = Vector3.Dot(right, displacement);
+        anim.SetFloat("MoveDirectionX", dot);
+    }
+    private void OnDead()
     {
         //GetComponentInChildren<SkinnedMeshRenderer>().material = fader;
         //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 1);
 
     }
-    void SetDefault()
+    private void SetDefault()
     {
         PostProcessorManager.GetProcessorManager().Default();
         Attacking = false;
@@ -424,7 +445,8 @@ public class Player : MonoBehaviour
             targeting = false;
             StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f));///GOOD CODE!!!!!
         }
-        //anim.SetLookAtPosition(ThreeDCamera.Retical.position);
+        //anim.
+        anim.SetLookAtPosition(ThreeDCamera.Retical.position);
         //anim.SetLookAtWeight(testWeight, testBodyWeight, testHeadWeight, testEyesWeight, testClampWeight);
         //transform.LookAt(ThreeDCamera.Retical.position);
         if (targeting)
