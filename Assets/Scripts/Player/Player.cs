@@ -421,7 +421,7 @@ public class Player : MonoBehaviour
             //targeting = true;
             BowUp = true;
             attackBow.SetActive(true);
-
+            MoveSpeed = 2;
             CmdInput = 5;
             if (aiming != null)
             {
@@ -443,9 +443,12 @@ public class Player : MonoBehaviour
 
             CmdInput = 6;
             targeting = false;
-            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f));///GOOD CODE!!!!!
+            
         }
-        //anim.
+        if (!bowUp) {
+            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f));///GOOD CODE!!!!!
+
+        }        //anim.
         anim.SetLookAtPosition(ThreeDCamera.Retical.position);
         //anim.SetLookAtWeight(testWeight, testBodyWeight, testHeadWeight, testEyesWeight, testClampWeight);
         //transform.LookAt(ThreeDCamera.Retical.position);
@@ -483,13 +486,13 @@ public class Player : MonoBehaviour
             Move(MoveSpeed);
             if (bowUp && !targeting)
             {
-                //if (notAiming != null) {
-                //    notAiming();
-                //
-                //}
+                if (notAiming != null) {
+                    notAiming();
                 
-                //attackBow.SetActive(false);
-                //BowUp = false;
+                }
+                
+                attackBow.SetActive(false);
+                BowUp = false;
 
             }
 
