@@ -12,7 +12,7 @@ public class Arrow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        direction = Player.GetPlayer().transform.forward;
+        direction = Player.GetPlayer().AttackBow.transform.forward;
         transform.rotation = Player.GetPlayer().transform.rotation;
         LayerMask.GetMask("Ground"); ;
     }

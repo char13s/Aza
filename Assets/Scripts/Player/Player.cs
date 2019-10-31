@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using UnityEngine.Animations;
 #pragma warning disable 0649
 public class Player : MonoBehaviour
 {
@@ -40,6 +39,7 @@ public class Player : MonoBehaviour
     [Header("Animation States")]
     [SerializeField] private int archeryLayerIndex = 1;
     [SerializeField] private Transform movementBone;
+    [SerializeField] private Transform headBone;
     //[SerializeField] private Vector3 moveBoneForward = new Vector3(0, 0, 1);
     [SerializeField] private Vector3 moveBoneRight = new Vector3(1, 0, 0);
 
@@ -206,6 +206,7 @@ public class Player : MonoBehaviour
     public bool BowUp { get => bowUp; set { bowUp = value; anim.SetBool("BowUp", bowUp); } }
 
     public bool Transforming { get => transforming; set => transforming = value; }
+    public GameObject AttackBow { get => attackBow; set => attackBow = value; }
 
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -420,7 +421,7 @@ public class Player : MonoBehaviour
         {
             //targeting = true;
             BowUp = true;
-            attackBow.SetActive(true);
+            AttackBow.SetActive(true);
             MoveSpeed = 2;
             CmdInput = 5;
             if (aiming != null)
@@ -449,12 +450,16 @@ public class Player : MonoBehaviour
             StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f));///GOOD CODE!!!!!
 
         }        //anim.
-        anim.SetLookAtPosition(ThreeDCamera.Retical.position);
+        
+        
+        //anim.SetLookAtPosition();
         //anim.SetLookAtWeight(testWeight, testBodyWeight, testHeadWeight, testEyesWeight, testClampWeight);
-        //transform.LookAt(ThreeDCamera.Retical.position);
+        headBone.transform.LookAt(ThreeDCamera.Retical.position);
+       
         if (targeting)
         {
-
+            //anim.GetBoneTransform(HumanBodyBones.Spine).transform.LookAt(ThreeDCamera.Retical.position);
+            
 
 
         }
@@ -462,6 +467,7 @@ public class Player : MonoBehaviour
 
 
     }
+    
     private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration)
     {
         float localTime = 0;
@@ -491,7 +497,7 @@ public class Player : MonoBehaviour
                 
                 }
                 
-                attackBow.SetActive(false);
+                AttackBow.SetActive(false);
                 BowUp = false;
 
             }

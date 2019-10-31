@@ -70,7 +70,7 @@ public class ThreeDCamera : CameraLogic
 		
         //currentEulerAngles.x = 0;
 		distanceFromZend = 2f;
-        offset = new Vector3(0.5f,0.5f,0);
+        offset = new Vector3(0,1f,0);
         //aiming = true;
         //transform.position += new Vector3(0, 1, 0);
         minXRotation = -90;
