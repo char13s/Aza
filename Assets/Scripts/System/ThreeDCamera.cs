@@ -32,6 +32,7 @@ public class ThreeDCamera : CameraLogic
         instance = this;
         xZOrientation = new GameObject("xZOrienatation").transform;
         xZOrientation.transform.SetParent(transform);
+        Debug.Log("Fuck u 3DCam");
         Retical = new GameObject("retical").transform;
         Retical.transform.SetParent(transform);
        

@@ -4,34 +4,46 @@ using UnityEngine.Events;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-
 //For Unity 2019.2 and below:
 using UnityEngine.Experimental.Animations;
-
 
 [RequireComponent(typeof(Animator))]
 public class BasicHeadController : MonoBehaviour
 {
+    
     private struct HeadData : IAnimationJob
     {
+        public TransformStreamHandle root;
         public TransformStreamHandle head;
         public TransformSceneHandle headTarget;
-        public Vector3 forwardAxis;
+        public Vector3 localRootUp;
+        public Vector3 localOffsetEulerAngles;
 
         public void ProcessRootMotion(AnimationStream stream) { }
         public void ProcessAnimation(AnimationStream stream)
         {
+            Vector3 up = root.GetRotation(stream) * localRootUp; //In world-space
             Vector3 targetPos = headTarget.GetPosition(stream);
             Vector3 headPos = head.GetPosition(stream);
-            //head.SetRotation(stream, Quaternion.LookRotation(targetPos - headPos, Vector3.up));
-            head.SetRotation(stream, Quaternion.FromToRotation(forwardAxis, targetPos - headPos));
+            Vector3 delta = targetPos - headPos;
+
+            //This had roll issues
+            //head.SetRotation(stream, Quaternion.FromToRotation(forwardAxis, delta));
+
+            //Use this instead!
+            head.SetRotation(stream, Quaternion.LookRotation(delta,up) * Quaternion.Euler(localOffsetEulerAngles));
         }
     }
+    
+    [SerializeField] private Vector3 localRootUp = new Vector3(0, 1, 0);
 
+    [Space(20)]
+    [SerializeField] private Transform root;
     [SerializeField] private Transform head;
     [SerializeField] private Transform headTarget;
     [Tooltip("The axis of the head bone that will face towards the head target.")]
-    [SerializeField] private Vector3 forwardAxis = new Vector3(0, 0, 1);
+    //[SerializeField] private Vector3 headForward = new Vector3(0, 0, 1);
+    [SerializeField] private Vector3 localOffsetEulerAngles = new Vector3(0, 0, 0);
     [Range(0, 1)]
     [SerializeField] private float weight = 1;
 
@@ -43,7 +55,7 @@ public class BasicHeadController : MonoBehaviour
     private PlayableGraph graph;
     private AnimationPlayableOutput animOutput;
     private AnimationScriptPlayable script;
-
+    
     public float Weight
     {
         get { return weight; }
@@ -57,10 +69,20 @@ public class BasicHeadController : MonoBehaviour
 
     public void Awake()
     {
-        headTarget = ThreeDCamera.Retical;
+        Debug.Log(headTarget);
         animator = GetComponent<Animator>();
+        headTarget = ThreeDCamera.Retical;
+        Debug.Log(headTarget);
+        Debug.Log(headTarget);
+        StartCoroutine(WaitCoroutine());
+        
     }
+    private IEnumerator WaitCoroutine() {
+        yield return null;
+        headTarget = ThreeDCamera.Retical;
+        Debug.Log(headTarget);
 
+    }
     public void OnEnable()
     {
         if (forceWaitFrames <= 0)
@@ -94,15 +116,22 @@ public class BasicHeadController : MonoBehaviour
             Debug.LogError("Head target must be assigned. Unable to create graph.");
             return;
         }
+        if (root == null)
+        {
+            Debug.LogError("Root must be assigned. Unable to create graph.");
+            return;
+        }
         graph = PlayableGraph.Create(GetType().Name + ": " + name);
         graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
         animOutput = AnimationPlayableOutput.Create(graph, "Anim Output", animator);
 
         HeadData jobData = new HeadData()
         {
+            root = animator.BindStreamTransform(root),
             head = animator.BindStreamTransform(head),
             headTarget = animator.BindSceneTransform(headTarget),
-            forwardAxis = forwardAxis
+            localRootUp = localRootUp,
+            localOffsetEulerAngles = localOffsetEulerAngles
         };
         script = AnimationScriptPlayable.Create(graph, jobData, 1);
         animOutput.SetSourcePlayable(script);
@@ -123,7 +152,8 @@ public class BasicHeadController : MonoBehaviour
         if (script.IsValid())
         {
             HeadData d = script.GetJobData<HeadData>();
-            d.forwardAxis = forwardAxis;
+            d.localRootUp = localRootUp;
+            d.localOffsetEulerAngles = localOffsetEulerAngles;
             script.SetJobData(d);
         }
     }

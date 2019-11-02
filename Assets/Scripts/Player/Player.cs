@@ -488,7 +488,7 @@ public class Player : MonoBehaviour
         {
             //Moving = true;
             Animations = 1;
-            nav.enabled = true;
+            
             Move(MoveSpeed);
             if (bowUp && !targeting)
             {
@@ -509,7 +509,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            nav.enabled = false;
+            
             Animations = 0;
             //Moving = false;
         }

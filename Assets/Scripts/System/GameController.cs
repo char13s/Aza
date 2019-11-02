@@ -221,14 +221,14 @@ public class GameController : MonoBehaviour
     }
     void OnNewGame()
     {
-        Vector3 position;
+        //Vector3 position;
         pc.stats.Start();
-        position.x = 80.83f;
-        position.y = -1.918f;
-        position.z = -30.16f;
+        //position.x = 80.83f;
+        //position.y = -1.918f;
+        //position.z = -30.16f;
         //pc.Grounded = false;
         normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
-        pc.transform.position = position;
+        //pc.transform.position = position;
         pc.transform.position = spawn.transform.position;
         pc.items.Items = new List<ItemData>();
         Player.GetPlayer().Pause = false;

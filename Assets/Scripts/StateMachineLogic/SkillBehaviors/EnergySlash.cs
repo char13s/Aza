@@ -6,7 +6,7 @@ public class EnergySlash : StateMachineBehaviour
 {
     [SerializeField] private GameObject energyWave;
     [SerializeField] private float blastTime;
-    [SerializeField] private bool preformed;
+     private bool preformed;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         preformed = false;
