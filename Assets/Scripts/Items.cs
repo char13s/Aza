@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 #pragma warning disable 0649
 public class Items : MonoBehaviour
 {

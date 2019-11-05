@@ -78,6 +78,7 @@ public class Stats
         }
         
     }
+    
     public void DisplayAbilities()
     {
         if (onShowingStats != null)
@@ -91,8 +92,8 @@ public class Stats
         healthLeft = health;
         mp = 10;
         mpLeft = mp;
-        attack = 6;
-        defense = 5;
+        attack = 10;
+        defense = 8;
         intellect = 6;
         level = 1;
         exp = 0;

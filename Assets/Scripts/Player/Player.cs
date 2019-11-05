@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     //public float speed;
     [SerializeField] private float moveSpeed;
     private int money;
+    #region Attacking
     [Space]
     [Header("Attacking")]
     [SerializeField] private GameObject hitBox;
@@ -22,11 +23,13 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject swordDSpawn;
 
     private bool skillIsActive;
+    [SerializeField] GameObject aimmingPoint;
+    #endregion
     [Space]
     [Header("rotations")]
     [SerializeField] private GameObject body;
     //public bool right;
-
+    #region Items
     [Space]
     [Header("Items")]
     //public List<Items> inventory;
@@ -35,7 +38,12 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject guitar;
     [SerializeField] private GameObject bow;
     [SerializeField] private GameObject attackBow;
-
+    [SerializeField] private GameObject mask;
+    [SerializeField] private GameObject trail;
+    [SerializeField] private GameObject shield;
+    [SerializeField] private GameObject axe;
+    #endregion
+    #region Animation States
     [Header("Animation States")]
     [SerializeField] private int archeryLayerIndex = 1;
     [SerializeField] private Transform movementBone;
@@ -64,7 +72,9 @@ public class Player : MonoBehaviour
     private int cmdInput;
     private int animations;
     private bool bowUp;
-
+    private bool poweredUp;
+    #endregion
+    #region Random stuff
     [Space]
     [Header("OtherFunctions")]
     private Rigidbody rBody;
@@ -88,65 +98,63 @@ public class Player : MonoBehaviour
     [SerializeField] private Material blade;
 
 
-    [SerializeField] private SkillButton triangle;
-    [SerializeField] private SkillButton circle;
-    [SerializeField] private SkillButton square;
-    [SerializeField] private SkillButton x;
 
-    [SerializeField] private GameObject mask;
-    [SerializeField] private GameObject trail;
-    [SerializeField] private GameObject shield;
-    [SerializeField] private GameObject axe;
+
     [SerializeField] private GameObject pauseMenu;
-    [SerializeField] private GameObject Cam;
+
     [SerializeField] private GameObject abilitiesUi;
 
     [SerializeField] private GameObject AoeHitbox;
     [SerializeField] private GameObject forwardHitbox;
     [SerializeField] private GameObject fireTrail;
     [SerializeField] private GameObject fireCaster;
+    #endregion
+    [Space]
+    [Header("Buttons")]
+    [SerializeField] private SkillButton triangle;
+    [SerializeField] private SkillButton circle;
+    [SerializeField] private SkillButton square;
+    [SerializeField] private SkillButton x;
     private static Player instance;
 
 
     private Coroutine guardCoroutine;
     private Coroutine hitDefuse;
     private Coroutine dodgeCoroutine;
+    private Coroutine mpDrain;
+    private Coroutine staminaRec;
 
     private int hitCounter;
     //private Vector3 delta;
-    internal Inventory items = new Inventory();
-    internal Stats stats = new Stats();
-    private AxisButton dPadUp = new AxisButton("DPad Up");
-    private AxisButton R2 = new AxisButton("R2");
-    private AxisButton L2 = new AxisButton("L2");
+
+
 
     private bool perfectGuard;
     private NavMeshAgent nav;
     private PlayerBattleSceneMovement battleMode;
     private Animator anim;
     private Vector3 displacement;//world space 
-    private bool poweredUp;
 
-    [SerializeField] private Vector3 testPosition;
-    [Range(0, 1)]
-    [SerializeField] private float testWeight = 0;
-    [Range(0, 1)]
-    [SerializeField] private float testBodyWeight = 0;
-    [Range(0, 1)]
-    [SerializeField] private float testHeadWeight = 0;
-    [Range(0, 1)]
-    [SerializeField] private float testEyesWeight = 0;
-    [Range(0, 1)]
-    [SerializeField] private float testClampWeight = 0;
 
+    private BasicHeadController headController;
+    #region Constructors
+    internal Inventory items = new Inventory();
+    internal Stats stats = new Stats();
+    private AxisButton dPadUp = new AxisButton("DPad Up");
+    private AxisButton R2 = new AxisButton("R2");
+    private AxisButton L2 = new AxisButton("L2");
+    internal StatusEffects status = new StatusEffects();
+    #endregion
+    #region Events
     public static event UnityAction aiming;
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
     public static event UnityAction onCharacterSwitch;
     public static event UnityAction notAiming;
-
+    #endregion
     //Optimize these to use only one Animation parameter in 9/14
+    #region Getters and Setters
     public bool RockOut { get => rockOut; set { rockOut = value; anim.SetBool("RockOut", rockOut); } }
     public bool PickUp1 { get => pickUp; set { pickUp = value; anim.SetBool("PickUp", pickUp); } }
     public bool Wall { get => wall; set => wall = value; }
@@ -207,7 +215,8 @@ public class Player : MonoBehaviour
 
     public bool Transforming { get => transforming; set => transforming = value; }
     public GameObject AttackBow { get => attackBow; set => attackBow = value; }
-
+    public GameObject AimmingPoint { get => aimmingPoint; set => aimmingPoint = value; }
+    #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
     private void Awake()
@@ -227,6 +236,7 @@ public class Player : MonoBehaviour
         nav = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
+        headController = GetComponent<BasicHeadController>();
         GameController.onNewGame += SetDefault;
         onPlayerDeath += OnDead;
 
@@ -238,6 +248,7 @@ public class Player : MonoBehaviour
         stats.Start();
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
+        staminaRec=StartCoroutine(StaminaRec());
         grounded = anim.GetBool("Grounded");
     }
     private void OnEnable()
@@ -246,7 +257,7 @@ public class Player : MonoBehaviour
         {
             onPlayerEnabled();
         }
-        StartCoroutine(StaminaRec());
+        
     }
     // Update is called once per frame
     void Update()
@@ -257,7 +268,8 @@ public class Player : MonoBehaviour
         {
             GetInput();
         }
-        else {
+        else
+        {
             displacement = Vector3.zero;
         }
         CalculateMoveDirection();
@@ -281,14 +293,16 @@ public class Player : MonoBehaviour
             skillButton = false;
         //if (Input.GetKey(KeyCode.P)) { stats.Level += 10; }
     }
-    private void CalculateMoveDirection() {
-        Vector3 right; 
+    private void CalculateMoveDirection()
+    {
+        Vector3 right;
         if (movementBone != null)
         {
-            
+
             right = movementBone.TransformDirection(moveBoneRight);
         }
-        else {
+        else
+        {
             right = transform.forward;
         }
         float dot = Vector3.Dot(right, displacement);
@@ -351,11 +365,33 @@ public class Player : MonoBehaviour
                 onCharacterSwitch();
             SwitchCharacter();
         }*/
-        if (Input.GetButtonDown("R3") && !transforming)
+        if (Input.GetButtonDown("R3") && !transforming&&stats.MPLeft>=1)
         {
-            if (PoweredUp)
+            if (poweredUp)
             {
-                PostProcessorManager.GetProcessorManager().Default();
+                Deform();
+                //stats.MPLeft--;
+            }
+            else
+            {
+                PowerDown();
+                
+            }
+            
+
+
+        }
+        if (poweredUp&&stats.MPLeft==0) {
+                Deform();
+            }
+        WeaponSwitch();
+
+        MoveIt(x, y);
+
+
+    }
+    private void Deform() {
+        PostProcessorManager.GetProcessorManager().Default();
                 PoweredUp = false;
                 stats.Attack /= 2;
                 stats.Defense /= 2;
@@ -365,25 +401,19 @@ public class Player : MonoBehaviour
                 FireTrail.SetActive(false);
                 mask.SetActive(false);
                 Destroy(aura);
-            }
-            else
-            {
-                FireTrail.SetActive(true);
-                mask.SetActive(true);
-                PoweredUp = true;
-                PowerUp = true;
-            }
-
-
-        }
-        WeaponSwitch();
-
-        MoveIt(x, y);
+                StopCoroutine(mpDrain);
+                staminaRec =StartCoroutine(StaminaRec());
+                Debug.Log("Powered");
 
 
     }
     private void PowerDown()
-    {
+    {mpDrain=StartCoroutine(MpDrain());
+        StopCoroutine(staminaRec);
+        FireTrail.SetActive(true);
+            mask.SetActive(true);
+            PoweredUp = true;
+            PowerUp = true;
 
     }
     private void WeaponSwitch()
@@ -429,7 +459,7 @@ public class Player : MonoBehaviour
                 aiming();
             }
 
-            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f));
+            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
         }
         if (L2.GetButton())
         {
@@ -443,23 +473,28 @@ public class Player : MonoBehaviour
         {
 
             CmdInput = 6;
+            MoveSpeed = 5;
             targeting = false;
-            
+
         }
-        if (!bowUp) {
-            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f));///GOOD CODE!!!!!
+        if (R2.GetButtonDown()) {
+
+        }
+        if (!bowUp)
+        {
+            StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));///GOOD CODE!!!!!
 
         }        //anim.
-        
-        
+
+
         //anim.SetLookAtPosition();
         //anim.SetLookAtWeight(testWeight, testBodyWeight, testHeadWeight, testEyesWeight, testClampWeight);
-        headBone.transform.LookAt(ThreeDCamera.Retical.position);
-       
+        headBone.transform.LookAt(ThreeDCamera.Retical.transform.position);
+
         if (targeting)
         {
             //anim.GetBoneTransform(HumanBodyBones.Spine).transform.LookAt(ThreeDCamera.Retical.position);
-            
+
 
 
         }
@@ -467,20 +502,34 @@ public class Player : MonoBehaviour
 
 
     }
-    
-    private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration)
+
+    private void SetHeadWeight(float result)
+    {
+        headController.Weight = result;
+    }
+    private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration, UnityAction<float> onFade)
     {
         float localTime = 0;
         float start = anim.GetLayerWeight(layerIndex);
         float deltaWeight = weight - start;
+        float result = start;
         while (localTime < duration)
         {
-
-            anim.SetLayerWeight(layerIndex, start + (localTime / duration) * (deltaWeight));
+            result = start + (localTime / duration) * (deltaWeight);
+            anim.SetLayerWeight(layerIndex, result);
+            if (onFade != null)
+            {
+                onFade(result);
+            }
             yield return null;
             localTime += Time.deltaTime;
+
         }
         anim.SetLayerWeight(layerIndex, weight);
+        if (onFade != null)
+        {
+            onFade(weight);
+        }
     }
     private void MoveIt(float x, float y)
     {
@@ -488,17 +537,12 @@ public class Player : MonoBehaviour
         {
             //Moving = true;
             Animations = 1;
-            
+
             Move(MoveSpeed);
             if (bowUp && !targeting)
             {
-                if (notAiming != null) {
-                    notAiming();
-                
-                }
-                
-                AttackBow.SetActive(false);
-                BowUp = false;
+
+                StartCoroutine(StopTargeting());
 
             }
 
@@ -509,10 +553,25 @@ public class Player : MonoBehaviour
         }
         else
         {
-            
+
             Animations = 0;
             //Moving = false;
         }
+    }
+    private IEnumerator StopTargeting()
+    {
+        YieldInstruction wait = new WaitForSeconds(0.5f);
+        yield return wait;
+        if (notAiming != null)
+        {
+            notAiming();
+
+        }
+
+        AttackBow.SetActive(false);
+        BowUp = false;
+
+
     }
     public void Move(float speed)
     {
@@ -638,14 +697,22 @@ public class Player : MonoBehaviour
 
         while (isActiveAndEnabled)
         {
-            YieldInstruction wait = new WaitForSeconds(5);
+            YieldInstruction wait = new WaitForSeconds(3);
             yield return wait;
+            Debug.Log("Mp up");
             if (stats.MPLeft < stats.MP)
             {
                 stats.MPLeft += 5;
             }
         }
 
+    }
+    private IEnumerator MpDrain() {
+        while (isActiveAndEnabled) { 
+        YieldInstruction wait = new WaitForSeconds(1.5f);
+        yield return wait;
+        stats.MPLeft--;}
+        
     }
     private void Sword()
     {

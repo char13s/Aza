@@ -106,11 +106,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    ID: 2
-    quantity: 0
+    id: 2
     sellableValue: 0
     keyItem: 0
     recipe: 0
     weapon: 0
     selling: 0
-    itemDescription: wood
+    itemDescription: wood chop chop

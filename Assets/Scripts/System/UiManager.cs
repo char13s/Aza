@@ -107,7 +107,7 @@ public class UiManager : MonoBehaviour
     //public static event UnityAction pauseTutorialActive;
     //public static event UnityAction combatTutorialActive;
     //public static GameObject GetUseMenu() => useMenu;
-    public static UiManager GetUiManager() => instance.GetComponent<UiManager>();
+    public static UiManager GetUiManager() => instance;
     public void Awake()
     {
         if (instance != null && instance != this)

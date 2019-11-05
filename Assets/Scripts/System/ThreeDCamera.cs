@@ -7,8 +7,9 @@ public class ThreeDCamera : CameraLogic
     
     //[SerializeField]private GameObject xZOrientationRef;
     private static Transform xZOrientation;
-    private static Transform retical;
+    private static GameObject retical;
     private static ThreeDCamera instance;
+    [SerializeField] private GameObject reticalObject;
     private Vector3 currentEulerAngles;
     private readonly float maxXRotation=40;
     private float minXRotation = 10;
@@ -20,7 +21,7 @@ public class ThreeDCamera : CameraLogic
     public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
 
-    public static Transform Retical { get => retical; set => retical = value; }
+    public static GameObject Retical { get => retical; set => retical = value; }
 
     // Start is called before the first frame update
     private void Awake()
@@ -33,7 +34,9 @@ public class ThreeDCamera : CameraLogic
         xZOrientation = new GameObject("xZOrienatation").transform;
         xZOrientation.transform.SetParent(transform);
         Debug.Log("Fuck u 3DCam");
-        Retical = new GameObject("retical").transform;
+        Retical = Instantiate(reticalObject,transform);
+        //Retical = new GameObject("retical").transform;
+        
         Retical.transform.SetParent(transform);
        
 		
@@ -47,7 +50,7 @@ public class ThreeDCamera : CameraLogic
         currentEulerAngles.x = 10;
         transform.eulerAngles = currentEulerAngles;
 		StartCoroutine(WaitABitCoroutine());
-		Retical.transform.position = Body.transform.position+new Vector3(0,1.2f , 7);
+		Retical.transform.position = Player.GetPlayer().AimmingPoint.transform.position + new Vector3(0,1f , 7);
     }
 	
     public override void Update()
@@ -70,8 +73,8 @@ public class ThreeDCamera : CameraLogic
     {
 		
         //currentEulerAngles.x = 0;
-		distanceFromZend = 2f;
-        offset = new Vector3(0,1f,0);
+		distanceFromZend = 1.7f;
+        offset = new Vector3(0,0.85f,0);
         //aiming = true;
         //transform.position += new Vector3(0, 1, 0);
         minXRotation = -90;
@@ -99,7 +102,7 @@ public class ThreeDCamera : CameraLogic
 			RotateCamera(x, y, Body.transform.position);
 
 		} else {
-			RotateCamera(x, y, Retical.position);
+			RotateCamera(x, y, Retical.transform.position);
 		}
         
     }

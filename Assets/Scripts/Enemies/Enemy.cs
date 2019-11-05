@@ -13,7 +13,10 @@ public class Enemy : MonoBehaviour
     private EnemyAiStates state;
     public enum EnemyType { Slime, Samurai };
     [SerializeField] private EnemyType type;
-    public enum EnemyAiStates { Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, Canniblize, Transform, GetHelp, PlantSlimeTree };
+    public enum EnemyAiStates { Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, Canniblize, Transform, GetHelp, PlantSlimeTree, StatusEffect };
+    internal StatusEffects status = new StatusEffects();
+    [SerializeField]
+    internal StatsController stats = new StatsController();
     [SerializeField] private int level;
     [SerializeField] private int attackDelay;
     [SerializeField] private int baseExpYield;
@@ -32,8 +35,7 @@ public class Enemy : MonoBehaviour
     private Vector3 startLocation;
     [SerializeField] private GameObject slimeTree;
     [SerializeField] private GameObject slime;
-    private int health;
-    private int healthLeft;
+
     private NavMeshAgent nav;
     private Coroutine hitCoroutine;
     private Coroutine attackCoroutine;
@@ -50,19 +52,20 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int flip;
     private static List<Enemy> enemies = new List<Enemy>(32);
     private int behavior;
+    private bool grounded;
 
-    
     public static event UnityAction<Enemy> onAnyDefeated;
     public static event UnityAction onAnyEnemyDead;
 
-    public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
-    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Max(0, value); UIMaintence(); if (healthLeft <= 0 && !Dead) { Dead = true; } } }
-    
+    public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
+    public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !Dead) { Dead = true; } } }
+
     public bool Attack { get => attack; set { attack = value; anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; anim.SetBool("Walking", walk); } }
 
     public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine()); GetComponent<Rigidbody>().isKinematic = false; hitCoroutine = StartCoroutine(HitCoroutine()); } anim.SetBool("Hurt", hit); } }
-
+    public EnemyAiStates State { get => state; set { state = value; States(); } }
+    public bool Grounded { get => grounded; set => grounded = value; }
     public bool LockedOn
     {
         get => lockedOn; set
@@ -104,18 +107,19 @@ public class Enemy : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         nav = GetComponent<NavMeshAgent>();
-
+        StatusEffects.onStatusUpdate += StatusControl;
+        StatCalculation();
     }
     // Start is called before the first frame update
     public void OnEnable()
     {
         EnemyHitBoxBehavior[] behaviours = anim.GetBehaviours<EnemyHitBoxBehavior>();
         for (int i = 0; i < behaviours.Length; i++)
-            behaviours[i].HitBox=hitBox;
+            behaviours[i].HitBox = hitBox;
     }
     public virtual void Start()
     {
-        
+
         pc = Player.GetPlayer();
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
@@ -126,20 +130,59 @@ public class Enemy : MonoBehaviour
         level += Player.GetPlayer().stats.Level;
         Health = level * baseHealth;
         startLocation = transform.position;
-        HealthLeft = health;
+        HealthLeft = stats.Health;
         attackingCoroutine = StartCoroutine(AttackingCoroutine());
     }
-    public EnemyAiStates State { get => state; set => state = value; }
+
 
 
     // Update is called once per frame
     public virtual void Update()
     {
+        if (status.Status != StatusEffects.Statuses.stunned)
+        {
+            StateSwitch();
 
-        StateSwitch();
+        }
+
         canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position);
     }
-    public static Enemy GetEnemy(int i) { return enemies[i]; }
+    private void StatusControl()
+    {
+        if (!dead)
+        {
+            switch (status.Status)
+            {
+                case StatusEffects.Statuses.stunned:
+                    State = EnemyAiStates.StatusEffect;
+                    StartCoroutine(StatusCoroutine(3));
+                    if (!dead) { anim.speed = 0; }
+
+                    break;
+
+
+            }
+        }
+    }
+    private void StatCalculation()
+    {
+
+        Health = stats.BaseHealth * level;
+        stats.Attack = stats.BaseAttack * (level / 2);
+        stats.Defense = stats.BaseDefense * level;
+
+
+    }
+    private IEnumerator StatusCoroutine(float StatusLength)
+    {
+        YieldInstruction wait = new WaitForSeconds(StatusLength);
+        yield return wait;
+        State = EnemyAiStates.Idle;
+        anim.speed = 1;
+        status.Status = StatusEffects.Statuses.neutral;
+
+    }
+    public static Enemy GetEnemy(int i) => enemies[i];
     public void OnPlayerDeath()
     {
         enemies.Clear();
@@ -152,14 +195,14 @@ public class Enemy : MonoBehaviour
     void StateSwitch()
     {
 
-        if (State != EnemyAiStates.LowHealth)
+        if (state != EnemyAiStates.LowHealth)
         {
             if (State != EnemyAiStates.Chasing && nav.enabled && !dead)
             {
                 Walk = false;
                 nav.SetDestination(transform.position);
             }
-            if (State != EnemyAiStates.Attacking)
+            if (state != EnemyAiStates.Attacking)
             {
                 attacking = false;
 
@@ -171,8 +214,9 @@ public class Enemy : MonoBehaviour
 
             }
 
-            if (Distance > 1.1f && Distance < 6f && !dead && nav.enabled)
+            if (Distance > 1.1f && Distance < 6f && !dead&&!hit)
             {
+                nav.enabled = true;
                 //Debug.Log("fuk");
                 State = EnemyAiStates.Chasing;
             }
@@ -181,11 +225,11 @@ public class Enemy : MonoBehaviour
             if (Dead) { State = EnemyAiStates.Dead; }
         }
 
-        States();
+
     }
     void States()
     {
-        switch (State)
+        switch (state)
         {
             case EnemyAiStates.Idle:
                 Idle();
@@ -301,8 +345,8 @@ public class Enemy : MonoBehaviour
     {
 
         levelText.GetComponent<Text>().text = "Lv. " + level;
-        EnemyHp.maxValue = health;
-        EnemyHp.value = healthLeft;
+        EnemyHp.maxValue = stats.Health;
+        EnemyHp.value = stats.HealthLeft;
     }
     private void OnHit()
     {
@@ -321,25 +365,32 @@ public class Enemy : MonoBehaviour
     }
     private IEnumerator HitCoroutine()
     {
-        YieldInstruction wait=new WaitForSeconds(4);
+        YieldInstruction wait = new WaitForSeconds(4);
         yield return wait;
         Hit = false;
+        State = EnemyAiStates.Idle;
 
     }
     private IEnumerator RecoveryCoroutine()
     {
+        while (!nav.enabled)
+        {
+            YieldInstruction wait = new WaitForSeconds(3);
+            yield return wait;
+            if (Grounded)
+            {
+                GetComponent<Rigidbody>().isKinematic = true;
+                nav.enabled = true;
+            }
+        }
 
-        YieldInstruction wait = new WaitForSeconds(3);
-        yield return wait;
-        GetComponent<Rigidbody>().isKinematic = true;
-        nav.enabled = true;
 
     }
     private IEnumerator AttackCoroutine()
     {
         YieldInstruction wait = new WaitForSeconds(0.2f);
         yield return wait;
-        transform.rotation = Quaternion.LookRotation( (flip)*(transform.position- pc.transform.position));
+        transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
         Attack = false;
         //hitBox.SetActive(false);
 
@@ -387,19 +438,35 @@ public class Enemy : MonoBehaviour
 
     
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack"))
+        {
+            Grounded = true;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (grounded)
+        {
+            Debug.Log(other);
+        }
+    }
+
     public void OnDefeat()
     {
         //onAnyDefeated(this);
         SlimeHasDied();
         enemies.Remove(this);
-        Instantiate(deathEffect,transform);
+        Instantiate(deathEffect, transform);
         deathEffect.transform.position = transform.position;
         Destroy(gameObject, 4f);
         //drop.transform.SetParent(null);
     }
     public void CalculateDamage()
     {
-        HealthLeft -= (int)(1.7f * pc.stats.Attack);//WRITE THE FUCKING ENEMY'S STATS CLASS
+        if (!dead) { 
+        HealthLeft -= Mathf.Max(1, pc.stats.Attack - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
         Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
         {
@@ -407,9 +474,9 @@ public class Enemy : MonoBehaviour
             StartCoroutine(StateControlCoroutine());
             lowHealth = true;
         }
-        OnHit();
-    }
-    public void CalculateAttack(int n) { pc.stats.HealthLeft -= (Mathf.Max(1, (int)(Mathf.Pow(8 * level - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
+        OnHit();}
+    }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
+    public void CalculateAttack(int n) { pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack - (int)(stats.Defense * 1.6f)); }
     public void SlimeHasDied()
     {
         int exp = level * baseExpYield;

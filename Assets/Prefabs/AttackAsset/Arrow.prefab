@@ -4988,8 +4988,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a27acedb52ed2a46bee2fa761e8ff4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
   power: 5
+  speed: 30
   boom: {fileID: 6468006291029811915, guid: 3410e196f78a6ff4091201337dba8bd0, type: 3}
 --- !u!54 &8227272863994200316
 Rigidbody:
@@ -5001,7 +5002,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0

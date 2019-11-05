@@ -25,9 +25,9 @@ public class FlameTornado : MonoBehaviour
         {
             other.gameObject.GetComponent<Enemy>().CalculateDamage();
             other.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
-            other.GetComponent<Rigidbody>().AddForce(transform.forward + new Vector3(0, 10, -3), ForceMode.VelocityChange);
+            other.GetComponent<Rigidbody>().AddForce(transform.forward + new Vector3(0, 5, 0), ForceMode.VelocityChange);
             Instantiate(boom, transform.position, transform.rotation);
-            //Destroy(gameObject);
+            Destroy(gameObject);
         }
         if (other.gameObject.CompareTag("Enviroment"))
         {

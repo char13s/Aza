@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2313167134750489985}
   m_Layer: 9
   m_Name: joint2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 2313167134750489987}
   m_Layer: 9
   m_Name: joint1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 2313167134750489989}
   m_Layer: 9
   m_Name: joint4
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 2313167134750489991}
   m_Layer: 9
   m_Name: joint3
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 2313167134750489993}
   m_Layer: 9
   m_Name: joint6
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 2313167134750489995}
   m_Layer: 9
   m_Name: joint5
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 2313167134739279011}
   m_Layer: 9
   m_Name: Slime:Slime
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -358,6 +358,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  stats:
+    baseHealth: 8
+    baseAttack: 4
+    baseDefense: 1
+    baseMp: 0
   level: 5
   attackDelay: 2
   baseExpYield: 12
@@ -373,8 +378,6 @@ MonoBehaviour:
     type: 3}
   slime: {fileID: 2313167134750843311}
   flip: 1
-  live: {fileID: 2100000, guid: 51dd5fa0d2f1fc4409537d6a192295ad, type: 2}
-  fader: {fileID: 0}
 --- !u!65 &315469229382681046
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -386,8 +389,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.7544441, y: 0.66316795, z: 0.7565669}
-  m_Center: {x: -0.013795853, y: 0.16841602, z: 0.047647774}
+  m_Size: {x: 0.7544441, y: 0.64807224, z: 0.7565669}
+  m_Center: {x: -0.013795853, y: 0.17596388, z: 0.047647774}
 --- !u!54 &5052483079137612084
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -440,7 +443,7 @@ GameObject:
   - component: {fileID: 3511103202013604600}
   m_Layer: 13
   m_Name: Canvas (1)
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -538,7 +541,7 @@ GameObject:
   - component: {fileID: 7947766348158846086}
   m_Layer: 9
   m_Name: HitBox
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -596,7 +599,7 @@ GameObject:
   - component: {fileID: 8653733383796982318}
   m_Layer: 13
   m_Name: Image
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -667,6 +670,91 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015655354308, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965016627016502, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965016627016502, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965016849518490, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965016849518490, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015037434565, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015037434565, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015281947673, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015281947673, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015655354331, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015655354331, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015544041044, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015544041044, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015887305430, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015887305430, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3160965015419878741, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
         type: 3}
@@ -772,11 +860,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3160965015655354308, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f, type: 3}

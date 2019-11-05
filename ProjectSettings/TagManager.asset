@@ -11,6 +11,8 @@ TagManager:
   - Log
   - ClimbableWall
   - Dummy
+  - wall
+  - Attack
   layers:
   - Default
   - TransparentFX

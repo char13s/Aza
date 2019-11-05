@@ -60,6 +60,7 @@ public class HitBox : MonoBehaviour
                     case 4:
                         
                         return Player.GetPlayer().transform.forward + new Vector3(0, 5, 0);
+
                     case 5:
                         Debug.Log("fuck you slime");
                         return Player.GetPlayer().transform.forward *12;
@@ -80,15 +81,18 @@ public class HitBox : MonoBehaviour
         {
             //GameObject burn=Instantiate(smallFire,other.transform);
             //Destroy(burn,3f);
+
             EnemyImAttacking = other.gameObject;
             Instantiate(effects, other.gameObject.transform);
             audio.PlayOneShot(hit);
             other.GetComponent<Enemy>().CalculateDamage();
             other.GetComponent<NavMeshAgent>().enabled = false;
+            
             other.GetComponent<Rigidbody>().AddForce(HitKnockback(), ForceMode.VelocityChange);
+            other.GetComponent<Enemy>().Grounded=false;}
 
             //Debug.Log(other.gameObject.GetComponent<Enemy>().HealthLeft);
-        }
+        
         if (other.gameObject.CompareTag("SlimeTree"))
         {
             Instantiate(fire, other.gameObject.transform);

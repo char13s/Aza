@@ -693,8 +693,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1.0970529, z: 1}
+  m_Center: {x: 0, y: -0.04852648, z: 0}
 --- !u!195 &3860060113349175536
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -730,6 +730,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  stats:
+    baseHealth: 9
+    baseAttack: 11
+    baseDefense: 3
+    baseMp: 0
   level: 10
   attackDelay: 2
   baseExpYield: 3000
@@ -745,8 +750,6 @@ MonoBehaviour:
     type: 3}
   slime: {fileID: 2313167134750843311, guid: e4e1576c7c45eb146ba9b4189cf369ca, type: 3}
   flip: -1
-  live: {fileID: 0}
-  fader: {fileID: 0}
 --- !u!54 &-1800228578723441690
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -759,7 +762,7 @@ Rigidbody:
   m_Drag: 5
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -1054,6 +1057,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3160965015655354308, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3160965015419878741, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1158,11 +1166,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3160965015655354308, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f, type: 3}

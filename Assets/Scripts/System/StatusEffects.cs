@@ -1,23 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class StatusEffects 
+using UnityEngine.Events;
+public class StatusEffects
 {
-    private enum Statuses {neutral,stunned,burned,frozen,gravityless,bleeding }
+    public enum Statuses { neutral, stunned, burned, frozen, gravityless, bleeding }
     private Statuses status;
-
-    private Statuses Status { get => status; set => status = value; }
+    public static UnityAction onStatusUpdate;
+    public Statuses Status { get => status; set { status = value; if(onStatusUpdate!=null) onStatusUpdate(); } }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
