@@ -248,7 +248,7 @@ public class Player : MonoBehaviour
         stats.Start();
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
-        staminaRec=StartCoroutine(StaminaRec());
+        
         grounded = anim.GetBool("Grounded");
     }
     private void OnEnable()
@@ -257,7 +257,7 @@ public class Player : MonoBehaviour
         {
             onPlayerEnabled();
         }
-        
+        staminaRec=StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
     void Update()
@@ -275,10 +275,9 @@ public class Player : MonoBehaviour
         CalculateMoveDirection();
 
 
-        if (!bowUp)
-        {
+        
             Sword();
-        }
+        
 
         //Inventory();
         //Guitar();
@@ -449,6 +448,7 @@ public class Player : MonoBehaviour
         }
         if (L2.GetButtonDown())
         {
+			Attacking = false;
             //targeting = true;
             BowUp = true;
             AttackBow.SetActive(true);
@@ -558,18 +558,21 @@ public class Player : MonoBehaviour
             //Moving = false;
         }
     }
+	private void BowDown() {
+		if (notAiming != null) {
+			notAiming();
+
+		}
+
+		AttackBow.SetActive(false);
+		BowUp = false;
+
+	}
     private IEnumerator StopTargeting()
     {
         YieldInstruction wait = new WaitForSeconds(0.5f);
         yield return wait;
-        if (notAiming != null)
-        {
-            notAiming();
-
-        }
-
-        AttackBow.SetActive(false);
-        BowUp = false;
+		BowDown();
 
 
     }
@@ -721,8 +724,11 @@ public class Player : MonoBehaviour
         {
             Attacking = true;
             demonSwordBack.SetActive(false);
-
-            return;
+			CmdInput = 0;
+			MoveSpeed = 5;
+			targeting = false;
+			BowDown();
+			return;
         }
         if (Attacking)
         {
