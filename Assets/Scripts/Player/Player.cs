@@ -239,7 +239,7 @@ public class Player : MonoBehaviour
         headController = GetComponent<BasicHeadController>();
         GameController.onNewGame += SetDefault;
         onPlayerDeath += OnDead;
-
+        Dialogue.dialogueUp += DialogueUp;
     }
 
     void Start()
@@ -330,7 +330,12 @@ public class Player : MonoBehaviour
         Dead = false;
         Money = 1000;
     }
+    private void DialogueUp() {
 
+        MoveSpeed = 0;
+
+
+    }
     void SwitchCharacter()
     {
         if (zend.activeSelf)

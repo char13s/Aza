@@ -72,7 +72,7 @@ public class ThreeDCamera : CameraLogic
 	private void Aiming()
     {
 		
-        currentEulerAngles.x = 0;
+        currentEulerAngles.x = -2;
 		distanceFromZend = 1.7f;
         offset = new Vector3(0,0.85f,0);
         //aiming = true;

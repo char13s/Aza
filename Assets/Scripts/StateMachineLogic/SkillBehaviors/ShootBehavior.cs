@@ -22,7 +22,7 @@ public class ShootBehavior : StateMachineBehaviour
         switch (Player.GetPlayer().SkillId)
         {
             case 1:
-                Instantiate(fireball, animator.rootPosition, Quaternion.identity);
+                Instantiate(fireball, Player.GetPlayer().transform.position + new Vector3(0, 0.4F, 0), Quaternion.identity);
                 fireball.transform.position = animator.rootPosition;
                 break;
             case 2:

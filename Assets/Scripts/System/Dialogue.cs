@@ -27,4 +27,9 @@ public class Dialogue : MonoBehaviour
     {
         
     }
+
+    private void ReadLines() {
+
+
+    }
 }
