@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 #pragma warning disable 0649
 public class PlayerBattleSceneMovement : MonoBehaviour
 {
@@ -10,6 +10,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     private Player pc;
     private int t;//targeted enemy in the array of enemies
     private Enemy enemyTarget;
+	public static UnityAction onLockOn;
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
     public int T { get => t; set => t = value; }
     public Enemy EnemyTarget { get => enemyTarget; set => enemyTarget = value; }
@@ -127,8 +128,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             delta.y = 0;
             transform.rotation = Quaternion.LookRotation(delta,Vector3.up);
             //transform.LookAt(Enemies[T].transform.position,Vector3.up);
-            transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up,  -x *180* Time.deltaTime);
-            transform.position = Vector3.MoveTowards(transform.position, Enemies[T].transform.position, 320 * y * Time.deltaTime);
+            transform.RotateAround(Enemies[T].transform.position, Enemies[T].transform.up,  -x *36*pc.MoveSpeed* Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, Enemies[T].transform.position, 32*pc.MoveSpeed* y * Time.deltaTime);
             
         }
     }

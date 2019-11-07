@@ -617,7 +617,7 @@ public class Player : MonoBehaviour
     {
         if (skillButton && Input.GetButtonDown("Triangle") && !skillIsActive)
         {
-            Debug.Log("Check 1");
+            
 
             if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired)
             {
@@ -668,7 +668,7 @@ public class Player : MonoBehaviour
             }
 
         }
-        if (stats.MPLeft >= 2 && !skillIsActive && Input.GetButtonDown("X") && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
+        if (stats.MPLeft >= 2 && !bowUp&&!skillIsActive && Input.GetButtonDown("X") && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
             SkillId = 10;
             stats.MPLeft -= 2;
