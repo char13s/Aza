@@ -7120,7 +7120,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HoldStab
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 8167979338627035973}
@@ -8481,9 +8481,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.00842388
+  m_TransitionDuration: 0.0052083433
   m_TransitionOffset: 0
-  m_ExitTime: 5.7949977
+  m_ExitTime: 3.7709858
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-public class Dialogue : MonoBehaviour
+public class Dialogue 
 {
 	[SerializeField] private byte lineAmount;
 	[SerializeField] private string[] lines;
@@ -11,10 +11,14 @@ public class Dialogue : MonoBehaviour
 	[SerializeField] private byte[] endingLineOfEachPhrase;
 	[SerializeField] private Text theTextBox;
 
-	public static UnityAction dialogueUp;
-	// Start is called before the first frame update
-	private void Awake() {
-		lines = new string[lineAmount];
+	//public static UnityAction dialogueUp;
+
+    public string[] Lines { get => lines; set => lines = value; }
+    public byte LineAmount { get => lineAmount; set => lineAmount = value; }
+
+    // Start is called before the first frame update
+    private void Awake() {
+		Lines = new string[LineAmount];
 		endingLineOfEachPhrase = new byte[numberOfDifferentPhrases];
 	}
 	void Start()
@@ -28,8 +32,5 @@ public class Dialogue : MonoBehaviour
         
     }
 
-    private void ReadLines() {
-
-
-    }
+    
 }

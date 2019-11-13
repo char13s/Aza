@@ -15,7 +15,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     public int T { get => t; set => t = value; }
     public Enemy EnemyTarget { get => enemyTarget; set => enemyTarget = value; }
 
-    private AxisButton dPadDown = new AxisButton("DPad Down");
+    private AxisButton dPadLeft = new AxisButton("DPad Left");
+    private AxisButton dPadRight = new AxisButton("DPad Right");
     void Start()
     {
         Enemy.onAnyDefeated += RemoveTheDead;
@@ -62,7 +63,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     void GetInput()
     {
-        float x = Input.GetAxisRaw("Horizontal") * 20 * Time.deltaTime;
+        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         float mH = Input.GetAxisRaw("MouseX");
         float jH = Input.GetAxisRaw("Camera");
@@ -136,9 +137,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     public void SwitchLockOn()
     {
-        if (dPadDown.GetButtonDown())
+        if (dPadLeft.GetButtonDown())
         {
             T++;
+        }
+        if (dPadRight.GetButtonDown())
+        {
+            T--;
         }
         if (T == Enemies.Count)
         {

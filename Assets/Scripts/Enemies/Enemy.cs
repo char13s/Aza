@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
 {
 
     private EnemyAiStates state;
-    public enum EnemyType { Slime, Samurai };
+    public enum EnemyType { Slime, Samurai,Aza };
     [SerializeField] private EnemyType type;
     public enum EnemyAiStates { Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, Canniblize, Transform, GetHelp, PlantSlimeTree, StatusEffect };
     internal StatusEffects status = new StatusEffects();
@@ -249,8 +249,8 @@ public class Enemy : MonoBehaviour
 
         }
     }
-    //public virtual void FixedUpdate() {  }
-    private void Attacking()
+    //public  void FixedUpdate() {  }
+    public virtual void Attacking()
     {
 
         Attack = true;
@@ -463,10 +463,10 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject, 4f);
         //drop.transform.SetParent(null);
     }
-    public void CalculateDamage()
+    public void CalculateDamage(float addition)
     {
         if (!dead) { 
-        HealthLeft -= Mathf.Max(1, pc.stats.Attack - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
+        HealthLeft -= Mathf.Max(1, (pc.stats.Attack+(int)addition) - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
         Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
         {

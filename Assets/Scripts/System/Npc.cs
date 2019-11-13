@@ -1,41 +1,85 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class Npc : MonoBehaviour
 {
     [SerializeField] private string name;
     [SerializeField] private GameObject interactIcon;
+    private byte currentBlock;
+    [SerializeField] private DialogueBlock[] blocks;
+    [SerializeField] private DialogueBlock[] defaultBlocks;
+    public static UnityAction dialogueUp;
+    public static UnityAction dialogueDown;
+    [SerializeField] private int defaultBlock;
+    private DialogueBlock presentBlock;
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-
+    }
+    public virtual void Start()
+    {
+        presentBlock = blocks[currentBlock];
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         PlayerIsInRange();
     }
     private float Distance => Vector3.Distance(Player.GetPlayer().transform.position, transform.position);
     private void PlayerIsInRange()
     {
-        if (Distance < 10)
+        if (Distance < 5)
         {
             interactIcon.SetActive(true);
             transform.LookAt(Player.GetPlayer().transform.position);
-            if (Input.GetButtonDown("Square"))
+            if (Input.GetButtonDown("X"))
             {
-                if (Dialogue.dialogueUp != null)
+                GetDialogueUp();
+                
+                presentBlock.ReadLine();
+                
+
+                if (presentBlock.BlockIsDone)
                 {
-                    Dialogue.dialogueUp();
+                    
+                    
+                    if (presentBlock.IsEndingBlock)
+                    {
+                        if (dialogueDown != null)
+                        {
+                            dialogueDown();
+                        }
+                        Debug.Log("default set");
+                        presentBlock=defaultBlocks[defaultBlock];
+                        //defaultBlocks[defaultBlock].BlockIsDone = false;
+                        
+                        
+                    }
+                    else {
+                        presentBlock=blocks[++currentBlock];
+
+                    }
+                    
+
+                    
                 }
+               
             }
         }
+        
         else
         {
             interactIcon.SetActive(false);
         }
 
+    }
+    private void GetDialogueUp() {
+
+        if (dialogueUp != null)
+        {
+            dialogueUp();
+        }
     }
 }

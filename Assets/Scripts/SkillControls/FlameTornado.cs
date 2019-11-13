@@ -23,7 +23,7 @@ public class FlameTornado : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            other.gameObject.GetComponent<Enemy>().CalculateDamage();
+            other.gameObject.GetComponent<Enemy>().CalculateDamage(8);
             other.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
             other.GetComponent<Rigidbody>().AddForce(transform.forward + new Vector3(0, 5, 0), ForceMode.VelocityChange);
             Instantiate(boom, transform.position, transform.rotation);

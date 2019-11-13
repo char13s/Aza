@@ -22,7 +22,7 @@ public class ArrowLogic : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            other.gameObject.GetComponent<Enemy>().CalculateDamage();
+            //other.gameObject.GetComponent<Enemy>().CalculateDamage();
 
 
             Instantiate(boom, transform.position, transform.rotation);

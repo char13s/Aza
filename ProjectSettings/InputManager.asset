@@ -371,8 +371,8 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 0
-    joyNum: 7
+    axis: 6
+    joyNum: 0
   - serializedVersion: 3
     m_Name: DPad Left
     descriptiveName: 
@@ -387,8 +387,8 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 0
-    joyNum: 6
+    axis: 5
+    joyNum: 0
   - serializedVersion: 3
     m_Name: DPad Right
     descriptiveName: 
@@ -403,8 +403,8 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 0
-    joyNum: 6
+    axis: 5
+    joyNum: 0
   - serializedVersion: 3
     m_Name: Cancel
     descriptiveName: 

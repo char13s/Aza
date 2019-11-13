@@ -239,7 +239,8 @@ public class Player : MonoBehaviour
         headController = GetComponent<BasicHeadController>();
         GameController.onNewGame += SetDefault;
         onPlayerDeath += OnDead;
-        Dialogue.dialogueUp += DialogueUp;
+        Npc.dialogueUp += DialogueUp;
+        Npc.dialogueDown += DialogueDown;
     }
 
     void Start()
@@ -274,7 +275,9 @@ public class Player : MonoBehaviour
         }
         CalculateMoveDirection();
 
-
+        if (Input.GetKeyDown(KeyCode.P)) {
+            MoveSpeed = 8;
+        }
         
             Sword();
         
@@ -330,12 +333,8 @@ public class Player : MonoBehaviour
         Dead = false;
         Money = 1000;
     }
-    private void DialogueUp() {
-
-        MoveSpeed = 0;
-
-
-    }
+    private void DialogueUp() => MoveSpeed = 0;
+    private void DialogueDown() => MoveSpeed = 5;
     void SwitchCharacter()
     {
         if (zend.activeSelf)

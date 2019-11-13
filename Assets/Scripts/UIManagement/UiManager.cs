@@ -64,6 +64,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Image itemListPrefab;
     private static Image itemList;
     [Space]
+
     [Header("StoreMenu")]
     [SerializeField] private GameObject StoreMenuPrefab;
     private static GameObject storeMenu;
@@ -84,6 +85,15 @@ public class UiManager : MonoBehaviour
     [Header("SkillAssignMenu")]
     [SerializeField] private GameObject skillAssignMenuPrefab;
     private static GameObject skillAssignMenu;
+    [Space]
+    [Header("Dialogue Management")]
+    private static GameObject dialogueMenu;
+    [SerializeField] private GameObject dialogueMenuPrefab;
+    [SerializeField] private Text dialogueText;
+    [SerializeField] private Text whoseTalking;
+    [Space]
+    [Header("StatBuildMenu")]
+    [SerializeField] private GameObject levelMenuPrefab;
     private static UiManager instance;
 
     StoreManager store = new StoreManager();
@@ -100,6 +110,8 @@ public class UiManager : MonoBehaviour
     public static GameObject StoreMenu { get => storeMenu; set => storeMenu = value; }
     public static GameObject SkillAssignMenu { get => skillAssignMenu; set => skillAssignMenu = value; }
     public Image Black { get => black; set => black = value; }
+    public Text DialogueText { get => dialogueText; set => dialogueText = value; }
+    public static GameObject DialogueMenu { get => dialogueMenu; set => dialogueMenu = value; }
 
 
     //public static event UnityAction movementTutorialActive;
@@ -125,7 +137,12 @@ public class UiManager : MonoBehaviour
         ItemList = itemListPrefab;
         storeMenu = StoreMenuPrefab;
         SkillAssignMenu = skillAssignMenuPrefab;
+        dialogueMenu = dialogueMenuPrefab;
         StoreManager.itemWasBought += UpdateMoney;
+        
+        Npc.dialogueUp += DialogueManagerUp;
+        Npc.dialogueDown += DialogueManagerDown;
+        ExpConverter.levelMenuUp += LevelUpMenuUp;
     }
     void Start()
     {
@@ -155,6 +172,15 @@ public class UiManager : MonoBehaviour
     {
 
     }
+    private void LevelUpMenuUp() {
+        if (!levelMenuPrefab.activeSelf) {
+            levelMenuPrefab.SetActive(true);
+
+        }
+        
+
+    }
+
     public void SkillMenuUp() {
         abilities.SetActive(false);
         abilityClose.SetActive(false);
@@ -250,14 +276,24 @@ public class UiManager : MonoBehaviour
         HeavySwingTutorial.SetActive(true);
         skillMenu.SetActive(false);
     }
+    private void DialogueManagerUp() {
+        if (!dialogueMenu.activeSelf) {
+            dialogueMenu.SetActive(true);
 
+        }
+        
+    }
+    private void DialogueManagerDown()
+    {
+        dialogueMenu.SetActive(false);
+    }
     void StatsUpdate()
     {
         health.text = "Hp: " + Player.GetPlayer().stats.HealthLeft + "/" + Player.GetPlayer().stats.Health;
         stamina.text = "Mp: " + Player.GetPlayer().stats.MP;
         exp.text = "Exp: " + Player.GetPlayer().stats.Exp;
         expBar.value = Player.GetPlayer().stats.Exp;
-        money.text = "Munm: "+Player.GetPlayer().Money.ToString();
+        money.text = "Munn: "+Player.GetPlayer().Money.ToString();
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
@@ -267,7 +303,7 @@ public class UiManager : MonoBehaviour
         level.text = "LV. " + Player.GetPlayer().stats.Level;
     }
     private void UpdateMoney() {
-        money.text ="Munn"+ Player.GetPlayer().Money.ToString();
+        money.text ="Munn: "+ Player.GetPlayer().Money.ToString();
 
 
     }
