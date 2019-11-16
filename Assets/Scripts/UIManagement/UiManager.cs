@@ -43,7 +43,11 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Text intelligence;
     [SerializeField] private Text healthAb;
     [SerializeField] private Text staminaAb;
-    [SerializeField] private GameObject mainMenuCanvas;
+	[SerializeField] private Text baseMp;
+	[SerializeField] private Text baseAttack;
+	[SerializeField] private Text baseDefense;
+	[SerializeField] private Text baseHealth;
+	[SerializeField] private GameObject mainMenuCanvas;
     [SerializeField] private GameObject mainCanvas;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject skillMenu;
@@ -143,6 +147,7 @@ public class UiManager : MonoBehaviour
         Npc.dialogueUp += DialogueManagerUp;
         Npc.dialogueDown += DialogueManagerDown;
         ExpConverter.levelMenuUp += LevelUpMenuUp;
+		Stats.onBaseStatsUpdate += UpdateBaseStats;
     }
     void Start()
     {
@@ -177,7 +182,7 @@ public class UiManager : MonoBehaviour
             levelMenuPrefab.SetActive(true);
 
         }
-        
+		ViewStats();
 
     }
 
@@ -354,7 +359,21 @@ public class UiManager : MonoBehaviour
             mainEventSystem.SetActive(true);
         }
     }
-    private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+	public void AddAttack() => Player.GetPlayer().stats.BaseAttack++;
+	public void AddDefense() => Player.GetPlayer().stats.BaseDefense++;
+	public void AddMp() => Player.GetPlayer().stats.BaseMp++;
+	public void AddHealth() => Player.GetPlayer().stats.BaseHealth++;
+	public void MinusAttack() => Player.GetPlayer().stats.BaseAttack--;
+	public void MinusDefense() => Player.GetPlayer().stats.BaseDefense--;
+	public void MinusMp() => Player.GetPlayer().stats.BaseMp--;
+	public void MinusHealth() => Player.GetPlayer().stats.BaseHealth--;
+	private void UpdateBaseStats() {
+		Player.GetPlayer().stats.Attack += Player.GetPlayer().stats.BaseAttack;
+		Player.GetPlayer().stats.Defense += Player.GetPlayer().stats.BaseDefense;
+		Player.GetPlayer().stats.MP += Player.GetPlayer().stats.BaseMp;
+		Player.GetPlayer().stats.Health += Player.GetPlayer().stats.BaseHealth;
+	}
+	private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
         SetCanvas();
     }

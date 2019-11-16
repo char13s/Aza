@@ -541,7 +541,7 @@ public class Player : MonoBehaviour
         {
             //Moving = true;
             Animations = 1;
-
+			nav.enabled = true;
             Move(MoveSpeed);
             if (bowUp && !targeting)
             {
@@ -559,6 +559,7 @@ public class Player : MonoBehaviour
         {
 
             Animations = 0;
+			nav.enabled = false;
             //Moving = false;
         }
     }
@@ -669,6 +670,7 @@ public class Player : MonoBehaviour
         }
         if (stats.MPLeft >= 2 && !bowUp&&!skillIsActive && Input.GetButtonDown("X") && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
+
             SkillId = 10;
             stats.MPLeft -= 2;
             skillIsActive = true;

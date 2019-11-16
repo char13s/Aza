@@ -16,11 +16,19 @@ public class Stats
     private int mpLeft;
     private byte level = 1;
     private int exp = 0;
+
+	private int baseAttack;
+	private int baseDefense;
+	private int baseMp;
+	private int baseHealth;
+
+	private int abilitypoints;
     //Events
     public static event UnityAction onHealthChange;
     public static event UnityAction onMPLeft;
     public static event UnityAction onLevelUp;
     public static event UnityAction onShowingStats;
+	public static event UnityAction onBaseStatsUpdate;
     //Properties
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);if (onHealthChange != null) { onHealthChange(); } } }
@@ -33,26 +41,19 @@ public class Stats
 
     public byte Level { get => level; set => level = value; }
     public int Exp { get => exp; set => exp = value; }
+	public int BaseAttack { get => baseAttack; set { baseAttack = value;if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+	public int BaseDefense { get => baseDefense; set { baseDefense = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+	public int BaseMp { get => baseMp; set { baseMp = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+	public int BaseHealth { get => baseHealth; set { baseHealth = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 
-    public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return  Mathf.Abs(Exp- expNeeded); }
+	public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return  Mathf.Abs(Exp- expNeeded); }
     public int ExpCurrent() { return Exp - (4 * ((Level - 1) * (Level - 1) * (Level - 1))); }
     public void AddExp(int points)
     {
-        if (Level < 99)
-        {
-            Exp += points;
-
-        }
-        if (Exp >= CalculateExpNeed())
-        {
-            
-            Level++;
-            LevelUp(points);
-            if (onLevelUp != null) { onLevelUp(); }
-        }
+		exp += points;
 
     }
-    void LevelUp(int points)
+    /*void LevelUp(int points)
     {
         if (Level <= 20)
         {
@@ -77,7 +78,7 @@ public class Stats
             MP += 5;
         }
         
-    }
+    }*/
     
     public void DisplayAbilities()
     {
