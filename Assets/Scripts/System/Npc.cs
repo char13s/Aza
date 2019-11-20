@@ -30,7 +30,7 @@ public class Npc : MonoBehaviour
     private float Distance => Vector3.Distance(Player.GetPlayer().transform.position, transform.position);
     private void PlayerIsInRange()
     {
-        if (Distance < 5)
+        if (Distance < 2)
         {
             interactIcon.SetActive(true);
             transform.LookAt(Player.GetPlayer().transform.position);

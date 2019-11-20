@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
-
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 #pragma warning disable 0649
 public class UiManager : MonoBehaviour
 {
@@ -43,11 +46,11 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Text intelligence;
     [SerializeField] private Text healthAb;
     [SerializeField] private Text staminaAb;
-	[SerializeField] private Text baseMp;
-	[SerializeField] private Text baseAttack;
-	[SerializeField] private Text baseDefense;
-	[SerializeField] private Text baseHealth;
-	[SerializeField] private GameObject mainMenuCanvas;
+    [SerializeField] private Text mpBoost;
+    [SerializeField] private Text attackBoost;
+    [SerializeField] private Text defenseBoost;
+    [SerializeField] private Text healthBoost;
+    [SerializeField] private GameObject mainMenuCanvas;
     [SerializeField] private GameObject mainCanvas;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject skillMenu;
@@ -72,6 +75,7 @@ public class UiManager : MonoBehaviour
     [Header("StoreMenu")]
     [SerializeField] private GameObject StoreMenuPrefab;
     private static GameObject storeMenu;
+    [SerializeField] private GameObject storeMenuDefaultButton;
     [Space]
     [Header("UseMenu")]
     [SerializeField] private GameObject useMenuPrefab;
@@ -79,7 +83,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Button itemDescriptionButtonPrefab;
     [SerializeField] private Button giveButtonPrefab;
     [SerializeField] private Button dropButtonPrefab;
-    
+    [SerializeField] private GameObject useMenuDefaultButton;
     private static GameObject useMenu;
     private static Button useButton;
     private static Button itemDescriptionButton;
@@ -89,6 +93,7 @@ public class UiManager : MonoBehaviour
     [Header("SkillAssignMenu")]
     [SerializeField] private GameObject skillAssignMenuPrefab;
     private static GameObject skillAssignMenu;
+    [SerializeField] private GameObject skillAssignDefaultButton;
     [Space]
     [Header("Dialogue Management")]
     private static GameObject dialogueMenu;
@@ -98,11 +103,50 @@ public class UiManager : MonoBehaviour
     [Space]
     [Header("StatBuildMenu")]
     [SerializeField] private GameObject levelMenuPrefab;
+    [SerializeField] private Text baseAttack;
+    [SerializeField] private Text baseDefense;
+    [SerializeField] private Text baseMp;
+    [SerializeField] private Text baseHealth;
+    [SerializeField] private Text expRequired;
+    [SerializeField] private Text lvMenuExp;
+    [SerializeField] private Text abilityPoints;
+    [SerializeField] private Text abilityPointsCost;
+    [SerializeField] private Text itemAbilityPointsCost;
+    [SerializeField] private GameObject levelMenuDefaultButton;
+    [Space]
+    [Header("EquipmentWindow")]
+    [SerializeField] private ItemSlot weaponSlot;
+    [SerializeField] private ItemSlot shieldSlot;
+    [SerializeField] private ItemSlot maskSlot;
+    [SerializeField] private GameObject weaponInvent;
+    [SerializeField] private GameObject shieldInvent;
+    [SerializeField] private GameObject maskInvent;
+    [SerializeField] private GameObject equipWindowDefaultButton;
+    [Space]
+    [Header("PauseMenu")]
+    [SerializeField] private GameObject invent;
+    [SerializeField] private GameObject comboMenu;
+    [SerializeField] private GameObject options;
+    [SerializeField] private GameObject objectiveMenu;
+    [SerializeField] private GameObject statusWindow;
+    private List<Objective> objectives;
+    [Space]
+    [Header("Videos")]
+    [SerializeField] private VideoClip combo1;
+    [SerializeField] private VideoClip combo2;
+    [SerializeField] private VideoClip combo3;
+    [SerializeField] private VideoClip combo4;
+    private int page;
+    [Space]
+    [Header("Options")]
+    [SerializeField] private GameObject optDefaultButton;
     private static UiManager instance;
 
     StoreManager store = new StoreManager();
+    
     //Events
     public static UnityAction notCrafting;
+    [SerializeField] private GameObject defaultObject;
 
     public static GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public static Button UseButton { get => useButton; set => useButton = value; }
@@ -116,6 +160,9 @@ public class UiManager : MonoBehaviour
     public Image Black { get => black; set => black = value; }
     public Text DialogueText { get => dialogueText; set => dialogueText = value; }
     public static GameObject DialogueMenu { get => dialogueMenu; set => dialogueMenu = value; }
+    public GameObject DefaultObject { get => defaultObject; set => defaultObject = value; }
+    public int Page { get => page; set { page = Mathf.Clamp(value, 0, 2); ; PageControl(); } }
+
 
 
     //public static event UnityAction movementTutorialActive;
@@ -143,11 +190,11 @@ public class UiManager : MonoBehaviour
         SkillAssignMenu = skillAssignMenuPrefab;
         dialogueMenu = dialogueMenuPrefab;
         StoreManager.itemWasBought += UpdateMoney;
-        
+        //GameController.onGameWasStarted += SetCanvas;
         Npc.dialogueUp += DialogueManagerUp;
         Npc.dialogueDown += DialogueManagerDown;
         ExpConverter.levelMenuUp += LevelUpMenuUp;
-		Stats.onBaseStatsUpdate += UpdateBaseStats;
+        Stats.onBaseStatsUpdate += UpdateBoost;
     }
     void Start()
     {
@@ -159,7 +206,10 @@ public class UiManager : MonoBehaviour
         Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
         Enemy.onAnyEnemyDead += EnemyDeath;
-
+        weaponSlot.GetComponent<Button>().onClick.AddListener(WeaponInventUp);
+        shieldSlot.GetComponent<Button>().onClick.AddListener(ShieldInventUp);
+        maskSlot.GetComponent<Button>().onClick.AddListener(MaskInventUp);
+        //Cursor.lockState = CursorLockMode.Locked;
     }
     void OnEnable()
     {
@@ -175,18 +225,76 @@ public class UiManager : MonoBehaviour
 
     void Update()
     {
-
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+        {
+            EventSystem.current.SetSelectedGameObject(DefaultObject);
+        }
+        //SetCanvas();
     }
-    private void LevelUpMenuUp() {
-        if (!levelMenuPrefab.activeSelf) {
-            levelMenuPrefab.SetActive(true);
+    private void PauseGame() {
+        Player.GetPlayer().Pause = true;
+    }
+
+    private void PageControl() {
+        switch (page) {
+            case 0:
+                ClearMenus();
+                invent.SetActive(true);
+                
+                break;
+            case 1:
+                ClearMenus();
+                comboMenu.SetActive(true);
+                break;
+            case 2:
+                ClearMenus();
+
+                options.SetActive(true);
+                defaultObject = optDefaultButton;
+                break;
+            case 3:
+                ClearMenus();
+                objectiveMenu.SetActive(true);
+                break;
+            case 4:
+                ClearMenus();
+                statusWindow.SetActive(true);
+                break;
+            
+
+
+
+
 
         }
-		ViewStats();
 
     }
+    private void ClearMenus() {
+        invent.SetActive(false);
+        statusWindow.SetActive(false);
+        comboMenu.SetActive(false);
+        options.SetActive(false);
+        objectiveMenu.SetActive(false);
+    }
+    private void LevelUpMenuUp()
+    {
+        if (!levelMenuPrefab.activeSelf)
+        {
+            levelMenuPrefab.SetActive(true);
+            PauseGame();
+        }
+        ViewStatsUpWindow();
+        
+        DefaultObject = levelMenuDefaultButton;
+        EventSystem.current.SetSelectedGameObject(DefaultObject);
+    }
+    public void MenusDown() {
+        levelMenuPrefab.SetActive(false);
+        storeMenu.SetActive(false);
+    }
 
-    public void SkillMenuUp() {
+    public void SkillMenuUp()
+    {
         abilities.SetActive(false);
         abilityClose.SetActive(false);
         skillMenu.SetActive(true);
@@ -243,7 +351,8 @@ public class UiManager : MonoBehaviour
         pauseTutorial.SetActive(false);
         combatTutorial.SetActive(false);
     }
-    public void CloseTheStore() {
+    public void CloseTheStore()
+    {
 
         storeMenu.SetActive(false);
         Player.GetPlayer().MoveSpeed = 5;
@@ -260,14 +369,16 @@ public class UiManager : MonoBehaviour
         }
 
     }
-    public void ClearSkillTutorials() {
+    public void ClearSkillTutorials()
+    {
 
         SkillMenuUp();
         fireBallTutorial.SetActive(false);
         flameTornadoTutorial.SetActive(false);
         HeavySwingTutorial.SetActive(false);
     }
-    public void FireBallTutorialUp() {
+    public void FireBallTutorialUp()
+    {
         fireBallTutorial.SetActive(true);
         skillMenu.SetActive(false);
     }
@@ -281,12 +392,14 @@ public class UiManager : MonoBehaviour
         HeavySwingTutorial.SetActive(true);
         skillMenu.SetActive(false);
     }
-    private void DialogueManagerUp() {
-        if (!dialogueMenu.activeSelf) {
+    private void DialogueManagerUp()
+    {
+        if (!dialogueMenu.activeSelf)
+        {
             dialogueMenu.SetActive(true);
 
         }
-        
+
     }
     private void DialogueManagerDown()
     {
@@ -296,9 +409,9 @@ public class UiManager : MonoBehaviour
     {
         health.text = "Hp: " + Player.GetPlayer().stats.HealthLeft + "/" + Player.GetPlayer().stats.Health;
         stamina.text = "Mp: " + Player.GetPlayer().stats.MP;
-        exp.text = "Exp: " + Player.GetPlayer().stats.Exp;
+        exp.text = "Souls: " + Player.GetPlayer().stats.Exp;
         expBar.value = Player.GetPlayer().stats.Exp;
-        money.text = "Munn: "+Player.GetPlayer().Money.ToString();
+        money.text = "Munn: " + Player.GetPlayer().Money.ToString();
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
@@ -307,8 +420,9 @@ public class UiManager : MonoBehaviour
 
         level.text = "LV. " + Player.GetPlayer().stats.Level;
     }
-    private void UpdateMoney() {
-        money.text ="Munn: "+ Player.GetPlayer().Money.ToString();
+    private void UpdateMoney()
+    {
+        money.text = "Munn: " + Player.GetPlayer().Money.ToString();
 
 
     }
@@ -317,9 +431,10 @@ public class UiManager : MonoBehaviour
         attack.text = "Attack = " + Player.GetPlayer().stats.Attack.ToString();
         defense.text = "Defense = " + Player.GetPlayer().stats.Defense.ToString();
         healthAb.text = "Health = " + Player.GetPlayer().stats.Health.ToString();
-        staminaAb.text = "Stamina = " + Player.GetPlayer().stats.MPLeft.ToString();
+        staminaAb.text = "Mp = " + Player.GetPlayer().stats.MPLeft.ToString();
         intelligence.text = "Intellect = " + Player.GetPlayer().stats.Intellect.ToString();
     }
+
     void HealthChange()
     {
         health.text = "Hp: " + Player.GetPlayer().stats.HealthLeft + "/" + Player.GetPlayer().stats.Health;
@@ -339,12 +454,12 @@ public class UiManager : MonoBehaviour
     }
     void EnemyDeath()
     {
-        exp.text = "Exp: " + Player.GetPlayer().stats.Exp;
+        exp.text = "Souls: " + Player.GetPlayer().stats.Exp;
         expBar.value = Player.GetPlayer().stats.Exp;
     }
     void SetCanvas()
     {
-        if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
+        if (!Player.GetPlayer().Loaded)
         {
             mainMenuCanvas.SetActive(true);
             mainMenuEventSystem.SetActive(true);
@@ -359,22 +474,150 @@ public class UiManager : MonoBehaviour
             mainEventSystem.SetActive(true);
         }
     }
-	public void AddAttack() => Player.GetPlayer().stats.BaseAttack++;
-	public void AddDefense() => Player.GetPlayer().stats.BaseDefense++;
-	public void AddMp() => Player.GetPlayer().stats.BaseMp++;
-	public void AddHealth() => Player.GetPlayer().stats.BaseHealth++;
-	public void MinusAttack() => Player.GetPlayer().stats.BaseAttack--;
-	public void MinusDefense() => Player.GetPlayer().stats.BaseDefense--;
-	public void MinusMp() => Player.GetPlayer().stats.BaseMp--;
-	public void MinusHealth() => Player.GetPlayer().stats.BaseHealth--;
-	private void UpdateBaseStats() {
-		Player.GetPlayer().stats.Attack += Player.GetPlayer().stats.BaseAttack;
-		Player.GetPlayer().stats.Defense += Player.GetPlayer().stats.BaseDefense;
-		Player.GetPlayer().stats.MP += Player.GetPlayer().stats.BaseMp;
-		Player.GetPlayer().stats.Health += Player.GetPlayer().stats.BaseHealth;
-	}
-	private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    public void SoulsToAbility()
     {
+        if (Player.GetPlayer().stats.Exp > Player.GetPlayer().stats.RequiredExp)
+        {
+            Player.GetPlayer().stats.Abilitypoints++;
+            Player.GetPlayer().stats.Exp -= Player.GetPlayer().stats.RequiredExp;
+            Player.GetPlayer().stats.RequiredExp = (int)(Player.GetPlayer().stats.RequiredExp*1.2f);
+            lvMenuExp.text = "Souls: " + Player.GetPlayer().stats.Exp;
+            abilityPointsCost.text = "Cost :" + Player.GetPlayer().stats.RequiredExp;
+        }
+        
+    }
+
+    public void AddAttack()
+    {
+        if (Player.GetPlayer().stats.Abilitypoints > 0) {
+            Player.GetPlayer().stats.AttackBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+        
+    }
+
+    public void AddDefense()
+    {
+        if (Player.GetPlayer().stats.Abilitypoints > 0)
+        {
+            Player.GetPlayer().stats.DefenseBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+    }
+
+    public void AddMp()
+    {
+        if (Player.GetPlayer().stats.Abilitypoints > 0)
+        {
+            Player.GetPlayer().stats.MpBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+    }
+
+    public void AddHealth()
+    {
+        if (Player.GetPlayer().stats.Abilitypoints > 0)
+        {
+            Player.GetPlayer().stats.HealthBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+    }
+
+    public void MinusAttack()
+    {
+        if (Player.GetPlayer().stats.AttackBoost > 0) {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.AttackBoost--;
+    }
+
+    public void MinusDefense()
+    {
+        if (Player.GetPlayer().stats.DefenseBoost > 0)
+        {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.DefenseBoost--;
+    }
+
+    public void MinusMp()
+    {
+        if (Player.GetPlayer().stats.MpBoost > 0)
+        {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.MpBoost--;
+    }
+
+    public void MinusHealth()
+    {
+        if (Player.GetPlayer().stats.HealthBoost > 0)
+        {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.HealthBoost--;
+    }
+
+    private void UpdateBoost()
+    {
+        attackBoost.text = Player.GetPlayer().stats.AttackBoost.ToString();
+        defenseBoost.text = Player.GetPlayer().stats.DefenseBoost.ToString();
+        mpBoost.text = Player.GetPlayer().stats.MpBoost.ToString();
+        healthBoost.text = Player.GetPlayer().stats.HealthBoost.ToString();
+        abilityPoints.text = "Ability Points: "+Player.GetPlayer().stats.Abilitypoints.ToString();
+    }
+    private void ViewStatsUpWindow()
+    {
+        baseAttack.text = "Attack = " + Player.GetPlayer().stats.BaseAttack.ToString();
+        baseDefense.text = "Defense = " + Player.GetPlayer().stats.BaseDefense.ToString();
+        baseHealth.text = "Health = " + Player.GetPlayer().stats.BaseHealth.ToString();
+        baseMp.text = "Mp = " + Player.GetPlayer().stats.BaseMp.ToString();
+        lvMenuExp.text = "Souls: " + Player.GetPlayer().stats.Exp;
+
+
+    }
+    private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
+
+        switch (type)
+        {
+            case ItemSlot.ItemSlotType.Weapon:
+
+                break;
+            case ItemSlot.ItemSlotType.Shield:
+
+                break;
+            case ItemSlot.ItemSlotType.Mask:
+
+                break;
+        }
+    }
+    private void WeaponInventUp() {
+        weaponInvent.SetActive(true);
+    }
+    private void ShieldInventUp()
+    {
+        shieldInvent.SetActive(true);
+    }
+    private void MaskInventUp()
+    {
+        maskInvent.SetActive(true);
+    }
+    private IEnumerator WaitCoroutine() {
+        YieldInstruction wait = new WaitForSeconds(0.2f);
+        yield return wait;
         SetCanvas();
+
+    }
+    private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
+        StartCoroutine(WaitCoroutine());
     }
 }

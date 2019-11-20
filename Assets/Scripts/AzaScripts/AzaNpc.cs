@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class AzaNpc : Npc
 {
     public static UnityAction bowUp;
+    public static UnityAction bowDown;
     private Animator anim;
     private int pose;
     [SerializeField] private GameObject bow;
@@ -30,5 +31,11 @@ public class AzaNpc : Npc
         Pose = 4;
         bow.SetActive(true);
         Debug.Log("Bow up");
+    }
+    private void BowDown()
+    {
+        Pose = 0;
+        bow.SetActive(false);
+        Debug.Log("Bow down");
     }
 }

@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     //public float speed;
     [SerializeField] private float moveSpeed;
     private int money;
+    private bool inputSealed;
     #region Attacking
     [Space]
     [Header("Attacking")]
@@ -249,7 +250,7 @@ public class Player : MonoBehaviour
         stats.Start();
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
-        
+
         grounded = anim.GetBool("Grounded");
     }
     private void OnEnable()
@@ -258,41 +259,22 @@ public class Player : MonoBehaviour
         {
             onPlayerEnabled();
         }
-        staminaRec=StartCoroutine(StaminaRec());
+        staminaRec = StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
     void Update()
     {
-        Archery();
-
-        if (grounded && !guard && !lockedOn && moveSpeed > 0)
+        if (!pause&&!inputSealed)
         {
-            GetInput();
+            GetAllInput();
+
         }
-        else
+        if (pause && Input.GetButtonDown("Circle"))
         {
-            displacement = Vector3.zero;
+            UiManager.GetUiManager().MenusDown();
+            Pause = false;
         }
-        CalculateMoveDirection();
-
-        if (Input.GetKeyDown(KeyCode.P)) {
-            MoveSpeed = 8;
-        }
-        
-            Sword();
-        
-
-        //Inventory();
-        //Guitar();
         OnPause();
-        Skills();
-
-        if (attacking && R2.GetButton())
-        {
-            skillButton = true;
-        }
-        else
-            skillButton = false;
         //if (Input.GetKey(KeyCode.P)) { stats.Level += 10; }
     }
     private void CalculateMoveDirection()
@@ -333,7 +315,7 @@ public class Player : MonoBehaviour
         Dead = false;
         Money = 1000;
     }
-    private void DialogueUp() => MoveSpeed = 0;
+    private void DialogueUp() => inputSealed=true;
     private void DialogueDown() => MoveSpeed = 5;
     void SwitchCharacter()
     {
@@ -352,7 +334,44 @@ public class Player : MonoBehaviour
             return;
         }
     }
-    private void GetInput()
+    private void GetAllInput()
+    {
+        Archery();
+
+        if (grounded && !guard && !lockedOn && moveSpeed > 0)
+        {
+            MovementInput();
+        }
+        else
+        {
+            displacement = Vector3.zero;
+        }
+        CalculateMoveDirection();
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            MoveSpeed = 8;
+        }
+
+        Sword();
+
+
+        //Inventory();
+        //Guitar();
+
+        Skills();
+
+        if (attacking && R2.GetButton())
+        {
+            skillButton = true;
+        }
+        else
+            skillButton = false;
+
+
+
+    }
+    private void MovementInput()
     {
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
@@ -368,7 +387,7 @@ public class Player : MonoBehaviour
                 onCharacterSwitch();
             SwitchCharacter();
         }*/
-        if (Input.GetButtonDown("R3") && !transforming&&stats.MPLeft>=1)
+        if (Input.GetButtonDown("R3") && !transforming && stats.MPLeft >= 1)
         {
             if (poweredUp)
             {
@@ -378,45 +397,48 @@ public class Player : MonoBehaviour
             else
             {
                 PowerDown();
-                
+
             }
-            
+
 
 
         }
-        if (poweredUp&&stats.MPLeft==0) {
-                Deform();
-            }
+        if (poweredUp && stats.MPLeft == 0)
+        {
+            Deform();
+        }
         WeaponSwitch();
 
         MoveIt(x, y);
 
 
     }
-    private void Deform() {
+    private void Deform()
+    {
         PostProcessorManager.GetProcessorManager().Default();
-                PoweredUp = false;
-                stats.Attack /= 2;
-                stats.Defense /= 2;
-                MoveSpeed /= 2;
-                GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
-                Instantiate(swordDSpawn, transform);
-                FireTrail.SetActive(false);
-                mask.SetActive(false);
-                Destroy(aura);
-                StopCoroutine(mpDrain);
-                staminaRec =StartCoroutine(StaminaRec());
-                Debug.Log("Powered");
+        PoweredUp = false;
+        stats.Attack /= 2;
+        stats.Defense /= 2;
+        MoveSpeed /= 2;
+        GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
+        Instantiate(swordDSpawn, transform);
+        FireTrail.SetActive(false);
+        mask.SetActive(false);
+        Destroy(aura);
+        StopCoroutine(mpDrain);
+        staminaRec = StartCoroutine(StaminaRec());
+        Debug.Log("Powered");
 
 
     }
     private void PowerDown()
-    {mpDrain=StartCoroutine(MpDrain());
+    {
+        mpDrain = StartCoroutine(MpDrain());
         StopCoroutine(staminaRec);
         FireTrail.SetActive(true);
-            mask.SetActive(true);
-            PoweredUp = true;
-            PowerUp = true;
+        mask.SetActive(true);
+        PoweredUp = true;
+        PowerUp = true;
 
     }
     private void WeaponSwitch()
@@ -452,7 +474,7 @@ public class Player : MonoBehaviour
         }
         if (L2.GetButtonDown())
         {
-			Attacking = false;
+            Attacking = false;
             //targeting = true;
             BowUp = true;
             AttackBow.SetActive(true);
@@ -481,7 +503,8 @@ public class Player : MonoBehaviour
             targeting = false;
 
         }
-        if (R2.GetButtonDown()) {
+        if (R2.GetButtonDown())
+        {
 
         }
         if (!bowUp)
@@ -541,7 +564,7 @@ public class Player : MonoBehaviour
         {
             //Moving = true;
             Animations = 1;
-			nav.enabled = true;
+            nav.enabled = true;
             Move(MoveSpeed);
             if (bowUp && !targeting)
             {
@@ -559,25 +582,27 @@ public class Player : MonoBehaviour
         {
 
             Animations = 0;
-			nav.enabled = false;
+            nav.enabled = false;
             //Moving = false;
         }
     }
-	private void BowDown() {
-		if (notAiming != null) {
-			notAiming();
+    private void BowDown()
+    {
+        if (notAiming != null)
+        {
+            notAiming();
 
-		}
+        }
 
-		AttackBow.SetActive(false);
-		BowUp = false;
+        AttackBow.SetActive(false);
+        BowUp = false;
 
-	}
+    }
     private IEnumerator StopTargeting()
     {
         YieldInstruction wait = new WaitForSeconds(0.5f);
         yield return wait;
-		BowDown();
+        BowDown();
 
 
     }
@@ -617,7 +642,7 @@ public class Player : MonoBehaviour
     {
         if (skillButton && Input.GetButtonDown("Triangle") && !skillIsActive)
         {
-            
+
 
             if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired)
             {
@@ -668,7 +693,7 @@ public class Player : MonoBehaviour
             }
 
         }
-        if (stats.MPLeft >= 2 && !bowUp&&!skillIsActive && Input.GetButtonDown("X") && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
+        if (stats.MPLeft >= 2 && !bowUp && !skillIsActive && Input.GetButtonDown("X") && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
 
             SkillId = 10;
@@ -716,12 +741,15 @@ public class Player : MonoBehaviour
         }
 
     }
-    private IEnumerator MpDrain() {
-        while (isActiveAndEnabled) { 
-        YieldInstruction wait = new WaitForSeconds(1.5f);
-        yield return wait;
-        stats.MPLeft--;}
-        
+    private IEnumerator MpDrain()
+    {
+        while (isActiveAndEnabled)
+        {
+            YieldInstruction wait = new WaitForSeconds(1.5f);
+            yield return wait;
+            stats.MPLeft--;
+        }
+
     }
     private void Sword()
     {
@@ -730,11 +758,11 @@ public class Player : MonoBehaviour
         {
             Attacking = true;
             demonSwordBack.SetActive(false);
-			CmdInput = 0;
-			MoveSpeed = 5;
-			targeting = false;
-			BowDown();
-			return;
+            CmdInput = 0;
+            MoveSpeed = 5;
+            targeting = false;
+            BowDown();
+            return;
         }
         if (Attacking)
         {
@@ -803,14 +831,30 @@ public class Player : MonoBehaviour
         {
             pauseMenu.SetActive(true);
             Pause = true;
+            UiManager.GetUiManager().Page = 0;
             return;
         }
-        if (Input.GetButtonDown("Pause") && Pause)
+
+        if (Pause)
         {
-            pauseMenu.SetActive(false);
-            Pause = false;
-            return;
+            if (Input.GetButtonDown("Pause"))
+            {
+                pauseMenu.SetActive(false);
+                Pause = false;
+                return;
+            }
+            
+            if (Input.GetButtonDown("R1"))
+            {
+                UiManager.GetUiManager().Page++;
+
+            }
+            if (Input.GetButtonDown("L1")) {
+                UiManager.GetUiManager().Page--;
+
+            }
         }
+
     }
     public void PickUp(Items other)
     {

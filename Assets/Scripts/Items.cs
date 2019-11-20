@@ -36,7 +36,7 @@ public class Items : MonoBehaviour
         if (crafting)
         {
             Debug.Log("Are you even crafting bro?");
-            ItemSlot.ItemLastSelected = data;
+            //ItemSlot.ItemLastSelected = data;
 
         }
         else

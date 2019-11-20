@@ -16,13 +16,19 @@ public class Stats
     private int mpLeft;
     private byte level = 1;
     private int exp = 0;
+    private int requiredExp;
 
 	private int baseAttack;
 	private int baseDefense;
 	private int baseMp;
 	private int baseHealth;
 
-	private int abilitypoints;
+    private int attackBoost;
+    private int defenseBoost;
+    private int mpBoost;
+    private int healthBoost;
+
+    private int abilitypoints;
     //Events
     public static event UnityAction onHealthChange;
     public static event UnityAction onMPLeft;
@@ -41,12 +47,20 @@ public class Stats
 
     public byte Level { get => level; set => level = value; }
     public int Exp { get => exp; set => exp = value; }
-	public int BaseAttack { get => baseAttack; set { baseAttack = value;if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
-	public int BaseDefense { get => baseDefense; set { baseDefense = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
-	public int BaseMp { get => baseMp; set { baseMp = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
-	public int BaseHealth { get => baseHealth; set { baseHealth = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+	public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+	public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+	public int BaseMp { get => baseMp; set { baseMp = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+	public int BaseHealth { get => baseHealth; set { baseHealth = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 
-	public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return  Mathf.Abs(Exp- expNeeded); }
+    public int AttackBoost { get => attackBoost; set { attackBoost = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); SetStats(); } }
+    public int DefenseBoost { get => defenseBoost; set { defenseBoost = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); SetStats(); } }
+    public int MpBoost { get => mpBoost; set { mpBoost = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); SetStats(); } }
+    public int HealthBoost { get => healthBoost; set { healthBoost = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); SetStats(); } }
+
+    public int RequiredExp { get => requiredExp; set => requiredExp = value; }
+    public int Abilitypoints { get => abilitypoints; set { abilitypoints = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+
+    public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return  Mathf.Abs(Exp- expNeeded); }
     public int ExpCurrent() { return Exp - (4 * ((Level - 1) * (Level - 1) * (Level - 1))); }
     public void AddExp(int points)
     {
@@ -89,15 +103,17 @@ public class Stats
     }
     public void Start()
     {
-        health = 22;
-        healthLeft = health;
-        mp = 10;
-        mpLeft = mp;
-        attack = 10;
-        defense = 8;
+        baseHealth = 22;
+        healthLeft = baseHealth;
+        baseMp = 10;
+        mpLeft = baseMp;
+        baseAttack = 10;
+        baseDefense = 8;
         intellect = 6;
         level = 1;
         exp = 0;
+        requiredExp = 50;
+        SetStats();
         GameController.onGameWasStarted += UpdateUi;
         if (onHealthChange != null)
         {
@@ -119,5 +135,11 @@ public class Stats
             onMPLeft();
         }
         if (onLevelUp != null) { onLevelUp(); }
+    }
+    private void SetStats() {
+        Attack = baseAttack + attackBoost;
+        Defense = baseDefense + defenseBoost;
+        MP = baseMp + mpBoost;
+        Health = baseHealth + healthBoost;
     }
 }

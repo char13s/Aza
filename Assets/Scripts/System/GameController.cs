@@ -44,6 +44,7 @@ public class GameController : MonoBehaviour
             return;
         }
         instance = this;
+        
     }
 
     void OnEnable()
@@ -66,6 +67,9 @@ public class GameController : MonoBehaviour
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         }
         pc = Player.GetPlayer();
+        
+        //Input.Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -74,6 +78,10 @@ public class GameController : MonoBehaviour
         
         if (update != null)
             update();
+        SceneManagement();
+        
+    }
+    private void SceneManagement() {
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
         {
             CameraLogic.Switchable = false;
@@ -92,6 +100,8 @@ public class GameController : MonoBehaviour
             
             SceneManager.MoveGameObjectToScene(pc.gameObject, SceneManager.GetSceneByBuildIndex(0));
         }
+
+
     }
     private IEnumerator LoadCoroutine()
     {

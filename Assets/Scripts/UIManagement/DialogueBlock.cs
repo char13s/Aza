@@ -62,7 +62,10 @@ public class DialogueBlock : MonoBehaviour
                 Debug.Log("fuck you");
                 break;
             case 2:
-
+                if (AzaNpc.bowDown != null)
+                {
+                    AzaNpc.bowDown();
+                }
                 break;
 
 

@@ -81,8 +81,7 @@ public class HitBox : MonoBehaviour
         {
             //GameObject burn=Instantiate(smallFire,other.transform);
             //Destroy(burn,3f);
-            if (other.gameObject.GetComponent<Enemy>().HealthLeft >= 1)
-            {
+            
                 EnemyImAttacking = other.gameObject;
                 Instantiate(effects, other.gameObject.transform);
                 audio.PlayOneShot(hit);
@@ -91,16 +90,16 @@ public class HitBox : MonoBehaviour
 
                 other.GetComponent<Rigidbody>().AddForce(HitKnockback(), ForceMode.VelocityChange);
                 other.GetComponent<Enemy>().Grounded = false;
-            }
+            
         }
 
         //Debug.Log(other.gameObject.GetComponent<Enemy>().HealthLeft);
 
-        if (other.gameObject.CompareTag("SlimeTree"))
+        /*if (other.gameObject.CompareTag("SlimeTree"))
         {
             Instantiate(fire, other.gameObject.transform);
             Destroy(other.gameObject, 4);
-        }
+        }*/
         if (other.gameObject.CompareTag("Dummy"))
         {
 

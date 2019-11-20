@@ -2,23 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+[RequireComponent(typeof(Button))]
 public class ItemSlot : MonoBehaviour
 {
-    private static ItemData itemLastSelected;
-    public static ItemData ItemLastSelected { get => itemLastSelected; set => itemLastSelected = value; }
+    //private static ItemData itemLastSelected;
+    //public static ItemData ItemLastSelected { get => itemLastSelected; set => itemLastSelected = value; }
 
     private ItemData data;
     private Image itemSlotImage;
     private bool crafting;
-
+    public enum ItemSlotType { Weapon, Shield, Mask };
     public ItemData Data { get => data; }
     public bool IsSet => data != null;
+    [SerializeField] private ItemSlotType type;
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Button>().onClick.AddListener(TakeThisItem);
-        itemSlotImage = transform.GetChild(0).GetComponent<Image>();
-        CraftResults.crafted += EmptySlot;
+        //GetComponent<Button>().onClick.AddListener(InventPopUp);
+        //itemSlotImage = transform.GetChild(0).GetComponent<Image>();
+        //CraftResults.crafted += EmptySlot;
         
     }
 
@@ -27,8 +33,22 @@ public class ItemSlot : MonoBehaviour
     {
 
     }
-    
-    private void TakeThisItem()
+    private void InventPopUp() {
+        switch (type) {
+            case ItemSlotType.Weapon:
+
+                break;
+            case ItemSlotType.Shield:
+
+                break;
+            case ItemSlotType.Mask:
+
+                break;
+        }
+
+
+    }
+    /*private void TakeThisItem()
     {
         if (ItemLastSelected != null)
         {
@@ -42,6 +62,6 @@ public class ItemSlot : MonoBehaviour
     private void EmptySlot() {
 
         itemSlotImage.sprite = null;
-    }
+    }*/
     
 }
