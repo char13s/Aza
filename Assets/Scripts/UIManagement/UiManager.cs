@@ -161,7 +161,7 @@ public class UiManager : MonoBehaviour
     public Text DialogueText { get => dialogueText; set => dialogueText = value; }
     public static GameObject DialogueMenu { get => dialogueMenu; set => dialogueMenu = value; }
     public GameObject DefaultObject { get => defaultObject; set => defaultObject = value; }
-    public int Page { get => page; set { page = Mathf.Clamp(value, 0, 2); ; PageControl(); } }
+    public int Page { get => page; set { page = Mathf.Clamp(value, 0, 3); ; PageControl(); } }
 
 
 
@@ -249,12 +249,12 @@ public class UiManager : MonoBehaviour
             case 2:
                 ClearMenus();
 
-                options.SetActive(true);
+                objectiveMenu.SetActive(true);
                 defaultObject = optDefaultButton;
                 break;
             case 3:
                 ClearMenus();
-                objectiveMenu.SetActive(true);
+                options.SetActive(true);
                 break;
             case 4:
                 ClearMenus();
@@ -459,7 +459,7 @@ public class UiManager : MonoBehaviour
     }
     void SetCanvas()
     {
-        if (!Player.GetPlayer().Loaded)
+        if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
         {
             mainMenuCanvas.SetActive(true);
             mainMenuEventSystem.SetActive(true);
@@ -618,6 +618,6 @@ public class UiManager : MonoBehaviour
     }
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
-        StartCoroutine(WaitCoroutine());
+		SetCanvas();
     }
 }

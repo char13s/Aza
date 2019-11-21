@@ -35,6 +35,7 @@ public class Stats
     public static event UnityAction onLevelUp;
     public static event UnityAction onShowingStats;
 	public static event UnityAction onBaseStatsUpdate;
+	public static UnityAction onObjectiveComplete;
     //Properties
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);if (onHealthChange != null) { onHealthChange(); } } }
@@ -46,7 +47,7 @@ public class Stats
     public int Intellect { get { return intellect; } set { intellect = value; } }
 
     public byte Level { get => level; set => level = value; }
-    public int Exp { get => exp; set => exp = value; }
+    public int Exp { get => exp; set { exp = value; if (exp == 10000) if (onObjectiveComplete != null) onObjectiveComplete(); } }
 	public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 	public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 	public int BaseMp { get => baseMp; set { baseMp = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }

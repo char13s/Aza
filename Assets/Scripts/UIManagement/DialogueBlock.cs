@@ -67,7 +67,9 @@ public class DialogueBlock : MonoBehaviour
                     AzaNpc.bowDown();
                 }
                 break;
-
+			case 99:
+				GameController.GetGameController().OnQuit();
+				break;
 
         }
 

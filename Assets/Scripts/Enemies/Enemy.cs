@@ -479,7 +479,7 @@ public class Enemy : MonoBehaviour
     public void CalculateAttack(int n) { pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack - (int)(stats.Defense * 1.6f)); }
     public void SlimeHasDied()
     {
-        int exp = level * baseExpYield;
+        int exp = baseHealth * baseExpYield;
         pc.stats.AddExp(exp);
         Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
         drop.transform.position = transform.position;

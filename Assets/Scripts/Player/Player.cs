@@ -316,8 +316,8 @@ public class Player : MonoBehaviour
         Money = 1000;
     }
     private void DialogueUp() => inputSealed=true;
-    private void DialogueDown() => MoveSpeed = 5;
-    void SwitchCharacter()
+    private void DialogueDown() => inputSealed = false;
+	void SwitchCharacter()
     {
         if (zend.activeSelf)
         {

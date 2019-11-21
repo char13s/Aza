@@ -19,7 +19,7 @@ public class Npc : MonoBehaviour
     }
     public virtual void Start()
     {
-        presentBlock = blocks[currentBlock];
+        presentBlock = blocks[CurrentBlock];
     }
 
     // Update is called once per frame
@@ -28,7 +28,10 @@ public class Npc : MonoBehaviour
         PlayerIsInRange();
     }
     private float Distance => Vector3.Distance(Player.GetPlayer().transform.position, transform.position);
-    private void PlayerIsInRange()
+
+	public byte CurrentBlock { get => currentBlock; set => currentBlock = value; }
+
+	private void PlayerIsInRange()
     {
         if (Distance < 2)
         {
@@ -58,7 +61,7 @@ public class Npc : MonoBehaviour
                         
                     }
                     else {
-                        presentBlock=blocks[++currentBlock];
+                        presentBlock=blocks[++CurrentBlock];
 
                     }
                     
