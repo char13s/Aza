@@ -66,6 +66,12 @@ public class DialogueBlock : MonoBehaviour
                 {
                     AzaNpc.bowDown();
                 }
+                if (ObjectiveManager.mission1Active != null) {ObjectiveManager.mission1Active(); }
+                
+                break;
+            case 3:
+                if (Mission1.mission1Done != null)
+                    Mission1.mission1Done();
                 break;
 			case 99:
 				GameController.GetGameController().OnQuit();

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using UnityEngine.Animations;
+
 #pragma warning disable 0649
 public class Player : MonoBehaviour
 {
@@ -109,6 +109,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject forwardHitbox;
     [SerializeField] private GameObject fireTrail;
     [SerializeField] private GameObject fireCaster;
+    [SerializeField] private GameObject devilFoot;
     #endregion
     [Space]
     [Header("Buttons")]
@@ -140,10 +141,14 @@ public class Player : MonoBehaviour
     private BasicHeadController headController;
     #region Constructors
     internal Inventory items = new Inventory();
+    internal Inventory weaponInvent = new Inventory();
+    internal Inventory shieldInvent = new Inventory();
+    internal Inventory maskInvent = new Inventory();
     internal Stats stats = new Stats();
     private AxisButton dPadUp = new AxisButton("DPad Up");
     private AxisButton R2 = new AxisButton("R2");
     private AxisButton L2 = new AxisButton("L2");
+    private AxisButton L3 = new AxisButton("L3");
     internal StatusEffects status = new StatusEffects();
     #endregion
     #region Events
@@ -153,6 +158,8 @@ public class Player : MonoBehaviour
     public static event UnityAction playerIsLockedOn;
     public static event UnityAction onCharacterSwitch;
     public static event UnityAction notAiming;
+    public static event UnityAction lockOn;
+    public static event UnityAction kintoun;
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
@@ -217,6 +224,7 @@ public class Player : MonoBehaviour
     public bool Transforming { get => transforming; set => transforming = value; }
     public GameObject AttackBow { get => attackBow; set => attackBow = value; }
     public GameObject AimmingPoint { get => aimmingPoint; set => aimmingPoint = value; }
+    public bool InputSealed { get => inputSealed; set => inputSealed = value; }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -259,12 +267,13 @@ public class Player : MonoBehaviour
         {
             onPlayerEnabled();
         }
+        StartCoroutine(WaitForGame());
         staminaRec = StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
     void Update()
     {
-        if (!pause&&!inputSealed)
+        if (!pause && !InputSealed)
         {
             GetAllInput();
 
@@ -275,7 +284,7 @@ public class Player : MonoBehaviour
             Pause = false;
         }
         OnPause();
-        //if (Input.GetKey(KeyCode.P)) { stats.Level += 10; }
+        //if (Input.GetKeyDown(KeyCode.P)) { stats.Exp += 1000; }
     }
     private void CalculateMoveDirection()
     {
@@ -303,7 +312,7 @@ public class Player : MonoBehaviour
         PostProcessorManager.GetProcessorManager().Default();
         Attacking = false;
         CmdInput = 0;
-        MoveSpeed = 5;
+        MoveSpeed = 6;
         LockedOn = false;
         stats.Start();
         FireTrail.SetActive(false);
@@ -314,10 +323,18 @@ public class Player : MonoBehaviour
         battleMode.Enemies.Clear();
         Dead = false;
         Money = 1000;
+
     }
-    private void DialogueUp() => inputSealed=true;
-    private void DialogueDown() => inputSealed = false;
-	void SwitchCharacter()
+    private IEnumerator WaitForGame()
+    {
+        YieldInstruction wait = new WaitForSeconds(2f);
+        yield return wait;
+        //UiManager.GetUiManager().SetCanvas();
+
+    }
+    private void DialogueUp() => InputSealed = true;
+    private void DialogueDown() => InputSealed = false;
+    void SwitchCharacter()
     {
         if (zend.activeSelf)
         {
@@ -336,8 +353,8 @@ public class Player : MonoBehaviour
     }
     private void GetAllInput()
     {
-        Archery();
-
+        //Archery();
+        LockOn();
         if (grounded && !guard && !lockedOn && moveSpeed > 0)
         {
             MovementInput();
@@ -354,7 +371,7 @@ public class Player : MonoBehaviour
         }
 
         Sword();
-
+        Jump();
 
         //Inventory();
         //Guitar();
@@ -368,7 +385,10 @@ public class Player : MonoBehaviour
         else
             skillButton = false;
 
+        /*if (dPadUp.GetButtonDown()) {
+            Animations = 99;
 
+        }*/
 
     }
     private void MovementInput()
@@ -419,7 +439,7 @@ public class Player : MonoBehaviour
         PoweredUp = false;
         stats.Attack /= 2;
         stats.Defense /= 2;
-        MoveSpeed /= 2;
+        //MoveSpeed /= 2;
         GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
         Instantiate(swordDSpawn, transform);
         FireTrail.SetActive(false);
@@ -463,27 +483,44 @@ public class Player : MonoBehaviour
     private void Archery()
     {
 
-
-        if (Input.GetButton("Square"))
+        if (bowUp)
         {
+            if (Input.GetButton("Square"))
+            {
+                
+
+            }
+            if (Input.GetButtonUp("Square"))
+            {
+                
+
+            }
+            if (R2.GetButton())
+        {CmdInput = 5;
+            MoveSpeed = 2;
+
+            if (aiming != null)
+            {
+                aiming();
+            }
 
         }
-        if (Input.GetButtonUp("Square"))
-        {
+        if (R2.GetButtonUp()) {
+            CmdInput = 6;
+            MoveSpeed = 6;
 
         }
+
+
+        }
+
         if (L2.GetButtonDown())
         {
             Attacking = false;
             //targeting = true;
             BowUp = true;
             AttackBow.SetActive(true);
-            MoveSpeed = 2;
-            CmdInput = 5;
-            if (aiming != null)
-            {
-                aiming();
-            }
+            
 
             StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
         }
@@ -498,15 +535,14 @@ public class Player : MonoBehaviour
         if (L2.GetButtonUp())
         {
 
-            CmdInput = 6;
-            MoveSpeed = 5;
+
             targeting = false;
 
         }
-        if (R2.GetButtonDown())
-        {
-
+        if (R2.GetButtonDown()) {
+            
         }
+        
         if (!bowUp)
         {
             StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));///GOOD CODE!!!!!
@@ -560,6 +596,7 @@ public class Player : MonoBehaviour
     }
     private void MoveIt(float x, float y)
     {
+        Vector3 offset=new Vector3(0,0,0);
         if (x != 0 || y != 0)
         {
             //Moving = true;
@@ -572,7 +609,30 @@ public class Player : MonoBehaviour
                 StartCoroutine(StopTargeting());
 
             }
+            
+            /*if (R2.GetButton()&&!attacking)
+            {offset = new Vector3(0,1,0);
+                if (kintoun != null) {
 
+                    kintoun();
+                }
+                Animations = 35;
+                devilFoot.SetActive(true);
+                MoveSpeed = 9;
+                if (Input.GetButtonDown("Circle")) {
+                    
+                    Animations = 36;
+                }
+            }
+            else {
+                offset = new Vector3(0,0,0);
+                
+                devilFoot.SetActive(false);
+                MoveSpeed = 6;
+            }
+            
+                transform.position += offset;*/
+            
             if (attacking && Input.GetButtonDown("Square"))
             {
 
@@ -585,6 +645,13 @@ public class Player : MonoBehaviour
             nav.enabled = false;
             //Moving = false;
         }
+        
+        
+            
+        
+    }
+    private void Offset() {
+        
     }
     private void BowDown()
     {
@@ -615,7 +682,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Inventory()
+    /*private void Inventory()
     {
         if (items.PocketActive)
         {
@@ -632,7 +699,7 @@ public class Player : MonoBehaviour
                 items.DisplayInventory();
             }
         }
-    }
+    }*/
     private void CheckPlayerHealth()
     {
 
@@ -751,6 +818,59 @@ public class Player : MonoBehaviour
         }
 
     }
+    private void LockOn()
+    {
+        if (BattleMode.Enemies.Count > 0)
+        {
+            if (Input.GetButtonDown("R1"))
+            {
+                Animations = 0;
+                Attacking = true;
+            }
+            if (Input.GetButton("R1"))
+            {
+                //Guard = true;
+
+                LockedOn = true;
+                if (lockOn != null) {
+                    lockOn();
+                }
+            }
+            else
+            {
+                
+                LockedOn = false;
+                //Guard = false;
+            }
+        }
+        else {
+            if (!bowUp) {
+                if (notAiming != null)
+                {
+                    notAiming();
+
+                }
+
+
+            }
+            
+
+            LockedOn = false;
+        }
+        
+
+    }
+    private void Jump()
+    {
+
+        /*if(Input.GetButtonDown("Circle")){
+            nav.enabled = false;
+            rBody.isKinematic = false;
+            rBody.AddForce(new Vector3(0,5,0),ForceMode.VelocityChange);
+        }*/
+
+    }
+
     private void Sword()
     {
 
@@ -759,25 +879,14 @@ public class Player : MonoBehaviour
             Attacking = true;
             demonSwordBack.SetActive(false);
             CmdInput = 0;
-            MoveSpeed = 5;
+            MoveSpeed = 6;
             targeting = false;
             BowDown();
             return;
         }
         if (Attacking)
         {
-            if (Input.GetButtonDown("R1") && BattleMode.Enemies.Count > 0)
-            {
-                Animations = 0;
-            }
-            if (Input.GetButton("R1") && BattleMode.Enemies.Count > 0)
-            {
-                LockedOn = true;
-            }
-            else
-            {
-                LockedOn = false;
-            }
+
 
             if (Input.GetButtonDown("Circle") && !skillIsActive)
             {
@@ -843,13 +952,14 @@ public class Player : MonoBehaviour
                 Pause = false;
                 return;
             }
-            
+
             if (Input.GetButtonDown("R1"))
             {
                 UiManager.GetUiManager().Page++;
 
             }
-            if (Input.GetButtonDown("L1")) {
+            if (Input.GetButtonDown("L1"))
+            {
                 UiManager.GetUiManager().Page--;
 
             }

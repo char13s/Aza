@@ -18,7 +18,7 @@ public class SuperSaiyanBehavior : StateMachineBehaviour
         Instantiate(gatherEnergy, Player.GetPlayer().transform.position, Quaternion.identity);
         PostProcessorManager.GetProcessorManager().Transformation();
         Player.GetPlayer().Transforming = true;
-        Player.GetPlayer().MoveSpeed *= 2;
+        //Player.GetPlayer().MoveSpeed *= 2;
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

@@ -13,21 +13,23 @@ public class Inventory
 
     [SerializeField] private Button useButton;
     //private List<string> itemNames = new List<string>();
-    private GameObject pocket;
+    private List<GameObject> buttons = new List<GameObject>();
+    /*private GameObject pocket;
     private GameObject pageTitle;
     private GameObject pageNum;
-    private List<GameObject> buttons = new List<GameObject>();
+    
     private GameObject lastItemSelected;
-    private bool pocketActive;
+    private bool pocketActive;*/
 
 
-    public bool PocketActive { get => pocketActive; set => pocketActive = value; }
+    /*public bool PocketActive { get => pocketActive; set => pocketActive = value; }
     public int Page { get => page; set => page = value; }
-    public List<ItemData> Items { get => items; set => items = value; }
+    
     public GameObject Pocket { get => pocket; set => pocket = value; }
     public GameObject PageTitle { get => pageTitle; set => pageTitle = value; }
-    public GameObject PageNum { get => pageNum; set => pageNum = value; }
+    public GameObject PageNum { get => pageNum; set => pageNum = value; }*/
     public List<GameObject> Buttons { get => buttons; set => buttons = value; }
+    public List<ItemData> Items { get => items; set => items = value; }
 
 
     // Start is called before the first frame update
@@ -35,8 +37,8 @@ public class Inventory
     {
         ItemData.ItemDataUpdate += UpdateInvent;
         GameController.onGameWasStarted += UpdateInvent;
-        CraftingTable.crafting += SetToCraftingMenu;
-        UiManager.notCrafting += SetBackToInvent;
+        /*CraftingTable.crafting += SetToCraftingMenu;
+        UiManager.notCrafting += SetBackToInvent;*/
     }
     public void AddItem(ItemData item)
     {
@@ -56,7 +58,7 @@ public class Inventory
 
         }
     }
-    private void SetToCraftingMenu()
+    /*private void SetToCraftingMenu()
     {
 
         foreach (GameObject b in Buttons)
@@ -71,7 +73,7 @@ public class Inventory
             b.transform.SetParent(Pocket.transform);
 
         }
-    }
+    }*/
     public ItemData GetItem(ItemData item)
     {
         foreach (ItemData i in Items)
@@ -116,7 +118,7 @@ public class Inventory
         return false;
     }
 
-    public void DisplayInventory()
+    /*public void DisplayInventory()
     {
         if (!PocketActive)
         {
@@ -154,7 +156,7 @@ public class Inventory
     {
         Pocket.SetActive(false);
         PocketActive = false;
-    }
+    }*/
 
     public void ButtonCreation(ItemData i)
     {
@@ -167,9 +169,12 @@ public class Inventory
         c.AddComponent<Items>();
         c.GetComponent<Items>().data = i;
         c.GetComponent<Image>().sprite = SpriteAssign.SetImage(i); ;
-        c.transform.SetParent(Pocket.transform);
+        c.transform.SetParent(SetToInvent(i));
+        //Color hC  = new Color(1,0,0);
+        //c.GetComponent<Button>().colors.highlightedColor = hC; 
         //c.transform.localScale = new Vector3(0.5f, 0.5f, 1);
         //c.transform.localPosition = new Vector3(0, 0, 2);
+        
         string d = i.ItemDescription;
         c.GetComponent<Button>().onClick.AddListener(c.GetComponent<Items>().IconClick);
         
@@ -189,8 +194,22 @@ public class Inventory
         Buttons.Add(c);
     }
 
-    private void OnButtonHold()
-    {
+    private Transform SetToInvent(ItemData i) {
+        switch (i.Type) {
+            case ItemData.ItemType.Normal:
+                return UiManager.GetUiManager().ItemInvent.transform;
+                
+            case ItemData.ItemType.Weapon:
+                return UiManager.GetUiManager().WeaponInvent.transform;
+                
+            case ItemData.ItemType.Shield:
+                return UiManager.GetUiManager().ShieldInvent.transform;
+            case ItemData.ItemType.Mask:
+                return UiManager.GetUiManager().MaskInvent.transform;
+
+
+        }
+        return null;
 
     }
     private void GetQuantity(Text t, ItemData i)

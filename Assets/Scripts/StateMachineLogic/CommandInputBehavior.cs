@@ -12,19 +12,24 @@ public class CommandInputBehavior : StateMachineBehaviour
         sound.PlayOneShot(swing);
         Player.GetPlayer().CmdInput = 0;
         Player.GetPlayer().MoveSpeed = 0;
+        Player.GetPlayer().Nav.enabled = false;
 		Player.GetPlayer().RBody.isKinematic = false;
-		Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * move,ForceMode.VelocityChange);
+		
 		
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GetInput();
+        if(stateInfo.normalizedTime>0.1f&& stateInfo.normalizedTime < 0.8f)
+        Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * move,ForceMode.VelocityChange);
+
     }
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 		Player.GetPlayer().RBody.isKinematic = true;
-	}
+        Player.GetPlayer().Nav.enabled = true;
+    }
     private void HitBoxControl() {
         
     }

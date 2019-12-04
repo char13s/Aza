@@ -50,7 +50,7 @@ public class HitBox : MonoBehaviour
                 {
                     case 1:
 
-                        return Player.GetPlayer().transform.forward * -1.3f;
+                        return Player.GetPlayer().transform.forward * 1.3f;
                     case 2:
 
                         return Player.GetPlayer().transform.forward * -1.1f;
@@ -85,11 +85,16 @@ public class HitBox : MonoBehaviour
                 EnemyImAttacking = other.gameObject;
                 Instantiate(effects, other.gameObject.transform);
                 audio.PlayOneShot(hit);
-                other.GetComponent<Enemy>().CalculateDamage(0);
+
                 other.GetComponent<NavMeshAgent>().enabled = false;
 
                 other.GetComponent<Rigidbody>().AddForce(HitKnockback(), ForceMode.VelocityChange);
                 other.GetComponent<Enemy>().Grounded = false;
+            if (other != null) {
+                other.GetComponent<Enemy>().CalculateDamage(0);
+
+            }
+            
             
         }
 

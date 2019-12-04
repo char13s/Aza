@@ -33,7 +33,7 @@ public class AreaTransition : MonoBehaviour
         {
 
             Player.GetPlayer().Nav.enabled = false;
-            
+            Player.GetPlayer().InputSealed = true;
             StartCoroutine(FadeOutCoroutine());
             StartCoroutine(FadeCoroutine());
 
@@ -90,9 +90,13 @@ public class AreaTransition : MonoBehaviour
     private IEnumerator WaitCoroutine()
     {
         YieldInstruction wait = new WaitForSeconds(1);
+        
         yield return wait;
         AreaSwitches();
         NextScene();
+        
         Player.GetPlayer().Nav.enabled = true;
+        
+        Player.GetPlayer().InputSealed = false;
     }
 }

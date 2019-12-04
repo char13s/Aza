@@ -16,7 +16,8 @@ public class AzaNpc : Npc
     {
         anim = GetComponent<Animator>();
         bowUp += BowUp;
-		Stats.onObjectiveComplete += ChangeDialogue;
+        Mission1.mission1Update += Mission1Update;
+		//Stats.onObjectiveComplete += ChangeDialogue;
     }
     public override void Start()
     {
@@ -39,7 +40,12 @@ public class AzaNpc : Npc
         bow.SetActive(false);
         Debug.Log("Bow down");
     }
+    private void Mission1Update() {
+
+        CurrentBlock = 2;
+
+    }
 	private void ChangeDialogue() {
-		CurrentBlock = 3;
+		
 	}
 }

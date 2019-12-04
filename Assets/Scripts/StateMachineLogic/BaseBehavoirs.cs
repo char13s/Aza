@@ -9,7 +9,7 @@ public class BaseBehavoirs : StateMachineBehaviour
     {
         Player.GetPlayer().SkillId = 0;
         Player.GetPlayer().CmdInput = 0;
-        Player.GetPlayer().MoveSpeed = 5;
+        Player.GetPlayer().MoveSpeed = 6;
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

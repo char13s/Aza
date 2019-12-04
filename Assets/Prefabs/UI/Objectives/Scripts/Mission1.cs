@@ -1,0 +1,79 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+public class Mission1 : Objective
+{
+    [System.NonSerialized] private int conditions;
+    public static UnityAction mission1Done;
+    public static UnityAction mission1Update;
+
+    public int Conditions { get => conditions; set { conditions = value; UiManager.GetUiManager().ObjectUpdate(); } }
+
+    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        
+        Debug.Log("WOKE");
+    }
+    public override void Start()
+    {
+        base.Start();
+        Debug.Log("Started");
+    }
+    // Update is called once per frame
+    public override void Update()
+    {
+        
+        ConditionControl();
+
+    }
+    private void ConditionControl() {
+        
+        if (IsActive)
+        {
+            switch (Conditions) {
+                case 0:
+                    Condition0();
+                    break;
+                case 1:
+                    Condition1();
+                    break;
+
+
+            }
+
+            
+            
+        }
+
+    }
+    private void Condition0() {
+        Debug.Log("its running");
+        if (Player.GetPlayer().stats.Exp > 1000)
+            {
+            Debug.Log("Step 1 done");
+                CurrentDescription = 1;
+            //UiManager.GetUiManager().ObjectiveDescription(Description[CurrentDescription]);
+            Conditions = 1;
+            }
+
+
+
+    }
+    private void Condition1() {
+
+        if (mission1Update != null) {
+            mission1Update();
+        }
+        mission1Done += MissionDone;
+    }
+    private void MissionDone() {
+        Completed = true;
+                IsActive = false;
+
+    }
+    
+
+}

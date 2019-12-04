@@ -122,7 +122,7 @@ public class GameController : MonoBehaviour
         deadCoroutine = StartCoroutine(DeadCoroutine());
 
     }
-    public void Pocket()
+    /*public void Pocket()
     {
         pc.items.DisplayInventory();
         MenuOff();
@@ -165,7 +165,7 @@ public class GameController : MonoBehaviour
         
         
         
-    }
+    }*/
     public void SaveGame() => SaveLoad.Save(instance.pc);
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {

@@ -29,7 +29,7 @@ public class Npc : MonoBehaviour
     }
     private float Distance => Vector3.Distance(Player.GetPlayer().transform.position, transform.position);
 
-	public byte CurrentBlock { get => currentBlock; set => currentBlock = value; }
+	public byte CurrentBlock { get => currentBlock; set { currentBlock = value;presentBlock=blocks[currentBlock]; } }
 
 	private void PlayerIsInRange()
     {

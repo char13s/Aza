@@ -46,9 +46,6 @@ MonoBehaviour:
   lines:
   - Oh? Finally done?
   - NOW WE CAN GET TO THE REAL PLAN!
-  - '...what?'
-  - 'The demo is over? '
-  - '....THEN BUY THE GAME!'
-  action: 99
+  action: 3
   isEndingBlock: 1
   isDefaultblock: 0

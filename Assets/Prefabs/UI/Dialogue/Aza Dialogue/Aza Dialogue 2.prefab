@@ -48,15 +48,15 @@ MonoBehaviour:
   - Yea, thats what I thought!
   - Now listen up lackey, you work for me!
   - And our first order of business...
-  - Go collect 1000 souls!
+  - Go collect 1000 spirits!
   - Then come back and bring them to me...
   - Why do you look so confused?
-  - You kill things and collect their souls! Is that hard to understand?
-  - The stronger the the thing you kill the more souls it'll have stored up.
-  - However, since you're still weak, you might wanna use some souls to power up.
+  - You kill things and collect their spirits! Is that hard to understand?
+  - The stronger the the thing you kill the more spirits it'll have stored up.
+  - However, since you're still weak, you might wanna use some spirits to power up.
   - Just stand in that magic circle over there and press X, and you'll be able to
-    convert souls to power!
+    convert spirits to power!
   - Now get going, or I will shoot!
-  action: 0
+  action: 2
   isEndingBlock: 1
   isDefaultblock: 0
