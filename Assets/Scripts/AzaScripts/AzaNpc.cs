@@ -16,6 +16,7 @@ public class AzaNpc : Npc
     {
         anim = GetComponent<Animator>();
         bowUp += BowUp;
+		bowDown += BowDown;
         Mission1.mission1Update += Mission1Update;
 		//Stats.onObjectiveComplete += ChangeDialogue;
     }
@@ -30,6 +31,7 @@ public class AzaNpc : Npc
         base.Update();
     }
     private void BowUp() {
+
         Pose = 4;
         bow.SetActive(true);
         Debug.Log("Bow up");

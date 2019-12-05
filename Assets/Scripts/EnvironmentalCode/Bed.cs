@@ -23,7 +23,7 @@ public class Bed : MonoBehaviour
             {
 
                 GameController.GetGameController().SaveGame();
-
+				UiManager.GetUiManager().SaveGame();
             }
         }
     }

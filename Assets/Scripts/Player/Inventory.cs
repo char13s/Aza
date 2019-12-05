@@ -52,6 +52,7 @@ public class Inventory
         }
         else
         {
+			UiManager.GetUiManager().ItemPopUp(item.ItemDescription,SpriteAssign.SetImage(item));
             Items.Add(item);
             item.Quantity++;
             ButtonCreation(item);

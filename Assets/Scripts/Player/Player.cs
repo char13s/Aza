@@ -303,6 +303,7 @@ public class Player : MonoBehaviour
     }
     private void OnDead()
     {
+		UiManager.GetUiManager().DefeatedWindow();
         //GetComponentInChildren<SkinnedMeshRenderer>().material = fader;
         //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 1);
 
@@ -385,11 +386,11 @@ public class Player : MonoBehaviour
         else
             skillButton = false;
 
-        /*if (dPadUp.GetButtonDown()) {
+		/*if (dPadUp.GetButtonDown()) {
             Animations = 99;
 
         }*/
-
+		if (Input.GetKeyDown(KeyCode.P)) { stats.AddExp(1000); }
     }
     private void MovementInput()
     {
@@ -610,7 +611,7 @@ public class Player : MonoBehaviour
 
             }
             
-            /*if (R2.GetButton()&&!attacking)
+            if (R2.GetButton()&&!attacking)
             {offset = new Vector3(0,1,0);
                 if (kintoun != null) {
 
@@ -631,7 +632,7 @@ public class Player : MonoBehaviour
                 MoveSpeed = 6;
             }
             
-                transform.position += offset;*/
+                transform.position += offset;
             
             if (attacking && Input.GetButtonDown("Square"))
             {

@@ -10,12 +10,18 @@ public class SpriteAssign : MonoBehaviour
     private static Sprite woodImage;
     [SerializeField] private Sprite lowHpPotion;
     private static Sprite lowHpPotionImage;
+	[SerializeField] private Sprite sword;
+	private static Sprite swordImage;
+	[SerializeField] private Sprite skull13;
+	private static Sprite skull13Image;
 
-    void Start()
+	void Start()
     {
         slimeImage = slime;
         woodImage = wood;
         lowHpPotionImage = lowHpPotion;
+		swordImage = sword;
+		skull13Image = skull13;
     }
 
     public static Sprite SetImage(ItemData item)
@@ -26,6 +32,10 @@ public class SpriteAssign : MonoBehaviour
                 return slimeImage;
             case 2:
                 return woodImage;
+			case 3:
+				return swordImage;
+			case 113:
+				return skull13Image;
             case 100:
                 return lowHpPotionImage;
         }

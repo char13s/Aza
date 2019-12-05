@@ -155,7 +155,16 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject newObjectiveWindow;
     [SerializeField] private GameObject objectiveClear;
     [SerializeField] private GameObject objectiveUpdated;
-    [Header("Fonts")]
+	[SerializeField] private GameObject savedGame;
+	[SerializeField] private GameObject loadedGame;
+	[SerializeField] private GameObject defeated;
+	[Header("ItemObtainedPopWindow")]
+	[SerializeField] private GameObject itemWindow;
+	[SerializeField] private Image imageWindow;
+	[SerializeField] private Text itemDescrp;
+
+
+	[Header("Fonts")]
     [SerializeField] private Font luckiestGuy;
     private static UiManager instance;
 
@@ -188,15 +197,16 @@ public class UiManager : MonoBehaviour
     public Text DescriptionBox { get => descriptionBox; set => descriptionBox = value; }
     public Font LuckiestGuy { get => luckiestGuy; set => luckiestGuy = value; }
     public GameObject ItemInvent { get => itemInvent; set => itemInvent = value; }
+	public GameObject MissionListing { get => missionListing; set => missionListing = value; }
 
 
 
-    //public static event UnityAction movementTutorialActive;
-    //public static event UnityAction miniMapTutorialActive;
-    //public static event UnityAction pauseTutorialActive;
-    //public static event UnityAction combatTutorialActive;
-    //public static GameObject GetUseMenu() => useMenu;
-    public static UiManager GetUiManager() => instance;
+	//public static event UnityAction movementTutorialActive;
+	//public static event UnityAction miniMapTutorialActive;
+	//public static event UnityAction pauseTutorialActive;
+	//public static event UnityAction combatTutorialActive;
+	//public static GameObject GetUseMenu() => useMenu;
+	public static UiManager GetUiManager() => instance;
     public void Awake()
     {
         if (instance != null && instance != this)
@@ -255,8 +265,10 @@ public class UiManager : MonoBehaviour
         {
             GetSelected();
         }
-        //SetCanvas();
-    }
+		if (missionListing.transform.childCount > 0) { 
+		ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
+		}//SetCanvas();
+	}
     private void PauseGame() {
         Player.GetPlayer().Pause = true;
     }
@@ -270,10 +282,10 @@ public class UiManager : MonoBehaviour
 
     }
     private void ObjectiveMenuHandling() {
-        if (missionListing.transform.childCount>0)
+        if (MissionListing.transform.childCount>0)
         {
-            defaultObject = missionListing.transform.GetChild(0).gameObject;
-            missionListing.transform.GetChild(0).GetComponent<Objective>().IconClick();
+            defaultObject = MissionListing.transform.GetChild(0).gameObject;
+            MissionListing.transform.GetChild(0).GetComponent<Objective>().IconClick();
             Debug.Log("this should work???");
         }
         else {
@@ -706,10 +718,22 @@ public class UiManager : MonoBehaviour
     private IEnumerator WindowFade(GameObject window)
     {
         YieldInstruction wait = new WaitForSeconds(1.4f);
+		Debug.Log(window+" has faded.");
         yield return wait;
         window.SetActive(false);
 
     }
+	public void DefeatedWindow() {
+		defeated.SetActive(true);
+		StartCoroutine(WindowFade(defeated));
+	}
+	public void ItemPopUp(string info,Sprite picture) {
+		imageWindow.sprite = picture;
+		itemDescrp.text = info;
+		Debug.Log("ItemPopUp occured");
+		itemWindow.SetActive(true);
+		StartCoroutine(WindowFade(itemWindow));
+	}
     public void ObjectUpdate() {
         
         objectiveUpdated.SetActive(true);
@@ -722,6 +746,10 @@ public class UiManager : MonoBehaviour
         StartCoroutine(WindowFade(objectiveClear));
         Debug.Log("object cleared");
     }
+	public void SaveGame() {
+		savedGame.SetActive(true);
+		StartCoroutine(WindowFade(savedGame));
+	}
     private void AreYouWorking(GameObject b) {
 
         //Debug.Log(b == null ? "null" : b.name + ": activeSelf = " + b.activeSelf + ", activeInHierarchy" + b.activeInHierarchy);
@@ -730,7 +758,7 @@ public class UiManager : MonoBehaviour
     public void AddObjective(Objective o) {
 
         objectives.Add(o);
-        Instantiate(o,missionListing.transform);
+        Instantiate(o,MissionListing.transform);
         newObjectiveWindow.SetActive(true);
         StartCoroutine(WindowFade(newObjectiveWindow));
     }

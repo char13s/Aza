@@ -8,7 +8,7 @@ public class ObjectiveManager : MonoBehaviour
     #region Instance Fields
     
     [SerializeField] private Objective mission1;
-    
+	private List<Objective> activeMissions;
     #endregion
 
     #region Events
@@ -43,7 +43,7 @@ public class ObjectiveManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+		//UiManager.GetUiManager().MissionListing.transform.GetChild(0)
     }
     private void Mission1Acvtive() {
         mission1.IsActive = true;
