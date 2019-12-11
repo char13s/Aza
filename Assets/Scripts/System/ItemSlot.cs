@@ -11,7 +11,7 @@ public class ItemSlot : MonoBehaviour
 
     private ItemData data;
     private Image itemSlotImage;
-    private bool crafting;
+    private bool equipped;
     public enum ItemSlotType { Weapon, Shield, Mask };
     public ItemData Data { get => data; }
     public bool IsSet => data != null;
@@ -33,7 +33,7 @@ public class ItemSlot : MonoBehaviour
     {
 
     }
-    private void InventPopUp() {
+    private void Equipped() {
         switch (type) {
             case ItemSlotType.Weapon:
 
@@ -46,6 +46,17 @@ public class ItemSlot : MonoBehaviour
                 break;
         }
 
+
+    }
+    private void WeaponSlot() {
+
+    }
+    private void ShieldSlot()
+    {
+
+    }
+    private void MaskSlot()
+    {
 
     }
     /*private void TakeThisItem()
@@ -63,5 +74,5 @@ public class ItemSlot : MonoBehaviour
 
         itemSlotImage.sprite = null;
     }*/
-    
+
 }

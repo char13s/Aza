@@ -9,10 +9,12 @@ public class SlimeSpawner : MonoBehaviour
     [SerializeField] private GameObject spawnPoint;
     private List<Enemy> spawnedEnemies;
 
+    public List<Enemy> SpawnedEnemies { get => spawnedEnemies; set => spawnedEnemies = value; }
+
     // Start is called before the first frame update
     void Start()
     {
-        spawnedEnemies=new List<Enemy>();
+        SpawnedEnemies=new List<Enemy>();
         StartCoroutine(Spawn());
         Enemy.onAnyDefeated += RemoveTheDead;
         slimeTrees.Add(this);
@@ -26,12 +28,12 @@ public class SlimeSpawner : MonoBehaviour
     private void RemoveTheDead(Enemy enemy)
     {
 
-        spawnedEnemies.Remove(enemy);
+        SpawnedEnemies.Remove(enemy);
         
     }
     private Vector3 SpawnPointOffset(){
 
-        switch (spawnedEnemies.Count-1) {
+        switch (SpawnedEnemies.Count-1) {
             case 0:
                 return new Vector3(1,0,0);
             case 1:
@@ -52,10 +54,10 @@ public class SlimeSpawner : MonoBehaviour
             yield return new WaitForSeconds(10f);
             
 
-            if (spawnedEnemies.Count < 5)
+            if (SpawnedEnemies.Count < 5)
             {
                 
-                spawnedEnemies.Add(Instantiate(slime, spawnPoint.transform.position+SpawnPointOffset(), Quaternion.identity).GetComponent<Slime>());
+                SpawnedEnemies.Add(Instantiate(slime, spawnPoint.transform.position+SpawnPointOffset(), Quaternion.identity).GetComponent<Slime>());
             }
         }
     }

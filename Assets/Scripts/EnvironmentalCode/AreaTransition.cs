@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Events;
 public class AreaTransition : MonoBehaviour
 {
 
@@ -13,6 +14,8 @@ public class AreaTransition : MonoBehaviour
     [SerializeField] private int area;
     private GameObject forestProcessor;
     private GameObject graveyardProcessor;
+
+    public static UnityAction rock;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,6 +67,10 @@ public class AreaTransition : MonoBehaviour
                 forestProcessor.SetActive(true);
                 break;
             case 2:
+                if (rock != null) {
+
+                    rock();
+                }
                 graveyardProcessor.SetActive(true);
                 break;
         }

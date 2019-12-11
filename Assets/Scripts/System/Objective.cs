@@ -18,7 +18,7 @@ public class Objective : MonoBehaviour
     [System.NonSerialized] private bool completed;
 
     public bool IsActive { get => isActive; set => isActive = value; }
-    public bool Completed { get => completed; set { completed = value;if (completed) { RewardPlayer(); UiManager.GetUiManager().ObjectiveClear(); } } }
+    public bool Completed { get => completed; set { completed = value;if (completed) { RewardPlayer(); if(UiManager.missionCleared!=null)UiManager.missionCleared(); } } }
 
     public string[] Description { get => description; set => description = value; }
     public int CurrentDescription { get => currentDescription; set { currentDescription = value; SetButton(); } }
@@ -52,6 +52,11 @@ public class Objective : MonoBehaviour
         Player.GetPlayer().Money += rewardMoney;
         Player.GetPlayer().items.AddItem(rewardItem.data);
         Player.GetPlayer().stats.AddExp(rewardExp);
+    }
+    private IEnumerator WaitCoroutine() {
+        YieldInstruction wait = new WaitForSeconds(1.4f);
+        yield return wait;
+        RewardPlayer();
     }
     public void Intializing()
     {

@@ -17,6 +17,7 @@ public class ThreeDCamera : CameraLogic
 	private Vector3 target;
     private Vector3 offset;
 	private bool aiming;
+    private AudioSource audio;
     [SerializeField] private Vector3 aimingPosition;
     public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
@@ -30,12 +31,13 @@ public class ThreeDCamera : CameraLogic
         Player.notAiming += NotAiming;
         Player.lockOn += LockedOn;
         Player.kintoun += Kintoun;
+        
         if (instance != null)
             Debug.LogWarning("Did someone put multiple " + GetType().Name + "'s in the scene?");
         instance = this;
         xZOrientation = new GameObject("xZOrienatation").transform;
         xZOrientation.transform.SetParent(transform);
-
+        audio = GetComponent<AudioSource>();
         Retical = Instantiate(reticalObject,transform);
         //Retical = new GameObject("retical").transform;
         
@@ -105,6 +107,7 @@ public class ThreeDCamera : CameraLogic
         offset = new Vector3(0, 1f, 0);
 
     }
+    
     void GetInput()
     {
         

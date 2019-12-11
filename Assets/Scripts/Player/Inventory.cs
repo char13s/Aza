@@ -37,6 +37,7 @@ public class Inventory
     {
         ItemData.ItemDataUpdate += UpdateInvent;
         GameController.onGameWasStarted += UpdateInvent;
+        
         /*CraftingTable.crafting += SetToCraftingMenu;
         UiManager.notCrafting += SetBackToInvent;*/
     }
@@ -52,13 +53,14 @@ public class Inventory
         }
         else
         {
-			UiManager.GetUiManager().ItemPopUp(item.ItemDescription,SpriteAssign.SetImage(item));
+			UiManager.itemAdded(item.ItemDescription, SpriteAssign.SetImage(item));
             Items.Add(item);
             item.Quantity++;
             ButtonCreation(item);
 
         }
     }
+    
     /*private void SetToCraftingMenu()
     {
 

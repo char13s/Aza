@@ -82,22 +82,26 @@ public class HitBox : MonoBehaviour
             //GameObject burn=Instantiate(smallFire,other.transform);
             //Destroy(burn,3f);
             
-                EnemyImAttacking = other.gameObject;
+                //EnemyImAttacking = other.gameObject;
                 Instantiate(effects, other.gameObject.transform);
                 audio.PlayOneShot(hit);
 
-                other.GetComponent<NavMeshAgent>().enabled = false;
+            //other.GetComponent<NavMeshAgent>().enabled = false;
 
-                other.GetComponent<Rigidbody>().AddForce(HitKnockback(), ForceMode.VelocityChange);
-                other.GetComponent<Enemy>().Grounded = false;
-            if (other != null) {
+            
+            if (other != null&&other.GetComponent<Enemy>()) {
                 other.GetComponent<Enemy>().CalculateDamage(0);
+                other.GetComponent<Enemy>().KnockBack(HitKnockback());
+                other.GetComponent<Enemy>().Grounded = false;
 
             }
             
             
         }
+        
 
+
+        
         //Debug.Log(other.gameObject.GetComponent<Enemy>().HealthLeft);
 
         /*if (other.gameObject.CompareTag("SlimeTree"))
@@ -114,6 +118,6 @@ public class HitBox : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        EnemyImAttacking = null;
+        //EnemyImAttacking = null;
     }
 }

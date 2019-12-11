@@ -6932,7 +6932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a0051013654e0e4890ff8a6fcce42c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  move: 15
+  move: 30
 --- !u!1101 &1277671397494224200
 AnimatorStateTransition:
   m_ObjectHideFlags: 3

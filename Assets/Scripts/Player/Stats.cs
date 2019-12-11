@@ -47,7 +47,7 @@ public class Stats
     public int Intellect { get { return intellect; } set { intellect = value; } }
 
     public byte Level { get => level; set => level = value; }
-    public int Exp { get => exp; set { exp = value;  } }
+    public int Exp { get => exp; set { exp = value; UpdateUi(); } }
 	public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 	public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 	public int BaseMp { get => baseMp; set { baseMp = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }

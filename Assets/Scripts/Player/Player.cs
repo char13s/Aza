@@ -603,6 +603,8 @@ public class Player : MonoBehaviour
             //Moving = true;
             Animations = 1;
             nav.enabled = true;
+            MoveSpeed = 6;
+
             Move(MoveSpeed);
             if (bowUp && !targeting)
             {
@@ -610,7 +612,7 @@ public class Player : MonoBehaviour
                 StartCoroutine(StopTargeting());
 
             }
-            
+            /*
             if (R2.GetButton()&&!attacking)
             {offset = new Vector3(0,1,0);
                 if (kintoun != null) {
@@ -629,10 +631,10 @@ public class Player : MonoBehaviour
                 offset = new Vector3(0,0,0);
                 
                 devilFoot.SetActive(false);
-                MoveSpeed = 6;
+                
             }
             
-                transform.position += offset;
+                transform.position += offset;*/
             
             if (attacking && Input.GetButtonDown("Square"))
             {
@@ -845,18 +847,21 @@ public class Player : MonoBehaviour
             }
         }
         else {
-            if (!bowUp) {
+            
                 if (notAiming != null)
                 {
                     notAiming();
 
                 }
-
+            LockedOn = false;
+        }
+        if (Input.GetButtonUp("R1")) {
+            if (notAiming != null)
+            {
+                notAiming();
 
             }
-            
 
-            LockedOn = false;
         }
         
 

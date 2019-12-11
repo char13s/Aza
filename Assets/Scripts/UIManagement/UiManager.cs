@@ -140,7 +140,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private VideoClip combo3;
     [SerializeField] private VideoClip combo4;
     private int page;
-    
+
     [Space]
     [Header("Objective menu")]
     [SerializeField] private Text descriptionBox;
@@ -155,26 +155,34 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject newObjectiveWindow;
     [SerializeField] private GameObject objectiveClear;
     [SerializeField] private GameObject objectiveUpdated;
-	[SerializeField] private GameObject savedGame;
-	[SerializeField] private GameObject loadedGame;
-	[SerializeField] private GameObject defeated;
-	[Header("ItemObtainedPopWindow")]
-	[SerializeField] private GameObject itemWindow;
-	[SerializeField] private Image imageWindow;
-	[SerializeField] private Text itemDescrp;
-
-
-	[Header("Fonts")]
+    [SerializeField] private GameObject savedGame;
+    [SerializeField] private GameObject loadedGame;
+    [SerializeField] private GameObject defeated;
+    [Header("ItemObtainedPopWindow")]
+    [SerializeField] private GameObject itemWindow;
+    [SerializeField] private Image imageWindow;
+    [SerializeField] private Text itemDescrp;
+    [Space]
+    [Header("PopUpTutorials")]
+    [SerializeField] private GameObject howToAttack;
+    [SerializeField] private GameObject howToGuard;
+    [SerializeField] private GameObject howToRoll;
+    [Header("Fonts")]
     [SerializeField] private Font luckiestGuy;
     private static UiManager instance;
 
     StoreManager store = new StoreManager();
 
     //Events
+    public static UnityAction missionCleared;
     public static UnityAction notCrafting;
+    public static UnityAction <string, Sprite> itemAdded;
+    public static UnityAction<Vector3> areaChange;
+
+
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
-
+    #region Getters and Setters
     public static GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public static Button UseButton { get => useButton; set => useButton = value; }
     public static Button ItemDescriptionButton { get => itemDescriptionButton; set => itemDescriptionButton = value; }
@@ -198,15 +206,15 @@ public class UiManager : MonoBehaviour
     public Font LuckiestGuy { get => luckiestGuy; set => luckiestGuy = value; }
     public GameObject ItemInvent { get => itemInvent; set => itemInvent = value; }
 	public GameObject MissionListing { get => missionListing; set => missionListing = value; }
+    #endregion
 
 
-
-	//public static event UnityAction movementTutorialActive;
-	//public static event UnityAction miniMapTutorialActive;
-	//public static event UnityAction pauseTutorialActive;
-	//public static event UnityAction combatTutorialActive;
-	//public static GameObject GetUseMenu() => useMenu;
-	public static UiManager GetUiManager() => instance;
+    //public static event UnityAction movementTutorialActive;
+    //public static event UnityAction miniMapTutorialActive;
+    //public static event UnityAction pauseTutorialActive;
+    //public static event UnityAction combatTutorialActive;
+    //public static GameObject GetUseMenu() => useMenu;
+    public static UiManager GetUiManager() => instance;
     public void Awake()
     {
         if (instance != null && instance != this)
@@ -233,6 +241,9 @@ public class UiManager : MonoBehaviour
         Stats.onBaseStatsUpdate += UpdateBoost;
         Items.onItemClick += UseMenuHandling;
         Objective.onObjectiveClick += ObjectiveDescription;
+        missionCleared += ObjectiveClear;
+        itemAdded += ItemPopUp;
+        areaChange += AreaChange;
     }
     void Start()
     {
@@ -268,7 +279,92 @@ public class UiManager : MonoBehaviour
 		if (missionListing.transform.childCount > 0) { 
 		ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
 		}//SetCanvas();
+        //CancelMenu();
 	}
+    private void CancelMenu() {
+        if (howToAttack.activeSelf) {
+            if (Input.GetButtonDown("X")) {
+                howToAttack.SetActive(false);
+            }
+        }
+        if (howToGuard.activeSelf)
+        {
+            if (Input.GetButtonDown("X"))
+            {
+                howToGuard.SetActive(false);
+            }
+        }
+        if (howToRoll.activeSelf)
+        {
+            if (Input.GetButtonDown("X"))
+            {
+                howToRoll.SetActive(false);
+            }
+        }
+    }
+    private void AccessHowTos(int s) {
+
+        switch (s) {
+
+            case 0:
+                howToAttack.SetActive(true);
+                break;
+            case 1:
+                howToGuard.SetActive(true);
+                break;
+            case 2:
+                howToRoll.SetActive(true);
+                break;
+        }
+
+
+    }
+    private void AreaChange(Vector3 travelPoint) {
+
+        StartCoroutine(FadeOutCoroutine(travelPoint));
+    }
+    private IEnumerator FadeOutCoroutine(Vector3 travelPoint)
+    {
+        while (isActiveAndEnabled && black.color.a <= 0.99)
+        {
+            yield return null;
+            FadeToBlack();
+        }
+        NextScene(travelPoint);
+    }
+    private void FadeToBlack() {
+        Color color = black.color;
+        color.a += 0.03f;
+        black.color = color;
+
+    }
+    private void NextScene(Vector3 travelPoint)
+    {
+        StopCoroutine(FadeOutCoroutine(travelPoint));
+        Debug.Log("ouchhhhh");
+        Player.GetPlayer().transform.position = travelPoint;
+        Color color = black.color;
+        color.a = 0;
+        black.color = color;
+    }
+    private IEnumerator FadeCoroutine()
+    {
+
+        yield return new WaitUntil(() => black.color.a >= 0.98);
+        StartCoroutine(WaitToArrangeCoroutine());
+    }
+    private IEnumerator WaitToArrangeCoroutine()
+    {
+        YieldInstruction wait = new WaitForSeconds(1);
+
+        yield return wait;
+        
+        
+
+        Player.GetPlayer().Nav.enabled = true;
+
+        Player.GetPlayer().InputSealed = false;
+    }
     private void PauseGame() {
         Player.GetPlayer().Pause = true;
     }

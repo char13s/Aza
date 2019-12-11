@@ -6,7 +6,8 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 #pragma warning disable 0649
 
-
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
 
@@ -54,16 +55,18 @@ public class Enemy : MonoBehaviour
     private int behavior;
     private bool grounded;
 
+    [SerializeField]private bool boss;
+
     public static event UnityAction<Enemy> onAnyDefeated;
     public static event UnityAction onAnyEnemyDead;
 
     public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !Dead) { Dead = true; } } }
 
-    public bool Attack { get => attack; set { attack = value; anim.SetBool("Attack", attack); } }
-    public bool Walk { get => walk; set { walk = value; anim.SetBool("Walking", walk); } }
+    public bool Attack { get => attack; set { attack = value; Anim.SetBool("Attack", attack); } }
+    public bool Walk { get => walk; set { walk = value; Anim.SetBool("Walking", walk); } }
 
-    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine()); GetComponent<Rigidbody>().isKinematic = false; hitCoroutine = StartCoroutine(HitCoroutine()); } anim.SetBool("Hurt", hit); } }
+    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine()); GetComponent<Rigidbody>().isKinematic = false; hitCoroutine = StartCoroutine(HitCoroutine()); } Anim.SetBool("Hurt", hit); } }
     public EnemyAiStates State { get => state; set { state = value; States(); } }
     public bool Grounded { get => grounded; set => grounded = value; }
     public bool LockedOn
@@ -88,7 +91,7 @@ public class Enemy : MonoBehaviour
                 GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_452897A1", 1);
 
                 OnDefeat();
-                anim.SetBool("Dead", dead);
+                Anim.SetBool("Dead", dead);
                 if (onAnyDefeated != null)
                 {
                     onAnyDefeated(this);
@@ -103,9 +106,9 @@ public class Enemy : MonoBehaviour
     }
     public static int TotalCount => enemies.Count;
 
-    private void Awake()
+    public virtual void Awake()
     {
-        anim = GetComponent<Animator>();
+        Anim = GetComponent<Animator>();
         nav = GetComponent<NavMeshAgent>();
         StatusEffects.onStatusUpdate += StatusControl;
         StatCalculation();
@@ -113,7 +116,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     public void OnEnable()
     {
-        EnemyHitBoxBehavior[] behaviours = anim.GetBehaviours<EnemyHitBoxBehavior>();
+        EnemyHitBoxBehavior[] behaviours = Anim.GetBehaviours<EnemyHitBoxBehavior>();
         for (int i = 0; i < behaviours.Length; i++)
             behaviours[i].HitBox = hitBox;
     }
@@ -128,7 +131,7 @@ public class Enemy : MonoBehaviour
         pb = pc.GetComponent<PlayerBattleSceneMovement>();
         //InvokeRepeating("Attacking", 2f, 2f);
         level += Player.GetPlayer().stats.Level;
-        Health = level * baseHealth;
+        //Health = level * baseHealth;
         startLocation = transform.position;
         HealthLeft = stats.Health;
         attackingCoroutine = StartCoroutine(AttackingCoroutine());
@@ -156,7 +159,7 @@ public class Enemy : MonoBehaviour
                 case StatusEffects.Statuses.stunned:
                     State = EnemyAiStates.StatusEffect;
                     StartCoroutine(StatusCoroutine(3));
-                    if (!dead) { anim.speed = 0; }
+                    if (!dead) { Anim.speed = 0; }
 
                     break;
 
@@ -178,7 +181,7 @@ public class Enemy : MonoBehaviour
         YieldInstruction wait = new WaitForSeconds(StatusLength);
         yield return wait;
         State = EnemyAiStates.Idle;
-        anim.speed = 1;
+        Anim.speed = 1;
         status.Status = StatusEffects.Statuses.neutral;
 
     }
@@ -257,7 +260,7 @@ public class Enemy : MonoBehaviour
         attackCoroutine = StartCoroutine(AttackCoroutine());
         //hitBox.SetActive(true);
     }
-    private void Idle()
+    public virtual void Idle()
     {
         Walk = false;
     }
@@ -274,7 +277,7 @@ public class Enemy : MonoBehaviour
                 break;
         }
     }
-    private void Flee()
+    public virtual void Flee()
     {
         int rand = Random.Range(1, enemies.Count - 1);
         Enemy target = GetEnemy(rand);
@@ -289,14 +292,14 @@ public class Enemy : MonoBehaviour
         else
             State = EnemyAiStates.Idle;
     }
-    private void PlantATree()
+    public virtual void PlantATree()
     {
         Instantiate(slimeTree, transform.position + new Vector3(4, 0.14f, 0), Quaternion.identity);
         slimeTree.transform.position = transform.position;
         State = EnemyAiStates.Idle;
 
     }
-    private void SpawnAFriend()
+    public virtual void SpawnAFriend()
     {
         Instantiate(slime, transform.position + new Vector3(4, 0.14f, 0), Quaternion.identity);
         slime.transform.position = transform.position;
@@ -306,7 +309,7 @@ public class Enemy : MonoBehaviour
     {
 
     }
-    private void Canniblize(Enemy target)
+    public virtual void Canniblize(Enemy target)
     {
         //int rand = Random.Range(1,enemies.Count);
         level += Mathf.Min(1, (int)(0.10f * (target.level))); ;
@@ -331,7 +334,7 @@ public class Enemy : MonoBehaviour
             State = EnemyAiStates.Idle;
         }
     }
-    private void Chasing()
+    public virtual void Chasing()
     {
         Walk = true;
         //transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 1 * Time.deltaTime);
@@ -436,7 +439,8 @@ public class Enemy : MonoBehaviour
     }
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);
 
-    
+    public bool Boss { get => boss; set => boss = value; }
+    public Animator Anim { get => anim; set => anim = value; }
 
     private void OnTriggerStay(Collider other)
     {
@@ -447,19 +451,24 @@ public class Enemy : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (grounded)
-        {
-            Debug.Log(other);
-        }
-    }
+        if (!Boss) { 
+        if (other.gameObject.CompareTag("Attack")) {
+            GetComponent<NavMeshAgent>().enabled = false;
 
+        }}
+    }
+    public void KnockBack(Vector3 hitForce) {
+        if (!boss) { 
+        GetComponent<Rigidbody>().AddForce(hitForce, ForceMode.VelocityChange);}
+
+    }
     public void OnDefeat()
     {
         //onAnyDefeated(this);
         SlimeHasDied();
         enemies.Remove(this);
         Instantiate(deathEffect, transform);
-        deathEffect.transform.position = transform.position;
+        //deathEffect.transform.position = transform.position;
         Destroy(gameObject, 4f);
         //drop.transform.SetParent(null);
     }
@@ -476,7 +485,7 @@ public class Enemy : MonoBehaviour
         }
         OnHit();}
     }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
-    public void CalculateAttack(int n) { pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack - (int)(stats.Defense * 1.6f)); }
+    public void CalculateAttack() { pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack - (int)(stats.Defense * 1.6f)); }
     public void SlimeHasDied()
     {
         int exp = baseHealth * baseExpYield;

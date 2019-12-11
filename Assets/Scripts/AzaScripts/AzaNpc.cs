@@ -6,6 +6,7 @@ public class AzaNpc : Npc
 {
     public static UnityAction bowUp;
     public static UnityAction bowDown;
+    [SerializeField] private GameObject bossArea;
     private Animator anim;
     private int pose;
     [SerializeField] private GameObject bow;

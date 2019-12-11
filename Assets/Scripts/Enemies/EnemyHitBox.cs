@@ -28,11 +28,11 @@ public class EnemyHitBox : MonoBehaviour
             Instantiate(effect, transform.position, Quaternion.identity);
             if (player.Guard)
             {
-                enemy.CalculateAttack(2);
+                enemy.CalculateAttack();
             }
             else
             {
-                enemy.CalculateAttack(1);
+                enemy.CalculateAttack();
                 player.Hit = true;
             }
             
