@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.AI;
 public class CameraLogic : MonoBehaviour
 {
     [SerializeField] private Camera prespCamPrefab;
     private static Camera prespCam;
     [SerializeField] private Camera overheadCamera;
     [SerializeField] private GameObject canvas;
+     
     private Vector3 delta;
-    private Player body;
+    [SerializeField] private GameObject body;
     private bool playerEnabled;
     private bool buttonOn;
     private static bool switchable;//write optimization later itll help in other places too
 
     public static UnityAction overHeadCamActive;
     public static Camera PrespCam { get => prespCam; set => prespCam = value; }
-    public Player Body { get => body; set => body = value; }
+    public GameObject Body { get => body; set => body = value; }
     public static bool Switchable { get => switchable; set => switchable = value; }
     AxisButton L3 = new AxisButton("R3");
     [SerializeField] private GameObject audioMaster;
@@ -32,7 +33,7 @@ public class CameraLogic : MonoBehaviour
         mainAudio = GetComponentInChildren<AudioSource>();
         prespCam = prespCamPrefab;
         //Player.onPlayerDeath += OverheadCam;
-        Body = Player.GetPlayer();
+        //Body = Player.GetPlayer();
         
         Player.onPlayerEnabled += CalculateDelta;
         Player.onCharacterSwitch += SwitchTarget;
@@ -51,6 +52,15 @@ public class CameraLogic : MonoBehaviour
         /*if(switchable)
             GetInput();*/
         
+    }
+    private void ShowNavi()
+    {
+
+        NavMeshTriangulation nav = NavMesh.CalculateTriangulation();
+        Mesh mesh = new Mesh();
+        mesh.vertices = nav.vertices;
+        mesh.triangles = nav.indices;
+
     }
     private void CameraAi()
     {

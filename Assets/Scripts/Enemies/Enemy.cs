@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject drop;
     [SerializeField] private Slider EnemyHp;
     [SerializeField] private GameObject deathEffect;
+    [SerializeField] private GameObject arrow;
     private byte eaten;
     private Player pc;
     private PlayerBattleSceneMovement pb;
@@ -75,7 +76,14 @@ public class Enemy : MonoBehaviour
         {
             lockedOn = value; if (lockedOn)
             {
+                
                 canvas.SetActive(true);
+                arrow.SetActive(true);
+            }
+            else
+            {
+                arrow.SetActive(false);
+                canvas.SetActive(false);
             }
 
         }
@@ -88,8 +96,9 @@ public class Enemy : MonoBehaviour
             dead = value;
             if (dead)
             {
+                GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("_onOrOff", 1);
                 GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_452897A1", 1);
-
+                
                 OnDefeat();
                 Anim.SetBool("Dead", dead);
                 if (onAnyDefeated != null)
@@ -104,7 +113,7 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-    public static int TotalCount => enemies.Count;
+    public static int TotalCount => Enemies.Count;
 
     public virtual void Awake()
     {
@@ -127,7 +136,7 @@ public class Enemy : MonoBehaviour
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
         onAnyDefeated += EnemyDeath;
-        enemies.Add(this);
+        Enemies.Add(this);
         pb = pc.GetComponent<PlayerBattleSceneMovement>();
         //InvokeRepeating("Attacking", 2f, 2f);
         level += Player.GetPlayer().stats.Level;
@@ -185,10 +194,10 @@ public class Enemy : MonoBehaviour
         status.Status = StatusEffects.Statuses.neutral;
 
     }
-    public static Enemy GetEnemy(int i) => enemies[i];
+    public static Enemy GetEnemy(int i) => Enemies[i];
     public void OnPlayerDeath()
     {
-        enemies.Clear();
+        Enemies.Clear();
     }
     private void EnemyDeath(Enemy enemy)
     {
@@ -279,7 +288,7 @@ public class Enemy : MonoBehaviour
     }
     public virtual void Flee()
     {
-        int rand = Random.Range(1, enemies.Count - 1);
+        int rand = Random.Range(1, Enemies.Count - 1);
         Enemy target = GetEnemy(rand);
         if (target != null && !Dead && nav.enabled)
         {
@@ -312,7 +321,7 @@ public class Enemy : MonoBehaviour
     public virtual void Canniblize(Enemy target)
     {
         //int rand = Random.Range(1,enemies.Count);
-        level += Mathf.Min(1, (int)(0.10f * (target.level))); ;
+        level += Mathf.Min(1, (int)(0.50f * (target.level))); ;
         HealthLeft += Health;
         target.OnDefeat();
         //eaten++;
@@ -441,6 +450,7 @@ public class Enemy : MonoBehaviour
 
     public bool Boss { get => boss; set => boss = value; }
     public Animator Anim { get => anim; set => anim = value; }
+    public static List<Enemy> Enemies { get => enemies; set => enemies = value; }
 
     private void OnTriggerStay(Collider other)
     {
@@ -466,10 +476,10 @@ public class Enemy : MonoBehaviour
     {
         //onAnyDefeated(this);
         SlimeHasDied();
-        enemies.Remove(this);
+        Enemies.Remove(this);
         Instantiate(deathEffect, transform);
         //deathEffect.transform.position = transform.position;
-        Destroy(gameObject, 4f);
+        Destroy(gameObject, 2.5f);
         //drop.transform.SetParent(null);
     }
     public void CalculateDamage(float addition)

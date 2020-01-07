@@ -67,6 +67,9 @@ public class DialogueBlock : MonoBehaviour
                     AzaNpc.bowDown();
                 }
                 if (ObjectiveManager.mission1Active != null) {ObjectiveManager.mission1Active(); }
+                if (ItemSlot.setDefaults != null) {
+                    ItemSlot.setDefaults();
+                }
                 Player.GetPlayer().stats.Exp += 10000;
                 break;
             case 3:
@@ -82,4 +85,5 @@ public class DialogueBlock : MonoBehaviour
         }
 
     }
+    
 }

@@ -10,16 +10,17 @@ public class ThreeDCamera : CameraLogic
     private static GameObject retical;
     private static ThreeDCamera instance;
     [SerializeField] private GameObject reticalObject;
+    [SerializeField] private GameObject bodyTarget;
     private Vector3 currentEulerAngles;
     private readonly float maxXRotation=40;
     private float minXRotation = 10;
-    private float distanceFromZend=3;
+    private float distanceFromZend=5;
 	private Vector3 target;
     private Vector3 offset;
 	private bool aiming;
     private AudioSource audio;
     [SerializeField] private Vector3 aimingPosition;
-    public static Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
+    public Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
 
     public static GameObject Retical { get => retical; set => retical = value; }
@@ -31,9 +32,6 @@ public class ThreeDCamera : CameraLogic
         Player.notAiming += NotAiming;
         Player.lockOn += LockedOn;
         Player.kintoun += Kintoun;
-        
-        if (instance != null)
-            Debug.LogWarning("Did someone put multiple " + GetType().Name + "'s in the scene?");
         instance = this;
         xZOrientation = new GameObject("xZOrienatation").transform;
         xZOrientation.transform.SetParent(transform);
@@ -54,7 +52,7 @@ public class ThreeDCamera : CameraLogic
         currentEulerAngles.x = 10;
         transform.eulerAngles = currentEulerAngles;
 		StartCoroutine(WaitABitCoroutine());
-		Retical.transform.position = Player.GetPlayer().AimmingPoint.transform.position + new Vector3(0,1f , 7);
+		//Retical.transform.position = Player.GetPlayer().AimmingPoint.transform.position + new Vector3(0,1f , 7);
     }
 	
     public override void Update()
@@ -70,7 +68,7 @@ public class ThreeDCamera : CameraLogic
 
 
 		yield return null;
-		target = Body.transform.position;
+        target = Body.transform.position;
 
 	}
 	private void Aiming()
@@ -85,7 +83,7 @@ public class ThreeDCamera : CameraLogic
 		//Debug.Log();
     }
     private void NotAiming() {
-        Debug.Log("not aiming");
+
 		distanceFromZend = 3;
         offset = new Vector3(0, 0, 0);
         //transform.position -= new Vector3(0, 1, 0);
@@ -117,12 +115,9 @@ public class ThreeDCamera : CameraLogic
         //distanceFromZend += Input.mouseScrollDelta.y*Time.deltaTime;
 
         ApplyRotationOffset(x,y,ref currentEulerAngles);
-		if (!aiming) {
+		
 			RotateCamera(x, y, Body.transform.position);
-
-		} else {
-			RotateCamera(x, y, Retical.transform.position);
-		}
+        //in case this breaks put bodyTarget.transform.position
         
     }
 

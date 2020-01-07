@@ -14,7 +14,7 @@ public class TeleportBehavior : StateMachineBehaviour
             Player.GetPlayer().transform.position = Player.GetPlayer().BattleMode.EnemyTarget.transform.position;
         }
 
-        Debug.Log(Player.GetPlayer().BattleMode.EnemyTarget);
+        
     }
     /*override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {float distance = Vector3.Distance(Player.GetPlayer().transform.position, Player.GetPlayer().BattleMode.EnemyTarget.transform.position);

@@ -183,7 +183,7 @@ MonoBehaviour:
     shield: 0
     mask: 0
     weapon: 1
-    selling: 0
+    power: 2
     itemDescription: Demon sword
 --- !u!1 &4622102253493556788
 GameObject:

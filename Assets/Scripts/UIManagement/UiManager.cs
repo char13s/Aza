@@ -21,6 +21,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject flameTornadoTutorial;
     [SerializeField] private GameObject HeavySwingTutorial;
     [Space]
+    #region PlayerUI
     [Header("PlayerUI")]
     [SerializeField] private GameObject playerUi;
     [SerializeField] private Image black;
@@ -36,10 +37,12 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Slider expBar;
     [SerializeField] private GameObject abilityClose;
     [Space]
+    #endregion
     [Header("AzaUI")]
     [SerializeField] private Text azaMP;
     [SerializeField] private Slider azaMPBar;
     [Space]
+    #region Abilities
     [Header("Abilities")]
     [SerializeField] private Text attack;
     [SerializeField] private Text defense;
@@ -55,10 +58,13 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject skillMenu;
     [Space]
+    #endregion
+    #region EventSystems
     [Header("EventSystems")]
     [SerializeField] private GameObject mainEventSystem;
     [SerializeField] private GameObject mainMenuEventSystem;
     [Space]
+    #endregion
     [Header("Pocket")]
     [SerializeField] private GameObject pocket;
     [SerializeField] private GameObject pageTitle;
@@ -104,6 +110,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Text dialogueText;
     [SerializeField] private Text whoseTalking;
     [Space]
+    #region StatBuildMenu
     [Header("StatBuildMenu")]
     [SerializeField] private GameObject levelMenuPrefab;
     [SerializeField] private Text baseAttack;
@@ -117,6 +124,8 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Text itemAbilityPointsCost;
     [SerializeField] private GameObject levelMenuDefaultButton;
     [Space]
+    #endregion
+    #region Equipment Window
     [Header("EquipmentWindow")]
     [SerializeField] private ItemSlot weaponSlot;
     [SerializeField] private ItemSlot shieldSlot;
@@ -125,7 +134,14 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject shieldInvent;
     [SerializeField] private GameObject maskInvent;
     [SerializeField] private GameObject equipWindowDefaultButton;
+    [SerializeField] private Text healthDisplay;
+    [SerializeField] private Text attackDisplay;
+    [SerializeField] private Text defenseDisplay;
+    [SerializeField] private Text mpDisplay;
+
+
     [Space]
+    #endregion
     [Header("PauseMenu")]
     [SerializeField] private GameObject invent;
     [SerializeField] private GameObject comboMenu;
@@ -169,6 +185,13 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject howToRoll;
     [Header("Fonts")]
     [SerializeField] private Font luckiestGuy;
+    [Header("KryllUI")]
+    [SerializeField] private GameObject kryllUi;
+    [SerializeField] private Text distFromZend;
+    [Header("Save Menu")]
+    [SerializeField] private GameObject saveMenu;
+    [Header("Pause Menu")]
+    [SerializeField] private GameObject menus;
     private static UiManager instance;
 
     StoreManager store = new StoreManager();
@@ -178,7 +201,7 @@ public class UiManager : MonoBehaviour
     public static UnityAction notCrafting;
     public static UnityAction <string, Sprite> itemAdded;
     public static UnityAction<Vector3> areaChange;
-
+    
 
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
@@ -206,6 +229,9 @@ public class UiManager : MonoBehaviour
     public Font LuckiestGuy { get => luckiestGuy; set => luckiestGuy = value; }
     public GameObject ItemInvent { get => itemInvent; set => itemInvent = value; }
 	public GameObject MissionListing { get => missionListing; set => missionListing = value; }
+    public ItemSlot WeaponSlot { get => weaponSlot; set => weaponSlot = value; }
+    public ItemSlot ShieldSlot { get => shieldSlot; set => shieldSlot = value; }
+    public ItemSlot MaskSlot { get => maskSlot; set => maskSlot = value; }
     #endregion
 
 
@@ -233,6 +259,13 @@ public class UiManager : MonoBehaviour
         storeMenu = StoreMenuPrefab;
         SkillAssignMenu = skillAssignMenuPrefab;
         dialogueMenu = dialogueMenuPrefab;
+        weaponSlot.Awake();
+        ShieldSlot.Awake();
+        MaskSlot.Awake();
+        AIKryll.sendDist += DistFromKyrllToZend;
+        AIKryll.zend += KryllDown;
+        Player.kryll += KryllUp;
+        Player.notSleeping += SaveMenuDown;
         StoreManager.itemWasBought += UpdateMoney;
         GameController.onGameWasStarted += GameScreen;
         Npc.dialogueUp += DialogueManagerUp;
@@ -241,6 +274,8 @@ public class UiManager : MonoBehaviour
         Stats.onBaseStatsUpdate += UpdateBoost;
         Items.onItemClick += UseMenuHandling;
         Objective.onObjectiveClick += ObjectiveDescription;
+        Bed.bed += SaveMenuUp;
+        GameController.gameWasSaved += SaveGame;
         missionCleared += ObjectiveClear;
         itemAdded += ItemPopUp;
         areaChange += AreaChange;
@@ -253,9 +288,9 @@ public class UiManager : MonoBehaviour
         Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
         Enemy.onAnyEnemyDead += EnemyDeath;
-        weaponSlot.GetComponent<Button>().onClick.AddListener(WeaponInventUp);
-        shieldSlot.GetComponent<Button>().onClick.AddListener(ShieldInventUp);
-        maskSlot.GetComponent<Button>().onClick.AddListener(MaskInventUp);
+        WeaponSlot.GetComponent<Button>().onClick.AddListener(WeaponInventUp);
+        ShieldSlot.GetComponent<Button>().onClick.AddListener(ShieldInventUp);
+        MaskSlot.GetComponent<Button>().onClick.AddListener(MaskInventUp);
         //Cursor.lockState = CursorLockMode.Locked;
     }
     void OnEnable()
@@ -274,7 +309,7 @@ public class UiManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
         {
-            GetSelected();
+            //GetSelected();
         }
 		if (missionListing.transform.childCount > 0) { 
 		ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
@@ -301,6 +336,12 @@ public class UiManager : MonoBehaviour
                 howToRoll.SetActive(false);
             }
         }
+    }
+    private void SaveMenuUp(GameObject loc,GameObject res) {
+        saveMenu.SetActive(true);
+    }
+    private void SaveMenuDown() {
+        saveMenu.SetActive(false);
     }
     private void AccessHowTos(int s) {
 
@@ -410,7 +451,10 @@ public class UiManager : MonoBehaviour
         defaultObject = useButton.gameObject;
         GetSelected();
     }
-    private void GetSelected() { EventSystem.current.SetSelectedGameObject(DefaultObject); }
+    private void GetSelected()
+    {
+        /*EventSystem.current.SetSelectedGameObject(DefaultObject); */
+    }
     private void PageControl() {
         ClearMenus();
         switch (page) {
@@ -636,6 +680,10 @@ public class UiManager : MonoBehaviour
         healthAb.text = "Health = " + Player.GetPlayer().stats.Health.ToString();
         staminaAb.text = "Mp = " + Player.GetPlayer().stats.MPLeft.ToString();
         intelligence.text = "Intellect = " + Player.GetPlayer().stats.Intellect.ToString();
+        attackDisplay.text = "Attack = " + Player.GetPlayer().stats.Attack.ToString();
+        defenseDisplay.text = "Defense = " + Player.GetPlayer().stats.Defense.ToString();
+        healthDisplay.text = "Health = " + Player.GetPlayer().stats.Health.ToString();
+        mpDisplay.text = "Mp = " + Player.GetPlayer().stats.MPLeft.ToString();
     }
 
     private void HealthChange()
@@ -772,9 +820,21 @@ public class UiManager : MonoBehaviour
 
 
     }
+    private void KryllUp() {
+        kryllUi.SetActive(true);
+    }
+    private void KryllDown()
+    {
+        kryllUi.SetActive(false);
+
+    }
+    private void DistFromKyrllToZend(string dist) {
+        distFromZend.text = dist;
+
+    }
     #endregion
     private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
-
+        ClearInvents();
         switch (type)
         {
             case ItemSlot.ItemSlotType.Weapon:

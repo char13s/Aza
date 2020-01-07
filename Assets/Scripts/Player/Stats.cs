@@ -138,9 +138,28 @@ public class Stats
         if (onLevelUp != null) { onLevelUp(); }
     }
     private void SetStats() {
-        Attack = baseAttack + attackBoost;
-        Defense = baseDefense + defenseBoost;
+        Attack = baseAttack + attackBoost+WeaponSlotManager();
+        Defense = baseDefense + defenseBoost+ShieldSlotManager();
         MP = baseMp + mpBoost;
         Health = baseHealth + healthBoost;
+    }
+    private int WeaponSlotManager() {
+        if (UiManager.GetUiManager().WeaponSlot.Data != null)
+        {
+            return UiManager.GetUiManager().WeaponSlot.Data.Power;
+
+        }
+        else
+            return 0;
+    }
+    private int ShieldSlotManager() {
+        if (UiManager.GetUiManager().ShieldSlot.Data != null)
+        {
+            return UiManager.GetUiManager().ShieldSlot.Data.Power;
+
+        }
+        else
+            return 0;
+
     }
 }

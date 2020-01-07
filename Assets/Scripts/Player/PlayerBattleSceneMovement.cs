@@ -12,16 +12,18 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     private Enemy enemyTarget;
     public static UnityAction onLockOn;
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
-    public int T { get => t; set => t = value; }
+    public int T { get => t; set { t = value;Mathf.Clamp(t,0,Enemies.Count); } }
     public Enemy EnemyTarget { get => enemyTarget; set => enemyTarget = value; }
 
     private AxisButton dPadLeft = new AxisButton("DPad Left");
     private AxisButton dPadRight = new AxisButton("DPad Right");
-    void Start()
+    private bool pressed;
+
+    private void Start()
     {
         Enemy.onAnyDefeated += RemoveTheDead;
         Player.onPlayerDeath += RemoveAllEnemies;
-
+        AIKryll.teleport += TeleportAttacking;
         GameController.onGameWasStarted += RemoveAllEnemies;
         T = 0;
         pc = Player.GetPlayer();
@@ -36,8 +38,9 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         Enemies.Clear();
     }
 
-    void Update()
+    private void Update()
     {
+       
         Vector3 position = transform.position;
         for (int i = 0; i < Enemy.TotalCount; i++)
         {
@@ -61,7 +64,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         }
     }
 
-    void GetInput()
+    private void GetInput()
     {
         float x = Input.GetAxisRaw("Horizontal") ;
         float y = Input.GetAxisRaw("Vertical") ;
@@ -74,7 +77,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     }
 
-    void LockOff()
+    private void LockOff()
     {
         foreach (Enemy en in Enemies)
         {
@@ -84,15 +87,23 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             }
         }
     }
+    private void TeleportAttacking(Vector3 location,int t) {
+        transform.position = location;
+        pc.CmdInput = 101;
+        
+        
+        
+    }
     private void EnemyLockedTo()
     {
         EnemyTarget = enemies[T]; //Enemy.GetEnemy(enemies.IndexOf(enemies[T])); stupid code -_-
     }
-    void LockOn(float x, float y, float mH, float jH,Enemy target)
+    private void LockOn(float x, float y, float mH, float jH,Enemy target)
     {
-        Enemy.GetEnemy(T).LockedOn = true;
-        EnemyLockedTo();
         LockOff();
+        enemies[T].LockedOn = true;
+        EnemyLockedTo();
+        
         if (x == 0)
         {
             if (y > 0)//forward
@@ -131,7 +142,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         }
         if (Enemies[T] != null)
         {
-            Player.GetPlayer().Nav.enabled = true;
+            //Player.GetPlayer().Nav.enabled = true;
             Vector3 delta = target.transform.position - pc.transform.position;
             delta.y = 0;
             transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
@@ -141,19 +152,26 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
         }
     }
-
-    public void SwitchLockOn()
+    
+    private void SwitchLockOn()
     {
-        if (Input.GetAxis("DPad Left")>0&&dPadRight.GetButtonDown())
+        if (Input.GetAxis("DPad Right")>0&&dPadRight.GetButtonDown())
         {
             T++;
-            Debug.Log("wtf++");
+            
         }
-        if (Input.GetAxis("DPad Left")< 0 && dPadLeft.GetButtonDown() )
+        if (Input.GetAxis("DPad Left")< 0&&!pressed)
         {
+            if (T == 0) {
+                T = Enemies.Count;
+            }
             T--;
-            Debug.Log("wtf--");
+            pressed = true;
         }
+        if (Input.GetAxis("DPad Right") >= 0) {
+            pressed = false;
+        }
+
         if (T == Enemies.Count)
         {
             T = 0;

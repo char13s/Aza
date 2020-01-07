@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using UnityEngine.AI;
 #pragma warning disable 0649
 public class GameController : MonoBehaviour
 {
@@ -29,11 +30,13 @@ public class GameController : MonoBehaviour
     public static event UnityAction onGameWasStarted;
     public static event UnityAction onQuitGame;
     public static event UnityAction update;
+    public static event UnityAction awake;
+    public static UnityAction gameWasSaved;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
     public static PlayableAza Aza => (instance == null) ? null : instance.aza;
 
-    
+    public GameObject Spawn { get => spawn; set => spawn = value; }
 
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake()
@@ -50,6 +53,8 @@ public class GameController : MonoBehaviour
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
+        if (awake != null)
+            awake();
         onNewGame += OnNewGame;
     }
 
@@ -81,6 +86,13 @@ public class GameController : MonoBehaviour
         SceneManagement();
         
     }
+    private void ShowNavi() {
+
+        NavMeshTriangulation nav = NavMesh.CalculateTriangulation();
+        Mesh mesh = new Mesh();
+        mesh.vertices = nav.vertices;
+        mesh.triangles = nav.indices;
+    }
     private void SceneManagement() {
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
         {
@@ -103,6 +115,7 @@ public class GameController : MonoBehaviour
 
 
     }
+    
     private IEnumerator LoadCoroutine()
     {
 
@@ -166,7 +179,13 @@ public class GameController : MonoBehaviour
         
         
     }*/
-    public void SaveGame() => SaveLoad.Save(instance.pc);
+    public void SaveGame()
+    {
+        SaveLoad.Save(instance.pc);
+        if (gameWasSaved != null) {
+            gameWasSaved();
+        }
+    }
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
 
@@ -239,7 +258,7 @@ public class GameController : MonoBehaviour
         //pc.Grounded = false;
         normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
         //pc.transform.position = position;
-        pc.transform.position = spawn.transform.position;
+        pc.transform.position = Spawn.transform.position;
         pc.items.Items = new List<ItemData>();
         Player.GetPlayer().Pause = false;
     }

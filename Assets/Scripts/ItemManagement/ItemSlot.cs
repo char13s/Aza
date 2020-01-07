@@ -10,22 +10,28 @@ public class ItemSlot : MonoBehaviour
     //public static ItemData ItemLastSelected { get => itemLastSelected; set => itemLastSelected = value; }
 
     private ItemData data;
-    private Image itemSlotImage;
+    [SerializeField] private Image itemSlotImage;
     private bool equipped;
+    [SerializeField]private Items defaultItem;
     public enum ItemSlotType { Weapon, Shield, Mask };
+
+    public static UnityAction setDefaults;
     public ItemData Data { get => data; }
     public bool IsSet => data != null;
     [SerializeField] private ItemSlotType type;
 
-    
 
+    public void Awake()
+    {
+        setDefaults+=SetDeafult;
+    }
     // Start is called before the first frame update
     void Start()
     {
         //GetComponent<Button>().onClick.AddListener(InventPopUp);
-        //itemSlotImage = transform.GetChild(0).GetComponent<Image>();
+        //itemSlotImage = GetComponent<Image>();
         //CraftResults.crafted += EmptySlot;
-        
+        Debug.Log("Started item slot");
     }
 
     // Update is called once per frame
@@ -33,19 +39,18 @@ public class ItemSlot : MonoBehaviour
     {
 
     }
-    private void Equipped() {
-        switch (type) {
-            case ItemSlotType.Weapon:
-
-                break;
-            case ItemSlotType.Shield:
-
-                break;
-            case ItemSlotType.Mask:
-
-                break;
+    private void SetDeafult() {
+        Debug.Log("item added");
+        if (defaultItem != null) {
+            
+            Player.GetPlayer().items.AddItem(defaultItem.data);
+            Equipped(defaultItem.data);
         }
-
+        
+    }
+    public void Equipped(ItemData item) {
+        data = item;
+        itemSlotImage.sprite = SpriteAssign.SetImage(item);
 
     }
     private void WeaponSlot() {

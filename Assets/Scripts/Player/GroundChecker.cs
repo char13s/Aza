@@ -1,25 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class GroundChecker : MonoBehaviour
 {
     private Player pc;
-    
+    private bool ground;
+    public static event UnityAction<bool> groundStatus;
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         
         pc = Player.GetPlayer();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        IsGrounded();
+        if (groundStatus != null)
+        {
+            groundStatus(ground);
+        }
 
     }
-    void IsGrounded() {
+    private void IsGrounded() {
 
         if (pc.Nav.isOnNavMesh)
         {
@@ -31,30 +35,32 @@ public class GroundChecker : MonoBehaviour
         }
         
     }
-    /*void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != null && !other.gameObject.CompareTag("Player"))
+        if (other.gameObject != null )
         {
-            pc.Grounded = true;
 
+            ground = true;
         }
         
 
     }
-    void OnTriggerStay(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject!=null && !other.gameObject.CompareTag("Player"))
-        {
-            pc.Grounded = true;
+        if (other.gameObject!=null ){
+            ground = true;
+
 
         }
-        else { pc.Grounded = false; }
+        else {
+            ground = false;
+        }
 
     }
-    void OnTriggerExit(Collider other) {
+    private void OnTriggerExit(Collider other) {
 
-        pc.Grounded = false;
-    }*/
+        ground = false;
+    }
 
 
 }

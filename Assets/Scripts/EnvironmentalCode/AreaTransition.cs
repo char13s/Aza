@@ -16,6 +16,7 @@ public class AreaTransition : MonoBehaviour
     private GameObject graveyardProcessor;
 
     public static UnityAction rock;
+    public static event UnityAction transition;
     // Start is called before the first frame update
     void Start()
     {
@@ -52,7 +53,7 @@ public class AreaTransition : MonoBehaviour
     }
     private void Fade()
     {
-        Debug.Log("fading");
+
         
 
             Color color = black.color;
@@ -82,7 +83,7 @@ public class AreaTransition : MonoBehaviour
     }
     private void NextScene()
     {StopCoroutine(FadeOutCoroutine());
-        Debug.Log("ouchhhhh");
+
         Player.GetPlayer().transform.position = nextArea.transform.position;
         Color color = black.color;
         color.a = 0;
@@ -101,7 +102,9 @@ public class AreaTransition : MonoBehaviour
         yield return wait;
         AreaSwitches();
         NextScene();
-        
+        if (transition != null) {
+            transition();
+        }
         Player.GetPlayer().Nav.enabled = true;
         
         Player.GetPlayer().InputSealed = false;

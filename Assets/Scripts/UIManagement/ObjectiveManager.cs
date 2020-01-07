@@ -48,6 +48,7 @@ public class ObjectiveManager : MonoBehaviour
     private void Mission1Acvtive() {
         mission1.IsActive = true;
         UiManager.GetUiManager().AddObjective(mission1);
+        mission1.Awake();
         mission1.Intializing();
     }
 }

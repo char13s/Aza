@@ -141,4 +141,4 @@ MonoBehaviour:
   rewardMoney: 0
   rewardItem: {fileID: 7059629483281964690, guid: d35bc7646cb4bb847bfa96dc7c08b6b5,
     type: 3}
-  rewardExp: 0
+  rewardExp: 10

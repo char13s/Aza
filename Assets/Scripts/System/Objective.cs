@@ -24,8 +24,12 @@ public class Objective : MonoBehaviour
     public int CurrentDescription { get => currentDescription; set { currentDescription = value; SetButton(); } }
 
     public static event UnityAction<string> onObjectiveClick;
-     
+    public static event UnityAction<int, int, Items> rewardPlayer;
     // Start is called before the first frame update
+    public virtual void Awake()
+    {
+        
+    }
     public virtual void Start()
     {
         CurrentDescription = 0;
@@ -48,20 +52,23 @@ public class Objective : MonoBehaviour
     }
     public void RewardPlayer()
     {
+        if (rewardPlayer != null) {
+            rewardPlayer(rewardMoney,rewardExp,rewardItem);
+        }
         Debug.Log("Mission 1 works completely");
-        Player.GetPlayer().Money += rewardMoney;
+        /*Player.GetPlayer().Money += rewardMoney;
         Player.GetPlayer().items.AddItem(rewardItem.data);
-        Player.GetPlayer().stats.AddExp(rewardExp);
+        Player.GetPlayer().stats.AddExp(rewardExp);*/
     }
     private IEnumerator WaitCoroutine() {
-        YieldInstruction wait = new WaitForSeconds(1.4f);
+        YieldInstruction wait = new WaitForSeconds(0.4f);
         yield return wait;
         RewardPlayer();
     }
     public void Intializing()
     {
         GameController.update += Update;
-
+        //GameController.awake += Awake;
     }
     private void TextSpecifics() {
         GetComponent<Text>().resizeTextForBestFit = true;

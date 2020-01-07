@@ -12,10 +12,11 @@ public class Mission1 : Objective
 
     // Start is called before the first frame update
 
-    private void Awake()
+    public override void Awake()
     {
-        
+        base.Awake();
         Debug.Log("WOKE");
+        mission1Done += MissionDone;
     }
     public override void Start()
     {
@@ -63,11 +64,11 @@ public class Mission1 : Objective
 
     }
     private void Condition1() {
-
+        Debug.Log("um");
         if (mission1Update != null) {
             mission1Update();
         }
-        mission1Done += MissionDone;
+       
     }
     private void MissionDone() {
         Completed = true;

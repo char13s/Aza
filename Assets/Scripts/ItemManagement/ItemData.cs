@@ -17,7 +17,7 @@ public class ItemData
     [FormerlySerializedAs("recipe")]
     [SerializeField] private bool mask;
     [SerializeField] private bool weapon;
-    [SerializeField] private bool selling;
+    [SerializeField] private int power;
    
     
 
@@ -30,14 +30,15 @@ public class ItemData
     public int ID { get => id; set => id = value; }
     public int Quantity { get => quantity; set { quantity = Mathf.Clamp(value, 0, 999); if (ItemDataUpdate != null) { ItemDataUpdate(); } } }
     public int SellableValue { get => sellableValue; set => sellableValue = value; }
-    public bool KeyItem { get => shield; set => shield = value; }
-    public bool Recipe { get => mask; set => mask = value; }
+    public bool Shield { get => shield; set => shield = value; }
+    public bool Mask { get => mask; set => mask = value; }
     public bool Weapon { get => weapon; set => weapon = value; }
-    public bool Selling { get => selling; set => selling = value; }
+    
 
     //public Sprite Sprite { get => sprite; set => sprite = value; }
     public string ItemDescription { get => itemDescription; set => itemDescription = value; }
     public ItemType Type { get => type; set => type = value; }
+    public int Power { get => power; set => power = value; }
 
     public void Awake()
     {
