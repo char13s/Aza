@@ -201,7 +201,8 @@ public class Inventory
     private Transform SetToInvent(ItemData i) {
         switch (i.Type) {
             case ItemData.ItemType.Normal:
-                return UiManager.GetUiManager().ItemInvent.transform;
+                //return UiManager.GetUiManager().ItemInvent.transform;
+                break;
                 
             case ItemData.ItemType.Weapon:
                 return UiManager.GetUiManager().WeaponInvent.transform;

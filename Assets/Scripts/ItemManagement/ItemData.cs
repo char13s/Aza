@@ -62,12 +62,20 @@ public class ItemData
         switch (id)
         {
             case 1:
-                Player.GetPlayer().stats.HealthLeft += 5;
+                Player.GetPlayer().stats.HealthLeft += (int)(Player.GetPlayer().stats.Health/0.2f);
                 break;
-            case 100:
-                Player.GetPlayer().stats.HealthLeft += 50;
+            case 2:
+                Player.GetPlayer().stats.HealthLeft += (int)(Player.GetPlayer().stats.Health / 0.4f);
                 break;
-
+            case 3:
+                Player.GetPlayer().stats.HealthLeft += (int)(Player.GetPlayer().stats.Health / 0.7f);
+                break;
+            case 4:
+                Player.GetPlayer().stats.HealthLeft += Player.GetPlayer().stats.Health;
+                break;
+            case 5:
+                Player.GetPlayer().status.Status=StatusEffects.Statuses.neutral;
+                break;
         }
         Quantity--;
         UiManager.UseMenu.SetActive(false);

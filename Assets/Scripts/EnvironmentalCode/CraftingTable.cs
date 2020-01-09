@@ -22,7 +22,7 @@ public class CraftingTable : MonoBehaviour
     private void Crafting()
     {
         Debug.Log("Ah shit");
-        UiManager.CraftMenu.SetActive(true);
+        //UiManager.CraftMenu.SetActive(true);
         if (crafting != null)
         {
             crafting();

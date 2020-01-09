@@ -10,11 +10,10 @@ public class GameController : MonoBehaviour
 {
     private Player pc;
     private PlayableAza aza;
-    [SerializeField] private GameObject ability;
-    [SerializeField] private GameObject pauseMenu;
+    
+    
     [SerializeField] private EventSystem eventSystem;
-    [SerializeField] private GameObject pocket;
-    [SerializeField] private GameObject close;
+    
     [SerializeField] private GameObject normalCamera;
     [Space]
     
@@ -56,6 +55,7 @@ public class GameController : MonoBehaviour
         if (awake != null)
             awake();
         onNewGame += OnNewGame;
+        
     }
 
     void OnDisable()
@@ -66,17 +66,19 @@ public class GameController : MonoBehaviour
     void Start()
     {
         Player.onPlayerDeath += OnPlayerDeath;
+        
 
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0))
         {
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         }
+        
         pc = Player.GetPlayer();
         
         //Input.Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
     }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -96,7 +98,7 @@ public class GameController : MonoBehaviour
     private void SceneManagement() {
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
         {
-            CameraLogic.Switchable = false;
+            
             pc.gameObject.SetActive(false);
             
             eventSystem.gameObject.SetActive(false);
@@ -206,7 +208,7 @@ public class GameController : MonoBehaviour
         normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
 
         Vector3 position;
-        pauseMenu.SetActive(false);
+        
         //pc.Pause = false;
 
         if (instance.load)
@@ -271,7 +273,7 @@ public class GameController : MonoBehaviour
     public void LoadGame()
     {
 
-        pauseMenu.SetActive(false);
+        
         pc.Pause = false;
         Game data = SaveLoad.Load();
         Vector3 position;

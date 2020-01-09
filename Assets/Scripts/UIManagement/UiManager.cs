@@ -38,10 +38,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject abilityClose;
     [Space]
     #endregion
-    [Header("AzaUI")]
-    [SerializeField] private Text azaMP;
-    [SerializeField] private Slider azaMPBar;
-    [Space]
+    
     #region Abilities
     [Header("Abilities")]
     [SerializeField] private Text attack;
@@ -56,7 +53,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuCanvas;
     [SerializeField] private GameObject mainCanvas;
     [SerializeField] private GameObject pauseMenu;
-    [SerializeField] private GameObject skillMenu;
+    
     [Space]
     #endregion
     #region EventSystems
@@ -65,18 +62,8 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuEventSystem;
     [Space]
     #endregion
-    [Header("Pocket")]
-    [SerializeField] private GameObject pocket;
-    [SerializeField] private GameObject pageTitle;
-    [SerializeField] private GameObject pageNum;
-    [SerializeField] private GameObject itemInvent;
-    [Space]
-    [Header("CraftingMenu")]
-
-    [SerializeField] private GameObject craftMenuPrefab;
-    private static GameObject craftMenu;
-    [SerializeField] private Image itemListPrefab;
-    private static Image itemList;
+    
+    
     [Space]
 
     [Header("StoreMenu")]
@@ -99,10 +86,7 @@ public class UiManager : MonoBehaviour
     [Space]
 
 
-    [Header("SkillAssignMenu")]
-    [SerializeField] private GameObject skillAssignMenuPrefab;
-    private static GameObject skillAssignMenu;
-    [SerializeField] private GameObject skillAssignDefaultButton;
+    
     [Space]
     [Header("Dialogue Management")]
     private static GameObject dialogueMenu;
@@ -142,10 +126,10 @@ public class UiManager : MonoBehaviour
 
     [Space]
     #endregion
-    [Header("PauseMenu")]
+    [Header("OLDPauseMenu")]
     [SerializeField] private GameObject invent;
-    [SerializeField] private GameObject comboMenu;
-    [SerializeField] private GameObject options;
+    
+    //[SerializeField] private GameObject options;
     [SerializeField] private GameObject objectiveMenu;
     [SerializeField] private GameObject statusWindow;
 
@@ -155,7 +139,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private VideoClip combo2;
     [SerializeField] private VideoClip combo3;
     [SerializeField] private VideoClip combo4;
-    private int page;
+   
 
     [Space]
     [Header("Objective menu")]
@@ -192,34 +176,41 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject saveMenu;
     [Header("Pause Menu")]
     [SerializeField] private GameObject menus;
+    [SerializeField] private GameObject items;
+    [SerializeField] private GameObject equipment;
+    [SerializeField] private GameObject skills;
+    [SerializeField] private GameObject stats;
+    [SerializeField] private GameObject options;
     private static UiManager instance;
-
+    [Header("Skill Menu")]
+    [SerializeField] private GameObject skillList;
+    private SkillButton lastSelectedSkillSlot;
     StoreManager store = new StoreManager();
 
     //Events
     public static UnityAction missionCleared;
-    public static UnityAction notCrafting;
+    
     public static UnityAction <string, Sprite> itemAdded;
     public static UnityAction<Vector3> areaChange;
     
 
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
+    private int menuState;
     #region Getters and Setters
     public static GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public static Button UseButton { get => useButton; set => useButton = value; }
     public static Button ItemDescriptionButton { get => itemDescriptionButton; set => itemDescriptionButton = value; }
     public static Button GiveButton { get => giveButton; set => giveButton = value; }
     public static Button DropButton { get => dropButton; set => dropButton = value; }
-    public static GameObject CraftMenu { get => craftMenu; set => craftMenu = value; }
-    public static Image ItemList { get => itemList; set => itemList = value; }
+    
     public static GameObject StoreMenu { get => storeMenu; set => storeMenu = value; }
-    public static GameObject SkillAssignMenu { get => skillAssignMenu; set => skillAssignMenu = value; }
+    
     public Image Black { get => black; set => black = value; }
     public Text DialogueText { get => dialogueText; set => dialogueText = value; }
     public static GameObject DialogueMenu { get => dialogueMenu; set => dialogueMenu = value; }
     public GameObject DefaultObject { get => defaultObject; set => defaultObject = value; }
-    public int Page { get => page; set { page = Mathf.Clamp(value, 0, 4); PageControl(); GetSelected(); } }
+    
 
     public GameObject Invent { get => invent; set => invent = value; }
     public GameObject ShieldInvent { get => shieldInvent; set => shieldInvent = value; }
@@ -227,11 +218,12 @@ public class UiManager : MonoBehaviour
     public GameObject MaskInvent { get => maskInvent; set => maskInvent = value; }
     public Text DescriptionBox { get => descriptionBox; set => descriptionBox = value; }
     public Font LuckiestGuy { get => luckiestGuy; set => luckiestGuy = value; }
-    public GameObject ItemInvent { get => itemInvent; set => itemInvent = value; }
+    
 	public GameObject MissionListing { get => missionListing; set => missionListing = value; }
     public ItemSlot WeaponSlot { get => weaponSlot; set => weaponSlot = value; }
     public ItemSlot ShieldSlot { get => shieldSlot; set => shieldSlot = value; }
     public ItemSlot MaskSlot { get => maskSlot; set => maskSlot = value; }
+    public int MenuState { get => menuState; set { menuState = value; } }
     #endregion
 
 
@@ -254,10 +246,9 @@ public class UiManager : MonoBehaviour
         GiveButton = giveButtonPrefab;
         itemDescriptionButton = itemDescriptionButtonPrefab;
         dropButton = dropButtonPrefab;
-        CraftMenu = craftMenuPrefab;
-        ItemList = itemListPrefab;
+        
         storeMenu = StoreMenuPrefab;
-        SkillAssignMenu = skillAssignMenuPrefab;
+        
         dialogueMenu = dialogueMenuPrefab;
         weaponSlot.Awake();
         ShieldSlot.Awake();
@@ -266,6 +257,7 @@ public class UiManager : MonoBehaviour
         AIKryll.zend += KryllDown;
         Player.kryll += KryllUp;
         Player.notSleeping += SaveMenuDown;
+        Player.cancelPaused += MenusDown;
         StoreManager.itemWasBought += UpdateMoney;
         GameController.onGameWasStarted += GameScreen;
         Npc.dialogueUp += DialogueManagerUp;
@@ -279,6 +271,8 @@ public class UiManager : MonoBehaviour
         missionCleared += ObjectiveClear;
         itemAdded += ItemPopUp;
         areaChange += AreaChange;
+        Skill.sendSkill += SetSkillToSlot;
+        SkillButton.sendSkillSlot += SetLastSkillSlot;
     }
     void Start()
     {
@@ -311,11 +305,108 @@ public class UiManager : MonoBehaviour
         {
             //GetSelected();
         }
+        if (Player.GetPlayer().Pause) {
+            if (MenuState > 0 && Input.GetButtonDown("Circle")) {
+                StartCoroutine(WaitForPauseMenu());
+                
+            }
+            
+        }
+        if (Input.GetButtonDown("Pause")) {
+            PauseMenuControl(0);
+
+        }
+
 		if (missionListing.transform.childCount > 0) { 
 		ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
 		}//SetCanvas();
         //CancelMenu();
 	}
+    private IEnumerator WaitForPauseMenu() {
+        yield return null;
+        PauseMenuControl(0);
+
+    }
+    #region Event Handlers
+    private void SetSkillToSlot(Skill skill) {
+        lastSelectedSkillSlot.SkillAssigned = skill;
+        skillList.SetActive(false);
+    }
+    private void SetLastSkillSlot(SkillButton slot) {
+        lastSelectedSkillSlot = slot;
+        skillList.SetActive(true);
+
+    }
+    #endregion
+    #region Menus
+
+    public void PauseMenuControl(int num) {
+         MenuState= num;
+        menus.SetActive(false);
+        switch (MenuState) {
+            case 0:
+                Debug.Log("back to basics");
+                menus.SetActive(true);
+                items.SetActive(false);
+                equipment.SetActive(false);
+                skills.SetActive(false);
+                stats.SetActive(false);
+                options.SetActive(false);
+                break;
+            case 1:
+                items.SetActive(true);
+                break;
+            case 2:
+                equipment.SetActive(true);
+                break;
+            case 3:
+                Debug.Log("wtf");
+                skills.SetActive(true);
+                break;
+            case 4:
+                stats.SetActive(true);
+                break;
+            case 5:
+                options.SetActive(true);
+                break;
+        }
+
+    }
+    
+private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
+        ClearInvents();
+        switch (type)
+        {
+            case ItemSlot.ItemSlotType.Weapon:
+
+                break;
+            case ItemSlot.ItemSlotType.Shield:
+
+                break;
+            case ItemSlot.ItemSlotType.Mask:
+
+                break;
+        }
+    }
+    public void WeaponInventUp() {
+
+        WeaponInvent.SetActive(true);
+    }
+    public void ShieldInventUp()
+    {
+        ShieldInvent.SetActive(true);
+    }
+    public void MaskInventUp()
+    {
+        MaskInvent.SetActive(true);
+    }
+    private void ClearInvents() {
+        WeaponInvent.SetActive(false);
+        ShieldInvent.SetActive(false);
+        MaskInvent.SetActive(false);
+    }
+
+    #endregion
     private void CancelMenu() {
         if (howToAttack.activeSelf) {
             if (Input.GetButtonDown("X")) {
@@ -408,6 +499,7 @@ public class UiManager : MonoBehaviour
     }
     private void PauseGame() {
         Player.GetPlayer().Pause = true;
+
     }
     public void FuckU() {
 
@@ -430,18 +522,7 @@ public class UiManager : MonoBehaviour
             defaultObject = null;
         }
     }
-    private void InventWindowHandling()
-    {
-        if (itemInvent.transform.childCount>0)
-        {
-            defaultObject = itemInvent.transform.GetChild(0).gameObject;
-
-            
-        }
-        else {
-            defaultObject = null;
-        }
-    }
+    
     private void ObjectiveDescription(string objective) {
         DescriptionBox.text = objective;
 
@@ -455,83 +536,31 @@ public class UiManager : MonoBehaviour
     {
         /*EventSystem.current.SetSelectedGameObject(DefaultObject); */
     }
-    private void PageControl() {
-        ClearMenus();
-        switch (page) {
-            case 0:
-                
-                Invent.SetActive(true);
-
-                InventWindowHandling();
-                
-                break;
-
-            case 1:
-                
-                comboMenu.SetActive(true);
-                break;
-            case 2:
-
-                
-                objectiveMenu.SetActive(true);
-                ObjectiveMenuHandling();
-                break;
-            
-            case 3:
-                
-                statusWindow.SetActive(true);
-                defaultObject = equipWindowDefaultButton;
-                break;
-            case 4:
-                
-                options.SetActive(true);
-                defaultObject = optDefaultButton;
-                break;
-
-        }
-        GetSelected();
-    }
-    private void ClearMenus() {
-        Invent.SetActive(false);
-        statusWindow.SetActive(false);
-        comboMenu.SetActive(false);
-        options.SetActive(false);
-        objectiveMenu.SetActive(false);
-    }
+    
+    
     private void LevelUpMenuUp()
     {
         if (!levelMenuPrefab.activeSelf)
         {
             levelMenuPrefab.SetActive(true);
-            PauseGame();
+            
         }
         ViewStatsUpWindow();
         
         DefaultObject = levelMenuDefaultButton;
         //EventSystem.current.SetSelectedGameObject(DefaultObject);
     }
-    public void MenusDown() {
-        pauseMenu.SetActive(false);
+    private void MenusDown() {
         levelMenuPrefab.SetActive(false);
         storeMenu.SetActive(false);
+
+        if (menuState == 0) {
+            Player.GetPlayer().Pause = false;
+            pauseMenu.SetActive(false);
+        }
     }
 
-    public void SkillMenuUp()
-    {
-        abilities.SetActive(false);
-        abilityClose.SetActive(false);
-        skillMenu.SetActive(true);
-        playerUi.SetActive(false);
-        miniMap.SetActive(false);
-    }
-    public void SkillMenuOff()
-    {
-        skillMenu.SetActive(false);
-        Player.GetPlayer().Pause = false;
-        playerUi.SetActive(true);
-        miniMap.SetActive(true);
-        //abilities.SetActive(true);
-    }
+    
     
     private void SetCanvas() {
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
@@ -551,7 +580,7 @@ public class UiManager : MonoBehaviour
 
     }
 
-
+    
     #region Tutorial Logic
     public void MoveTutor()
     {
@@ -603,21 +632,11 @@ public class UiManager : MonoBehaviour
         Player.GetPlayer().MoveSpeed = 6;
 
     }
-    public void CloseCraftMenu()
-    {
-
-        craftMenu.SetActive(false);
-        if (notCrafting != null)
-        {
-            notCrafting();
-
-        }
-
-    }
+    
     public void ClearSkillTutorials()
     {
 
-        SkillMenuUp();
+        
         fireBallTutorial.SetActive(false);
         flameTornadoTutorial.SetActive(false);
         HeavySwingTutorial.SetActive(false);
@@ -625,17 +644,16 @@ public class UiManager : MonoBehaviour
     public void FireBallTutorialUp()
     {
         fireBallTutorial.SetActive(true);
-        skillMenu.SetActive(false);
     }
     public void FlameTornadoTutorialUp()
     {
         flameTornadoTutorial.SetActive(true);
-        skillMenu.SetActive(false);
+        
     }
     public void HeavySwingTutorialUp()
     {
         HeavySwingTutorial.SetActive(true);
-        skillMenu.SetActive(false);
+        
     }
     #endregion
     #region UI Updates
@@ -833,38 +851,8 @@ public class UiManager : MonoBehaviour
 
     }
     #endregion
-    private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
-        ClearInvents();
-        switch (type)
-        {
-            case ItemSlot.ItemSlotType.Weapon:
 
-                break;
-            case ItemSlot.ItemSlotType.Shield:
-
-                break;
-            case ItemSlot.ItemSlotType.Mask:
-
-                break;
-        }
-    }
-    public void WeaponInventUp() {
-
-        WeaponInvent.SetActive(true);
-    }
-    public void ShieldInventUp()
-    {
-        ShieldInvent.SetActive(true);
-    }
-    public void MaskInventUp()
-    {
-        MaskInvent.SetActive(true);
-    }
-    private void ClearInvents() {
-        WeaponInvent.SetActive(false);
-        ShieldInvent.SetActive(false);
-        MaskInvent.SetActive(false);
-    }
+    
     private IEnumerator WaitCoroutine() {
         YieldInstruction wait = new WaitForSeconds(0.4f);
         yield return wait;

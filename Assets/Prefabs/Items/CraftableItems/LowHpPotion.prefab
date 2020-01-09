@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1046247344708148525}
   - component: {fileID: 4460452546575115050}
-  - component: {fileID: 7603766967305908495}
   m_Layer: 0
   m_Name: LowHpPotion
   m_TagString: Untagged
@@ -45,24 +44,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
+    type: 0
     id: 100
     sellableValue: 50
-    keyItem: 1
-    recipe: 0
+    shield: 1
+    mask: 0
     weapon: 0
-    selling: 0
+    power: 0
     itemDescription: Heals 50 Hp
---- !u!114 &7603766967305908495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1419702452201812697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 291547b8992b22a40baa60345bc1cc75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID1: 1
-  ID2: 1

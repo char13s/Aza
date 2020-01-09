@@ -92,12 +92,12 @@ public class Player : MonoBehaviour
 
     private byte timer;
     private bool loaded;
-    [SerializeField] private GameObject aza;
+
     [SerializeField] private GameObject zend;
     [SerializeField] private GameObject zendHair;
     [SerializeField] private GameObject zendHead;
 
-    [SerializeField] private RuntimeAnimatorController azaAnimatorController;
+
 
     [SerializeField] private Material fader;
     [SerializeField] private Material normal;
@@ -116,6 +116,8 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject fireTrail;
     [SerializeField] private GameObject fireCaster;
     [SerializeField] private GameObject devilFoot;
+    [SerializeField] private GameObject leftHand;
+    [SerializeField] private GameObject rightHand;
     #endregion
     [Space]
     [Header("Buttons")]
@@ -159,6 +161,7 @@ public class Player : MonoBehaviour
     
     [SerializeField]private GameObject jumpPoint;
     private bool doubleJump;
+    private bool boosting;
     #endregion
     #region Events
     public static event UnityAction aiming;
@@ -172,6 +175,7 @@ public class Player : MonoBehaviour
     public static event UnityAction kryll;
     public static event UnityAction battleOn;
     public static event UnityAction notSleeping;
+    public static event UnityAction cancelPaused;
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
@@ -241,6 +245,12 @@ public class Player : MonoBehaviour
 
     public bool JumpSeal { get => jumpSeal; set => jumpSeal = value; }
     public bool Jumping { get => jumping; set { jumping = value; anim.SetBool("Jumping", value); } }
+
+    public bool Boosting { get => boosting; set { boosting = value;anim.SetBool("Dashing", boosting); } }
+
+    public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
+    public GameObject LeftHand { get => leftHand; set => leftHand = value; }
+    public GameObject RightHand { get => rightHand; set => rightHand = value; }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -262,6 +272,7 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
+        Slam.slam += GroundSlamForce;
         Objective.rewardPlayer += RewardPlayer;
         GameController.onNewGame += SetDefault;
         onPlayerDeath += OnDead;
@@ -302,8 +313,10 @@ public class Player : MonoBehaviour
         }
         if (pause && Input.GetButtonDown("Circle"))
         {
-            UiManager.GetUiManager().MenusDown();
-            Pause = false;
+           
+            if (cancelPaused != null) {
+                cancelPaused();
+            }
         }
         if (!grounded && !Jumping)
         {
@@ -372,6 +385,9 @@ public class Player : MonoBehaviour
     }
     #endregion
     #region Event handlers
+    private void GroundSlamForce(float force) {
+        RBody.mass = force;
+    }
     private void OnGrounded(bool val) {
         Grounded = val;
         RBody.isKinematic = val;
@@ -483,7 +499,7 @@ public class Player : MonoBehaviour
         if (!jumpSeal) {
             Jump();
         }
-        if (!grounded && Input.GetKey(KeyCode.P))
+        if (!grounded && R2.GetButton())
         {
             RBody.drag = 25;
             AirMovementInput();
@@ -738,30 +754,7 @@ public class Player : MonoBehaviour
 
             }
 
-            if (R2.GetButton() && !attacking)
-            {
-                offset = new Vector3(0, 1, 0);
-                if (kintoun != null)
-                {
-
-                    kintoun();
-                }
-                Animations = 35;
-                devilFoot.SetActive(true);
-                MoveSpeed = 9;
-                if (Input.GetButtonDown("Circle"))
-                {
-
-                    Animations = 36;
-                }
-            }
-            else
-            {
-                offset = new Vector3(0, 0, 0);
-
-                devilFoot.SetActive(false);
-                
-            }
+            
 
             transform.position += offset;
 
@@ -910,7 +903,7 @@ public class Player : MonoBehaviour
     #region Inputs
     private void Jump()
     {
-        if (!grounded&&!doubleJump)
+        if (!grounded)
         {
             DoubleJump();
         }
@@ -940,21 +933,33 @@ public class Player : MonoBehaviour
             //transform.position += new Vector3(0, 6, 0) * Time.deltaTime;
             //RBody.AddForce(new Vector3(0, 6, 0), ForceMode.VelocityChange);
             //transform.position = Vector3.MoveTowards(transform.position, jumpPoint.transform.position, 2f * Time.deltaTime);
-            transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 9f * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 19f * Time.deltaTime);
         }
 
 
     }
     private void DoubleJump() {
-        if (Input.GetButtonDown("X"))
+        if (Input.GetButtonDown("X")&&!doubleJump)
         {
             doubleJump = true;
-            transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 150f * Time.deltaTime);
+            //transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 150f * Time.deltaTime);
+            //*Time.deltaTime
             StopCoroutine(WaitToFall());
             GroundChecker.groundStatus -= OnGrounded;
             StartCoroutine(ResetGroundCheck());
             StartCoroutine(WaitToFall());
+            Boosting = true;
         }
+        if (doubleJump&&Boosting) {
+            RBody.AddForce(transform.forward*15, ForceMode.VelocityChange);
+
+            StartCoroutine(Boost());
+        }
+    }
+    private IEnumerator Boost() {
+        YieldInstruction wait = new WaitForSeconds(0.3f);
+        yield return wait;
+        Boosting = false;
     }
     private void Sword()
     {
