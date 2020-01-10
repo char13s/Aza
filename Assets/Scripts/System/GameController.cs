@@ -261,6 +261,7 @@ public class GameController : MonoBehaviour
         normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
         //pc.transform.position = position;
         pc.transform.position = Spawn.transform.position;
+        pc.transform.rotation = Spawn.transform.rotation;
         pc.items.Items = new List<ItemData>();
         Player.GetPlayer().Pause = false;
     }

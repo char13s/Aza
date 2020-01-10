@@ -273,6 +273,7 @@ public class UiManager : MonoBehaviour
         areaChange += AreaChange;
         Skill.sendSkill += SetSkillToSlot;
         SkillButton.sendSkillSlot += SetLastSkillSlot;
+        CinematicManager.unfade += UnFade;
     }
     void Start()
     {
@@ -484,6 +485,19 @@ private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
 
         yield return new WaitUntil(() => black.color.a >= 0.98);
         StartCoroutine(WaitToArrangeCoroutine());
+    }
+    private void UnFade() {
+        StartCoroutine(FadeBackIn());
+    }
+    private IEnumerator FadeBackIn() {
+        while (isActiveAndEnabled && black.color.a >= 0)
+        {
+            yield return null;
+            Color color = black.color;
+            color.a -= 0.003f;
+            black.color = color;
+        }
+
     }
     private IEnumerator WaitToArrangeCoroutine()
     {
