@@ -80,6 +80,7 @@ public class Player : MonoBehaviour
     private bool poweredUp;
     private bool jumpSeal;
     private bool jumping;
+	private int cinemations;
     #endregion
     #region Random stuff
     [Space]
@@ -251,8 +252,9 @@ public class Player : MonoBehaviour
     public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
     public GameObject RightHand { get => rightHand; set => rightHand = value; }
-    #endregion
-    public static Player GetPlayer() => instance.GetComponent<Player>();
+	public int Cinemations { get => cinemations; set { cinemations = value;anim.SetInteger("Cinemaitions", cinemations); } }
+	#endregion
+	public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
     private void Awake()
     {
@@ -326,7 +328,7 @@ public class Player : MonoBehaviour
 
         WhileSleep();
         OnPause();
-        //if (Input.GetKeyDown(KeyCode.P)) { stats.Exp += 1000; }
+        if (Input.GetKeyDown(KeyCode.P)) { SkillId = 5; }
     }
     #region Helper Methods
     private void CalculateMoveDirection()
