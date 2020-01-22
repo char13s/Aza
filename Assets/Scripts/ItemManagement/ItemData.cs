@@ -8,16 +8,11 @@ public class ItemData
 {
     public enum ItemType {Normal,Weapon, Shield, Mask  }
     [SerializeField] private ItemType type;
-    [FormerlySerializedAs("ID")]
+    [SerializeField] private string itemName;
     [SerializeField] private int id;
     private int quantity;
-    [SerializeField] private int sellableValue;
-    [FormerlySerializedAs("keyItem")]
-    [SerializeField] private bool shield;
-    [FormerlySerializedAs("recipe")]
-    [SerializeField] private bool mask;
-    [SerializeField] private bool weapon;
-    [SerializeField] private int power;
+    
+    
    
     
 
@@ -29,16 +24,15 @@ public class ItemData
     public static UnityAction ItemDataUpdate;
     public int ID { get => id; set => id = value; }
     public int Quantity { get => quantity; set { quantity = Mathf.Clamp(value, 0, 999); if (ItemDataUpdate != null) { ItemDataUpdate(); } } }
-    public int SellableValue { get => sellableValue; set => sellableValue = value; }
-    public bool Shield { get => shield; set => shield = value; }
-    public bool Mask { get => mask; set => mask = value; }
-    public bool Weapon { get => weapon; set => weapon = value; }
+    
     
 
     //public Sprite Sprite { get => sprite; set => sprite = value; }
     public string ItemDescription { get => itemDescription; set => itemDescription = value; }
     public ItemType Type { get => type; set => type = value; }
-    public int Power { get => power; set => power = value; }
+    public string ItemName { get => itemName; set => itemName = value; }
+
+    //public int Power { get => power; set => power = value; }
 
     public void Awake()
     {
@@ -61,19 +55,22 @@ public class ItemData
     {
         switch (id)
         {
-            case 1:
+            case 0:
+                Player.GetPlayer().stats.HealthLeft += 5;
+                break;
+            case 1://small potion
                 Player.GetPlayer().stats.HealthLeft += (int)(Player.GetPlayer().stats.Health/0.2f);
                 break;
-            case 2:
+            case 2://medium potion
                 Player.GetPlayer().stats.HealthLeft += (int)(Player.GetPlayer().stats.Health / 0.4f);
                 break;
-            case 3:
+            case 3://large potion
                 Player.GetPlayer().stats.HealthLeft += (int)(Player.GetPlayer().stats.Health / 0.7f);
                 break;
-            case 4:
+            case 4://full restore
                 Player.GetPlayer().stats.HealthLeft += Player.GetPlayer().stats.Health;
                 break;
-            case 5:
+            case 5://Status curer
                 Player.GetPlayer().status.Status=StatusEffects.Statuses.neutral;
                 break;
         }

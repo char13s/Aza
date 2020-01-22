@@ -46,7 +46,7 @@ public class GameController : MonoBehaviour
             return;
         }
         instance = this;
-        
+        SpawnSetters.setSpawner += SetSpawner;
     }
 
     void OnEnable()
@@ -87,6 +87,9 @@ public class GameController : MonoBehaviour
             update();
         SceneManagement();
         
+    }
+    private void SetSpawner(GameObject newSpawn) {
+        spawn = newSpawn;
     }
     private void ShowNavi() {
 

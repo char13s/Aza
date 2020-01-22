@@ -7,14 +7,18 @@ using UnityEngine.Rendering.PostProcessing;
 
     [SerializeField] private PostProcessProfile forestProfile;
     [SerializeField] private PostProcessProfile graveyardProfile;
+    [SerializeField] private PostProcessProfile darkEndProfile;
     [SerializeField] private GameObject forestProcessor;
     [SerializeField] private GameObject graveyardProcessor;
+    [SerializeField] private GameObject darkEndProcessor;
     private static PostProcessorManager instance;
 
     public PostProcessProfile ForestProfile { get => forestProfile; set => forestProfile = value; }
     public PostProcessProfile GraveyardProfile { get => graveyardProfile; set => graveyardProfile = value; }
     public GameObject ForestProcessor { get => forestProcessor; set => forestProcessor = value; }
     public GameObject GraveyardProcessor { get => graveyardProcessor; set => graveyardProcessor = value; }
+    public GameObject DarkEndProcessor { get => darkEndProcessor; set => darkEndProcessor = value; }
+    public PostProcessProfile DarkEndProfile { get => darkEndProfile; set => darkEndProfile = value; }
 
     public static PostProcessorManager GetProcessorManager()=>instance.GetComponent<PostProcessorManager>();
     private void Awake()
@@ -27,6 +31,8 @@ using UnityEngine.Rendering.PostProcessing;
         {
             instance = this;
         }
+        VirtualCameraManager.grey += TimeSlow;
+        VirtualCameraManager.ungrey += Default;
     }
     // Start is called before the first frame update
     void Start()
@@ -41,10 +47,16 @@ using UnityEngine.Rendering.PostProcessing;
     }
     public void Default() {
         ForestProfile.GetSetting<ColorGrading>().hueShift.value = 0;
-		
+        DarkEndProfile.GetSetting<ColorGrading>().saturation.value = 12.7f;
     }
     public void Transformation() {
         ForestProfile.GetSetting<ColorGrading>().hueShift.value = -60;
     }
+    private void TimeSlow() {
+        //DarkEndProfile.GetSetting<ColorGrading>().saturation.value = 0;
+        ForestProfile.GetSetting<ColorGrading>().hueShift.value = -60;
+        Debug.Log("wtf");
+    }
+    
 
 }

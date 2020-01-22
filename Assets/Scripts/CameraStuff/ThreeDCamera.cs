@@ -130,6 +130,7 @@ public class ThreeDCamera : CameraLogic
     private void ApplyRotationOffset(float cameraHortizonal, float cameraVertical, ref Vector3 target) {
         if (Time.deltaTime == 0)
             return;
+
         float deltaFromInputX = cameraHortizonal * 55 * Time.deltaTime;
         float deltaFromInputY = cameraVertical * 55 * Time.deltaTime;
 

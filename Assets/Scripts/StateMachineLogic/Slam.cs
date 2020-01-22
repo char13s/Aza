@@ -20,6 +20,7 @@ public class Slam : StateMachineBehaviour
         {
             AoeHitbox.SetActive(true);
             Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+            Player.GetPlayer().RBody.drag = 0;
         }
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

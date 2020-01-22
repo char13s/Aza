@@ -27,8 +27,7 @@ public class CommandInputBehavior : StateMachineBehaviour
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!Player.GetPlayer().Grounded) { 
-		Player.GetPlayer().RBody.isKinematic = true;}
+        
         //Player.GetPlayer().Nav.enabled = true;
     }
     private void HitBoxControl() {

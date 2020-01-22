@@ -302,7 +302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2313167134750843311}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 74.56319, y: -2.1640823, z: -25.527193}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2313167134750489987}
@@ -357,24 +357,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f10569065197a5b4ba247d98e2c8c8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
   stats:
     baseHealth: 8
     baseAttack: 4
     baseDefense: 2
     baseMp: 0
+  canvas: {fileID: 2313167134663449198}
+  levelText: {fileID: 2313167134214088894}
+  lockOnArrow: {fileID: 1084949633107295212}
+  deathEffect: {fileID: 6226294637186662721, guid: 968487dedef163e46b1dc9b44bfdaa38,
+    type: 3}
   level: 5
   attackDelay: 2
   baseExpYield: 15
   baseHealth: 10
   hitBox: {fileID: 5206741836199000521}
-  canvas: {fileID: 2313167134663449198}
-  levelText: {fileID: 2313167134214088894}
   drop: {fileID: 4012060356533637717, guid: 12c09df2632e1e145b9c45c838dcb645, type: 3}
   EnemyHp: {fileID: 2313167135260982762}
-  deathEffect: {fileID: 6226294637186662721, guid: 968487dedef163e46b1dc9b44bfdaa38,
-    type: 3}
-  arrow: {fileID: 1084949633107295212}
   slimeTree: {fileID: 254266463050560927, guid: a41171153c4bb7944916e09b787b2452,
     type: 3}
   slime: {fileID: 2313167134750843311}
@@ -672,6 +671,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345236062496103638, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_Name
+      value: LockOnArrow
       objectReference: {fileID: 0}
     - target: {fileID: 3160965015037434565, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
         type: 3}

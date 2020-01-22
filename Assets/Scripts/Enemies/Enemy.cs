@@ -12,38 +12,54 @@ public class Enemy : MonoBehaviour
 {
 
     private EnemyAiStates state;
-    public enum EnemyType { Slime, Samurai,Aza };
-    [SerializeField] private EnemyType type;
-    public enum EnemyAiStates { Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, Canniblize, Transform, GetHelp, PlantSlimeTree, StatusEffect };
+    
+    
+    public enum EnemyAiStates {Null,Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
     internal StatusEffects status = new StatusEffects();
     [SerializeField]
     internal StatsController stats = new StatsController();
+    #region Enemy Health Bar
+    [SerializeField] private GameObject canvas;
+    [SerializeField] private Text levelText;
+    [SerializeField] private GameObject lockOnArrow;
+    #endregion
+    #region Special Effects
+    [SerializeField] private GameObject deathEffect;
+
+    #endregion
     [SerializeField] private int level;
     [SerializeField] private int attackDelay;
     [SerializeField] private int baseExpYield;
     [SerializeField] private int baseHealth;
     [SerializeField] private GameObject hitBox;
-    [SerializeField] private GameObject canvas;
-    [SerializeField] private Text levelText;
+    
     [SerializeField] private GameObject drop;
     [SerializeField] private Slider EnemyHp;
-    [SerializeField] private GameObject deathEffect;
-    [SerializeField] private GameObject arrow;
-    private byte eaten;
+
+    #region Script References
+    private NavMeshAgent nav;
     private Player pc;
     private PlayerBattleSceneMovement pb;
     private Animator anim;
 
-    private Vector3 startLocation;
-    [SerializeField] private GameObject slimeTree;
-    [SerializeField] private GameObject slime;
+    #endregion
 
-    private NavMeshAgent nav;
+    #region Coroutines
     private Coroutine hitCoroutine;
     private Coroutine attackCoroutine;
     private Coroutine attackingCoroutine;
     private Coroutine recoveryCoroutine;
     private Coroutine guardCoroutine;
+    #endregion
+    private byte eaten;
+    
+
+    private Vector3 startLocation;
+    [SerializeField] private GameObject slimeTree;
+    [SerializeField] private GameObject slime;
+
+    
+    
     private bool attacking;
     private bool attack;
     private bool walk;
@@ -61,7 +77,8 @@ public class Enemy : MonoBehaviour
     public static event UnityAction<Enemy> onAnyDefeated;
     public static event UnityAction onAnyEnemyDead;
 
-    public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
+    #region Getters and Setters
+public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !Dead) { Dead = true; } } }
 
     public bool Attack { get => attack; set { attack = value; Anim.SetBool("Attack", attack); } }
@@ -78,11 +95,11 @@ public class Enemy : MonoBehaviour
             {
                 
                 canvas.SetActive(true);
-                arrow.SetActive(true);
+                lockOnArrow.SetActive(true);
             }
             else
             {
-                arrow.SetActive(false);
+                lockOnArrow.SetActive(false);
                 canvas.SetActive(false);
             }
 
@@ -113,6 +130,9 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+
+    #endregion
+    
     public static int TotalCount => Enemies.Count;
 
     public virtual void Awake()
@@ -121,6 +141,7 @@ public class Enemy : MonoBehaviour
         nav = GetComponent<NavMeshAgent>();
         StatusEffects.onStatusUpdate += StatusControl;
         StatCalculation();
+        state = EnemyAiStates.Null;
     }
     // Start is called before the first frame update
     public void OnEnable()
@@ -144,6 +165,7 @@ public class Enemy : MonoBehaviour
         startLocation = transform.position;
         HealthLeft = stats.Health;
         attackingCoroutine = StartCoroutine(AttackingCoroutine());
+        StartCoroutine(WaitToState());
     }
 
 
@@ -151,13 +173,18 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        if (status.Status != StatusEffects.Statuses.stunned)
+        if (status.Status != StatusEffects.Statuses.stunned&&state!=EnemyAiStates.Null)
         {
             StateSwitch();
 
         }
 
         canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position);
+    }
+    private IEnumerator WaitToState() {
+        YieldInstruction wait = new WaitForSeconds(0.5f);
+        yield return wait;
+        state = EnemyAiStates.Idle;
     }
     private void StatusControl()
     {
@@ -327,7 +354,7 @@ public class Enemy : MonoBehaviour
         //eaten++;
         if (eaten >= 5)
         {
-            State = EnemyAiStates.Transform;
+            State = EnemyAiStates.UniqueState2;
         }
     }
     private void SlimeGolem()

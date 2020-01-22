@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 public class KillZone : MonoBehaviour
 {
@@ -18,10 +16,11 @@ public class KillZone : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player")) {
+        if (other.CompareTag("Player")) {
             if (respawn != null) {
                 respawn();
             }
+            Debug.Log("okay..");
         }
     }
 }

@@ -11,6 +11,10 @@ public class Dash : StateMachineBehaviour
         Player.GetPlayer().RightHand.SetActive(true);
         //Player.GetPlayer().DevilFoot.SetActive(true);
     }
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
+    {
+        Player.GetPlayer().RBody.drag = 0;
+    }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Player.GetPlayer().LeftHand.SetActive(false);

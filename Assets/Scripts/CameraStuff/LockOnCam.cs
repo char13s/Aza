@@ -24,12 +24,12 @@ public class LockOnCam : MonoBehaviour
     private void ChangeTarget()
     {
         if (Player.GetPlayer().BattleMode.EnemyTarget != null) { 
-            GetComponent<CinemachineVirtualCamera>().Follow = Player.GetPlayer().BattleMode.EnemyTarget.transform;
+            GetComponent<CinemachineVirtualCamera>().m_LookAt = Player.GetPlayer().BattleMode.EnemyTarget.transform;
             
         }
     }
     private void BackToPlayer() {
-        GetComponent<CinemachineVirtualCamera>().Follow = Player.GetPlayer().transform;
+        GetComponent<CinemachineVirtualCamera>().m_LookAt = Player.GetPlayer().transform;
 
     }
     

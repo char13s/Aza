@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-[RequireComponent(typeof(Button))]
+using UnityEngine.Events;
 [RequireComponent(typeof(Text))]
+[RequireComponent(typeof(Button))]
 public class SpellTagSlot : MonoBehaviour
 {
+    public static event UnityAction spellInvent;
+    public static event UnityAction<SpellTagSlot> sendThisTag;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,5 +19,13 @@ public class SpellTagSlot : MonoBehaviour
     void Update()
     {
         
+    }
+    private void AcessSpellInvent() {
+        if (spellInvent != null) {
+            spellInvent();
+        }
+        if (sendThisTag != null) {
+            sendThisTag(this);
+        }
     }
 }

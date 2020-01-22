@@ -17,6 +17,7 @@ public class AreaTransition : MonoBehaviour
 
     public static UnityAction rock;
     public static event UnityAction transition;
+    public static event UnityAction movePlayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,9 +36,10 @@ public class AreaTransition : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-
-            Player.GetPlayer().Nav.enabled = false;
-            Player.GetPlayer().InputSealed = true;
+            if (movePlayer != null) {
+                movePlayer();
+            }
+            
             StartCoroutine(FadeOutCoroutine());
             StartCoroutine(FadeCoroutine());
 

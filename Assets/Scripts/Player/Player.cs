@@ -80,7 +80,8 @@ public class Player : MonoBehaviour
     private bool poweredUp;
     private bool jumpSeal;
     private bool jumping;
-	private int cinemations;
+    private int cinemations;
+    private bool inHouse;
     #endregion
     #region Random stuff
     [Space]
@@ -126,6 +127,10 @@ public class Player : MonoBehaviour
     [SerializeField] private SkillButton circle;
     [SerializeField] private SkillButton square;
     [SerializeField] private SkillButton x;
+    [SerializeField] private SpellTagSlot L1Triangle;
+    [SerializeField] private SpellTagSlot L1Circle;
+    [SerializeField] private SpellTagSlot L1Square;
+    [SerializeField] private SpellTagSlot L1X;
     private static Player instance;
 
 
@@ -159,10 +164,11 @@ public class Player : MonoBehaviour
     private AxisButton L2 = new AxisButton("L2");
     private AxisButton L3 = new AxisButton("L3");
     internal StatusEffects status = new StatusEffects();
-    
-    [SerializeField]private GameObject jumpPoint;
+
+    [SerializeField] private GameObject jumpPoint;
     private bool doubleJump;
     private bool boosting;
+    private bool teleportTriggered;
     #endregion
     #region Events
     public static event UnityAction aiming;
@@ -184,7 +190,7 @@ public class Player : MonoBehaviour
     public bool PickUp1 { get => pickUp; set { pickUp = value; anim.SetBool("PickUp", pickUp); } }
     public bool Wall { get => wall; set => wall = value; }
     public bool Climbing1 { get => climbing; set { climbing = value; anim.SetBool("Climbing", climbing); } }
-    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); if (grounded) { RBody.isKinematic = true;nav.enabled = true; doubleJump = false; } } }
+    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); if (grounded) { RBody.isKinematic = true; nav.enabled = true; doubleJump = false; } } }
 
     public bool WallMoving { get => wallMoving; set { wallMoving = value; anim.SetBool("WallMoving", wallMoving); } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
@@ -242,19 +248,21 @@ public class Player : MonoBehaviour
     public GameObject AttackBow { get => attackBow; set => attackBow = value; }
     public GameObject AimmingPoint { get => aimmingPoint; set => aimmingPoint = value; }
     public bool InputSealed { get => inputSealed; set => inputSealed = value; }
-    public bool Sleeping { get => sleep; set { sleep = value;anim.SetBool("Sleep",value); } }
+    public bool Sleeping { get => sleep; set { sleep = value; anim.SetBool("Sleep", value); } }
 
     public bool JumpSeal { get => jumpSeal; set => jumpSeal = value; }
     public bool Jumping { get => jumping; set { jumping = value; anim.SetBool("Jumping", value); } }
 
-    public bool Boosting { get => boosting; set { boosting = value;anim.SetBool("Dashing", boosting); } }
+    public bool Boosting { get => boosting; set { boosting = value; anim.SetBool("Dashing", boosting); } }
 
     public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
     public GameObject RightHand { get => rightHand; set => rightHand = value; }
-	public int Cinemations { get => cinemations; set { cinemations = value;anim.SetInteger("Cinemaitions", cinemations); } }
-	#endregion
-	public static Player GetPlayer() => instance.GetComponent<Player>();
+    public int Cinemations { get => cinemations; set { cinemations = value; anim.SetInteger("Cinemaitions", cinemations); } }
+
+    public bool TeleportTriggered { get => teleportTriggered; set => teleportTriggered = value; }
+    #endregion
+    public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
     private void Awake()
     {
@@ -267,13 +275,8 @@ public class Player : MonoBehaviour
             instance = this;
         }
         sfx = GetComponent<AudioSource>();
-        clothesSfx = zend.GetComponent<AudioSource>();
-        Anim = GetComponent<Animator>();
-        rBody = GetComponent<Rigidbody>();
-        nav = GetComponent<NavMeshAgent>();
-        anim = GetComponent<Animator>();
-        battleMode = GetComponent<PlayerBattleSceneMovement>();
-        headController = GetComponent<BasicHeadController>();
+        #region Event Subs
+        PortalManager.backToBase += BackToBase;
         Slam.slam += GroundSlamForce;
         Objective.rewardPlayer += RewardPlayer;
         GameController.onNewGame += SetDefault;
@@ -283,6 +286,21 @@ public class Player : MonoBehaviour
         Bed.bed += Sleep;
         AIKryll.zend += BackToZend;
         GroundChecker.groundStatus += OnGrounded;
+        UiManager.sealPlayerInput += SealInput;
+        CinematicManager.unfade += SealInput;
+        CinematicManager.gameStart += UnsealInput;
+        UiManager.unsealPlayerInput += UnsealInput;
+        KillZone.respawn += ReturnToSpawn;
+
+        #endregion
+        clothesSfx = zend.GetComponent<AudioSource>();
+        Anim = GetComponent<Animator>();
+        rBody = GetComponent<Rigidbody>();
+        nav = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
+        battleMode = GetComponent<PlayerBattleSceneMovement>();
+        headController = GetComponent<BasicHeadController>();
+
 
     }
 
@@ -313,24 +331,32 @@ public class Player : MonoBehaviour
             GetAllInput();
 
         }
-        if (pause && Input.GetButtonDown("Circle"))
+        if ((inputSealed || pause) && Input.GetButtonDown("Circle"))
         {
-           
-            if (cancelPaused != null) {
+
+            if (cancelPaused != null)
+            {
                 cancelPaused();
             }
         }
         if (!grounded && !Jumping)
         {
             //transform.position -= new Vector3(0, 7.2f, 0) * Time.deltaTime;
-            
+
         }
 
         WhileSleep();
         OnPause();
-        if (Input.GetKeyDown(KeyCode.P)) { SkillId = 5; }
+        //if (Input.GetKeyDown(KeyCode.P)) { SkillId = 5; }
     }
     #region Helper Methods
+    private void SealInput() => InputSealed = true;
+    private void UnsealInput() => InputSealed = false;
+    private void MovePlayerObject()
+    {
+        Nav.enabled = false;
+        InputSealed = true;
+    }
     private void CalculateMoveDirection()
     {
         Vector3 right;
@@ -346,7 +372,8 @@ public class Player : MonoBehaviour
         float dot = Vector3.Dot(right, displacement);
         anim.SetFloat("MoveDirectionX", dot);
     }
-    private void DisplacementControl() {
+    private void DisplacementControl()
+    {
         float x = Input.GetAxisRaw("Horizontal") * 0.05f * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * 0.05f * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
@@ -374,7 +401,8 @@ public class Player : MonoBehaviour
         transform.position += displacement * speed * Time.deltaTime;
         Rotate();
     }
-    private void Rotate() {
+    private void Rotate()
+    {
         if (Vector3.SqrMagnitude(displacement) > 0.01f)
         {
             transform.forward = displacement;
@@ -387,14 +415,37 @@ public class Player : MonoBehaviour
     }
     #endregion
     #region Event handlers
-    private void GroundSlamForce(float force) {
+
+    private void BackToBase(Vector3 destination)
+    {
+        inHouse = true;
+        MovePlayerObject();
+        transform.position = destination;
+        StartCoroutine(WaitToLand());
+    }
+    private IEnumerator WaitToLand()
+    {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
+        InputSealed = false;
+    }
+    private void ReturnToSpawn()
+    {
+
+        MovePlayerObject();
+        transform.position = GameController.GetGameController().Spawn.transform.position;
+        StartCoroutine(WaitToLand());
+    }
+    private void GroundSlamForce(float force)
+    {
         RBody.mass = force;
     }
-    private void OnGrounded(bool val) {
+    private void OnGrounded(bool val)
+    {
         Grounded = val;
         RBody.isKinematic = val;
     }
-    
+
     private void OnDead()
     {
         UiManager.GetUiManager().DefeatedWindow();
@@ -402,7 +453,7 @@ public class Player : MonoBehaviour
         //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 1);
 
     }
-    private void Sleep(GameObject location,GameObject outBed)
+    private void Sleep(GameObject location, GameObject outBed)
     {
         SetPositionAndRotation(location);
         outaBed = outBed;
@@ -415,7 +466,8 @@ public class Player : MonoBehaviour
         StartCoroutine(BackToZendWait());
 
     }
-    private void Respawn() {
+    private void Respawn()
+    {
         transform.position = GameController.GetGameController().Spawn.transform.position;
     }
     private void SetDefault()
@@ -475,52 +527,65 @@ public class Player : MonoBehaviour
     }
 
     #endregion
-    
+
 
     private void GetAllInput()
     {
         //Archery();
-        LockOn();
+
         if (grounded && !guard && !lockedOn && MoveSpeed > 0)
         {
             MovementInput();
         }
-        else if(cmdInput == 0)
+        else if (cmdInput == 0)
         {
             CalculateRotation();
 
         }
         CalculateMoveDirection();
-        if (Jumping&&!grounded && !guard && !lockedOn && MoveSpeed > 0)
+
+
+        if (!inHouse)
         {
-            
+            LockOn();
+            Skills();
+
+            if (attacking && R2.GetButton())
+            {
+                skillButton = true;
+            }
+            else
+                skillButton = false;
+            Sword();
+            if (!jumpSeal)
+            {
+                Jump();
+            }
+            DoubleJump();
+
+
         }
 
 
-        Sword();
-        if (!jumpSeal) {
-            Jump();
-        }
-        if (!grounded && R2.GetButton())
+
+        if (!grounded && cmdInput == 0 && L2.GetButton())
         {
             RBody.drag = 25;
             AirMovementInput();
         }
-        else {
-            RBody.drag=0;
+        else
+        {
+
+            RBody.drag = 0;
+
+
+
         }
 
         //Inventory();
         //Guitar();
 
-        Skills();
 
-        if (attacking && R2.GetButton())
-        {
-            skillButton = true;
-        }
-        else
-            skillButton = false;
 
         /*if (dPadUp.GetButtonDown()) {
             Animations = 99;
@@ -530,21 +595,24 @@ public class Player : MonoBehaviour
     }
     private void AirMovementInput()
     {
-        float x = Input.GetAxisRaw("Horizontal")*0.05f * Time.deltaTime;
+        float x = Input.GetAxisRaw("Horizontal") * 0.05f * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * 0.05f * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
         if (ThreeDCamera.IsActive && !lockedOn)
         {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
-        MoveIt(x,y);
+        MoveIt(x, y);
 
 
 
 
     }
-    private void CalculateRotation() {
-        float x = Input.GetAxisRaw("Horizontal")  * Time.deltaTime;
+    private void CalculateRotation()
+    {
+
+
+        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
         if (ThreeDCamera.IsActive && !lockedOn)
@@ -593,22 +661,26 @@ public class Player : MonoBehaviour
 
 
     }
-    private void WhileSleep() {
-        if (sleep) {
-            if (Input.GetButtonDown("Circle")) {
+    private void WhileSleep()
+    {
+        if (sleep)
+        {
+            if (Input.GetButtonDown("Circle"))
+            {
                 Debug.Log("no longer sleeppppp");
                 Sleeping = false;
                 InputSealed = false;
-                if (notSleeping!=null) {
+                if (notSleeping != null)
+                {
                     notSleeping();
                 }
-                
+
                 SetPositionAndRotation(outaBed);
             }
         }
     }
-    
-    
+
+
     private void WeaponSwitch()
     {
         if (L2.GetButtonDown() || Input.GetKeyDown(KeyCode.F))
@@ -721,7 +793,7 @@ public class Player : MonoBehaviour
     {
         headController.Weight = result;
     }
-    
+
     private void MoveIt(float x, float y)
     {
         Vector3 offset = new Vector3(0, 0, 0);
@@ -735,7 +807,8 @@ public class Player : MonoBehaviour
             {
                 nav.enabled = true;
                 Animations = 1;
-                if (Input.GetButtonDown("X")) {
+                if (Input.GetButtonDown("X"))
+                {
                     nav.enabled = false;
                     MoveSpeed = 0.2f;
                 }
@@ -756,7 +829,7 @@ public class Player : MonoBehaviour
 
             }
 
-            
+
 
             transform.position += offset;
 
@@ -798,8 +871,9 @@ public class Player : MonoBehaviour
         }
     }
     #region Coroutines
-    private IEnumerator ResetGroundCheck() {
-        YieldInstruction wait = new WaitForSeconds(0.1f);
+    private IEnumerator ResetGroundCheck(float reset)
+    {
+        YieldInstruction wait = new WaitForSeconds(reset);
         yield return wait;
         GroundChecker.groundStatus += OnGrounded;
     }
@@ -825,7 +899,7 @@ public class Player : MonoBehaviour
         YieldInstruction wait = new WaitForSeconds(0.3f);
         yield return wait;
         Jumping = false;
-        
+
     }
     private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration, UnityAction<float> onFade)
     {
@@ -905,17 +979,16 @@ public class Player : MonoBehaviour
     #region Inputs
     private void Jump()
     {
-        if (!grounded)
-        {
-            DoubleJump();
-        }
+
         if (Input.GetButtonDown("X") && grounded)
         {
             SkillId = 10;
-            if (AIKryll.disableCollider != null) { 
-            AIKryll.disableCollider();}
+            if (AIKryll.disableCollider != null)
+            {
+                AIKryll.disableCollider();
+            }
             //transform.position +=new Vector3(0, 5, 0)  * Time.deltaTime;
-            
+
             Debug.Log("ORA");
             Jumping = true;
             nav.enabled = false;
@@ -925,13 +998,14 @@ public class Player : MonoBehaviour
             //transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 200f * Time.deltaTime);
             //
             GroundChecker.groundStatus -= OnGrounded;
-            StartCoroutine(ResetGroundCheck());
+            StartCoroutine(ResetGroundCheck(0.1f));
             StartCoroutine(WaitToFall());
-            
+
             //MoveIt(0, 15);
         }
-        
-        if (Jumping) {
+
+        if (Jumping)
+        {
             //transform.position += new Vector3(0, 6, 0) * Time.deltaTime;
             //RBody.AddForce(new Vector3(0, 6, 0), ForceMode.VelocityChange);
             //transform.position = Vector3.MoveTowards(transform.position, jumpPoint.transform.position, 2f * Time.deltaTime);
@@ -940,25 +1014,40 @@ public class Player : MonoBehaviour
 
 
     }
-    private void DoubleJump() {
-        if (Input.GetButtonDown("X")&&!doubleJump)
+    private void DoubleJump()
+    {
+        if (L2.GetButtonDown() && !doubleJump)
         {
-            doubleJump = true;
+
+
+            Grounded = false;
             //transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 150f * Time.deltaTime);
             //*Time.deltaTime
+            nav.enabled = false;
+            RBody.isKinematic = false;
             StopCoroutine(WaitToFall());
             GroundChecker.groundStatus -= OnGrounded;
-            StartCoroutine(ResetGroundCheck());
+            StartCoroutine(ResetGroundCheck(0.5f));
             StartCoroutine(WaitToFall());
             Boosting = true;
+            doubleJump = true;
+            Debug.Log("DoubleJump Triggered");
         }
-        if (doubleJump&&Boosting) {
-            RBody.AddForce(transform.forward*15, ForceMode.VelocityChange);
-
+        if (doubleJump && Boosting)
+        {
+            Debug.Log("Boosting");
+            CmdInput = 0;
+            RBody.isKinematic = false;
+            RBody.AddForce(transform.forward * 80, ForceMode.VelocityChange);
+            if (RBody.isKinematic)
+            {
+                Debug.Log("wtf is good?");
+            }
             StartCoroutine(Boost());
         }
     }
-    private IEnumerator Boost() {
+    private IEnumerator Boost()
+    {
         YieldInstruction wait = new WaitForSeconds(0.3f);
         yield return wait;
         Boosting = false;
@@ -968,7 +1057,8 @@ public class Player : MonoBehaviour
 
         if (Input.GetButtonDown("Square") && !Attacking)
         {
-            if (battleOn != null) {
+            if (battleOn != null)
+            {
                 battleOn();
             }
             Attacking = true;
@@ -1099,6 +1189,34 @@ public class Player : MonoBehaviour
     {
         if (BattleMode.Enemies.Count > 0)
         {
+            if (Input.GetButton("R1") && !TeleportTriggered)
+            {
+                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
+                Time.timeScale = 0.2f;
+                if (lockOn != null)
+                {
+                    lockOn();
+                }
+                if (Input.GetButtonDown("Triangle"))
+                {
+                    TeleportTriggered = true;
+                    Cinemations = 51;
+                    Debug.Log("tf is good?");
+
+                }
+            }
+            else
+            {
+                Time.timeScale = 1;
+
+                if (notAiming != null)
+                {
+                    notAiming();
+
+                }
+                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
+            }
+
             if (Input.GetButtonDown("R1"))
             {
                 Animations = 0;
@@ -1109,14 +1227,12 @@ public class Player : MonoBehaviour
                 //Guard = true;
 
                 LockedOn = true;
-                if (lockOn != null)
-                {
-                    lockOn();
-                }
+                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
+
             }
             else
             {
-
+                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
                 LockedOn = false;
                 //Guard = false;
             }
@@ -1124,20 +1240,20 @@ public class Player : MonoBehaviour
         else
         {
 
-            if (notAiming != null)
-            {
-                notAiming();
+            //if (notAiming != null)
+            //{
+            // notAiming();
 
-            }
+            //}
             LockedOn = false;
         }
         if (Input.GetButtonUp("R1"))
         {
-            if (notAiming != null)
-            {
-                notAiming();
+            // if (notAiming != null)
+            //{
+            // notAiming();
 
-            }
+            //}
 
         }
 

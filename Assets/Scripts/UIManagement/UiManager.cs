@@ -70,6 +70,9 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject StoreMenuPrefab;
     private static GameObject storeMenu;
     [SerializeField] private GameObject storeMenuDefaultButton;
+    [SerializeField] private GameObject quantityWindow;
+    [SerializeField] private Text displayedQuantity;
+    private int quantity;
     [Space]
     [Header("UseMenu")]
     [SerializeField] private GameObject useMenuPrefab;
@@ -111,18 +114,13 @@ public class UiManager : MonoBehaviour
     #endregion
     #region Equipment Window
     [Header("EquipmentWindow")]
-    [SerializeField] private ItemSlot weaponSlot;
-    [SerializeField] private ItemSlot shieldSlot;
-    [SerializeField] private ItemSlot maskSlot;
-    [SerializeField] private GameObject weaponInvent;
-    [SerializeField] private GameObject shieldInvent;
-    [SerializeField] private GameObject maskInvent;
-    [SerializeField] private GameObject equipWindowDefaultButton;
+    
     [SerializeField] private Text healthDisplay;
     [SerializeField] private Text attackDisplay;
     [SerializeField] private Text defenseDisplay;
     [SerializeField] private Text mpDisplay;
-
+    [SerializeField] private GameObject spellTags;
+    private SpellTagSlot lastSpellSlotSelected;
 
     [Space]
     #endregion
@@ -186,13 +184,16 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject skillList;
     private SkillButton lastSelectedSkillSlot;
     StoreManager store = new StoreManager();
-
+    [Header("Items")]
+    [SerializeField]private GameObject itemInvent;
+    [SerializeField] private GameObject portalList;
     //Events
     public static UnityAction missionCleared;
-    
+    public static event UnityAction sealPlayerInput;
+    public static event UnityAction unsealPlayerInput;
     public static UnityAction <string, Sprite> itemAdded;
     public static UnityAction<Vector3> areaChange;
-    
+    public static UnityAction<int> portal;
 
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
@@ -213,17 +214,15 @@ public class UiManager : MonoBehaviour
     
 
     public GameObject Invent { get => invent; set => invent = value; }
-    public GameObject ShieldInvent { get => shieldInvent; set => shieldInvent = value; }
-    public GameObject WeaponInvent { get => weaponInvent; set => weaponInvent = value; }
-    public GameObject MaskInvent { get => maskInvent; set => maskInvent = value; }
+    
     public Text DescriptionBox { get => descriptionBox; set => descriptionBox = value; }
     public Font LuckiestGuy { get => luckiestGuy; set => luckiestGuy = value; }
     
 	public GameObject MissionListing { get => missionListing; set => missionListing = value; }
-    public ItemSlot WeaponSlot { get => weaponSlot; set => weaponSlot = value; }
-    public ItemSlot ShieldSlot { get => shieldSlot; set => shieldSlot = value; }
-    public ItemSlot MaskSlot { get => maskSlot; set => maskSlot = value; }
+    
     public int MenuState { get => menuState; set { menuState = value; } }
+
+    public GameObject ItemInvent { get => itemInvent; set => itemInvent = value; }
     #endregion
 
 
@@ -250,9 +249,7 @@ public class UiManager : MonoBehaviour
         storeMenu = StoreMenuPrefab;
         
         dialogueMenu = dialogueMenuPrefab;
-        weaponSlot.Awake();
-        ShieldSlot.Awake();
-        MaskSlot.Awake();
+        
         AIKryll.sendDist += DistFromKyrllToZend;
         AIKryll.zend += KryllDown;
         Player.kryll += KryllUp;
@@ -262,11 +259,12 @@ public class UiManager : MonoBehaviour
         GameController.onGameWasStarted += GameScreen;
         Npc.dialogueUp += DialogueManagerUp;
         Npc.dialogueDown += DialogueManagerDown;
-        ExpConverter.levelMenuUp += LevelUpMenuUp;
+        ExpConverter.levelMenuUp += MenuManager;
         Stats.onBaseStatsUpdate += UpdateBoost;
         Items.onItemClick += UseMenuHandling;
         Objective.onObjectiveClick += ObjectiveDescription;
         Bed.bed += SaveMenuUp;
+        PortalConnector.portalListUp += MenuManager;
         GameController.gameWasSaved += SaveGame;
         missionCleared += ObjectiveClear;
         itemAdded += ItemPopUp;
@@ -274,6 +272,8 @@ public class UiManager : MonoBehaviour
         Skill.sendSkill += SetSkillToSlot;
         SkillButton.sendSkillSlot += SetLastSkillSlot;
         CinematicManager.unfade += UnFade;
+        CinematicManager.gameStart += GameStart;
+        Cauldron.potionMaking += MenuManager;
     }
     void Start()
     {
@@ -283,9 +283,7 @@ public class UiManager : MonoBehaviour
         Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
         Enemy.onAnyEnemyDead += EnemyDeath;
-        WeaponSlot.GetComponent<Button>().onClick.AddListener(WeaponInventUp);
-        ShieldSlot.GetComponent<Button>().onClick.AddListener(ShieldInventUp);
-        MaskSlot.GetComponent<Button>().onClick.AddListener(MaskInventUp);
+        
         //Cursor.lockState = CursorLockMode.Locked;
     }
     void OnEnable()
@@ -317,17 +315,25 @@ public class UiManager : MonoBehaviour
             PauseMenuControl(0);
 
         }
+        
 
-		if (missionListing.transform.childCount > 0) { 
+        if (missionListing.transform.childCount > 0) { 
 		ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
 		}//SetCanvas();
-        //CancelMenu();
+        CancelMenu();
 	}
     private IEnumerator WaitForPauseMenu() {
         yield return null;
         PauseMenuControl(0);
 
     }
+    public void Portal(int connector) {
+        if (portal != null) {
+            portal(connector);
+        }
+        portalList.SetActive(false);
+    }
+    
     #region Event Handlers
     private void SetSkillToSlot(Skill skill) {
         lastSelectedSkillSlot.SkillAssigned = skill;
@@ -338,9 +344,17 @@ public class UiManager : MonoBehaviour
         skillList.SetActive(true);
 
     }
+    //private void DialogueManagement(string lines) {
+    //dialogueText.text = lines;
+    //}
     #endregion
     #region Menus
-
+    public void StoreUp() {
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
+        storeMenu.SetActive(true);
+    }
     public void PauseMenuControl(int num) {
          MenuState= num;
         menus.SetActive(false);
@@ -361,11 +375,12 @@ public class UiManager : MonoBehaviour
                 equipment.SetActive(true);
                 break;
             case 3:
-                Debug.Log("wtf");
+                
                 skills.SetActive(true);
                 break;
             case 4:
                 stats.SetActive(true);
+                ViewStats();
                 break;
             case 5:
                 options.SetActive(true);
@@ -373,44 +388,48 @@ public class UiManager : MonoBehaviour
         }
 
     }
-    
-private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
-        ClearInvents();
-        switch (type)
+    private void GameStart() {
+        StartCoroutine(WaitToShowHowToAttack());
+
+    }
+    private IEnumerator WaitToShowHowToAttack() {
+        YieldInstruction wait = new WaitForSeconds(1.3f);
+        yield return wait;
+        PauseGame();
+        howToAttack.SetActive(true);
+
+    }
+    private void MenuManager(int menu) {
+        if (sealPlayerInput != null)
         {
-            case ItemSlot.ItemSlotType.Weapon:
-
+            sealPlayerInput();
+        }
+        PauseGame();
+        switch (menu) {
+            case 0:
                 break;
-            case ItemSlot.ItemSlotType.Shield:
-
+            case 1:
+                storeMenu.SetActive(true);
                 break;
-            case ItemSlot.ItemSlotType.Mask:
-
+            case 2:
+                LevelUpMenuUp();
+                break;
+            case 3:
+                quantityWindow.SetActive(true);
+                displayedQuantity.text = quantity.ToString();
+                break;
+            case 4:
+                portalList.SetActive(true);
                 break;
         }
     }
-    public void WeaponInventUp() {
+    
 
-        WeaponInvent.SetActive(true);
-    }
-    public void ShieldInventUp()
-    {
-        ShieldInvent.SetActive(true);
-    }
-    public void MaskInventUp()
-    {
-        MaskInvent.SetActive(true);
-    }
-    private void ClearInvents() {
-        WeaponInvent.SetActive(false);
-        ShieldInvent.SetActive(false);
-        MaskInvent.SetActive(false);
-    }
-
+    
     #endregion
     private void CancelMenu() {
         if (howToAttack.activeSelf) {
-            if (Input.GetButtonDown("X")) {
+            if (Input.GetButtonDown("Circle")) {
                 howToAttack.SetActive(false);
             }
         }
@@ -426,6 +445,12 @@ private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
             if (Input.GetButtonDown("X"))
             {
                 howToRoll.SetActive(false);
+            }
+        }
+        if (portalList.activeSelf) {
+            if (Input.GetButtonDown("Circle"))
+            {
+                portalList.SetActive(false);
             }
         }
     }
@@ -470,6 +495,16 @@ private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
         color.a += 0.03f;
         black.color = color;
 
+    }
+    private void StartFade() {
+        StartCoroutine(FadeScreen());
+    }
+    private IEnumerator FadeScreen() {
+        while (isActiveAndEnabled && black.color.a <= 0.99)
+        {
+            yield return null;
+            FadeToBlack();
+        }
     }
     private void NextScene(Vector3 travelPoint)
     {
@@ -554,6 +589,9 @@ private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
     
     private void LevelUpMenuUp()
     {
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
         if (!levelMenuPrefab.activeSelf)
         {
             levelMenuPrefab.SetActive(true);
@@ -567,7 +605,9 @@ private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
     private void MenusDown() {
         levelMenuPrefab.SetActive(false);
         storeMenu.SetActive(false);
-
+        if (unsealPlayerInput != null) {
+            unsealPlayerInput();
+        }
         if (menuState == 0) {
             Player.GetPlayer().Pause = false;
             pauseMenu.SetActive(false);
@@ -848,9 +888,18 @@ private void EquipmentInventUp(ItemSlot.ItemSlotType type) {
         baseDefense.text = "Defense = " + Player.GetPlayer().stats.BaseDefense.ToString();
         baseHealth.text = "Health = " + Player.GetPlayer().stats.BaseHealth.ToString();
         baseMp.text = "Mp = " + Player.GetPlayer().stats.BaseMp.ToString();
-        lvMenuExp.text = "Souls: " + Player.GetPlayer().stats.Exp;
+        lvMenuExp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
 
 
+    }
+    public void UpQuantity() {
+
+        quantity++;
+        displayedQuantity.text = quantity.ToString();
+    }
+    public void LowerQuantity() {
+        quantity--;
+        displayedQuantity.text = quantity.ToString();
     }
     private void KryllUp() {
         kryllUi.SetActive(true);

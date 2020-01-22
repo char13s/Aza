@@ -168,11 +168,17 @@ public class Inventory
 
         GameObject c = new GameObject();
         c.name = "Item";
-        c.AddComponent<Image>();
-        c.AddComponent<Button>();
+        //c.AddComponent<Image>();
+        c.AddComponent<Text>();
+        
         c.AddComponent<Items>();
         c.GetComponent<Items>().data = i;
-        c.GetComponent<Image>().sprite = SpriteAssign.SetImage(i); ;
+        c.GetComponent<Text>().text= i.ItemName;
+        c.AddComponent<Button>();
+        c.GetComponent<Text>().color = Color.black;
+        c.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
+        c.GetComponent<Text>().resizeTextForBestFit = true;
+        //c.GetComponent<Image>().sprite = SpriteAssign.SetImage(i); ;
         c.transform.SetParent(SetToInvent(i));
         //Color hC  = new Color(1,0,0);
         //c.GetComponent<Button>().colors.highlightedColor = hC; 
@@ -191,28 +197,21 @@ public class Inventory
         t.AddComponent<Text>();
         t.transform.SetParent(c.transform);
         GetQuantity(t.GetComponent<Text>(), i);
-        t.transform.localPosition = new Vector3(0, 0, 8);
+        t.transform.localPosition = new Vector3(-62, 0, 0);
         t.GetComponent<Text>().color = Color.black;
-        t.GetComponent<Text>().font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        t.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
         t.GetComponent<Text>().resizeTextForBestFit = true;
         Buttons.Add(c);
     }
 
     private Transform SetToInvent(ItemData i) {
-        switch (i.Type) {
+        switch (i.Type)
+        {
             case ItemData.ItemType.Normal:
-                //return UiManager.GetUiManager().ItemInvent.transform;
+                return UiManager.GetUiManager().ItemInvent.transform;
+                
+            default:
                 break;
-                
-            case ItemData.ItemType.Weapon:
-                return UiManager.GetUiManager().WeaponInvent.transform;
-                
-            case ItemData.ItemType.Shield:
-                return UiManager.GetUiManager().ShieldInvent.transform;
-            case ItemData.ItemType.Mask:
-                return UiManager.GetUiManager().MaskInvent.transform;
-
-
         }
         return null;
 
@@ -233,7 +232,7 @@ public class Inventory
         {
             foreach (GameObject b in Buttons)
             {
-                GetQuantity(b.GetComponentInChildren<Text>(), b.GetComponent<Items>().data);
+                GetQuantity(b.transform.GetChild(0).GetComponent<Text>(), b.GetComponent<Items>().data);
 
 
                 if (b.GetComponent<Items>().data.Quantity == 0)

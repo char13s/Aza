@@ -45,10 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     type: 0
-    id: 100
-    sellableValue: 50
-    shield: 1
-    mask: 0
-    weapon: 0
-    power: 0
-    itemDescription: Heals 50 Hp
+    id: 1
+    itemDescription: Recovers 20% of your health

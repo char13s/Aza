@@ -45,7 +45,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         for (int i = 0; i < Enemy.TotalCount; i++)
         {
             Enemy current = Enemy.GetEnemy(i);
-            bool shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 169;
+            bool shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 400;
             int index = enemies.IndexOf(current);
             if (shouldBeInList != index >= 0)
             {

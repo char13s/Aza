@@ -26,15 +26,7 @@ public class Items : MonoBehaviour
     {
         switch (data.Type)
         {
-            case ItemData.ItemType.Weapon:
-                WeaponItem();
-                break;
-            case ItemData.ItemType.Shield:
-                ShieldItem();
-                break;
-            case ItemData.ItemType.Mask:
-                MaskItem();
-                break;
+            
             default:
                 DefaultItem();
                 break;
@@ -64,19 +56,7 @@ public class Items : MonoBehaviour
 
 
     }
-    private void WeaponItem()
-    {
-        UiManager.GetUiManager().WeaponSlot.Equipped(this.data);
-    }
-    private void ShieldItem() {
-        UiManager.GetUiManager().ShieldSlot.Equipped(this.data);
-
-    }
-    private void MaskItem()
-    {
-        UiManager.GetUiManager().MaskSlot.Equipped(this.data);
-
-    }
+    
 
 
 }
