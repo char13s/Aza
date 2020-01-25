@@ -73,8 +73,9 @@ public class Enemy : MonoBehaviour
     private bool grounded;
 
     [SerializeField]private bool boss;
+	private bool frozen;
 
-    public static event UnityAction<Enemy> onAnyDefeated;
+	public static event UnityAction<Enemy> onAnyDefeated;
     public static event UnityAction onAnyEnemyDead;
 
     #region Getters and Setters
@@ -130,10 +131,14 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             }
         }
     }
+	public bool Boss { get => boss; set => boss = value; }
+	public Animator Anim { get => anim; set => anim = value; }
+	public static List<Enemy> Enemies { get => enemies; set => enemies = value; }
+	public bool Frozen { get => frozen; set { frozen = value; if (frozen) { FreezeEnemy(); } } }
 
-    #endregion
-    
-    public static int TotalCount => Enemies.Count;
+	#endregion
+
+	public static int TotalCount => Enemies.Count;
 
     public virtual void Awake()
     {
@@ -142,6 +147,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         StatusEffects.onStatusUpdate += StatusControl;
         StatCalculation();
         state = EnemyAiStates.Null;
+		ZaWarudo.timeFreeze += FreezeEnemy;
     }
     // Start is called before the first frame update
     public void OnEnable()
@@ -173,7 +179,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     // Update is called once per frame
     public virtual void Update()
     {
-        if (status.Status != StatusEffects.Statuses.stunned&&state!=EnemyAiStates.Null)
+
+		if (status.Status != StatusEffects.Statuses.stunned&&state!=EnemyAiStates.Null)
         {
             StateSwitch();
 
@@ -231,7 +238,28 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 
 
     }
-    void StateSwitch()
+	private void SwitchFreezeOn() {
+		Frozen = true;
+	}
+	private void FreezeEnemy() {
+		nav.enabled = false;
+		GetComponent<Rigidbody>().useGravity = false;
+		anim.speed = 0;
+		state = EnemyAiStates.Null;
+		StartCoroutine(UnFreeze());
+	}
+	private IEnumerator UnFreeze() {
+		YieldInstruction wait = new WaitForSeconds(2);
+		yield return wait;
+		UnFreezeEnemy();
+	}
+	private void UnFreezeEnemy() {
+		nav.enabled = true;
+		GetComponent<Rigidbody>().useGravity = true;
+		anim.speed = 1;
+		state = EnemyAiStates.Idle;
+	}
+    private void StateSwitch()
     {
 
         if (state != EnemyAiStates.LowHealth)
@@ -394,7 +422,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         d.transform.localPosition = new Vector3(0.4F, 0, 0);
         d.transform.rotation = new Quaternion(0, 0, 0, 0);
         d.AddComponent<Text>();
-        d.GetComponent<Text>().font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        d.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
         d.GetComponent<Text>().resizeTextForBestFit = true;
         d.GetComponent<Text>().color = Color.red;
         d.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
@@ -475,11 +503,9 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);
 
-    public bool Boss { get => boss; set => boss = value; }
-    public Animator Anim { get => anim; set => anim = value; }
-    public static List<Enemy> Enemies { get => enemies; set => enemies = value; }
+    
 
-    private void OnTriggerStay(Collider other)
+	private void OnTriggerStay(Collider other)
     {
         if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack"))
         {

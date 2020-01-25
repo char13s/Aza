@@ -13,6 +13,7 @@ using UnityEngine.Rendering.PostProcessing;
     [SerializeField] private GameObject darkEndProcessor;
     private static PostProcessorManager instance;
 
+	private bool timeStop;
     public PostProcessProfile ForestProfile { get => forestProfile; set => forestProfile = value; }
     public PostProcessProfile GraveyardProfile { get => graveyardProfile; set => graveyardProfile = value; }
     public GameObject ForestProcessor { get => forestProcessor; set => forestProcessor = value; }
@@ -33,6 +34,7 @@ using UnityEngine.Rendering.PostProcessing;
         }
         VirtualCameraManager.grey += TimeSlow;
         VirtualCameraManager.ungrey += Default;
+		Player.zaWarudo += ZaWarudo;
     }
     // Start is called before the first frame update
     void Start()
@@ -45,9 +47,21 @@ using UnityEngine.Rendering.PostProcessing;
     {
         
     }
+	private void ZaWarudo() {
+		ForestProfile.GetSetting<ColorGrading>().hueShift.value = -60;
+		timeStop = true;
+		StartCoroutine(Wait());
+	}
+	private IEnumerator Wait() {
+		YieldInstruction wait = new WaitForSeconds(2);
+		yield return wait;
+		timeStop = false;
+		
+	}
     public void Default() {
+		if (!timeStop) { 
         ForestProfile.GetSetting<ColorGrading>().hueShift.value = 0;
-        DarkEndProfile.GetSetting<ColorGrading>().saturation.value = 12.7f;
+        DarkEndProfile.GetSetting<ColorGrading>().saturation.value = 12.7f;}
     }
     public void Transformation() {
         ForestProfile.GetSetting<ColorGrading>().hueShift.value = -60;

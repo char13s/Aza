@@ -120,6 +120,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject devilFoot;
     [SerializeField] private GameObject leftHand;
     [SerializeField] private GameObject rightHand;
+	[SerializeField] private GameObject zaWarudosRange;
     #endregion
     [Space]
     [Header("Buttons")]
@@ -160,6 +161,7 @@ public class Player : MonoBehaviour
     internal Inventory maskInvent = new Inventory();
     internal Stats stats = new Stats();
     private AxisButton dPadUp = new AxisButton("DPad Up");
+	private AxisButton dPadRight = new AxisButton("DPad Right");
     private AxisButton R2 = new AxisButton("R2");
     private AxisButton L2 = new AxisButton("L2");
     private AxisButton L3 = new AxisButton("L3");
@@ -169,9 +171,10 @@ public class Player : MonoBehaviour
     private bool doubleJump;
     private bool boosting;
     private bool teleportTriggered;
-    #endregion
-    #region Events
-    public static event UnityAction aiming;
+	private bool timeStopped;
+	#endregion
+	#region Events
+	public static event UnityAction aiming;
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
@@ -183,6 +186,7 @@ public class Player : MonoBehaviour
     public static event UnityAction battleOn;
     public static event UnityAction notSleeping;
     public static event UnityAction cancelPaused;
+	public static event UnityAction zaWarudo;
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
@@ -562,7 +566,17 @@ public class Player : MonoBehaviour
                 Jump();
             }
             DoubleJump();
+			if (dPadRight.GetButtonDown() && !timeStopped) {
+				zaWarudosRange.SetActive(true);
+				timeStopped = true;
+				if (zaWarudo != null) {
+					zaWarudo();
+				}
+				StartCoroutine(ResetTimeStop());
 
+			} else {
+				zaWarudosRange.SetActive(false);
+			}
 
         }
 
@@ -608,6 +622,11 @@ public class Player : MonoBehaviour
 
 
     }
+	private IEnumerator ResetTimeStop() {
+		YieldInstruction wait = new WaitForSeconds(2);
+		yield return wait;
+		timeStopped = false;
+	}
     private void CalculateRotation()
     {
 
@@ -635,7 +654,7 @@ public class Player : MonoBehaviour
         {
             //Grounded = true;
 
-            Kryll();
+            //Kryll();
         }
         if (Input.GetButtonDown("R3") && !transforming && stats.MPLeft >= 1)
         {
@@ -1192,7 +1211,7 @@ public class Player : MonoBehaviour
             if (Input.GetButton("R1") && !TeleportTriggered)
             {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
-                Time.timeScale = 0.2f;
+                Time.timeScale = 0.1f;
                 if (lockOn != null)
                 {
                     lockOn();

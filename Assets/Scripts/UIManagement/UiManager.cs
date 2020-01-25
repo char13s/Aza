@@ -179,6 +179,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject skills;
     [SerializeField] private GameObject stats;
     [SerializeField] private GameObject options;
+	[SerializeField] private GameObject pauseMenuDefaultButton;
     private static UiManager instance;
     [Header("Skill Menu")]
     [SerializeField] private GameObject skillList;
@@ -302,7 +303,7 @@ public class UiManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
         {
-            //GetSelected();
+            GetSelected();
         }
         if (Player.GetPlayer().Pause) {
             if (MenuState > 0 && Input.GetButtonDown("Circle")) {
@@ -317,9 +318,9 @@ public class UiManager : MonoBehaviour
         }
         
 
-        if (missionListing.transform.childCount > 0) { 
-		ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
-		}//SetCanvas();
+        //if (missionListing.transform.childCount > 0) { 
+		//ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
+		//}SetCanvas();
         CancelMenu();
 	}
     private IEnumerator WaitForPauseMenu() {
@@ -358,11 +359,15 @@ public class UiManager : MonoBehaviour
     public void PauseMenuControl(int num) {
          MenuState= num;
         menus.SetActive(false);
-        switch (MenuState) {
+		
+		switch (MenuState) {
             case 0:
                 Debug.Log("back to basics");
+				
                 menus.SetActive(true);
-                items.SetActive(false);
+				DefaultObject = pauseMenuDefaultButton; 
+				GetSelected();
+				items.SetActive(false);
                 equipment.SetActive(false);
                 skills.SetActive(false);
                 stats.SetActive(false);
@@ -386,7 +391,7 @@ public class UiManager : MonoBehaviour
                 options.SetActive(true);
                 break;
         }
-
+		
     }
     private void GameStart() {
         StartCoroutine(WaitToShowHowToAttack());
@@ -583,7 +588,7 @@ public class UiManager : MonoBehaviour
     }
     private void GetSelected()
     {
-        /*EventSystem.current.SetSelectedGameObject(DefaultObject); */
+        EventSystem.current.SetSelectedGameObject(DefaultObject); 
     }
     
     
