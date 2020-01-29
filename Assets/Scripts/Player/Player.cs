@@ -634,7 +634,7 @@ public class Player : MonoBehaviour {
 
             //Kryll();
         }
-        if (Input.GetButtonDown("R3") && !transforming && stats.MPLeft >= 1) {
+        /*if (Input.GetButtonDown("R3") && !transforming && stats.MPLeft >= 1) {
             if (poweredUp) {
                 Deform();
                 //stats.MPLeft--;
@@ -646,7 +646,7 @@ public class Player : MonoBehaviour {
         }
         if (poweredUp && stats.MPLeft == 0) {
             Deform();
-        }
+        }*/
 
         //WeaponSwitch();
 

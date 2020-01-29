@@ -55,6 +55,7 @@ public class AIKryll : MonoBehaviour
         Player.battleOn += BattleOn;
         AreaTransition.transition += Spawn;
         Bed.bed += Sleep;
+        PortalManager.backToBase += TeleportWithZend;
         disableCollider += DisableCollider;
         
     }
@@ -78,6 +79,10 @@ public class AIKryll : MonoBehaviour
     private void BattleOn()
     {
         State = AIState.Attacking;
+    }
+    private void TeleportWithZend(Vector3 k,bool c) {
+        Debug.Log("awww");
+        transform.position = spawn.transform.position;
     }
     private void Spawn()
     {
