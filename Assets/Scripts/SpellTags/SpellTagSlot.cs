@@ -7,12 +7,17 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Button))]
 public class SpellTagSlot : MonoBehaviour
 {
+    private SpellTag spell;
+    private Text spellName;
+
+    public SpellTag Spell { get => spell; set => spell = value; }
+
     public static event UnityAction spellInvent;
-    public static event UnityAction<SpellTagSlot> sendThisTag;
+    public static event UnityAction<SpellTagSlot> sendThisSlot;
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetComponent<Button>().onClick.AddListener(AcessSpellInvent);
     }
 
     // Update is called once per frame
@@ -20,12 +25,23 @@ public class SpellTagSlot : MonoBehaviour
     {
         
     }
+    public void Activate() {
+        Spell.Activate();
+        //CheckSpellTagQuantity();
+        Debug.Log("Spell Activated");
+    }
+    private void CheckSpellTagQuantity() {
+        if (Spell.Quantity == 0) {
+            Spell = null;
+            spellName.text = "none";
+        }
+    }
     private void AcessSpellInvent() {
         if (spellInvent != null) {
             spellInvent();
         }
-        if (sendThisTag != null) {
-            sendThisTag(this);
+        if (sendThisSlot != null) {
+            sendThisSlot(this);
         }
     }
 }

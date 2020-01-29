@@ -2,31 +2,34 @@
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 [System.Serializable]
-public class Stats
-{
+public class Stats {
     //Variables
     private int health;
     private int attack;
     private int defense;
-    
+
     private int mp;
     private int intellect;
     private int healthLeft;
-    
+
     private int mpLeft;
     private byte level = 1;
     private int exp = 0;
     private int requiredExp;
 
-	private int baseAttack;
-	private int baseDefense;
-	private int baseMp;
-	private int baseHealth;
+    private int baseAttack;
+    private int baseDefense;
+    private int baseMp;
+    private int baseHealth;
 
     private int attackBoost;
     private int defenseBoost;
     private int mpBoost;
     private int healthBoost;
+
+    private int swordLevel;
+    private int demonFistLevel;
+    private int swordProficency;
 
     private int abilitypoints;
     //Events
@@ -34,11 +37,11 @@ public class Stats
     public static event UnityAction onMPLeft;
     public static event UnityAction onLevelUp;
     public static event UnityAction onShowingStats;
-	public static event UnityAction onBaseStatsUpdate;
-	public static event UnityAction onObjectiveComplete;
+    public static event UnityAction onBaseStatsUpdate;
+    public static event UnityAction onObjectiveComplete;
     //Properties
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
-    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);if (onHealthChange != null) { onHealthChange(); } } }
+    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health); if (onHealthChange != null) { onHealthChange(); } } }
     public int MPLeft { get { return mpLeft; } set { mpLeft = Mathf.Clamp(value, 0, mp); if (onMPLeft != null) { onMPLeft(); } } }
 
     public int Attack { get { return attack; } set { attack = value; } }
@@ -48,10 +51,10 @@ public class Stats
 
     public byte Level { get => level; set => level = value; }
     public int Exp { get => exp; set { exp = value; UpdateUi(); } }
-	public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
-	public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
-	public int BaseMp { get => baseMp; set { baseMp = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
-	public int BaseHealth { get => baseHealth; set { baseHealth = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+    public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+    public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+    public int BaseMp { get => baseMp; set { baseMp = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+    public int BaseHealth { get => baseHealth; set { baseHealth = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 
     public int AttackBoost { get => attackBoost; set { attackBoost = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); SetStats(); } }
     public int DefenseBoost { get => defenseBoost; set { defenseBoost = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); SetStats(); } }
@@ -61,11 +64,13 @@ public class Stats
     public int RequiredExp { get => requiredExp; set => requiredExp = value; }
     public int Abilitypoints { get => abilitypoints; set { abilitypoints = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 
-    public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return  Mathf.Abs(Exp- expNeeded); }
+    public int SwordProficency { get => swordProficency; set => swordProficency = value; }
+    public int SwordLevel { get => swordLevel; set => swordLevel = value; }
+
+    public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return Mathf.Abs(Exp - expNeeded); }
     public int ExpCurrent() { return Exp - (4 * ((Level - 1) * (Level - 1) * (Level - 1))); }
-    public void AddExp(int points)
-    {
-		exp += points;
+    public void AddExp(int points) {
+        exp += points;
 
     }
     /*void LevelUp(int points)
@@ -94,16 +99,13 @@ public class Stats
         }
         
     }*/
-    
-    public void DisplayAbilities()
-    {
-        if (onShowingStats != null)
-        {
+
+    public void DisplayAbilities() {
+        if (onShowingStats != null) {
             onShowingStats();
         }
     }
-    public void Start()
-    {
+    public void Start() {
         baseHealth = 22;
         healthLeft = baseHealth;
         baseMp = 10;
@@ -113,35 +115,46 @@ public class Stats
         intellect = 6;
         level = 1;
         exp = 0;
+        SwordLevel = 1;
+        demonFistLevel = 1;
         requiredExp = 50;
         SetStats();
+        Player.weaponSwitch += SetStats;
         GameController.onGameWasStarted += UpdateUi;
-        if (onHealthChange != null)
-        {
+        if (onHealthChange != null) {
             onHealthChange();
         }
-        if (onMPLeft != null)
-        {
+        if (onMPLeft != null) {
             onMPLeft();
         }
         if (onLevelUp != null) { onLevelUp(); }
     }
     private void UpdateUi() {
-        if (onHealthChange != null)
-        {
+        if (onHealthChange != null) {
             onHealthChange();
         }
-        if (onMPLeft != null)
-        {
+        if (onMPLeft != null) {
             onMPLeft();
         }
         if (onLevelUp != null) { onLevelUp(); }
     }
     private void SetStats() {
-        Attack = baseAttack + attackBoost;
+        Attack = baseAttack + attackBoost+WeaponBoost();
         Defense = baseDefense + defenseBoost;
         MP = baseMp + mpBoost;
         Health = baseHealth + healthBoost;
     }
-    
+    private int WeaponBoost() {
+
+        switch (Player.GetPlayer().Weapon) {
+            case 0:
+                return SwordLevel*2;
+            case 1:
+                return demonFistLevel*4;
+            default:
+                return 0;
+        }
+        
+    }
+
 }

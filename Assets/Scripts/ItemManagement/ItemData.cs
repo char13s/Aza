@@ -47,9 +47,6 @@ public class ItemData
         
         
     }
-    
-    
-
     private void NullQuantity() { Debug.Log("Quantity nulled"); quantity = 0; }
     public void UseItem()
     {
@@ -73,12 +70,44 @@ public class ItemData
             case 5://Status curer
                 Player.GetPlayer().status.Status=StatusEffects.Statuses.neutral;
                 break;
+            case 6://Attack Up
+                break;
+            case 7://Defense Up
+                break;
+            case 8: //Mp regen
+                break;
+            case 9://Hp regen
+                break;
+            case 10://Heal poison
+                BleedingHeal();
+                break;
+            case 11://Heal paralysis
+                ParalysisHeal();
+                break;
+            case 12://Heal burn
+                BurnHeal();
+                break;
         }
         Quantity--;
         UiManager.UseMenu.SetActive(false);
 
     }
-   
+
+    private void BurnHeal() {
+        if (Player.GetPlayer().status.Status == StatusEffects.Statuses.burned) {
+            Player.GetPlayer().status.Status = StatusEffects.Statuses.neutral;
+        }
+    }
+    private void ParalysisHeal() {
+        if (Player.GetPlayer().status.Status == StatusEffects.Statuses.stunned) {
+            Player.GetPlayer().status.Status = StatusEffects.Statuses.neutral;
+        }
+    }
+    private void BleedingHeal() {
+        if (Player.GetPlayer().status.Status == StatusEffects.Statuses.bleeding) {
+            Player.GetPlayer().status.Status = StatusEffects.Statuses.neutral;
+        }
+    }
     public void GiveItem()
     {
         Debug.Log("Here you go");

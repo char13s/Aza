@@ -6,28 +6,28 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.AI;
 #pragma warning disable 0649
-public class GameController : MonoBehaviour
-{
+public class GameController : MonoBehaviour {
     private Player pc;
     private PlayableAza aza;
-    
-    
+
+
     [SerializeField] private EventSystem eventSystem;
-    
+
     [SerializeField] private GameObject normalCamera;
     [Space]
-    
+    [SerializeField] private GameObject cinematicManager;
     [SerializeField] private GameObject spawn;
     [Space]
     private bool load;
     private static GameController instance;
     private Coroutine loadCoroutine;
     private Coroutine deadCoroutine;
-    
+
 
     public static event UnityAction onNewGame;
     public static event UnityAction onGameWasStarted;
     public static event UnityAction onQuitGame;
+    public static event UnityAction onLoadGame;
     public static event UnityAction update;
     public static event UnityAction awake;
     public static UnityAction gameWasSaved;
@@ -38,10 +38,8 @@ public class GameController : MonoBehaviour
     public GameObject Spawn { get => spawn; set => spawn = value; }
 
     public static GameController GetGameController() => instance.GetComponent<GameController>();
-    public void Awake()
-    {
-        if (instance != null && instance != this)
-        {
+    public void Awake() {
+        if (instance != null && instance != this) {
             GameObject.DestroyImmediate(gameObject);
             return;
         }
@@ -49,44 +47,45 @@ public class GameController : MonoBehaviour
         SpawnSetters.setSpawner += SetSpawner;
     }
 
-    void OnEnable()
-    {
+    void OnEnable() {
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
         if (awake != null)
             awake();
         onNewGame += OnNewGame;
-        
+
     }
 
-    void OnDisable()
-    {
+    void OnDisable() {
         SceneManager.sceneLoaded -= OnLevelFinishedLoading;
-        onNewGame -= OnNewGame;
+        //onNewGame -= OnNewGame;
     }
-    void Start()
-    {
+    void Start() {
         Player.onPlayerDeath += OnPlayerDeath;
-        
 
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0))
-        {
+
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) {
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         }
-        
+
         pc = Player.GetPlayer();
-        
+
         //Input.Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
     }
-    
+
     // Update is called once per frame
-    void Update()
-    {
-        
+    void Update() {
+
         if (update != null)
             update();
         SceneManagement();
-        
+        if (!Player.GetPlayer().Pause) { 
+        if (Input.GetKey(KeyCode.F9)) {
+            Time.timeScale = 4;
+        }
+        else {
+            Time.timeScale = 1;
+        }}
     }
     private void SetSpawner(GameObject newSpawn) {
         spawn = newSpawn;
@@ -99,111 +98,61 @@ public class GameController : MonoBehaviour
         mesh.triangles = nav.indices;
     }
     private void SceneManagement() {
-        if (SceneManager.GetSceneByBuildIndex(1).isLoaded)
-        {
-            
+        if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
+
             pc.gameObject.SetActive(false);
-            
+
             eventSystem.gameObject.SetActive(false);
         }
         else {
-            
+
             pc.gameObject.SetActive(true);
-            
+
             eventSystem.gameObject.SetActive(true);
         }
-        if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null)
-        {
-            
+        if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null) {
+
             SceneManager.MoveGameObjectToScene(pc.gameObject, SceneManager.GetSceneByBuildIndex(0));
         }
 
 
     }
-    
-    private IEnumerator LoadCoroutine()
-    {
+
+    private IEnumerator LoadCoroutine() {
 
         yield return null;
-        
+
         StopCoroutine(loadCoroutine);
 
     }
-    private IEnumerator DeadCoroutine()
-    {
+    private IEnumerator DeadCoroutine() {
         yield return new WaitForSeconds(1.5f);
         BackToMainMenu();
-        
+
     }
-    private void OnPlayerDeath()
-    {
+    private void OnPlayerDeath() {
         deadCoroutine = StartCoroutine(DeadCoroutine());
 
     }
-    /*public void Pocket()
-    {
-        pc.items.DisplayInventory();
-        MenuOff();
-    }
-    public void Ability()
-    {
-        ability.SetActive(true);
-        pc.stats.DisplayAbilities();
-        MenuOff();
-    }
-    private void MenuOff()
-    {
-        close.SetActive(true);
-        pauseMenu.SetActive(false);
-        eventSystem.SetSelectedGameObject(close, null);
-    }
-    private void MenuOn()
-    {
-        close.SetActive(false);
-        pauseMenu.SetActive(true);
-        eventSystem.SetSelectedGameObject(pocket, null);
-    }
-    public void BackToMenu()
-    {
-        if (ability.activeSelf)
-        {
-            ability.SetActive(false);
-
-            Debug.Log("ok");
-
-        }
-        else
-        {
-            pc.items.InventOff();
-        }
-        MenuOn();
-    }
-    public void UseItem()
-    {
-        
-        
-        
-    }*/
-    public void SaveGame()
-    {
+    
+    public void SaveGame() {
         SaveLoad.Save(instance.pc);
         if (gameWasSaved != null) {
             gameWasSaved();
         }
     }
-    private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
-    {
+    private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
 
-        if (SceneManager.GetSceneByBuildIndex(2).isLoaded)
-        {
+        if (SceneManager.GetSceneByBuildIndex(2).isLoaded) {
             CameraLogic.Switchable = true;
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
             pc.Loaded = true;
-            
+            if (onLoadGame != null) {
+                onLoadGame();
+            }
             //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 0);
 
-            foreach (GameObject b in pc.items.Buttons)
-            {
+            foreach (GameObject b in pc.items.Buttons) {
                 b.GetComponent<Items>().data.Quantity = 0;
             }
 
@@ -211,11 +160,10 @@ public class GameController : MonoBehaviour
         normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
 
         Vector3 position;
-        
+
         //pc.Pause = false;
 
-        if (instance.load)
-        {
+        if (instance.load) {
 
             Game data = SaveLoad.Load();
             position.x = data.PlayerPosition[0];
@@ -224,17 +172,14 @@ public class GameController : MonoBehaviour
             pc.transform.position = position;
             pc.stats = data.Stats;
             pc.items.Items = new List<ItemData>();
-            foreach (GameObject b in pc.items.Buttons)
-            {
+            foreach (GameObject b in pc.items.Buttons) {
                 b.GetComponent<Items>().data.Quantity = 0;
             }
-            if (onGameWasStarted != null)
-            {
+            if (onGameWasStarted != null) {
                 onGameWasStarted();
                 Debug.Log("Game was reloaded");
             }
-            foreach (ItemData it in data.Items)
-            {
+            foreach (ItemData it in data.Items) {
                 pc.items.Items.Add(it);
                 pc.items.ButtonCreation(it);
                 Debug.Log("ouchie ouch");
@@ -242,42 +187,38 @@ public class GameController : MonoBehaviour
             instance.load = false;
         }
     }
-    public void NewGame()
-    {
+    public void NewGame() {
         StartGame();
 
-        if (onGameWasStarted != null)
-        {
+        if (onGameWasStarted != null) {
             onGameWasStarted();
         }
         if (onNewGame != null)
             onNewGame();
+
     }
-    void OnNewGame()
-    {
+    private void OnNewGame() {
         //Vector3 position;
         pc.stats.Start();
         //position.x = 80.83f;
         //position.y = -1.918f;
         //position.z = -30.16f;
         //pc.Grounded = false;
-        normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
+        //normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
         //pc.transform.position = position;
         pc.transform.position = Spawn.transform.position;
         pc.transform.rotation = Spawn.transform.rotation;
         pc.items.Items = new List<ItemData>();
         Player.GetPlayer().Pause = false;
     }
-    public void MenuLoadGame()
-    {
+    public void MenuLoadGame() {
         instance.load = true;
         StartGame();
     }
 
-    public void LoadGame()
-    {
+    public void LoadGame() {
 
-        
+
         pc.Pause = false;
         Game data = SaveLoad.Load();
         Vector3 position;
@@ -288,21 +229,18 @@ public class GameController : MonoBehaviour
         pc.stats = data.Stats;
         pc.items.Items.Clear();
 
-        foreach (GameObject b in pc.items.Buttons)
-        {
+        foreach (GameObject b in pc.items.Buttons) {
             Destroy(b);
         }
         pc.items.Buttons.Clear();
         //pc.items.Items =;
 
-        if (onGameWasStarted != null)
-        {
+        if (onGameWasStarted != null) {
             onGameWasStarted();
-           
+
             Debug.Log("Game was reloaded");
         }
-        foreach (ItemData it in data.Items)
-        {
+        foreach (ItemData it in data.Items) {
 
             pc.items.Items.Add(it);
             pc.items.ButtonCreation(it);
@@ -311,24 +249,20 @@ public class GameController : MonoBehaviour
         Debug.Log(pc.items.Items.Count);
     }
 
-    public void StartGame()
-    {
+    public void StartGame() {
         SceneManager.UnloadSceneAsync(1);
 
         SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);
 
 
     }
-    
-    public void BackToMainMenu()
-    {
-        
-        if (onQuitGame != null)
-        {
+
+    public void BackToMainMenu() {
+
+        if (onQuitGame != null) {
             onQuitGame();
         }
-        if (SceneManager.GetSceneByBuildIndex(2).isLoaded && !SceneManager.GetSceneByBuildIndex(1).isLoaded)
-        {
+        if (SceneManager.GetSceneByBuildIndex(2).isLoaded && !SceneManager.GetSceneByBuildIndex(1).isLoaded) {
             SceneManager.UnloadSceneAsync(2);
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
 
@@ -338,8 +272,7 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void OnQuit()
-    {
+    public void OnQuit() {
         Application.Quit();
     }
 

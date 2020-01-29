@@ -43,10 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 484153e0fadf4c1469243112d5a05f5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ability: {fileID: 0}
-  pauseMenu: {fileID: 0}
   eventSystem: {fileID: 0}
-  pocket: {fileID: 0}
-  close: {fileID: 0}
   normalCamera: {fileID: 0}
+  cinematicManager: {fileID: 7249739789256371929, guid: a3294d1a29ca520439915d5f7d47918e,
+    type: 3}
   spawn: {fileID: 0}

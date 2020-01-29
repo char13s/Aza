@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
-[RequireComponent(typeof(Button))]
 [RequireComponent(typeof(Text))]
+[RequireComponent(typeof(Button))]
 public class SpellTag : MonoBehaviour
 {
     [SerializeField] private int spellId;
     [SerializeField] private string spellName;
+    public static event UnityAction<SpellTag> sendThisSpell;
+    public static event UnityAction spellListDown;
     private int quantity;
     private bool throwingSpell;
 
@@ -16,7 +19,7 @@ public class SpellTag : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetComponent<Button>().onClick.AddListener(SetSpellToSlot);
     }
 
     // Update is called once per frame
@@ -24,14 +27,21 @@ public class SpellTag : MonoBehaviour
     {
         
     }
-    private void Activate() {
+    public void Activate() {
         UseSpell();
+        //Quantity--;
     }
-    public void SetSpellToSlot() {
-
+    private void SetSpellToSlot() {
+        if (sendThisSpell != null) {
+            sendThisSpell(this);
+        }
+        if (spellListDown != null)
+        {
+            spellListDown();
+        }
     }
     private void UseSpell() {
-        Quantity--;
+        //Quantity--;
         switch (spellId) {
             case 1:
                 //Teleport Back to Aza House

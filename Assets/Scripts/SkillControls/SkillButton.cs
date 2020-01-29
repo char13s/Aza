@@ -9,12 +9,17 @@ public class SkillButton : MonoBehaviour
 {
     private int mpRequired;
     private Skill skillAssigned;
+    [SerializeField]private int skill;
     [SerializeField] private Text skillName;
 
     public static event UnityAction<SkillButton> sendSkillSlot;
     public int MpRequired { get => mpRequired; set => mpRequired = value; }
     public Skill SkillAssigned { get => skillAssigned; set { skillAssigned = value;SetSkill(); } }
 
+    private void Awake() {
+        GameController.onQuitGame += NullSkill;
+        GameController.onLoadGame += OnGameLoaded;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +36,13 @@ public class SkillButton : MonoBehaviour
 
         skillName.text = skillAssigned.SkillName;
         MpRequired = skillAssigned.MpCost;
-        
+        skill = skillAssigned.SkillId;
+    }
+    private void OnGameLoaded() {
+        skillAssigned.GetSkill(skill);
+    }
+    private void NullSkill() {
+        skillAssigned = null;
     }
     private void GetSkill() {
         if (sendSkillSlot != null) {

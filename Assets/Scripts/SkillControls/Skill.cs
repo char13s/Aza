@@ -38,6 +38,13 @@ public class Skill : MonoBehaviour
     {
         
     }
+    public Skill GetSkill(int skill) {
+        if (skillId == skill) {
+            return this;
+
+        }
+        return null;
+    }
     public void SetSkill()
     {
         Debug.Log("SetLastSelectedSkill works");

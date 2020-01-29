@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: fire
+  m_Name: Fire
   m_Shader: {fileID: 4800000, guid: 05628389ff9ded04f9e4b1971f22263c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -108,13 +108,13 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_51F53411: {r: 0, g: 0, b: 0, a: 0}
-    - Color_75F91B37: {r: 5.2753763, g: 0, b: 11.486546, a: 1}
+    - Color_75F91B37: {r: 11.486544, g: 2.2221537, b: 0, a: 1}
     - Color_A7A5E00B: {r: 0, g: 0, b: 0, a: 0}
     - Color_C81BDEAE: {r: 0.23818898, g: 1, b: 0, a: 0}
     - Color_DC2A9B2B: {r: 0, g: 0, b: 0, a: 0}
-    - Vector2_1D8C4363: {r: 3.86, g: 2.8, b: 2.63, a: 0}
+    - Vector2_1D8C4363: {r: 4.09, g: 0.31, b: 0.96, a: 0}
     - Vector2_89D47A09: {r: 0, g: 0, b: 0, a: 0}
-    - Vector2_A44DE31C: {r: 19.87, g: 61.9, b: -19.93, a: 0}
+    - Vector2_A44DE31C: {r: 3.76, g: 0.56, b: 31.8, a: 0}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

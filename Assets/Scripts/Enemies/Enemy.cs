@@ -67,6 +67,7 @@ public class Enemy : MonoBehaviour
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
+    
     [SerializeField] private int flip;
     private static List<Enemy> enemies = new List<Enemy>(32);
     private int behavior;
@@ -148,6 +149,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         StatCalculation();
         state = EnemyAiStates.Null;
 		ZaWarudo.timeFreeze += FreezeEnemy;
+        UiManager.nullEnemies += FreezeEnemy;
+        //UiManager.portal += EnemiesNeedToRespawn;
     }
     // Start is called before the first frame update
     public void OnEnable()
@@ -175,7 +178,9 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
 
 
-
+    private void EnemiesNeedToRespawn(int c) {
+        Destroy(this);
+    }
     // Update is called once per frame
     public virtual void Update()
     {
@@ -193,6 +198,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         yield return wait;
         state = EnemyAiStates.Idle;
     }
+
     private void StatusControl()
     {
         if (!dead)
@@ -249,7 +255,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 		StartCoroutine(UnFreeze());
 	}
 	private IEnumerator UnFreeze() {
-		YieldInstruction wait = new WaitForSeconds(2);
+		YieldInstruction wait = new WaitForSeconds(4);
 		yield return wait;
 		UnFreezeEnemy();
 	}
@@ -259,6 +265,9 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 		anim.speed = 1;
 		state = EnemyAiStates.Idle;
 	}
+    private void NullEnemy() {
+        State = EnemyAiStates.Null;
+    }
     private void StateSwitch()
     {
 
@@ -533,6 +542,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         Instantiate(deathEffect, transform);
         //deathEffect.transform.position = transform.position;
         Destroy(gameObject, 2.5f);
+        switch (Player.GetPlayer().Weapon) {
+            case 0:
+                Player.GetPlayer().stats.SwordProficency += 5;
+                break;
+            case 1:
+                break;
+        }
         //drop.transform.SetParent(null);
     }
     public void CalculateDamage(float addition)

@@ -16,13 +16,18 @@ public class EnemySpawnPoint : MonoBehaviour
 
     private void Awake()
     {
-        CinematicManager.cutsceneIsPlaying += CanSpawn;
-        CinematicManager.cutsceneIsOver += CantSpawn;
+        CinematicManager.cutsceneIsPlaying += CantSpawn;
+        CinematicManager.cutsceneIsOver +=CanSpawn ;
+        UiManager.portal += ResetSpwan;
     }
     // Start is called before the first frame update
     void Start()
     {
+        
 
+    }
+    private void OnEnable() {
+        
     }
 
     // Update is called once per frame
@@ -39,9 +44,14 @@ public class EnemySpawnPoint : MonoBehaviour
        
 
     }
-    private void CanSpawn() => StartCoroutine(WaitToSpawn());
+    private void ResetSpwan(int c) {
+        
+        canSpawn = true;
+    }
+    private void CanSpawn() => canSpawn = true;
     private void CantSpawn() => canSpawn = false;
 
+    
     private IEnumerator WaitToSpawn() {
         YieldInstruction wait = new WaitForSeconds(1.2f);
         yield return wait;

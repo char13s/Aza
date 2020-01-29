@@ -4,8 +4,7 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 
 #pragma warning disable 0649
-public class Player : MonoBehaviour
-{
+public class Player : MonoBehaviour {
     //private bool usingController;
     [Header("Movement")]
     private bool moving;
@@ -17,6 +16,7 @@ public class Player : MonoBehaviour
     [Space]
     [Header("Attacking")]
     [SerializeField] private GameObject hitBox;
+    [SerializeField] private GameObject fistHitBox;
     private bool attacking;
     private bool skillButton;
     private bool lockedOn;
@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
 
     private bool skillIsActive;
     [SerializeField] GameObject aimmingPoint;
+    private float weapon;
     #endregion
     [Space]
     [Header("rotations")]
@@ -39,6 +40,8 @@ public class Player : MonoBehaviour
     //public List<Items> inventory;
     [SerializeField] private GameObject demonSword;
     [SerializeField] private GameObject demonSwordBack;
+    [SerializeField] private GameObject demonFistLeft;
+    [SerializeField] private GameObject demonFistRight;
     [SerializeField] private GameObject guitar;
     [SerializeField] private GameObject bow;
     [SerializeField] private GameObject attackBow;
@@ -120,7 +123,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject devilFoot;
     [SerializeField] private GameObject leftHand;
     [SerializeField] private GameObject rightHand;
-	[SerializeField] private GameObject zaWarudosRange;
+    [SerializeField] private GameObject zaWarudosRange;
     #endregion
     [Space]
     [Header("Buttons")]
@@ -161,20 +164,24 @@ public class Player : MonoBehaviour
     internal Inventory maskInvent = new Inventory();
     internal Stats stats = new Stats();
     private AxisButton dPadUp = new AxisButton("DPad Up");
-	private AxisButton dPadRight = new AxisButton("DPad Right");
+    private AxisButton dPadRight = new AxisButton("DPad Right");
     private AxisButton R2 = new AxisButton("R2");
     private AxisButton L2 = new AxisButton("L2");
     private AxisButton L3 = new AxisButton("L3");
+    private AxisButton L1 = new AxisButton("L1");
     internal StatusEffects status = new StatusEffects();
 
     [SerializeField] private GameObject jumpPoint;
     private bool doubleJump;
     private bool boosting;
     private bool teleportTriggered;
-	private bool timeStopped;
-	#endregion
-	#region Events
-	public static event UnityAction aiming;
+    private bool timeStopped;
+    private bool stopTime;
+    private bool pressed;
+    private float weaponAmount = 1;
+    #endregion
+    #region Events
+    public static event UnityAction aiming;
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
@@ -186,7 +193,8 @@ public class Player : MonoBehaviour
     public static event UnityAction battleOn;
     public static event UnityAction notSleeping;
     public static event UnityAction cancelPaused;
-	public static event UnityAction zaWarudo;
+    public static event UnityAction zaWarudo;
+    public static event UnityAction weaponSwitch;
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
@@ -265,17 +273,19 @@ public class Player : MonoBehaviour
     public int Cinemations { get => cinemations; set { cinemations = value; anim.SetInteger("Cinemaitions", cinemations); } }
 
     public bool TeleportTriggered { get => teleportTriggered; set => teleportTriggered = value; }
+    //I set the clamp on the weapon thing to 0 cuz demon fist werent ready for testing yet.
+    public float Weapon { get => weapon; set { weapon = Mathf.Clamp(value, 0, 0); anim.SetFloat("Weapon", weapon); if (weaponSwitch != null) { weaponSwitch(); } } }
+
+    public GameObject FistHitBox { get => fistHitBox; set => fistHitBox = value; }
+    public bool StopTime { get => stopTime; set { stopTime = value; anim.SetBool("TimeStop", stopTime); } }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
-    private void Awake()
-    {
-        if (instance != null && instance != this)
-        {
+    private void Awake() {
+        if (instance != null && instance != this) {
             Destroy(gameObject);
         }
-        else
-        {
+        else {
             instance = this;
         }
         sfx = GetComponent<AudioSource>();
@@ -308,8 +318,7 @@ public class Player : MonoBehaviour
 
     }
 
-    void Start()
-    {
+    void Start() {
         //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
         stats.Start();
         items.Start();
@@ -318,36 +327,31 @@ public class Player : MonoBehaviour
         grounded = anim.GetBool("Grounded");
 
     }
-    private void OnEnable()
-    {
-        if (onPlayerEnabled != null)
-        {
+    private void OnEnable() {
+        if (onPlayerEnabled != null) {
             onPlayerEnabled();
         }
         //StartCoroutine(WaitForGame());
         staminaRec = StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
-    void Update()
-    {
-        if (!pause && !InputSealed)
-        {
+    void Update() {
+        if (!pause && !InputSealed) {
             GetAllInput();
 
         }
-        if ((inputSealed || pause) && Input.GetButtonDown("Circle"))
-        {
+        if ((inputSealed || pause) && Input.GetButtonDown("Circle")) {
 
-            if (cancelPaused != null)
-            {
+            if (cancelPaused != null) {
                 cancelPaused();
             }
         }
-        if (!grounded && !Jumping)
-        {
+        if (!grounded && !Jumping) {
             //transform.position -= new Vector3(0, 7.2f, 0) * Time.deltaTime;
 
         }
+
+
 
         WhileSleep();
         OnPause();
@@ -356,126 +360,106 @@ public class Player : MonoBehaviour
     #region Helper Methods
     private void SealInput() => InputSealed = true;
     private void UnsealInput() => InputSealed = false;
-    private void MovePlayerObject()
-    {
+    private void MovePlayerObject() {
         Nav.enabled = false;
         InputSealed = true;
+        Grounded = false;
     }
-    private void CalculateMoveDirection()
-    {
+    private void CalculateMoveDirection() {
         Vector3 right;
-        if (movementBone != null)
-        {
+        if (movementBone != null) {
 
             right = movementBone.TransformDirection(moveBoneRight);
         }
-        else
-        {
+        else {
             right = transform.forward;
         }
         float dot = Vector3.Dot(right, displacement);
         anim.SetFloat("MoveDirectionX", dot);
     }
-    private void DisplacementControl()
-    {
+    private void DisplacementControl() {
         float x = Input.GetAxisRaw("Horizontal") * 0.05f * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * 0.05f * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn)
-        {
+        if (ThreeDCamera.IsActive && !lockedOn) {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
 
     }
-    private void SetPositionAndRotation(GameObject target)
-    {
+    private void SetPositionAndRotation(GameObject target) {
         transform.position = target.transform.position;
         transform.rotation = target.transform.rotation;
     }
-    private void RewardPlayer(int rewardMoney, int rewardExp, Items rewardItem)
-    {
+    private void RewardPlayer(int rewardMoney, int rewardExp, Items rewardItem) {
         StartCoroutine(RewardCoroutine(rewardMoney, rewardExp, rewardItem));
 
 
     }
     private void DialogueUp() => InputSealed = true;
     private void DialogueDown() => InputSealed = false;
-    public void Move(float speed)
-    {
+    public void Move(float speed) {
         transform.position += displacement * speed * Time.deltaTime;
         Rotate();
     }
-    private void Rotate()
-    {
-        if (Vector3.SqrMagnitude(displacement) > 0.01f)
-        {
+    private void Rotate() {
+        if (Vector3.SqrMagnitude(displacement) > 0.01f) {
             transform.forward = displacement;
         }
     }
-    private void CheckPlayerHealth()
-    {
+    private void CheckPlayerHealth() {
 
         if (stats.HealthLeft <= 0) { Dead = true; }
     }
     #endregion
     #region Event handlers
 
-    private void BackToBase(Vector3 destination)
-    {
-        inHouse = true;
+    private void BackToBase(Vector3 destination,bool houseOrNot) {
+        inHouse = houseOrNot;
+        Attacking = false;
         MovePlayerObject();
         transform.position = destination;
         StartCoroutine(WaitToLand());
     }
-    private IEnumerator WaitToLand()
-    {
-        YieldInstruction wait = new WaitForSeconds(1);
+    private IEnumerator WaitToLand() {
+        YieldInstruction wait = new WaitForSeconds(3);
         yield return wait;
         InputSealed = false;
     }
-    private void ReturnToSpawn()
-    {
+    private void ReturnToSpawn() {
 
         MovePlayerObject();
         transform.position = GameController.GetGameController().Spawn.transform.position;
         StartCoroutine(WaitToLand());
     }
-    private void GroundSlamForce(float force)
-    {
+    private void GroundSlamForce(float force) {
         RBody.mass = force;
     }
-    private void OnGrounded(bool val)
-    {
+    private void OnGrounded(bool val) {
         Grounded = val;
         RBody.isKinematic = val;
     }
 
-    private void OnDead()
-    {
+    private void OnDead() {
         UiManager.GetUiManager().DefeatedWindow();
         //GetComponentInChildren<SkinnedMeshRenderer>().material = fader;
         //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 1);
 
     }
-    private void Sleep(GameObject location, GameObject outBed)
-    {
+    private void Sleep(GameObject location, GameObject outBed) {
         SetPositionAndRotation(location);
         outaBed = outBed;
         Sleeping = true;
         InputSealed = true;
     }
-    private void BackToZend()
-    {
+    private void BackToZend() {
         //main.SetActive(true);
         StartCoroutine(BackToZendWait());
 
     }
-    private void Respawn()
-    {
+    private void Respawn() {
         transform.position = GameController.GetGameController().Spawn.transform.position;
     }
-    private void SetDefault()
-    {
+    private void SetDefault() {
         PostProcessorManager.GetProcessorManager().Default();
         Attacking = false;
         CmdInput = 0;
@@ -492,17 +476,14 @@ public class Player : MonoBehaviour
         Money = 1000;
 
     }
-    private void Kryll()
-    {
+    private void Kryll() {
         InputSealed = true;
 
-        if (kryll != null)
-        {
+        if (kryll != null) {
             kryll();
         }
     }
-    private void Deform()
-    {
+    private void Deform() {
         PostProcessorManager.GetProcessorManager().Default();
         PoweredUp = false;
         stats.Attack /= 2;
@@ -519,8 +500,7 @@ public class Player : MonoBehaviour
 
 
     }
-    private void PowerDown()
-    {
+    private void PowerDown() {
         mpDrain = StartCoroutine(MpDrain());
         StopCoroutine(staminaRec);
         FireTrail.SetActive(true);
@@ -533,67 +513,72 @@ public class Player : MonoBehaviour
     #endregion
 
 
-    private void GetAllInput()
-    {
+    private void GetAllInput() {
         //Archery();
 
-        if (grounded && !guard && !lockedOn && MoveSpeed > 0)
-        {
+        if (grounded && !guard && !lockedOn && MoveSpeed > 0) {
             MovementInput();
         }
-        else if (cmdInput == 0)
-        {
+        else if (cmdInput == 0) {
             CalculateRotation();
 
         }
         CalculateMoveDirection();
 
 
-        if (!inHouse)
-        {
+        if (!inHouse) {
+            WeaponSwitch();
+            if (L1.GetButton()) {
+                Spells();
+            }
             LockOn();
             Skills();
 
-            if (attacking && R2.GetButton())
-            {
+            if (attacking && R2.GetButton()) {
                 skillButton = true;
             }
             else
                 skillButton = false;
             Sword();
-            if (!jumpSeal)
-            {
+            if (!jumpSeal) {
                 Jump();
             }
             DoubleJump();
-			if (dPadRight.GetButtonDown() && !timeStopped) {
-				zaWarudosRange.SetActive(true);
-				timeStopped = true;
-				if (zaWarudo != null) {
-					zaWarudo();
-				}
-				StartCoroutine(ResetTimeStop());
+            if (dPadRight.GetButtonDown() && !timeStopped) {
+                zaWarudosRange.SetActive(true);
 
-			} else {
-				zaWarudosRange.SetActive(false);
-			}
+                timeStopped = true;
+                StopTime = true;
+                //if (zaWarudo != null)
+                //{
+                //();
+                //
+                StartCoroutine(ResetTimeStop());
 
+            }
+            else {
+                StopTime = false;
+                zaWarudosRange.SetActive(false);
+            }
         }
 
+        if (!grounded && cmdInput == 0) {
+            //if (Jumping) {
+                AirMovementInput();
 
+            //}
+            if (!jumping) {
+                transform.position -= new Vector3(0,0.1f,0);
+            }
+            if (L2.GetButton()) {
+                RBody.drag = 25;
 
-        if (!grounded && cmdInput == 0 && L2.GetButton())
-        {
-            RBody.drag = 25;
-            AirMovementInput();
+            }
+
         }
-        else
-        {
+        else {
 
             RBody.drag = 0;
-
-
-
         }
 
         //Inventory();
@@ -607,13 +592,11 @@ public class Player : MonoBehaviour
         }*/
         //if (Input.GetKeyDown(KeyCode.P)) { stats.AddExp(1000); }
     }
-    private void AirMovementInput()
-    {
-        float x = Input.GetAxisRaw("Horizontal") * 0.05f * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * 0.05f * Time.deltaTime;
+    private void AirMovementInput() {
+        float x = Input.GetAxisRaw("Horizontal") * 0.005f * Time.deltaTime;
+        float y = Input.GetAxisRaw("Vertical") * 0.005f * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn)
-        {
+        if (ThreeDCamera.IsActive && !lockedOn) {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
         MoveIt(x, y);
@@ -622,75 +605,62 @@ public class Player : MonoBehaviour
 
 
     }
-	private IEnumerator ResetTimeStop() {
-		YieldInstruction wait = new WaitForSeconds(2);
-		yield return wait;
-		timeStopped = false;
-	}
-    private void CalculateRotation()
-    {
+    private IEnumerator ResetTimeStop() {
+        YieldInstruction wait = new WaitForSeconds(2);
+        yield return wait;
+        timeStopped = false;
+    }
+    private void CalculateRotation() {
 
 
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn)
-        {
+        if (ThreeDCamera.IsActive && !lockedOn) {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
         Rotate();
 
     }
-    private void MovementInput()
-    {
+    private void MovementInput() {
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn)
-        {
+        if (ThreeDCamera.IsActive && !lockedOn) {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
-        if (Input.GetButtonDown("L3"))
-        {
+        if (Input.GetButtonDown("L3")) {
             //Grounded = true;
 
             //Kryll();
         }
-        if (Input.GetButtonDown("R3") && !transforming && stats.MPLeft >= 1)
-        {
-            if (poweredUp)
-            {
+        if (Input.GetButtonDown("R3") && !transforming && stats.MPLeft >= 1) {
+            if (poweredUp) {
                 Deform();
                 //stats.MPLeft--;
             }
-            else
-            {
+            else {
                 PowerDown();
 
             }
         }
-        if (poweredUp && stats.MPLeft == 0)
-        {
+        if (poweredUp && stats.MPLeft == 0) {
             Deform();
         }
 
-        WeaponSwitch();
+        //WeaponSwitch();
 
         MoveIt(x, y);
 
 
     }
-    private void WhileSleep()
-    {
-        if (sleep)
-        {
-            if (Input.GetButtonDown("Circle"))
-            {
+    private void WhileSleep() {
+        if (sleep) {
+            if (Input.GetButtonDown("Circle")) {
                 Debug.Log("no longer sleeppppp");
                 Sleeping = false;
                 InputSealed = false;
-                if (notSleeping != null)
-                {
+                if (notSleeping != null) {
                     notSleeping();
                 }
 
@@ -699,54 +669,41 @@ public class Player : MonoBehaviour
         }
     }
 
-
-    private void WeaponSwitch()
-    {
-        if (L2.GetButtonDown() || Input.GetKeyDown(KeyCode.F))
-        {
-            if (!bowUp && !attacking)
-            {
-
-                Debug.Log("fuck");
-                //demonSwordBack.GetComponent<MeshFilter>().mesh = bow.GetComponentInChildren<MeshFilter>().sharedMesh;
-
-            }
-            else
-            {
-
-                //bow.GetComponentInChildren<MeshFilter>().mesh =demonSwordBack.GetComponent<MeshFilter>().sharedMesh;
-
-            }
+    private void WeaponSwitch() {
+        if (Input.GetAxis("DPad Up") > 0 && dPadUp.GetButtonDown()) {
+            pressed = true;
+            Debug.Log("flicked with no flicker");
+            Weapon++;
+        }
+        if ((Input.GetAxis("DPad Down") < 0 && !pressed)) {
+            pressed = true;
+            Weapon--;
+        }
+        if (Input.GetAxis("DPad Down") >= 0) {
+            pressed = false;
         }
     }
-    private void Archery()
-    {
+    private void Archery() {
 
-        if (bowUp)
-        {
-            if (Input.GetButton("Square"))
-            {
+        if (bowUp) {
+            if (Input.GetButton("Square")) {
 
 
             }
-            if (Input.GetButtonUp("Square"))
-            {
+            if (Input.GetButtonUp("Square")) {
 
 
             }
-            if (R2.GetButton())
-            {
+            if (R2.GetButton()) {
                 CmdInput = 5;
                 MoveSpeed = 2;
 
-                if (aiming != null)
-                {
+                if (aiming != null) {
                     aiming();
                 }
 
             }
-            if (R2.GetButtonUp())
-            {
+            if (R2.GetButtonUp()) {
                 CmdInput = 6;
                 MoveSpeed = 6;
 
@@ -755,8 +712,7 @@ public class Player : MonoBehaviour
 
         }
 
-        if (L2.GetButtonDown())
-        {
+        if (L2.GetButtonDown()) {
             Attacking = false;
             //targeting = true;
             BowUp = true;
@@ -765,28 +721,24 @@ public class Player : MonoBehaviour
 
             StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
         }
-        if (L2.GetButton())
-        {
+        if (L2.GetButton()) {
             targeting = true;
 
 
 
         }
 
-        if (L2.GetButtonUp())
-        {
+        if (L2.GetButtonUp()) {
 
 
             targeting = false;
 
         }
-        if (R2.GetButtonDown())
-        {
+        if (R2.GetButtonDown()) {
 
         }
 
-        if (!bowUp)
-        {
+        if (!bowUp) {
             StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));///GOOD CODE!!!!!
 
         }        //anim.
@@ -796,8 +748,7 @@ public class Player : MonoBehaviour
         //anim.SetLookAtWeight(testWeight, testBodyWeight, testHeadWeight, testEyesWeight, testClampWeight);
         headBone.transform.LookAt(ThreeDCamera.Retical.transform.position);
 
-        if (targeting)
-        {
+        if (targeting) {
             //anim.GetBoneTransform(HumanBodyBones.Spine).transform.LookAt(ThreeDCamera.Retical.position);
 
 
@@ -808,41 +759,37 @@ public class Player : MonoBehaviour
 
     }
 
-    private void SetHeadWeight(float result)
-    {
+    private void SetHeadWeight(float result) {
         headController.Weight = result;
     }
 
-    private void MoveIt(float x, float y)
-    {
+    private void MoveIt(float x, float y) {
         Vector3 offset = new Vector3(0, 0, 0);
-        if (x != 0 || y != 0)
-        {
+        if (x != 0 || y != 0) {
             //Moving = true;
 
 
 
-            if (!Jumping && grounded)
-            {
+            if (!Jumping && grounded) {
                 nav.enabled = true;
                 Animations = 1;
-                if (Input.GetButtonDown("X"))
-                {
+                if (Input.GetButtonDown("X")) {
                     nav.enabled = false;
                     MoveSpeed = 0.2f;
                 }
                 MoveSpeed = 6;
 
             }
-            else
-            {
+            else {
                 Animations = 0;
 
             }
+            if (Jumping) {
+                MoveSpeed = 2;
+            }
             Move(MoveSpeed);
 
-            if (bowUp && !targeting)
-            {
+            if (bowUp && !targeting) {
 
                 StartCoroutine(StopTargeting());
 
@@ -852,13 +799,11 @@ public class Player : MonoBehaviour
 
             transform.position += offset;
 
-            if (attacking && Input.GetButtonDown("Square"))
-            {
+            if (attacking && Input.GetButtonDown("Square")) {
 
             }
         }
-        else
-        {
+        else {
 
             Animations = 0;
             nav.enabled = false;
@@ -869,10 +814,8 @@ public class Player : MonoBehaviour
 
 
     }
-    private void BowDown()
-    {
-        if (notAiming != null)
-        {
+    private void BowDown() {
+        if (notAiming != null) {
             notAiming();
 
         }
@@ -881,30 +824,25 @@ public class Player : MonoBehaviour
         BowUp = false;
 
     }
-    void Guitar()
-    {
-        if (Input.GetKey(KeyCode.R) && items.HasItem(2))
-        {
+    void Guitar() {
+        if (Input.GetKey(KeyCode.R) && items.HasItem(2)) {
 
             RockOut = true;
         }
     }
     #region Coroutines
-    private IEnumerator ResetGroundCheck(float reset)
-    {
+    private IEnumerator ResetGroundCheck(float reset) {
         YieldInstruction wait = new WaitForSeconds(reset);
         yield return wait;
         GroundChecker.groundStatus += OnGrounded;
     }
-    private IEnumerator BackToZendWait()
-    {
+    private IEnumerator BackToZendWait() {
 
         yield return null;
         InputSealed = false;
 
     }
-    private IEnumerator RewardCoroutine(int rewardMoney, int rewardExp, Items rewardItem)
-    {
+    private IEnumerator RewardCoroutine(int rewardMoney, int rewardExp, Items rewardItem) {
         YieldInstruction wait = new WaitForSeconds(0.2f);
         yield return wait;
         Money += rewardMoney;
@@ -912,26 +850,22 @@ public class Player : MonoBehaviour
         stats.AddExp(rewardExp);
 
     }
-    private IEnumerator WaitToFall()
-    {
+    private IEnumerator WaitToFall() {
 
         YieldInstruction wait = new WaitForSeconds(0.3f);
         yield return wait;
         Jumping = false;
 
     }
-    private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration, UnityAction<float> onFade)
-    {
+    private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration, UnityAction<float> onFade) {
         float localTime = 0;
         float start = anim.GetLayerWeight(layerIndex);
         float deltaWeight = weight - start;
         float result = start;
-        while (localTime < duration)
-        {
+        while (localTime < duration) {
             result = start + (localTime / duration) * (deltaWeight);
             anim.SetLayerWeight(layerIndex, result);
-            if (onFade != null)
-            {
+            if (onFade != null) {
                 onFade(result);
             }
             yield return null;
@@ -939,13 +873,11 @@ public class Player : MonoBehaviour
 
         }
         anim.SetLayerWeight(layerIndex, weight);
-        if (onFade != null)
-        {
+        if (onFade != null) {
             onFade(weight);
         }
     }
-    private IEnumerator GuardCoroutine()
-    {
+    private IEnumerator GuardCoroutine() {
 
         YieldInstruction wait = new WaitForSeconds(1f);
         yield return
@@ -953,40 +885,33 @@ public class Player : MonoBehaviour
         StopCoroutine(guardCoroutine);
 
     }
-    private IEnumerator HitDefuse()
-    {
+    private IEnumerator HitDefuse() {
         YieldInstruction wait = new WaitForSeconds(0.3f);
         yield return
         Hit = false;
         StopCoroutine(hitDefuse);
     }
-    private IEnumerator StaminaRec()
-    {
+    private IEnumerator StaminaRec() {
 
-        while (isActiveAndEnabled)
-        {
+        while (isActiveAndEnabled) {
             YieldInstruction wait = new WaitForSeconds(3);
             yield return wait;
 
-            if (stats.MPLeft < stats.MP)
-            {
+            if (stats.MPLeft < stats.MP) {
                 stats.MPLeft += 5;
             }
         }
 
     }
-    private IEnumerator StopTargeting()
-    {
+    private IEnumerator StopTargeting() {
         YieldInstruction wait = new WaitForSeconds(0.5f);
         yield return wait;
         BowDown();
 
 
     }
-    private IEnumerator MpDrain()
-    {
-        while (isActiveAndEnabled)
-        {
+    private IEnumerator MpDrain() {
+        while (isActiveAndEnabled) {
             YieldInstruction wait = new WaitForSeconds(1.5f);
             yield return wait;
             stats.MPLeft--;
@@ -996,14 +921,11 @@ public class Player : MonoBehaviour
 
     #endregion
     #region Inputs
-    private void Jump()
-    {
+    private void Jump() {
 
-        if (Input.GetButtonDown("X") && grounded)
-        {
+        if (Input.GetButtonDown("X") && grounded) {
             SkillId = 10;
-            if (AIKryll.disableCollider != null)
-            {
+            if (AIKryll.disableCollider != null) {
                 AIKryll.disableCollider();
             }
             //transform.position +=new Vector3(0, 5, 0)  * Time.deltaTime;
@@ -1023,8 +945,7 @@ public class Player : MonoBehaviour
             //MoveIt(0, 15);
         }
 
-        if (Jumping)
-        {
+        if (Jumping) {
             //transform.position += new Vector3(0, 6, 0) * Time.deltaTime;
             //RBody.AddForce(new Vector3(0, 6, 0), ForceMode.VelocityChange);
             //transform.position = Vector3.MoveTowards(transform.position, jumpPoint.transform.position, 2f * Time.deltaTime);
@@ -1033,10 +954,8 @@ public class Player : MonoBehaviour
 
 
     }
-    private void DoubleJump()
-    {
-        if (L2.GetButtonDown() && !doubleJump)
-        {
+    private void DoubleJump() {
+        if (L2.GetButtonDown() && !doubleJump) {
 
 
             Grounded = false;
@@ -1052,101 +971,112 @@ public class Player : MonoBehaviour
             doubleJump = true;
             Debug.Log("DoubleJump Triggered");
         }
-        if (doubleJump && Boosting)
-        {
+        if (doubleJump && Boosting) {
             Debug.Log("Boosting");
             CmdInput = 0;
             RBody.isKinematic = false;
-            RBody.AddForce(transform.forward * 80, ForceMode.VelocityChange);
-            if (RBody.isKinematic)
-            {
+            RBody.AddForce(transform.forward * 60, ForceMode.VelocityChange);
+            if (RBody.isKinematic) {
                 Debug.Log("wtf is good?");
             }
             StartCoroutine(Boost());
         }
     }
-    private IEnumerator Boost()
-    {
+    private IEnumerator Boost() {
         YieldInstruction wait = new WaitForSeconds(0.3f);
         yield return wait;
         Boosting = false;
     }
-    private void Sword()
-    {
+    private void Spells() {
+        if (Input.GetButtonDown("X")) {
+            L1X.Activate();
+        }
+        if (Input.GetButtonDown("Square")) {
+            L1Square.Activate();
+        }
+        if (Input.GetButtonDown("Triangle")) {
+            L1Triangle.Activate();
+        }
+        if (Input.GetButtonDown("Circle")) {
+            L1Circle.Activate();
+        }
+    }
+    private void WeaponManagement() {
+        switch (weapon) {
+            case 0:
+                demonSwordBack.SetActive(false);
+                DemonSword.SetActive(true);
+                trail.SetActive(true);
+                break;
+            case 1:
+                demonFistLeft.SetActive(true);
+                demonFistRight.SetActive(true);
+                break;
+        }
+    }
+    private void Sword() {
 
-        if (Input.GetButtonDown("Square") && !Attacking)
-        {
-            if (battleOn != null)
-            {
+        if (Input.GetButtonDown("Square") && !Attacking) {
+            if (battleOn != null) {
                 battleOn();
             }
             Attacking = true;
-            demonSwordBack.SetActive(false);
+            WeaponManagement();
             CmdInput = 0;
             MoveSpeed = 6;
             targeting = false;
             BowDown();
             return;
         }
-        if (Attacking)
-        {
+        if (Attacking) {
 
 
-            if (Input.GetButtonDown("Circle") && !skillIsActive)
-            {
+            if (Input.GetButtonDown("Circle") && !skillIsActive) {
                 PerfectGuard = true;
                 guardCoroutine = StartCoroutine(GuardCoroutine());
             }
-            if (Input.GetButton("Circle") && !skillIsActive)
-            {
+            if (Input.GetButton("Circle") && !skillIsActive) {
                 Guard = true;
                 Animations = 0;
                 RBody.isKinematic = false;
             }
-            else
-            {
+            else {
                 Guard = false;
             }
 
-            if (Input.GetButtonDown("L1"))
-            {
+            if (Input.GetButtonDown("L1")) {
                 Debug.Log("attacking is false");
                 Attacking = false;
                 LockedOn = false;
                 return;
             }
 
-            DemonSword.SetActive(true);
-            trail.SetActive(true);
 
-            if (Input.GetButtonDown("Square") && !skillIsActive)
-            {
+
+            if (Input.GetButtonDown("Square") && !skillIsActive) {
                 CmdInput = 1;
             }
-            if (Input.GetButtonDown("Triangle") && !skillIsActive)
-            {
+            if (Input.GetButtonDown("Triangle") && !skillIsActive) {
                 CmdInput = 2;
             }
         }
-        else
-        {
+        else {
 
             trail.SetActive(false);
             HitBox.SetActive(false);
             SkillId = 0;
             DemonSword.SetActive(false);
             demonSwordBack.SetActive(true);
+            demonFistLeft.SetActive(false);
+            demonFistRight.SetActive(false);
 
         }
     }
-    private void Skills()
-    {
-        if (skillButton && Input.GetButtonDown("Triangle") && !skillIsActive)
-        {
+    private void Skills() {
+        if (skillButton && Input.GetButtonDown("Triangle") && !skillIsActive) {
 
 
-            if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired)
-            {
+            if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired) {
                 stats.MPLeft -= triangle.MpRequired;
                 triangle.UseSkill();
                 skillIsActive = true;
@@ -1156,10 +1086,8 @@ public class Player : MonoBehaviour
 
         }
 
-        if (skillButton && Input.GetButtonDown("Square") && !skillIsActive)
-        {
-            if (square.SkillAssigned != null && stats.MPLeft >= square.MpRequired)
-            {
+        if (skillButton && Input.GetButtonDown("Square") && !skillIsActive) {
+            if (square.SkillAssigned != null && stats.MPLeft >= square.MpRequired) {
                 stats.MPLeft -= square.MpRequired;
                 square.UseSkill();
                 skillIsActive = true;
@@ -1168,11 +1096,9 @@ public class Player : MonoBehaviour
             }
 
         }
-        if (skillButton && Input.GetButtonDown("Circle") && !skillIsActive)
-        {
+        if (skillButton && Input.GetButtonDown("Circle") && !skillIsActive) {
 
-            if (circle.SkillAssigned != null && stats.MPLeft >= circle.MpRequired)
-            {
+            if (circle.SkillAssigned != null && stats.MPLeft >= circle.MpRequired) {
                 stats.MPLeft -= circle.MpRequired;
                 circle.UseSkill();
                 skillIsActive = true;
@@ -1182,10 +1108,8 @@ public class Player : MonoBehaviour
             }
 
         }
-        if (skillButton && Input.GetButtonDown("X") && !skillIsActive)
-        {
-            if (x.SkillAssigned != null && stats.MPLeft >= x.MpRequired)
-            {
+        if (skillButton && Input.GetButtonDown("X") && !skillIsActive) {
+            if (x.SkillAssigned != null && stats.MPLeft >= x.MpRequired) {
                 stats.MPLeft -= x.MpRequired;
                 x.UseSkill();
                 skillIsActive = true;
@@ -1204,60 +1128,49 @@ public class Player : MonoBehaviour
         }*/
     }
     #endregion
-    private void LockOn()
-    {
-        if (BattleMode.Enemies.Count > 0)
-        {
-            if (Input.GetButton("R1") && !TeleportTriggered)
-            {
+    private void LockOn() {
+        if (BattleMode.Enemies.Count > 0) {
+            if (Input.GetButton("R1") && !TeleportTriggered) {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
                 Time.timeScale = 0.1f;
-                if (lockOn != null)
-                {
+                if (lockOn != null) {
                     lockOn();
                 }
-                if (Input.GetButtonDown("Triangle"))
-                {
+                if (Input.GetButtonDown("Triangle")) {
                     TeleportTriggered = true;
                     Cinemations = 51;
                     Debug.Log("tf is good?");
 
                 }
             }
-            else
-            {
+            else {
                 Time.timeScale = 1;
 
-                if (notAiming != null)
-                {
+                if (notAiming != null) {
                     notAiming();
 
                 }
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
             }
 
-            if (Input.GetButtonDown("R1"))
-            {
+            if (Input.GetButtonDown("R1")) {
                 Animations = 0;
                 Attacking = true;
             }
-            if (Input.GetButton("R1"))
-            {
+            if (Input.GetButton("R1")) {
                 //Guard = true;
 
                 LockedOn = true;
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
 
             }
-            else
-            {
+            else {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
                 LockedOn = false;
                 //Guard = false;
             }
         }
-        else
-        {
+        else {
 
             //if (notAiming != null)
             //{
@@ -1266,8 +1179,7 @@ public class Player : MonoBehaviour
             //}
             LockedOn = false;
         }
-        if (Input.GetButtonUp("R1"))
-        {
+        if (Input.GetButtonUp("R1")) {
             // if (notAiming != null)
             //{
             // notAiming();
@@ -1281,20 +1193,16 @@ public class Player : MonoBehaviour
 
 
 
-    private void OnPause()
-    {
-        if (Input.GetButtonDown("Pause") && !Pause)
-        {
+    private void OnPause() {
+        if (Input.GetButtonDown("Pause") && !Pause) {
             pauseMenu.SetActive(true);
             Pause = true;
             //UiManager.GetUiManager().Page = 0;
             return;
         }
 
-        if (Pause)
-        {
-            if (Input.GetButtonDown("Pause"))
-            {
+        if (Pause) {
+            if (Input.GetButtonDown("Pause")) {
                 pauseMenu.SetActive(false);
                 Pause = false;
                 return;
@@ -1313,17 +1221,14 @@ public class Player : MonoBehaviour
         }
 
     }
-    public void PickUp(Items other)
-    {
+    public void PickUp(Items other) {
         PickUp1 = true;
         Wall = false;
         Timer = 5;
         items.AddItem(other.GetComponent<Items>().data);
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Item"))
-        {
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.CompareTag("Item")) {
             items.AddItem(other.GetComponent<Items>().data);
             other.gameObject.SetActive(false);
             Destroy(other);

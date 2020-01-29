@@ -11417,6 +11417,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 6
   hitBox: {fileID: 733879902291231506}
+  fistHitBox: {fileID: 1572059418}
   swordSpawn: {fileID: 2020061169180018092, guid: 14809bb15aff7194291a72567c7f1351,
     type: 3}
   swordDSpawn: {fileID: 6468006291029811915, guid: 3410e196f78a6ff4091201337dba8bd0,
@@ -11426,6 +11427,8 @@ MonoBehaviour:
   mainCam: {fileID: 0}
   demonSword: {fileID: 733879902839965831}
   demonSwordBack: {fileID: 2069805426}
+  demonFistLeft: {fileID: 0}
+  demonFistRight: {fileID: 0}
   guitar: {fileID: 733879902839965931}
   bow: {fileID: 5498138370471699970, guid: 8b357dbc6c03ddc4c86e9b69f04c29a0, type: 3}
   attackBow: {fileID: 5069117340582420717}
