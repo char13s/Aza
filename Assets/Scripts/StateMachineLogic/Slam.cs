@@ -19,7 +19,7 @@ public class Slam : StateMachineBehaviour
         if (stateInfo.normalizedTime > 0.95f)
         {
             AoeHitbox.SetActive(true);
-            Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+            //Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
             Player.GetPlayer().RBody.drag = 0;
         }
     }
@@ -29,6 +29,7 @@ public class Slam : StateMachineBehaviour
         {
             slam(68.5f);
         }
-        AoeHitbox.SetActive(false);
+		Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+		AoeHitbox.SetActive(false);
     }
 }

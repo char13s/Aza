@@ -736,7 +736,7 @@ MonoBehaviour:
     baseMp: 0
   canvas: {fileID: 2184158785088098467}
   levelText: {fileID: 2184158784672293491}
-  lockOnArrow: {fileID: 0}
+  lockOnArrow: {fileID: 3556496144484561185}
   deathEffect: {fileID: 6226294637186662721, guid: 968487dedef163e46b1dc9b44bfdaa38,
     type: 3}
   level: 10
@@ -1170,12 +1170,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f, type: 3}
---- !u!1 &2184158785088098467 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
-    type: 3}
-  m_PrefabInstance: {fileID: 3860060113917210103}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2184158785088098466 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3160965015419878741, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
@@ -1206,3 +1200,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3556496144484561185 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 345236062496103638, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+    type: 3}
+  m_PrefabInstance: {fileID: 3860060113917210103}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2184158785088098467 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+    type: 3}
+  m_PrefabInstance: {fileID: 3860060113917210103}
+  m_PrefabAsset: {fileID: 0}

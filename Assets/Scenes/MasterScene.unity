@@ -768,7 +768,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 118836266}
-  m_LocalRotation: {x: 0.1786935, y: -0.11843023, z: -0.0018840943, w: 0.9767494}
+  m_LocalRotation: {x: 0.1786935, y: -0.118430205, z: -0.0018841018, w: 0.9767494}
   m_LocalPosition: {x: 485.87, y: 607.75, z: -1614.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1988,7 +1988,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305174773}
-  m_LocalRotation: {x: 0.17917672, y: -0.11925965, z: -0.0016736115, w: 0.97656035}
+  m_LocalRotation: {x: 0.17917673, y: -0.11925967, z: -0.001673606, w: 0.97656035}
   m_LocalPosition: {x: 487.06, y: 607.22, z: -1607.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -12589,6 +12589,7 @@ MonoBehaviour:
   spellTagList: {fileID: 1735078096}
   swordLevel: {fileID: 1990503163}
   swordProficency: {fileID: 1432591370}
+  newGameButton: {fileID: 257326971}
   defaultObject: {fileID: 257326971}
   inventDefaultButton: {fileID: 0}
 --- !u!4 &721194653
@@ -12673,7 +12674,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 758293775}
-  m_LocalRotation: {x: -0.17942445, y: 0.11818661, z: 0.0006738826, w: -0.9766465}
+  m_LocalRotation: {x: -0.17942442, y: 0.11818658, z: 0.00067389134, w: -0.9766465}
   m_LocalPosition: {x: 482.2, y: 607.58, z: -1605.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -13286,7 +13287,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985873835}
-  m_LocalRotation: {x: 0.17882891, y: -0.120224744, z: -0.0015394966, w: 0.976506}
+  m_LocalRotation: {x: 0.17882891, y: -0.12022475, z: -0.0015394922, w: 0.976506}
   m_LocalPosition: {x: 491.67, y: 608.19, z: -1612.98}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -15091,7 +15092,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1012473672, guid: 3356572a90a67484e90266bf912e8836, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.0024
+      value: -0.0066
       objectReference: {fileID: 0}
     - target: {fileID: 1146771705, guid: 3356572a90a67484e90266bf912e8836, type: 3}
       propertyPath: m_Layer
@@ -18150,6 +18151,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7381240900236682993, guid: a9b2d87158ce23f4e81049ee6a6fadc1,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.1271388
+      objectReference: {fileID: 0}
+    - target: {fileID: 7381240900236682993, guid: a9b2d87158ce23f4e81049ee6a6fadc1,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7381240900236682993, guid: a9b2d87158ce23f4e81049ee6a6fadc1,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.3679245
       objectReference: {fileID: 0}
     - target: {fileID: 7381240900767288593, guid: a9b2d87158ce23f4e81049ee6a6fadc1,
         type: 3}

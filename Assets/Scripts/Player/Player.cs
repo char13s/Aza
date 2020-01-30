@@ -179,9 +179,10 @@ public class Player : MonoBehaviour {
     private bool stopTime;
     private bool pressed;
     private float weaponAmount = 1;
-    #endregion
-    #region Events
-    public static event UnityAction aiming;
+	private bool locked;
+	#endregion
+	#region Events
+	public static event UnityAction aiming;
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
@@ -278,8 +279,10 @@ public class Player : MonoBehaviour {
 
     public GameObject FistHitBox { get => fistHitBox; set => fistHitBox = value; }
     public bool StopTime { get => stopTime; set { stopTime = value; anim.SetBool("TimeStop", stopTime); } }
-    #endregion
-    public static Player GetPlayer() => instance.GetComponent<Player>();
+
+	public GameObject Trail { get => trail; set => trail = value; }
+	#endregion
+	public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
     private void Awake() {
         if (instance != null && instance != this) {
@@ -361,6 +364,7 @@ public class Player : MonoBehaviour {
     private void SealInput() => InputSealed = true;
     private void UnsealInput() => InputSealed = false;
     private void MovePlayerObject() {
+		Attacking = false;
         Nav.enabled = false;
         InputSealed = true;
         Grounded = false;
@@ -567,7 +571,7 @@ public class Player : MonoBehaviour {
                 AirMovementInput();
 
             //}
-            if (!jumping) {
+            if (!jumping&&!boosting&&!locked) {
                 transform.position -= new Vector3(0,0.1f,0);
             }
             if (L2.GetButton()) {
@@ -785,7 +789,7 @@ public class Player : MonoBehaviour {
 
             }
             if (Jumping) {
-                MoveSpeed = 2;
+                MoveSpeed = 3;
             }
             Move(MoveSpeed);
 
@@ -948,8 +952,8 @@ public class Player : MonoBehaviour {
         if (Jumping) {
             //transform.position += new Vector3(0, 6, 0) * Time.deltaTime;
             //RBody.AddForce(new Vector3(0, 6, 0), ForceMode.VelocityChange);
-            //transform.position = Vector3.MoveTowards(transform.position, jumpPoint.transform.position, 2f * Time.deltaTime);
-            transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 19f * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, jumpPoint.transform.position, 19f * Time.deltaTime);
+            //transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 19f * Time.deltaTime);
         }
 
 
@@ -1006,7 +1010,7 @@ public class Player : MonoBehaviour {
             case 0:
                 demonSwordBack.SetActive(false);
                 DemonSword.SetActive(true);
-                trail.SetActive(true);
+                //Trail.SetActive(true);
                 break;
             case 1:
                 demonFistLeft.SetActive(true);
@@ -1062,7 +1066,7 @@ public class Player : MonoBehaviour {
         }
         else {
 
-            trail.SetActive(false);
+            Trail.SetActive(false);
             HitBox.SetActive(false);
             SkillId = 0;
             DemonSword.SetActive(false);
@@ -1136,6 +1140,7 @@ public class Player : MonoBehaviour {
                 if (lockOn != null) {
                     lockOn();
                 }
+				locked= true;
                 if (Input.GetButtonDown("Triangle")) {
                     TeleportTriggered = true;
                     Cinemations = 51;

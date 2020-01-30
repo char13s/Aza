@@ -237,20 +237,21 @@ private void Movement()
         }
     }
     private void Attacking() {
-        AnimStates = 0;
-        int action = Random.Range(1,60);
-        switch (action) {
-            
-            case 3:
-                State = AIState.Help;
-                break;
-           
-            case 9:
-                State = AIState.Help;
-                break;
-           
-            default:break;
-        }
+		/* AnimStates = 0;
+		 int action = Random.Range(1,60);
+		 switch (action) {
+
+			 case 3:
+				 State = AIState.Help;
+				 break;
+
+			 case 9:
+				 State = AIState.Help;
+				 break;
+
+			 default:break;
+		 }*/
+		State = AIState.Follow;
     }
     private void Help() {
         

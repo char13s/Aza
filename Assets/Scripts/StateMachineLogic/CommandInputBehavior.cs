@@ -14,7 +14,7 @@ public class CommandInputBehavior : StateMachineBehaviour
         Player.GetPlayer().MoveSpeed = 0;
         //Player.GetPlayer().Nav.enabled = false;
 		Player.GetPlayer().RBody.isKinematic = false;
-		
+		Player.GetPlayer().Trail.SetActive(true);
 		
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -27,9 +27,9 @@ public class CommandInputBehavior : StateMachineBehaviour
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        
-        //Player.GetPlayer().Nav.enabled = true;
-    }
+		Player.GetPlayer().Trail.SetActive(false); 
+		//Player.GetPlayer().Nav.enabled = true;
+	}
     private void HitBoxControl() {
         
     }
