@@ -31,6 +31,8 @@ public class Stats {
     private int demonFistLevel;
     private int swordProficency;
 
+    private byte kryllLevel;
+
     private int abilitypoints;
     //Events
     public static event UnityAction onHealthChange;

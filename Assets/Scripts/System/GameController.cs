@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour {
     private static GameController instance;
     private Coroutine loadCoroutine;
     private Coroutine deadCoroutine;
-
+    private int gameMode;
 
     public static event UnityAction onNewGame;
     public static event UnityAction onGameWasStarted;

@@ -866,7 +866,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 150
+      scalar: 100
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -3755,7 +3755,7 @@ ParticleSystem:
     radiusScale: 1
   SubModule:
     serializedVersion: 2
-    enabled: 1
+    enabled: 0
     subEmitters:
     - serializedVersion: 3
       emitter: {fileID: 4057973752594337528, guid: cf957a4884acf8344b6d1d146a22d0f4,
@@ -4766,6 +4766,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057973752594337530, guid: cf957a4884acf8344b6d1d146a22d0f4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4057973752594337535, guid: cf957a4884acf8344b6d1d146a22d0f4,
         type: 3}

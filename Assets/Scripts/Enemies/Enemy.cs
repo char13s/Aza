@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
     private Player pc;
     private PlayerBattleSceneMovement pb;
     private Animator anim;
-
+    private AudioSource sound;
     #endregion
 
     #region Coroutines
@@ -145,6 +145,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Anim = GetComponent<Animator>();
         nav = GetComponent<NavMeshAgent>();
+        sound = GetComponent<AudioSource>();
         StatusEffects.onStatusUpdate += StatusControl;
         StatCalculation();
         state = EnemyAiStates.Null;
@@ -179,7 +180,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 
 
     private void EnemiesNeedToRespawn(int c) {
-        Destroy(this);
+        Destroy(gameObject);
     }
     // Update is called once per frame
     public virtual void Update()
@@ -211,19 +212,14 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
                     if (!dead) { Anim.speed = 0; }
 
                     break;
-
-
             }
         }
     }
     private void StatCalculation()
     {
-
         Health = stats.BaseHealth * level;
         stats.Attack = stats.BaseAttack * (level / 2);
         stats.Defense = stats.BaseDefense * level;
-
-
     }
     private IEnumerator StatusCoroutine(float StatusLength)
     {
@@ -244,10 +240,12 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 
 
     }
-	private void SwitchFreezeOn() {
+    #region Event handlers
+    private void SwitchFreezeOn() {
 		Frozen = true;
 	}
 	private void FreezeEnemy() {
+        Debug.Log("Froze");
 		nav.enabled = false;
 		GetComponent<Rigidbody>().useGravity = false;
 		anim.speed = 0;
@@ -268,6 +266,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     private void NullEnemy() {
         State = EnemyAiStates.Null;
     }
+    #endregion
+    
     private void StateSwitch()
     {
 
@@ -283,27 +283,29 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
                 attacking = false;
 
             }
-            if (Distance < 1f && !dead && !hit)
+            if (Distance < 1f && !dead && !Hit)
             {
 
                 State = EnemyAiStates.Attacking;
 
             }
 
-            if (Distance > 1.1f && Distance < 6f && !dead&&!hit)
+            if (Distance > 1.1f && Distance < 6f && !dead&&!Hit)
             {
                 nav.enabled = true;
                 //Debug.Log("fuk");
                 State = EnemyAiStates.Chasing;
             }
-
-            if (Hit) { State = EnemyAiStates.Hit; }
+            if (Distance > 6 && !dead) {
+                State = EnemyAiStates.ReturnToSpawn;
+            }
+            if (Hit) { State = EnemyAiStates.Hit;Debug.Log("Enemy was hit!!"); }
             if (Dead) { State = EnemyAiStates.Dead; }
         }
 
 
     }
-    void States()
+    private void States()
     {
         switch (state)
         {
@@ -411,10 +413,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Walk = true;
         //transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 1 * Time.deltaTime);
-        if (Distance > 6 && !dead)
-        {
-            State = EnemyAiStates.ReturnToSpawn;
-        }
+        
         nav.SetDestination(Player.GetPlayer().transform.position);
     }
     private void UIMaintence()
@@ -426,6 +425,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private void OnHit()
     {
+        sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
         GameObject d = new GameObject();
         d.transform.SetParent(canvas.transform);
         d.transform.localPosition = new Vector3(0.4F, 0, 0);
@@ -441,7 +441,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private IEnumerator HitCoroutine()
     {
-        YieldInstruction wait = new WaitForSeconds(4);
+        YieldInstruction wait = new WaitForSeconds(2);
         yield return wait;
         Hit = false;
         State = EnemyAiStates.Idle;
@@ -451,7 +451,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         while (!nav.enabled)
         {
-            YieldInstruction wait = new WaitForSeconds(3);
+            YieldInstruction wait = new WaitForSeconds(1.5f);
             yield return wait;
             if (Grounded)
             {

@@ -90,13 +90,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     private void TeleportAttacking(Vector3 location,int t) {
         transform.position = location;
         pc.CmdInput = 101;
-        
-        
-        
     }
     private void EnemyLockedTo()
     {
         EnemyTarget = enemies[T]; //Enemy.GetEnemy(enemies.IndexOf(enemies[T])); stupid code -_-
+        Player.GetPlayer().BattleCamTarget.transform.position = EnemyTarget.transform.position;
     }
     private void LockOn(float x, float y, float mH, float jH,Enemy target)
     {
@@ -140,7 +138,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             pc.Moving = false;
             pc.Animations = 0;
         }
-        if (Enemies[T] != null)
+        /*if (Enemies[T] != null)
         {
             //Player.GetPlayer().Nav.enabled = true;
             Vector3 delta = target.transform.position - pc.transform.position;
@@ -150,7 +148,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             transform.RotateAround(target.transform.position, target.transform.up, -x  *5* pc.MoveSpeed * Time.deltaTime);
             transform.position = Vector3.MoveTowards(transform.position, target.transform.position, pc.MoveSpeed * y * Time.deltaTime);
 
-        }
+        }*/
     }
     
     private void SwitchLockOn()

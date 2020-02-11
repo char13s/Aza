@@ -11,10 +11,18 @@ public class SpellTag : MonoBehaviour
     [SerializeField] private string spellName;
     public static event UnityAction<SpellTag> sendThisSpell;
     public static event UnityAction spellListDown;
+    #region Skill related events
+    public static event UnityAction triggerZaWarudo;
+    #endregion
+
     private int quantity;
-    private bool throwingSpell;
+    #region Skill related parameters
+    private bool timeStopped;
+    #endregion
+    //private bool throwingSpell;
 
     public int Quantity { get => quantity; set => quantity = value; }
+    public string SpellName { get => spellName; set => spellName = value; }
 
     // Start is called before the first frame update
     void Start()
@@ -43,8 +51,15 @@ public class SpellTag : MonoBehaviour
     private void UseSpell() {
         //Quantity--;
         switch (spellId) {
+            case 0:
+                if (triggerZaWarudo != null) {
+                    triggerZaWarudo();
+                }
+                Debug.Log("ZA WARUDO");
+                break;
             case 1:
-                //Teleport Back to Aza House
+                //TimeStop
+                
                 break;
             case 2:
                 //seals enemy
@@ -78,4 +93,11 @@ public class SpellTag : MonoBehaviour
                 break;
         }
     }
+    /*#region Coroutines
+    private IEnumerator ResetTimeStop() {
+        YieldInstruction wait = new WaitForSeconds(2);
+        yield return wait;
+        timeStopped = false;
+    }
+    #endregion*/
 }

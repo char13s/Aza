@@ -41,14 +41,15 @@ public class CameraLogic : MonoBehaviour
     }
     void CalculateDelta()
     {
-        playerEnabled = true;
-        delta = transform.position - Body.transform.position;
+       
+        //playerEnabled = true;
+        //delta = transform.position - Body.transform.position;
     }
     
     // Update is called once per frame
     public virtual void Update()
     {
-        CameraAi();
+        //CameraAi();
         /*if(switchable)
             GetInput();*/
         

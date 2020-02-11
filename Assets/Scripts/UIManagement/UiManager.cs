@@ -204,6 +204,7 @@ public class UiManager : MonoBehaviour {
     public static UnityAction<Vector3> areaChange;
     public static UnityAction<int> portal;
     public static UnityAction nullEnemies;
+    
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
     private int menuState;
@@ -295,7 +296,8 @@ public class UiManager : MonoBehaviour {
         Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
         Enemy.onAnyEnemyDead += EnemyDeath;
-		DefaultObject = newGameButton;
+		//DefaultObject = newGameButton;
+        //GetSelected();
         //Cursor.lockState = CursorLockMode.Locked;
     }
     void OnEnable() {
@@ -494,7 +496,14 @@ public class UiManager : MonoBehaviour {
         lastSpellSlotSelected = slot;
     }
     private void SetSpell(SpellTag spell) {
+        
         lastSpellSlotSelected.Spell = spell;
+        Debug.Log(spell);
+        Debug.Log(spell.SpellName);
+        Debug.Log(lastSpellSlotSelected);
+        //Debug.Log(lastSpellSlotSelected.SpellName.text);
+        
+        lastSpellSlotSelected.SpellName.text = spell.SpellName;
     }
     #endregion
 
@@ -571,7 +580,7 @@ public class UiManager : MonoBehaviour {
         while (isActiveAndEnabled && black.color.a >= 0) {
             yield return null;
             Color color = black.color;
-            color.a -= 0.003f;
+            color.a -= 0.03f;
             black.color = color;
         }
         loadingIcon.SetActive(false);
@@ -593,7 +602,7 @@ public class UiManager : MonoBehaviour {
     }
     public void FuckU() {
 
-        Debug.Log("fucks i give :o 0");
+        Debug.Log("fucks i give : 0");
 
     }
     private void GameScreen() {
@@ -602,13 +611,13 @@ public class UiManager : MonoBehaviour {
     }
     private void ObjectiveMenuHandling() {
         if (MissionListing.transform.childCount > 0) {
-            defaultObject = MissionListing.transform.GetChild(0).gameObject;
+            DefaultObject = MissionListing.transform.GetChild(0).gameObject;
             MissionListing.transform.GetChild(0).GetComponent<Objective>().IconClick();
             Debug.Log("this should work???");
         }
         else {
 
-            defaultObject = null;
+            DefaultObject = null;
         }
     }
 
@@ -618,11 +627,13 @@ public class UiManager : MonoBehaviour {
     }
     private void UseMenuHandling() {
 
-        defaultObject = useButton.gameObject;
-        GetSelected();
+        DefaultObject = useButton.gameObject;
+        //GetSelected();
     }
     private void GetSelected() {
         EventSystem.current.SetSelectedGameObject(DefaultObject);
+        Debug.Log(EventSystem.current.currentSelectedGameObject);
+        //mainMenuEventSystem.GetComponent<EventSystem>().SetSelectedGameObject(DefaultObject);
     }
 
 

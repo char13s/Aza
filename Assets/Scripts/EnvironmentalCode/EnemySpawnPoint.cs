@@ -47,6 +47,7 @@ public class EnemySpawnPoint : MonoBehaviour
     private void ResetSpwan(int c) {
         
         canSpawn = true;
+        spawned = false;
     }
     private void CanSpawn() => canSpawn = true;
     private void CantSpawn() => canSpawn = false;

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using XInputDotNetPure;
 public class CommandInputBehavior : StateMachineBehaviour
 {
     private AudioClip swing;
@@ -12,24 +12,28 @@ public class CommandInputBehavior : StateMachineBehaviour
         sound.PlayOneShot(swing);
         Player.GetPlayer().CmdInput = 0;
         Player.GetPlayer().MoveSpeed = 0;
-        //Player.GetPlayer().Nav.enabled = false;
+        Player.GetPlayer().Nav.enabled = false;
 		Player.GetPlayer().RBody.isKinematic = false;
-		Player.GetPlayer().Trail.SetActive(true);
-		
+		//Player.GetPlayer().Trail.SetActive(true);
+		Player.GetPlayer().transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
+        GamePad.SetVibration(0,0.2f,0.2f);
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GetInput();
-        //if(stateInfo.normalizedTime>0.1f&& stateInfo.normalizedTime < 0.8f&& Player.GetPlayer().BattleMode.EnemyTarget != null)
-        //Player.GetPlayer().transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
+        if (stateInfo.normalizedTime > 0.1f && stateInfo.normalizedTime < 0.6f) {
+            Player.GetPlayer().transform.position += Player.GetPlayer().transform.forward * move * Time.deltaTime;
+        }
+        
         //Player.GetPlayer().transform.position = Vector3.MoveTowards();
     }
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-		Player.GetPlayer().Trail.SetActive(false); 
-		//Player.GetPlayer().Nav.enabled = true;
-	}
+        GamePad.SetVibration(0, 0, 0);
+        //Player.GetPlayer().Trail.SetActive(false); 
+        //Player.GetPlayer().Nav.enabled = true;
+    }
     private void HitBoxControl() {
         
     }

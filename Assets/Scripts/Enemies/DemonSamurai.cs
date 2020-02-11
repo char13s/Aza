@@ -16,5 +16,18 @@ public class DemonSamurai : Enemy
         
 
     }
+    public override void Flee() {
+
+    }
     
+    public override void SpawnAFriend() {
+
+    }
+    public override void Canniblize(Enemy target) {
+
+    }
+    public override void PlantATree() {
+
+    }
+
 }

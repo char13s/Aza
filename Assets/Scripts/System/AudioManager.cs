@@ -7,12 +7,16 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip swing;
     [SerializeField] private AudioClip bang;
     [SerializeField] private AudioClip rock;
+    [SerializeField] private AudioClip slimeHit;
+
+
     private AudioSource audio;
     private static AudioManager instance;
 
     public AudioClip Swing { get => swing; set => swing = value; }
     public AudioClip Bang { get => bang; set => bang = value; }
     public AudioClip Rock { get => rock; set => rock = value; }
+    public AudioClip SlimeHit { get => slimeHit; set => slimeHit = value; }
 
     public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
     private void Awake()

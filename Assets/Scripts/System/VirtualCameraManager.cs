@@ -13,6 +13,7 @@ public class VirtualCameraManager : MonoBehaviour
     {
         Player.lockOn += LookingForTarget;
         Player.notAiming += NotAiming;
+        UiManager.portal += ControlMainCam;
     }
     void Start()
     {
@@ -22,6 +23,19 @@ public class VirtualCameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+    }
+    private void ControlMainCam(int portal) {
+        switch (portal) {
+            case 0:
+                Debug.Log("Cam off");
+                main.GetComponent<ThreeDCamera>().enabled=false;
+                break;
+            default:
+                Debug.Log("Cam on");
+                main.GetComponent<ThreeDCamera>().enabled = true;
+                break;
+        }
         
     }
     private void LookingForTarget() {

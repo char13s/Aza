@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Dash : StateMachineBehaviour
 {
-    //[SerializeField] private GameObject burst;
+    [SerializeField] private GameObject burst;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Player.GetPlayer().LeftHand.SetActive(true);
         Player.GetPlayer().RightHand.SetActive(true);
         //Player.GetPlayer().DevilFoot.SetActive(true);
+        Instantiate(burst, Player.GetPlayer().transform.position, Quaternion.identity);
+        //burst.transform.position=
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {

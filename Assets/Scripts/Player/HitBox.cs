@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.Events;
 #pragma warning disable 0649
 public class HitBox : MonoBehaviour
 {
@@ -15,6 +15,7 @@ public class HitBox : MonoBehaviour
 
     private GameObject enemyImAttacking;
 
+    //public static UnityAction<> onEnemyHit;
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
     public AudioClip Swing { get => swing; set => swing = value; }
 
@@ -84,7 +85,7 @@ public class HitBox : MonoBehaviour
             
                 //EnemyImAttacking = other.gameObject;
                 Instantiate(effects, other.gameObject.transform);
-                audio.PlayOneShot(hit);
+                //audio.PlayOneShot(hit);
 
             //other.GetComponent<NavMeshAgent>().enabled = false;
 

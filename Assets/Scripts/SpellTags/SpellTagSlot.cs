@@ -8,13 +8,17 @@ using UnityEngine.Events;
 public class SpellTagSlot : MonoBehaviour
 {
     private SpellTag spell;
-    private Text spellName;
+    [SerializeField]private Text spellName;
 
     public SpellTag Spell { get => spell; set => spell = value; }
+    public Text SpellName { get => spellName; set => spellName = value; }
 
     public static event UnityAction spellInvent;
     public static event UnityAction<SpellTagSlot> sendThisSlot;
     // Start is called before the first frame update
+    private void Awake() {
+        
+    }
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(AcessSpellInvent);
@@ -26,16 +30,20 @@ public class SpellTagSlot : MonoBehaviour
         
     }
     public void Activate() {
-        Spell.Activate();
+        if (spell != null) {
+            Spell.Activate();
+        }
+        
         //CheckSpellTagQuantity();
-        Debug.Log("Spell Activated");
+        //Debug.Log("Spell Activated");
     }
     private void CheckSpellTagQuantity() {
         if (Spell.Quantity == 0) {
             Spell = null;
-            spellName.text = "none";
+            SpellName.text = "none";
         }
     }
+    
     private void AcessSpellInvent() {
         if (spellInvent != null) {
             spellInvent();

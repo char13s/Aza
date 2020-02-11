@@ -10,7 +10,7 @@ public class ThreeDCamera : CameraLogic
     private static Transform xZOrientation;
     private static GameObject retical;
     private static ThreeDCamera instance;
-    [SerializeField] private GameObject reticalObject;
+    //[SerializeField] private GameObject reticalObject;
     [SerializeField] private GameObject bodyTarget;
     private Vector3 currentEulerAngles;
     private readonly float maxXRotation=40;
@@ -37,8 +37,8 @@ public class ThreeDCamera : CameraLogic
         xZOrientation = new GameObject("xZOrienatation").transform;
         xZOrientation.transform.SetParent(transform);
         audio = GetComponent<AudioSource>();
-        Retical = Instantiate(reticalObject,transform);
-        //Retical = new GameObject("retical").transform;
+        //Retical = Instantiate(reticalObject,transform);
+        Retical = new GameObject("retical");
         
         Retical.transform.SetParent(transform);
        

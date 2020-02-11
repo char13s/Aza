@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using XInputDotNetPure;
 #pragma warning disable 0649
 public class Slam : StateMachineBehaviour
 {
@@ -13,23 +14,30 @@ public class Slam : StateMachineBehaviour
             slam(10375);
         }
     }
+    
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (stateInfo.normalizedTime > 0.95f)
+        if (stateInfo.normalizedTime >= 0.95f)
         {
             AoeHitbox.SetActive(true);
             //Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+            GamePad.SetVibration(0, 0.75f, 0.75f);
             Player.GetPlayer().RBody.drag = 0;
         }
-    }
+        if (stateInfo.normalizedTime > 0.2f&& stateInfo.normalizedTime < 0.98f) {
+            Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+            
+        }
+        }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (slam != null)
         {
             slam(68.5f);
         }
-		Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
-		AoeHitbox.SetActive(false);
+        GamePad.SetVibration(0, 0, 0);
+        //Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+        AoeHitbox.SetActive(false);
     }
 }
