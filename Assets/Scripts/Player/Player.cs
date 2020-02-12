@@ -419,7 +419,7 @@ public class Player : MonoBehaviour {
 	#endregion
 	#region Event handlers
 	private void MpRegain() {
-		stats.MP += 2;
+		stats.MPLeft += 2;
 	}
     private void BackToBase(Vector3 destination, bool houseOrNot) {
         InHouse = houseOrNot;

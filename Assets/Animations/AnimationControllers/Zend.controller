@@ -4991,7 +4991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   move: 4
-  slash: {fileID: 6492080908735204964, guid: 96d0b1d6a2858794fbb8ec1df8b471f9, type: 3}
+  slash: {fileID: 0}
 --- !u!1102 &-65442387851108037
 AnimatorState:
   serializedVersion: 5
@@ -8937,9 +8937,9 @@ AnimatorStateMachine:
   - first: {fileID: -8094897578535049191}
     second:
     - {fileID: -9081821805146105485}
-  - first: {fileID: 3790530825117346939}
-    second: []
   - first: {fileID: 1107188928447518366}
+    second: []
+  - first: {fileID: 3790530825117346939}
     second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: -280, y: 190, z: 0}
