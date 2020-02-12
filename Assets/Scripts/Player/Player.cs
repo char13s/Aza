@@ -293,7 +293,8 @@ public class Player : MonoBehaviour {
             instance = this;
         }
         sfx = GetComponent<AudioSource>();
-        #region Event Subs
+		#region Event Subs
+		Enemy.onHit += MpRegain;
         PortalManager.backToBase += BackToBase;
         Slam.slam += GroundSlamForce;
         Objective.rewardPlayer += RewardPlayer;
@@ -336,7 +337,7 @@ public class Player : MonoBehaviour {
             onPlayerEnabled();
         }
         //StartCoroutine(WaitForGame());
-        staminaRec = StartCoroutine(StaminaRec());
+        //staminaRec = StartCoroutine(StaminaRec());
     }
     // Update is called once per frame
     void Update() {
@@ -415,9 +416,11 @@ public class Player : MonoBehaviour {
 
         if (stats.HealthLeft <= 0) { Dead = true; }
     }
-    #endregion
-    #region Event handlers
-
+	#endregion
+	#region Event handlers
+	private void MpRegain() {
+		stats.MP += 2;
+	}
     private void BackToBase(Vector3 destination, bool houseOrNot) {
         InHouse = houseOrNot;
         Attacking = false;
@@ -493,7 +496,6 @@ public class Player : MonoBehaviour {
         PoweredUp = false;
         stats.Attack /= 2;
         stats.Defense /= 2;
-
         GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
         Instantiate(swordDSpawn, transform);
         FireTrail.SetActive(false);
@@ -625,10 +627,6 @@ public class Player : MonoBehaviour {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
         MoveIt(x, y);
-
-
-
-
     }
     private IEnumerator ResetTimeStop() {
         YieldInstruction wait = new WaitForSeconds(2);
@@ -809,10 +807,6 @@ public class Player : MonoBehaviour {
     private void MoveIt(float x, float y) {
         Vector3 offset = new Vector3(0, 0, 0);
         if (x != 0 || y != 0) {
-            //Moving = true;
-
-
-
             if (!Jumping && grounded) {
                 nav.enabled = true;
                 Animations = 1;
@@ -844,9 +838,6 @@ public class Player : MonoBehaviour {
                 StartCoroutine(StopTargeting());
 
             }
-
-
-
             transform.position += offset;
 
             if (attacking && Input.GetButtonDown("Square")) {
@@ -859,10 +850,6 @@ public class Player : MonoBehaviour {
             nav.enabled = false;
             //Moving = false;
         }
-
-
-
-
     }
 
     #region Coroutines
