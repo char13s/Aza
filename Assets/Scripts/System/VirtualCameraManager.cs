@@ -4,6 +4,7 @@ using Cinemachine;
 public class VirtualCameraManager : MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera main;
+	[SerializeField] private CinemachineVirtualCamera battleCam;
     [SerializeField] private GameObject lookAtTarget;
 
     public static event UnityAction grey;
@@ -14,6 +15,7 @@ public class VirtualCameraManager : MonoBehaviour
         Player.lockOn += LookingForTarget;
         Player.notAiming += NotAiming;
         UiManager.portal += ControlMainCam;
+		PlayerBattleSceneMovement.onLockOn += AimBattleCam;
     }
     void Start()
     {
@@ -53,4 +55,12 @@ public class VirtualCameraManager : MonoBehaviour
             ungrey();
         }
     }
+	private void AimBattleCam() {
+		if (Player.GetPlayer().BattleMode.EnemyTarget!=null) {
+			battleCam.m_LookAt = Player.GetPlayer().BattleMode.EnemyTarget.transform;
+		}
+	}
+	private void RetargetBattleCam() {
+		battleCam.m_LookAt = Player.GetPlayer().transform;
+	}
 }

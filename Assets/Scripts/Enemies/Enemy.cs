@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject hitBox;
     
     [SerializeField] private GameObject drop;
+	[SerializeField] private GameObject cut;
     [SerializeField] private Slider EnemyHp;
 
     #region Script References
@@ -87,7 +88,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     public bool Attack { get => attack; set { attack = value; Anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; Anim.SetBool("Walking", walk); } }
 
-    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine()); GetComponent<Rigidbody>().isKinematic = false; hitCoroutine = StartCoroutine(HitCoroutine()); } Anim.SetBool("Hurt", hit); } }
+    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine()); GetComponent<Rigidbody>().isKinematic = false; hitCoroutine = StartCoroutine(HitCoroutine()); } Anim.SetBool("Hurt", hit); if (onHit != null) {
+				onHit();
+			}
+		} }
     public EnemyAiStates State { get => state; set { state = value; States(); } }
     public bool Grounded { get => grounded; set => grounded = value; }
     public bool LockedOn
@@ -438,9 +442,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         d.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
         d.GetComponent<Text>().text = "- " + Mathf.Abs(level - (2 * pc.stats.Attack)).ToString();
         Destroy(d, 2f);
-		if (onHit != null) {
-			onHit();
-		}
+		Instantiate(cut,transform);
+		
     }
     private IEnumerator HitCoroutine()
     {

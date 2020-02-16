@@ -374,6 +374,7 @@ MonoBehaviour:
   baseHealth: 10
   hitBox: {fileID: 5206741836199000521}
   drop: {fileID: 4012060356533637717, guid: 12c09df2632e1e145b9c45c838dcb645, type: 3}
+  cut: {fileID: 5754920302586766889, guid: b43b1190931a6db4d8a418505c6f522b, type: 3}
   EnemyHp: {fileID: 2313167135260982762}
   slimeTree: {fileID: 254266463050560927, guid: a41171153c4bb7944916e09b787b2452,
     type: 3}

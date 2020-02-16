@@ -8227,7 +8227,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: AttackRun
-  m_Speed: 15
+  m_Speed: 20
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101243475097039938}
@@ -8937,9 +8937,9 @@ AnimatorStateMachine:
   - first: {fileID: -8094897578535049191}
     second:
     - {fileID: -9081821805146105485}
-  - first: {fileID: 1107188928447518366}
-    second: []
   - first: {fileID: 3790530825117346939}
+    second: []
+  - first: {fileID: 1107188928447518366}
     second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: -280, y: 190, z: 0}

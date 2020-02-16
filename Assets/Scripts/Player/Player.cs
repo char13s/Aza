@@ -191,6 +191,9 @@ public class Player : MonoBehaviour {
     public static event UnityAction cancelPaused;
     public static event UnityAction zaWarudo;
     public static event UnityAction weaponSwitch;
+	public static event UnityAction attackModeUp;
+	public static event UnityAction findClosestEnemy;
+	public static event UnityAction unlocked;
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
@@ -204,7 +207,7 @@ public class Player : MonoBehaviour {
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
     public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
     public bool Guard { get => guard; set { guard = value; if (value) Moving = false; shield.SetActive(value); anim.SetBool("Guard", guard); } }
-    public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking); } }
+    public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking);if (attackModeUp != null) { attackModeUp(); } } }
     public bool Moving { get => moving; set { moving = value; anim.SetBool("Moving", moving); } }
 
     public byte Timer { get => timer; set => timer = value; }
@@ -237,7 +240,7 @@ public class Player : MonoBehaviour {
     public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
     public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); if (animations == 1) { clothesSfx.volume = 0.5f; } else { clothesSfx.time = 0; clothesSfx.volume = 0; } } }
 
-    public bool LockedOn { get => lockedOn; set { lockedOn = value; if (LockedOn) { if (playerIsLockedOn != null) playerIsLockedOn(); } if (!LockedOn) Direction = 0; } }
+    public bool LockedOn { get => lockedOn; set { lockedOn = value;  if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }
 
     public bool SkillIsActive { get => skillIsActive; set { skillIsActive = value; if (skillIsActive) { Guard = false; } } }
     public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }
@@ -264,8 +267,9 @@ public class Player : MonoBehaviour {
     public bool Boosting { get => boosting; set { boosting = value; anim.SetBool("Dashing", boosting); } }
 
     private bool dash;
+	private bool zendSpace;
 
-    public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
+	public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
     public GameObject RightHand { get => rightHand; set => rightHand = value; }
     public int Cinemations { get => cinemations; set { cinemations = value; anim.SetInteger("Cinemaitions", cinemations); } }
@@ -1184,7 +1188,7 @@ public class Player : MonoBehaviour {
     #endregion
     private void LockOn() {
         if (BattleMode.Enemies.Count > 0) {
-            if (Input.GetButton("R1") && !TeleportTriggered) {
+            if (Input.GetButton("R1") && !TeleportTriggered&&zendSpace) {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
                 Time.timeScale = 0.1f;
                 if (lockOn != null) {
@@ -1211,14 +1215,19 @@ public class Player : MonoBehaviour {
             if (Input.GetButtonDown("R1")) {
                 Animations = 0;
                 Attacking = true;
+				if (findClosestEnemy != null)
+					findClosestEnemy();
             }
             if (Input.GetButton("R1")) {
-                //Guard = true;
-
+				//Guard = true;
+				Debug.Log("fuck this code");
                 LockedOn = true;
-                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
+				if (playerIsLockedOn != null) {
+					playerIsLockedOn();
+				}
+				//StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
 
-            }
+			}
             else {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
                 LockedOn = false;
