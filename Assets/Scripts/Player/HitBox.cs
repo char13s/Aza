@@ -12,7 +12,7 @@ public class HitBox : MonoBehaviour
     [SerializeField] private GameObject fire;
     [SerializeField] private GameObject smallFire;
     private AudioSource audio;
-
+    private List<Enemy> enemies=new List<Enemy>();
     private GameObject enemyImAttacking;
 
     //public static UnityAction<> onEnemyHit;
@@ -36,6 +36,9 @@ public class HitBox : MonoBehaviour
         //Debug.Log("Swoosh");
         //audio.PlayOneShot(swing);
     }
+    private void OnDisable() {
+        enemies.Clear();
+    }
     // Update is called once per frame
     void Update()
     {
@@ -51,7 +54,7 @@ public class HitBox : MonoBehaviour
                 {
                     case 1:
 
-                        return Player.GetPlayer().transform.forward * 1.3f;
+                        return Player.GetPlayer().transform.forward * 2f;
                     case 2:
 
                         return Player.GetPlayer().transform.forward * -1.1f;
@@ -78,19 +81,21 @@ public class HitBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy")&&!enemies.Contains(other.GetComponent<Enemy>()))
         {
+            
             //GameObject burn=Instantiate(smallFire,other.transform);
             //Destroy(burn,3f);
             
                 //EnemyImAttacking = other.gameObject;
                 Instantiate(effects, other.gameObject.transform);
-                //audio.PlayOneShot(hit);
+            //audio.PlayOneShot(hit);
 
             //other.GetComponent<NavMeshAgent>().enabled = false;
 
-            
+            Debug.Log("hit");
             if (other != null&&other.GetComponent<Enemy>()) {
+                enemies.Add(other.GetComponent<Enemy>());
                 other.GetComponent<Enemy>().CalculateDamage(0);
                 other.GetComponent<Enemy>().KnockBack(HitKnockback());
                 other.GetComponent<Enemy>().Grounded = false;

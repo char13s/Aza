@@ -15,13 +15,22 @@ public class Arrow : MonoBehaviour
     {
         direction = Player.GetPlayer().AimmingPoint.transform.forward;
         transform.rotation = Player.GetPlayer().AimmingPoint.transform.rotation;
-        LayerMask.GetMask("Ground"); ;
+        LayerMask.GetMask("Ground");
+        Destroy(gameObject,5);
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position += direction * speed * Time.deltaTime;
+        if (Player.GetPlayer().LockedOn) {
+            transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().BattleMode.EnemyTarget.transform.position, 30 * Time.deltaTime);
+            transform.rotation = Quaternion.LookRotation(transform.position - Player.GetPlayer().BattleMode.EnemyTarget.transform.position);
+        }
+        else {
+            transform.position += direction * speed * Time.deltaTime;
+
+        }
+        
     }
     private void ArrowEffects(Enemy target) {
 
@@ -30,7 +39,7 @@ public class Arrow : MonoBehaviour
                 break;
             case ArrowType.Stun:
                 target.status.Status = StatusEffects.Statuses.stunned;
-                Debug.Log("CONINO DIO DA");
+                Debug.Log("CONO DIO DA");
                 break;
 
 

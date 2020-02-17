@@ -21,8 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Aura
-  m_Shader: {fileID: -6465566751694194690, guid: 444f23355c9516c47b7e1c1063a9022e,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 2d40810685b14654c9274ec54c1327b0, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -35,6 +34,14 @@ Material:
     m_TexEnvs:
     - Texture2D_3691163F:
         m_Texture: {fileID: 2800000, guid: e12d05d01534e7847844d3135de85a2c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_696E859C:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture3D_63278F81:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -65,7 +72,21 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_532FB58D_Out_0:
+        m_Texture: {fileID: 2800000, guid: 0e0807f05cf89b1458fa41de6afb4774, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_73718AEC_Out_0:
+        m_Texture: {fileID: 2800000, guid: a66ecfd36cc1d3943a42868d1db69dbe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ZendSub_B8EE2D66_Texture2DE2B5A3EB_965533110:
+        m_Texture: {fileID: 2800000, guid: a66ecfd36cc1d3943a42868d1db69dbe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Boolean_B8FD8DD: 1
+    - Vector1_F277E768: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -89,6 +110,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_C454D203: {r: 1.5058824, g: 0.5019608, b: 6.5254903, a: 0.078431375}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

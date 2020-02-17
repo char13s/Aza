@@ -5,6 +5,7 @@ using UnityEngine;
 public class Dash : StateMachineBehaviour
 {
     [SerializeField] private GameObject burst;
+    [SerializeField] private GameObject reminant;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Player.GetPlayer().LeftHand.SetActive(true);
@@ -16,6 +17,7 @@ public class Dash : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
         Player.GetPlayer().RBody.drag = 0;
+        Instantiate(reminant, Player.GetPlayer().transform.position,Player.GetPlayer().transform.rotation);
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -23,4 +25,5 @@ public class Dash : StateMachineBehaviour
         Player.GetPlayer().RightHand.SetActive(false);
         Player.GetPlayer().DevilFoot.SetActive(false);
     }
+    
 }

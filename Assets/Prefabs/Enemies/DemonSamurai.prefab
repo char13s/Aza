@@ -677,7 +677,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 51be7df02f30276448bb7314e5f2d3ca, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -731,9 +731,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    baseHealth: 9
+    baseHealth: 6
     baseAttack: 11
-    baseDefense: 3
+    baseDefense: 4
     baseMp: 0
   canvas: {fileID: 2184158785088098467}
   levelText: {fileID: 2184158784672293491}

@@ -15,7 +15,7 @@ public class CommandInputBehavior : StateMachineBehaviour
         Player.GetPlayer().MoveSpeed = 0;
         Player.GetPlayer().Nav.enabled = false;
 		Player.GetPlayer().RBody.isKinematic = false;
-		//Player.GetPlayer().Trail.SetActive(true);
+		Player.GetPlayer().Trail.SetActive(true);
 		Player.GetPlayer().transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
         GamePad.SetVibration(0,0.2f,0.2f);
     }
@@ -34,7 +34,7 @@ public class CommandInputBehavior : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GamePad.SetVibration(0, 0, 0);
-        //Player.GetPlayer().Trail.SetActive(false); 
+        Player.GetPlayer().Trail.SetActive(false); 
         //Player.GetPlayer().Nav.enabled = true;
     }
     private void HitBoxControl() {

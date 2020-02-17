@@ -27,7 +27,7 @@ public class Player : MonoBehaviour {
 
     private bool skillIsActive;
     [SerializeField] GameObject aimmingPoint;
-    private float weapon;
+    private int weapon;
     #endregion
     [Space]
     [Header("rotations")]
@@ -97,12 +97,13 @@ public class Player : MonoBehaviour {
     private AudioSource clothesSfx;
     private bool pause;
     private bool targeting;
-    
+
     private byte timer;
     private bool loaded;
     [Space]
     [Header("References To Things on Zend")]
-    [SerializeField]private GameObject battleCamTarget;
+    [SerializeField] private GameObject groundChecker;
+    [SerializeField] private GameObject battleCamTarget;
     [SerializeField] private GameObject zend;
     [SerializeField] private GameObject zendHair;
     [SerializeField] private GameObject zendHead;
@@ -117,7 +118,7 @@ public class Player : MonoBehaviour {
     [Header("HitBoxes")]
     [SerializeField] private GameObject AoeHitbox;
     [SerializeField] private GameObject forwardHitbox;
-    
+
     #endregion
     [Space]
     [Header("Buttons")]
@@ -160,9 +161,10 @@ public class Player : MonoBehaviour {
     private AxisButton dPadUp = new AxisButton("DPad Up");
     private AxisButton dPadRight = new AxisButton("DPad Right");
     private AxisButton R2 = new AxisButton("R2");
+    
     private AxisButton L2 = new AxisButton("L2");
-    private AxisButton L3 = new AxisButton("L3");
-    private AxisButton L1 = new AxisButton("L1");
+    
+    
     internal StatusEffects status = new StatusEffects();
 
     [SerializeField] private GameObject jumpPoint;
@@ -191,9 +193,9 @@ public class Player : MonoBehaviour {
     public static event UnityAction cancelPaused;
     public static event UnityAction zaWarudo;
     public static event UnityAction weaponSwitch;
-	public static event UnityAction attackModeUp;
-	public static event UnityAction findClosestEnemy;
-	public static event UnityAction unlocked;
+    public static event UnityAction attackModeUp;
+    public static event UnityAction findClosestEnemy;
+    public static event UnityAction unlocked;
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
@@ -207,7 +209,7 @@ public class Player : MonoBehaviour {
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
     public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
     public bool Guard { get => guard; set { guard = value; if (value) Moving = false; shield.SetActive(value); anim.SetBool("Guard", guard); } }
-    public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking);if (attackModeUp != null) { attackModeUp(); } } }
+    public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking); if (attackModeUp != null) { attackModeUp(); } } }
     public bool Moving { get => moving; set { moving = value; anim.SetBool("Moving", moving); } }
 
     public byte Timer { get => timer; set => timer = value; }
@@ -216,7 +218,7 @@ public class Player : MonoBehaviour {
     public bool Dead { get => dead; set { dead = value; anim.SetBool("Dead", dead); if (dead) { OnDeath(); } } }
     public int Direction { get => direction; set { direction = value; anim.SetInteger("Direction", direction); } }
     //public Vector3 Delta { get => delta; set => delta = value; }
-    
+
     public bool Stop { get => stop; set => stop = value; }
     public bool Pause { get => pause; set { pause = value; if (pause) { Time.timeScale = 0; } else { Time.timeScale = 1; } } }
     public bool Loaded { get => loaded; set { loaded = value; Nav.enabled = value; } }
@@ -240,7 +242,7 @@ public class Player : MonoBehaviour {
     public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
     public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); if (animations == 1) { clothesSfx.volume = 0.5f; } else { clothesSfx.time = 0; clothesSfx.volume = 0; } } }
 
-    public bool LockedOn { get => lockedOn; set { lockedOn = value;  if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }
+    public bool LockedOn { get => lockedOn; set { lockedOn = value; if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }
 
     public bool SkillIsActive { get => skillIsActive; set { skillIsActive = value; if (skillIsActive) { Guard = false; } } }
     public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }
@@ -267,16 +269,16 @@ public class Player : MonoBehaviour {
     public bool Boosting { get => boosting; set { boosting = value; anim.SetBool("Dashing", boosting); } }
 
     private bool dash;
-	private bool zendSpace;
+    private bool zendSpace;
 
-	public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
+    public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
     public GameObject RightHand { get => rightHand; set => rightHand = value; }
     public int Cinemations { get => cinemations; set { cinemations = value; anim.SetInteger("Cinemaitions", cinemations); } }
 
     public bool TeleportTriggered { get => teleportTriggered; set => teleportTriggered = value; }
     //I set the clamp on the weapon thing to 0 cuz demon fist werent ready for testing yet.
-    public float Weapon { get => weapon; set { weapon = Mathf.Clamp(value, 0, 0); anim.SetFloat("Weapon", weapon); if (weaponSwitch != null) { weaponSwitch(); } } }
+    public int Weapon { get => weapon; set { weapon = Mathf.Clamp(value, 0, 2); anim.SetInteger("Weapon", weapon); if (weaponSwitch != null) { weaponSwitch(); } } }
 
     public GameObject FistHitBox { get => fistHitBox; set => fistHitBox = value; }
     public bool StopTime { get => stopTime; set { stopTime = value; anim.SetBool("TimeStop", stopTime); } }
@@ -286,6 +288,8 @@ public class Player : MonoBehaviour {
     public bool InHouse { get => inHouse; set { inHouse = value; if (inHouse) { DemonSword.SetActive(false); demonSwordBack.SetActive(true); } } }
 
     public GameObject BattleCamTarget { get => battleCamTarget; set => battleCamTarget = value; }
+    public float BurstForce { get => burstForce; set => burstForce = value; }
+    public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
@@ -297,8 +301,8 @@ public class Player : MonoBehaviour {
             instance = this;
         }
         sfx = GetComponent<AudioSource>();
-		#region Event Subs
-		Enemy.onHit += MpRegain;
+        #region Event Subs
+        Enemy.onHit += MpRegain;
         PortalManager.backToBase += BackToBase;
         Slam.slam += GroundSlamForce;
         Objective.rewardPlayer += RewardPlayer;
@@ -308,7 +312,7 @@ public class Player : MonoBehaviour {
         Npc.dialogueDown += DialogueDown;
         Bed.bed += Sleep;
         AIKryll.zend += BackToZend;
-        GroundChecker.groundStatus += OnGrounded;
+        global::GroundChecker.groundStatus += OnGrounded;
         UiManager.sealPlayerInput += SealInput;
         CinematicManager.unfade += SealInput;
         CinematicManager.gameStart += UnsealInput;
@@ -420,11 +424,11 @@ public class Player : MonoBehaviour {
 
         if (stats.HealthLeft <= 0) { Dead = true; }
     }
-	#endregion
-	#region Event handlers
-	private void MpRegain() {
-		stats.MPLeft += 2;
-	}
+    #endregion
+    #region Event handlers
+    private void MpRegain() {
+        stats.MPLeft += 2;
+    }
     private void BackToBase(Vector3 destination, bool houseOrNot) {
         InHouse = houseOrNot;
         Attacking = false;
@@ -527,7 +531,7 @@ public class Player : MonoBehaviour {
     private void GetAllInput() {
         //Archery();
 
-        if (grounded && !guard && !lockedOn && MoveSpeed > 0) {
+        if (!jumping&&grounded && !guard && !lockedOn && MoveSpeed > 0) {
             MovementInput();
         }
         else if (cmdInput == 0) {
@@ -560,7 +564,11 @@ public class Player : MonoBehaviour {
             if (!jumpSeal) {
                 Jump();
             }
-            Dash();
+            if (!lockedOn) {
+                Dash();
+
+            }
+            
             //DoubleJump();
 
         }
@@ -709,6 +717,13 @@ public class Player : MonoBehaviour {
         if (Input.GetAxis("DPad Down") >= 0) {
             pressed = false;
         }
+        /*if (Input.GetButtonDown("R3")) {
+            Debug.Log("R3 flicked with no flicker");
+            Weapon++;
+        }
+        if (Input.GetButtonDown("L3")) {
+            Weapon--;
+        }*/
     }
     #region Unused Methods
     private void Archery() {
@@ -860,7 +875,7 @@ public class Player : MonoBehaviour {
     private IEnumerator ResetGroundCheck(float reset) {
         YieldInstruction wait = new WaitForSeconds(reset);
         yield return wait;
-        GroundChecker.groundStatus += OnGrounded;
+        global::GroundChecker.groundStatus += OnGrounded;
     }
     private IEnumerator BackToZendWait() {
 
@@ -964,8 +979,8 @@ public class Player : MonoBehaviour {
             //transform.position=Vector3.MoveTowards(transform.position, jumpPoint.transform.position, 200f * Time.deltaTime);
             //transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 200f * Time.deltaTime);
             //
-            GroundChecker.groundStatus -= OnGrounded;
-            StartCoroutine(ResetGroundCheck(0.1f));
+            global::GroundChecker.groundStatus -= OnGrounded;
+            StartCoroutine(ResetGroundCheck(0.3f));
             StartCoroutine(WaitToFall());
 
             //MoveIt(0, 15);
@@ -981,31 +996,51 @@ public class Player : MonoBehaviour {
 
     }
     private void Dash() {
+        
         if (L2.GetButtonDown() && !SecondJump) {
+             
+             
+            if (!Grounded) {
+                Grounded = false;
+                //transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 150f * Time.deltaTime);
+                //*Time.deltaTime
+                nav.enabled = false;
+                //RBody.isKinematic = false;
+                StopCoroutine(WaitToFall());
 
+                //Boosting = true;
+                //dash = true;
+                //doubleJump = true;
+                //Debug.Log("DoubleJump Triggered");
+                
+            }
 
-            Grounded = false;
-            //transform.position = Vector3.Lerp(transform.position, jumpPoint.transform.position, 150f * Time.deltaTime);
-            //*Time.deltaTime
-            nav.enabled = false;
-            RBody.isKinematic = false;
-            StopCoroutine(WaitToFall());
-            GroundChecker.groundStatus -= OnGrounded;
-            StartCoroutine(ResetGroundCheck(0.5f));
-            StartCoroutine(WaitToFall());
-            Boosting = true;
-            dash = true;
-            //doubleJump = true;
-            //Debug.Log("DoubleJump Triggered");
+            global::GroundChecker.groundStatus -= OnGrounded;
+                StartCoroutine(ResetGroundCheck(0.5f));
+                StartCoroutine(WaitToFall());
+            
+                Boosting = true;
+                dash = true;
+                RBody.isKinematic = false;
+            
         }
         if (dash && Boosting) {
-            Debug.Log("Boosting");
-            CmdInput = 0;
+           
+            if (Grounded) {
+                BurstForce = 15;
+            }
+            else {
+                BurstForce = 30;
+                CmdInput = 0;
             RBody.isKinematic = false;
-            RBody.AddForce(transform.forward * burstForce, ForceMode.VelocityChange);
+            RBody.AddForce(transform.forward * BurstForce, ForceMode.VelocityChange);
             if (RBody.isKinematic) {
                 Debug.Log("wtf is good?");
             }
+            }
+            Debug.Log("Boosting");
+            
+            //MoveSpeed = 13;
             StartCoroutine(Boost());
         }
     }
@@ -1030,6 +1065,7 @@ public class Player : MonoBehaviour {
         yield return wait;
         RBody.useGravity = true;
         Boosting = false;
+        MoveSpeed = 6;
     }
     private IEnumerator StopDoubleJump() {
         YieldInstruction wait = new WaitForSeconds(0.1f);
@@ -1052,6 +1088,11 @@ public class Player : MonoBehaviour {
         }
     }
     private void WeaponManagement() {
+        DemonSword.SetActive(false);
+        demonFistLeft.SetActive(false);
+        demonFistRight.SetActive(false);
+        attackBow.SetActive(false);
+        demonSwordBack.SetActive(true);
         switch (weapon) {
             case 0:
                 demonSwordBack.SetActive(false);
@@ -1061,6 +1102,9 @@ public class Player : MonoBehaviour {
             case 1:
                 demonFistLeft.SetActive(true);
                 demonFistRight.SetActive(true);
+                break;
+            case 2:
+                attackBow.SetActive(true);
                 break;
         }
     }
@@ -1122,7 +1166,8 @@ public class Player : MonoBehaviour {
             demonSwordBack.SetActive(true);
             demonFistLeft.SetActive(false);
             demonFistRight.SetActive(false);
-
+            attackBow.SetActive(false);
+            
         }
     }
     private IEnumerator KillVibration() {
@@ -1188,7 +1233,7 @@ public class Player : MonoBehaviour {
     #endregion
     private void LockOn() {
         if (BattleMode.Enemies.Count > 0) {
-            if (Input.GetButton("R1") && !TeleportTriggered&&zendSpace) {
+            if (Input.GetButton("R1") && !TeleportTriggered && zendSpace) {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
                 Time.timeScale = 0.1f;
                 if (lockOn != null) {
@@ -1215,19 +1260,19 @@ public class Player : MonoBehaviour {
             if (Input.GetButtonDown("R1")) {
                 Animations = 0;
                 Attacking = true;
-				if (findClosestEnemy != null)
-					findClosestEnemy();
+                if (findClosestEnemy != null)
+                    findClosestEnemy();
             }
             if (Input.GetButton("R1")) {
-				//Guard = true;
-				Debug.Log("fuck this code");
+                //Guard = true;
+                Debug.Log("fuck this code");
                 LockedOn = true;
-				if (playerIsLockedOn != null) {
-					playerIsLockedOn();
-				}
-				//StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
+                if (playerIsLockedOn != null) {
+                    playerIsLockedOn();
+                }
+                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
 
-			}
+            }
             else {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
                 LockedOn = false;

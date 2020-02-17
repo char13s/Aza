@@ -15,9 +15,8 @@ public class EnergySlash : StateMachineBehaviour
     {
         if (stateInfo.normalizedTime >=0.49&& !preformed ) {
             Fire();
-            if (Player.GetPlayer().PoweredUp||Player.GetPlayer().CmdInput==6) { 
-            Instantiate(energyWave, Player.GetPlayer().transform.position+new Vector3(0,0.4F,0), Quaternion.identity);}
-        }
+                        Instantiate(energyWave, Player.GetPlayer().transform.position+new Vector3(0,0.4F,0), Quaternion.identity);}
+        
     }
     private void Fire() {
         preformed = true;
