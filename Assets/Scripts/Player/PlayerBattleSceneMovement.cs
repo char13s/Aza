@@ -1,5 +1,4 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -61,16 +60,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
                 else { enemies.RemoveAt(index); }
             }
         }
-
         if (Enemies.Count > 0 && pc.LockedOn) {
             SwitchLockOn();
             GetInput();
         }
-
-
     }
     private void LockOnFuctionality() {
-        Debug.Log("HOe!");
+        
 
 
     }

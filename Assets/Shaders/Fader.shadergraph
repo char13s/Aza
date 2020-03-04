@@ -4,13 +4,13 @@
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.BooleanShaderProperty"
             },
-            "JSONnodeData": "{\n    \"m_Name\": \"Dead\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"ef03ad79-50c9-4403-93ea-c80360af17cf\"\n    },\n    \"m_DefaultReferenceName\": \"Boolean_B8FD8DD\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_Precision\": 0,\n    \"m_Value\": true,\n    \"m_Hidden\": false\n}"
+            "JSONnodeData": "{\n    \"m_Name\": \"Dead\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"ef03ad79-50c9-4403-93ea-c80360af17cf\"\n    },\n    \"m_DefaultReferenceName\": \"Boolean_B8FD8DD\",\n    \"m_OverrideReferenceName\": \"_dead\",\n    \"m_Precision\": 0,\n    \"m_Value\": true,\n    \"m_Hidden\": false\n}"
         },
         {
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.Vector1ShaderProperty"
             },
-            "JSONnodeData": "{\n    \"m_Name\": \"switch\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"89b3d6d9-0e29-4e76-9d25-75ecde8796cc\"\n    },\n    \"m_DefaultReferenceName\": \"Vector1_F277E768\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_Precision\": 0,\n    \"m_Value\": 1.0,\n    \"m_FloatType\": 0,\n    \"m_RangeValues\": {\n        \"x\": 0.0,\n        \"y\": 1.0\n    },\n    \"m_Hidden\": false\n}"
+            "JSONnodeData": "{\n    \"m_Name\": \"switch\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"89b3d6d9-0e29-4e76-9d25-75ecde8796cc\"\n    },\n    \"m_DefaultReferenceName\": \"Vector1_F277E768\",\n    \"m_OverrideReferenceName\": \"_onOrOff\",\n    \"m_Precision\": 0,\n    \"m_Value\": 0.0,\n    \"m_FloatType\": 0,\n    \"m_RangeValues\": {\n        \"x\": 0.0,\n        \"y\": 1.0\n    },\n    \"m_Hidden\": false\n}"
         },
         {
             "typeInfo": {

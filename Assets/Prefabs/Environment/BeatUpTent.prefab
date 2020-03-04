@@ -575,21 +575,6 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: -4.9, y: 0, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &9103306131418677783
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8955244412031503995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c005ddc10c7efe448951d03e8b2ede4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bedspot: {fileID: 7250573914839723259}
-  blanket: {fileID: 7064747803968902701}
-  outaBedspot: {fileID: 1942832441088568028}
 --- !u!1001 &26453488267492973
 PrefabInstance:
   m_ObjectHideFlags: 0

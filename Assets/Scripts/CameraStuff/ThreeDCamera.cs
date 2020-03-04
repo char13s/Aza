@@ -21,6 +21,9 @@ public class ThreeDCamera : CameraLogic
 	private bool aiming;
     private AudioSource audio;
     [SerializeField] private Vector3 aimingPosition;
+
+    private AxisButton R3 = new AxisButton("R3");
+
     public Transform XZOrientation { get => xZOrientation; set => xZOrientation = value; }
     public static bool IsActive => instance!=null&&instance.isActiveAndEnabled;
 
@@ -59,7 +62,15 @@ public class ThreeDCamera : CameraLogic
     public override void Update()
     {
         base.Update();
-        GetInput();
+
+        
+            GetInput();
+
+        
+        
+            
+
+        
     }
     private void OnEnable()
     {
@@ -107,7 +118,7 @@ public class ThreeDCamera : CameraLogic
 
     }
     
-    void GetInput()
+    private void GetInput()
     {
         
         float x = Input.GetAxis("RightStickX");

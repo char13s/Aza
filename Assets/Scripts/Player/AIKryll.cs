@@ -54,7 +54,7 @@ public class AIKryll : MonoBehaviour
         Player.onPlayerEnabled += Spawn;
         Player.battleOn += BattleOn;
         AreaTransition.transition += Spawn;
-        Bed.bed += Sleep;
+        UiManager.bedTime += Sleep;
         PortalManager.backToBase += TeleportWithZend;
         disableCollider += DisableCollider;
         
@@ -72,8 +72,8 @@ public class AIKryll : MonoBehaviour
         Kryll = false;
         Debug.Log(kryll);
     }
-    private void Sleep(GameObject location,GameObject meh) {
-        //transform.position
+    private void Sleep() {
+        transform.position = restSpot.transform.position;
         AnimStates = 4;
     }
     private void BattleOn()

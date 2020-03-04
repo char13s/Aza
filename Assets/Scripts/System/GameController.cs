@@ -30,12 +30,14 @@ public class GameController : MonoBehaviour {
     public static event UnityAction onLoadGame;
     public static event UnityAction update;
     public static event UnityAction awake;
-    public static UnityAction gameWasSaved;
+    public static event UnityAction<int> titleScreen;
+    public static event UnityAction gameWasSaved;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
     public static PlayableAza Aza => (instance == null) ? null : instance.aza;
 
     public GameObject Spawn { get => spawn; set => spawn = value; }
+    public int GameMode { get => gameMode; set { gameMode = value; } }
 
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake() {
@@ -45,14 +47,19 @@ public class GameController : MonoBehaviour {
         }
         instance = this;
         SpawnSetters.setSpawner += SetSpawner;
+        
+        
+        pc = Player.GetPlayer();
+        
     }
 
     void OnEnable() {
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
+        SceneManager.sceneLoaded += SceneManagement;
         if (awake != null)
             awake();
         onNewGame += OnNewGame;
-
+        
     }
 
     void OnDisable() {
@@ -67,7 +74,7 @@ public class GameController : MonoBehaviour {
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         }
 
-        pc = Player.GetPlayer();
+        
 
         //Input.Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -78,7 +85,7 @@ public class GameController : MonoBehaviour {
 
         if (update != null)
             update();
-        SceneManagement();
+        //SceneManagement();
         if (!Player.GetPlayer().Pause) { 
         if (Input.GetKey(KeyCode.F9)) {
             Time.timeScale = 4;
@@ -97,12 +104,15 @@ public class GameController : MonoBehaviour {
         mesh.vertices = nav.vertices;
         mesh.triangles = nav.indices;
     }
-    private void SceneManagement() {
+    private void SceneManagement(Scene scene, LoadSceneMode mode) {
+        Debug.Log("ugh");
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
-
+            
             pc.gameObject.SetActive(false);
-
-            eventSystem.gameObject.SetActive(false);
+            if (titleScreen != null) {
+                titleScreen(0);
+            }
+            //eventSystem.gameObject.SetActive(false);
         }
         else {
 
@@ -147,9 +157,7 @@ public class GameController : MonoBehaviour {
             CameraLogic.Switchable = true;
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
             pc.Loaded = true;
-            if (onLoadGame != null) {
-                onLoadGame();
-            }
+            
             //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 0);
 
             foreach (GameObject b in pc.items.Buttons) {
@@ -164,6 +172,9 @@ public class GameController : MonoBehaviour {
         //pc.Pause = false;
 
         if (instance.load) {
+            if (onLoadGame != null) {
+                onLoadGame();
+            }
 
             Game data = SaveLoad.Load();
             position.x = data.PlayerPosition[0];
@@ -218,7 +229,7 @@ public class GameController : MonoBehaviour {
 
     public void LoadGame() {
 
-
+        
         pc.Pause = false;
         Game data = SaveLoad.Load();
         Vector3 position;
@@ -250,6 +261,7 @@ public class GameController : MonoBehaviour {
     }
 
     public void StartGame() {
+        GameMode = 1;
         SceneManager.UnloadSceneAsync(1);
 
         SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);

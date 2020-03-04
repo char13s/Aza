@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using XInputDotNetPure;
 #pragma warning disable 0649
 public class HitBox : MonoBehaviour
 {
@@ -93,22 +94,20 @@ public class HitBox : MonoBehaviour
 
             //other.GetComponent<NavMeshAgent>().enabled = false;
 
-            Debug.Log("hit");
-            if (other != null&&other.GetComponent<Enemy>()) {
+            
+            if (other != null&&other.GetComponent<Enemy>() && !enemies.Contains(other.GetComponent<Enemy>())) {
+                if (enemies.Contains(other.GetComponent<Enemy>())) {
+                    Debug.Log("wtf");
+                }
+                Debug.Log("Hit");
                 enemies.Add(other.GetComponent<Enemy>());
                 other.GetComponent<Enemy>().CalculateDamage(0);
                 other.GetComponent<Enemy>().KnockBack(HitKnockback());
                 other.GetComponent<Enemy>().Grounded = false;
-
-            }
-            
-            
+                GamePad.SetVibration(0, 0.2f, 0.2f);
+                StartCoroutine(StopRumble());
+            }   
         }
-        
-
-
-        
-        //Debug.Log(other.gameObject.GetComponent<Enemy>().HealthLeft);
 
         /*if (other.gameObject.CompareTag("SlimeTree"))
         {
@@ -121,6 +120,11 @@ public class HitBox : MonoBehaviour
             Instantiate(effects, other.gameObject.transform);
             other.GetComponent<Dummy>().Hit = true;
         }
+    }
+    private IEnumerator StopRumble() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
+        GamePad.SetVibration(0, 0, 0);
     }
     private void OnTriggerExit(Collider other)
     {

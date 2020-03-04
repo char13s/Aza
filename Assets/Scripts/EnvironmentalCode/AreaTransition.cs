@@ -39,7 +39,7 @@ public class AreaTransition : MonoBehaviour
             if (movePlayer != null) {
                 movePlayer();
             }
-            
+            Player.GetPlayer().Animations = 0;
             StartCoroutine(FadeOutCoroutine());
             StartCoroutine(FadeCoroutine());
 
@@ -84,31 +84,52 @@ public class AreaTransition : MonoBehaviour
         graveyardProcessor.SetActive(false);
     }
     private void NextScene()
-    {StopCoroutine(FadeOutCoroutine());
+    {//StopCoroutine(FadeOutCoroutine());
+        if (movePlayer != null) {
+            movePlayer();
+        }
 
         Player.GetPlayer().transform.position = nextArea.transform.position;
-        Color color = black.color;
-        color.a = 0;
-        black.color = color;
+        UnFade();
+        //Color color = black.color;
+        //color.a = 0;
+        //black.color = color;
     }
     private IEnumerator FadeCoroutine()
     {
-
         yield return new WaitUntil(() => black.color.a >= 0.98);
+        NextScene();
         StartCoroutine(WaitCoroutine());
     }
+    private void UnFade() {
+        StartCoroutine(FadeBackIn());
+    }
+    private IEnumerator FadeBackIn() {
+        while (isActiveAndEnabled && black.color.a >= 0) {
+            yield return null;
+            Color color = black.color;
+            color.a -= 0.003f;
+            black.color = color;
+        }
+        //loadingIcon.SetActive(false);
+    }
+    //private IEnumerator WaitForUnFadeCoroutine() {
+    //    yield return new WaitUntil(() => black.color.a <= 0.09);
+    //    
+    //}
     private IEnumerator WaitCoroutine()
     {
-        YieldInstruction wait = new WaitForSeconds(1);
+        YieldInstruction wait = new WaitForSeconds(0.8f);
         
         yield return wait;
         AreaSwitches();
-        NextScene();
+        
         if (transition != null) {
             transition();
         }
         Player.GetPlayer().Nav.enabled = true;
-        
+        Player.GetPlayer().Grounded = false;
         Player.GetPlayer().InputSealed = false;
+        
     }
 }

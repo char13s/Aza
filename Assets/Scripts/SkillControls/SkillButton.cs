@@ -18,6 +18,7 @@ public class SkillButton : MonoBehaviour
 
     private void Awake() {
         GameController.onQuitGame += NullSkill;
+        GameController.onNewGame += NullSkill;
         GameController.onLoadGame += OnGameLoaded;
     }
     // Start is called before the first frame update

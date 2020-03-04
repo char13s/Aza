@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2186647827438835064
 Transform:
   m_ObjectHideFlags: 0
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2186647827438835067}
   m_LocalRotation: {x: -0.70710677, y: -0.00000014342366, z: 0.000000065658234, w: 0.7071068}
-  m_LocalPosition: {x: -0.003, y: -0.0104, z: -0.0064}
+  m_LocalPosition: {x: -0.003, y: 1.02, z: 1.79}
   m_LocalScale: {x: 0.15225132, y: 0.15225153, z: 0.15225132}
   m_Children:
   - {fileID: 2394417307591110065}
@@ -919,7 +919,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -4800,6 +4800,61 @@ PrefabInstance:
       propertyPath: ColorModule.gradient.maxGradient.ctime1
       value: 10023
       objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: EmissionModule.rateOverDistance.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: useRigidbodyForVelocity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: moveWithCustomTransform
+      value: 
+      objectReference: {fileID: 2186647827438835064}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: InheritVelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: InheritVelocityModule.m_Curve.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: InheritVelocityModule.m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: VelocityModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4813,7 +4868,7 @@ PrefabInstance:
     - target: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 2.7
       objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
@@ -4858,17 +4913,17 @@ PrefabInstance:
     - target: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 76.37936
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 76.37945
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 76.37944
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020350, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
@@ -4878,7 +4933,7 @@ PrefabInstance:
     - target: {fileID: 1104441392863020350, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27e6e0b4099678947b7b0b69afaf3989, type: 3}

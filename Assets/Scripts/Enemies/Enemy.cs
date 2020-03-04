@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using XInputDotNetPure;
 #pragma warning disable 0649
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -59,6 +60,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject slimeTree;
     [SerializeField] private GameObject slime;
 
+    [SerializeField]private GameObject ouch;
     
     
     private bool attacking;
@@ -121,7 +123,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             if (dead)
             {
                 GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("_onOrOff", 1);
-                GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_452897A1", 1);
+                GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("dead", 1);
                 
                 OnDefeat();
                 Anim.SetBool("Dead", dead);
@@ -281,7 +283,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             if (State != EnemyAiStates.Chasing && nav.enabled && !dead)
             {
                 Walk = false;
-                nav.SetDestination(transform.position);
+                
+                //nav.SetDestination(transform.position);
             }
             if (state != EnemyAiStates.Attacking)
             {
@@ -295,7 +298,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 
             }
 
-            if (Distance > 1.1f && Distance < 6f && !dead&&!Hit)
+            if (Distance > 1f && Distance < 6f && !dead&&!Hit)
             {
                 nav.enabled = true;
                 //Debug.Log("fuk");
@@ -407,7 +410,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private void ReturnToSpawn()
     {
-        nav.SetDestination(startLocation);
+        transform.position = Vector3.MoveTowards(transform.position, startLocation, 4 * Time.deltaTime);
+        Vector3 delta = (flip) * transform.position - startLocation;
+        delta.y = 0;
+        transform.rotation = Quaternion.LookRotation(delta);
         Walk = true;
         if (Vector3.Distance(startLocation, transform.position) < 1f)
         {
@@ -418,8 +424,16 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Walk = true;
         //transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 1 * Time.deltaTime);
+        if (Player.GetPlayer().Nav.enabled) {
+            //nav.SetDestination(Player.GetPlayer().transform.position);
+            
+        }
+        Vector3 delta = (flip) * (transform.position - pc.transform.position);
+        delta.y = 0;
+        transform.rotation = Quaternion.LookRotation(delta);
+        //transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
+        transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 4 * Time.deltaTime);
         
-        nav.SetDestination(Player.GetPlayer().transform.position);
     }
     private void UIMaintence()
     {
@@ -431,20 +445,24 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     private void OnHit()
     {
         sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
-        GameObject d = new GameObject();
-        d.transform.SetParent(canvas.transform);
-        d.transform.localPosition = new Vector3(0.4F, 0, 0);
-        d.transform.rotation = new Quaternion(0, 0, 0, 0);
-        d.AddComponent<Text>();
-        d.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
-        d.GetComponent<Text>().resizeTextForBestFit = true;
-        d.GetComponent<Text>().color = Color.red;
-        d.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-        d.GetComponent<Text>().text = "- " + Mathf.Abs(level - (2 * pc.stats.Attack)).ToString();
-        Destroy(d, 2f);
+        //GameObject d = new GameObject();
+        //d.transform.SetParent(canvas.transform);
+        //d.transform.localPosition = new Vector3(0.4F, 0, 0);
+        //d.transform.rotation = new Quaternion(0, 0, 0, 0);
+        //d.AddComponent<Text>();
+        //d.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
+        //d.GetComponent<Text>().resizeTextForBestFit = true;
+        //d.GetComponent<Text>().color = Color.red;
+        //d.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        //d.GetComponent<Text>().text = Mathf.Abs(level - (2 * pc.stats.Attack)).ToString()
+        //ouch.AddComponent<HitText>();
+        //ouch.GetComponent<HitText>().Text = "- " + Mathf.Max(1, (pc.stats.Attack + (int)addition) - stats.Defense).ToSting(); ;
+        //Instantiate(ouch, transform.position,Quaternion.identity);
+        //Destroy(ouch, 0.5f);
 		Instantiate(cut,transform);
-		
+        
     }
+    
     private IEnumerator HitCoroutine()
     {
         YieldInstruction wait = new WaitForSeconds(2);
@@ -561,7 +579,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         if (!dead) { 
         HealthLeft -= Mathf.Max(1, (pc.stats.Attack+(int)addition) - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
-        Hit = true;
+            ouch.GetComponent<HitText>().Text = "- " + Mathf.Max(1, (pc.stats.Attack + (int)addition) - stats.Defense).ToString(); ;
+            Instantiate(ouch, transform.position+new Vector3(0.4f,0.4f,0), Quaternion.identity);
+            
+            Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
         {
 

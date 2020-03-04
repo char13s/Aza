@@ -13,8 +13,8 @@ public class VirtualCameraManager : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        Player.lockOn += LookingForTarget;
-        Player.notAiming += NotAiming;
+        //Player.lockOn += LookingForTarget;
+       // Player.notAiming += NotAiming;
         UiManager.portal += ControlMainCam;
 		PlayerBattleSceneMovement.onLockOn += AimBattleCam;
     }
@@ -58,15 +58,16 @@ public class VirtualCameraManager : MonoBehaviour
     }
 	private void AimBattleCam() {
         Debug.Log("cam target set");
-        if (Player.GetPlayer().BattleMode.EnemyTarget != null&&Player.GetPlayer().LockedOn) {
-            //main.GetRig(1).LookAt = 
-            main.m_LookAt=Player.GetPlayer().BattleMode.EnemyTarget.transform;
-            //battleCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 7.5f+(Vector3.Distance(Player.GetPlayer().BattleMode.EnemyTarget.transform.position, Player.GetPlayer().transform.position)/2);
-            //battleCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 10;
-        }
-        else {
-            main.GetRig(1).LookAt = body.transform;
-        }
+        
+        //if (Player.GetPlayer().BattleMode.EnemyTarget != null&&Player.GetPlayer().LockedOn) {
+        //    //main.GetRig(1).LookAt = 
+        //    main.m_LookAt=Player.GetPlayer().BattleMode.EnemyTarget.transform;
+        //    //battleCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 7.5f+(Vector3.Distance(Player.GetPlayer().BattleMode.EnemyTarget.transform.position, Player.GetPlayer().transform.position)/2);
+        //    //battleCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 10;
+        //}
+        //else {
+        //    main.GetRig(1).LookAt = body.transform;
+        //}
     }
 	private void RetargetBattleCam() {
 		battleCam.m_LookAt = Player.GetPlayer().transform;

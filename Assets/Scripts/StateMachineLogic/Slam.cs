@@ -6,6 +6,7 @@ public class Slam : StateMachineBehaviour
 {
     [SerializeField] private GameObject boom;
     private GameObject AoeHitbox;
+    [SerializeField] private bool spin;
     public static event UnityAction<float> slam;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -26,7 +27,14 @@ public class Slam : StateMachineBehaviour
             Player.GetPlayer().RBody.drag = 0;
         }
         if (stateInfo.normalizedTime > 0.2f&& stateInfo.normalizedTime < 0.98f) {
-            Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+            if (spin) {
+                Instantiate(boom, Player.GetPlayer().DemonSword.transform);
+            }
+            else {
+                Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
+
+            }
+            
             
         }
         }

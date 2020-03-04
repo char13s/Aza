@@ -8,7 +8,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip bang;
     [SerializeField] private AudioClip rock;
     [SerializeField] private AudioClip slimeHit;
-
+    [SerializeField] private AudioClip titleScreen;
+    [SerializeField] private AudioClip wormDiving;
 
     private AudioSource audio;
     private static AudioManager instance;
@@ -31,6 +32,8 @@ public class AudioManager : MonoBehaviour
         }
         audio = GetComponent<AudioSource>();
         AreaTransition.rock += SetMusic;
+        GameController.titleScreen += Fade;
+        FreeFallZend.diving += Fade;
     }
     // Start is called before the first frame update
     void Start()
@@ -46,6 +49,42 @@ public class AudioManager : MonoBehaviour
     private void SetMusic()
     {
         audio.clip =Rock;
+        
+    }
+    private void FadeOutVolume() {
+        audio.volume-=0.1f;
+        
+    }
+     
+    private IEnumerator FadeOutCoroutine(int val) {
+        YieldInstruction wait = new WaitForSeconds(0.3f);
+        while (isActiveAndEnabled && audio.volume > 0f) {
+            yield return null;
+            Debug.Log("bro");
+
+            FadeOutVolume();
+        }
+        StartCoroutine(FadeOut(val));
+    }
+    private IEnumerator FadeOut(int val) {
+        yield return new WaitUntil(()=> audio.volume == 0);
+        BackGroundMusicManager(val);
+
+    }
+    private void Fade(int val) {
+        StartCoroutine(FadeOutCoroutine(val));
+        //BackGroundMusicManager(val);
+    }
+    private void BackGroundMusicManager(int trackNumber) {  
+        switch (trackNumber) {
+            case 0:
+                audio.clip = titleScreen;
+                break;
+            case 1:
+                audio.clip = wormDiving;
+                break;
+        }
+        audio.volume = 0.5f;
         audio.Play();
     }
 }

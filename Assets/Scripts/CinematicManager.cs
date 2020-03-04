@@ -41,7 +41,7 @@ public class CinematicManager : MonoBehaviour {
     public static event UnityAction cutsceneIsPlaying;
     public static event UnityAction cutsceneIsOver;
     private void Awake() {
-        GameController.onNewGame += FUckU;
+        //GameController.onNewGame += FUckU;
         GameController.onNewGame += OpeningScene;
 
 
@@ -49,7 +49,7 @@ public class CinematicManager : MonoBehaviour {
     }
     // Start is called before the first frame update
     void Start() {
-        gameStart += GameStart;
+        //gameStart += GameStart;
 
     }
 
@@ -83,16 +83,16 @@ public class CinematicManager : MonoBehaviour {
         if (unfade != null) {
             unfade();
         }
-        openingSceneCam.gameObject.SetActive(true);
-        NewGameReset();
-        Debug.Log("openingSceneFired");
-        openingSceneCam.GetComponent<PlayableDirector>().Play();
-        //first.SetActive(true);
-
-        CutscenePlaying = true;
-        Debug.Log("started coroutines");
-        StartCoroutines();
-
+        //openingSceneCam.gameObject.SetActive(true);
+        //NewGameReset();
+        //Debug.Log("openingSceneFired");
+        //openingSceneCam.GetComponent<PlayableDirector>().Play();
+        ////first.SetActive(true);
+        //
+        //CutscenePlaying = true;
+        //Debug.Log("started coroutines");
+        //StartCoroutines();
+        //
 
 
     }

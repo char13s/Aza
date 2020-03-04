@@ -2,41 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class Bed : MonoBehaviour
-{
-    [SerializeField] private GameObject bedspot;
-    [SerializeField] private GameObject blanket;
-    [SerializeField] private GameObject outaBedspot;
-    public static UnityAction<GameObject,GameObject> bed;
-    private void Awake()
-    {
-        Player.notSleeping += NotSleep;
+using Cinemachine;
+public class Bed : MonoBehaviour {
+    [SerializeField] GameObject emptyBed;
+    [SerializeField] GameObject sleepBed;
+    private bool sleeping;
+    public static UnityAction bed;
+    private void Awake() {
+        UiManager.outaBed += NotSleep;
+        UiManager.bedTime += Sleep;
     }
     // Start is called before the first frame update
-    void Start()
-    {
-        
+    void Start() {
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
+    void Update() {
+
     }
     private void NotSleep() {
-        blanket.SetActive(false);
+        sleepBed.SetActive(false);
+        sleeping = false;
+        emptyBed.SetActive(true);
     }
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            if (Input.GetButtonDown("X"))
-            {
-                if (bed != null) {
-                    bed(bedspot,outaBedspot);
+    private void Sleep() {
+        sleepBed.SetActive(true);
+        emptyBed.SetActive(false);
+    }
+    private void OnTriggerStay(Collider other) {
+        if (other.gameObject.CompareTag("Player")) {
+            if (!sleeping) {
+                if (Input.GetButtonDown("X")) {
+                    if (bed != null) {
+                        bed();
+                    }
+                    sleeping = true;
+
                 }
-                blanket.SetActive(true);
-                
             }
         }
     }

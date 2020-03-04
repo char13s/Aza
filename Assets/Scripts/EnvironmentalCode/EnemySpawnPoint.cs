@@ -17,7 +17,8 @@ public class EnemySpawnPoint : MonoBehaviour
     private void Awake()
     {
         CinematicManager.cutsceneIsPlaying += CantSpawn;
-        CinematicManager.cutsceneIsOver +=CanSpawn ;
+        CinematicManager.cutsceneIsOver +=CanSpawn;
+        FreeFallZend.landed += SequenceSpawning;
         UiManager.portal += ResetSpwan;
     }
     // Start is called before the first frame update
@@ -48,6 +49,9 @@ public class EnemySpawnPoint : MonoBehaviour
         
         canSpawn = true;
         spawned = false;
+    }
+    private void SequenceSpawning(Vector3 loc,bool val) {
+        CanSpawn();
     }
     private void CanSpawn() => canSpawn = true;
     private void CantSpawn() => canSpawn = false;

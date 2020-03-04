@@ -204,7 +204,8 @@ public class UiManager : MonoBehaviour {
     public static UnityAction<Vector3> areaChange;
     public static UnityAction<int> portal;
     public static UnityAction nullEnemies;
-    
+    public static UnityAction bedTime;
+    public static UnityAction outaBed;
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
     private int menuState;
@@ -234,13 +235,6 @@ public class UiManager : MonoBehaviour {
 
     public GameObject ItemInvent { get => itemInvent; set => itemInvent = value; }
     #endregion
-
-
-    //public static event UnityAction movementTutorialActive;
-    //public static event UnityAction miniMapTutorialActive;
-    //public static event UnityAction pauseTutorialActive;
-    //public static event UnityAction combatTutorialActive;
-    //public static GameObject GetUseMenu() => useMenu;
     public static UiManager GetUiManager() => instance;
     public void Awake() {
         if (instance != null && instance != this) {
@@ -258,36 +252,58 @@ public class UiManager : MonoBehaviour {
         storeMenu = StoreMenuPrefab;
 
         dialogueMenu = dialogueMenuPrefab;
-
+        #region outside events
         AIKryll.sendDist += DistFromKyrllToZend;
         AIKryll.zend += KryllDown;
+
         Player.kryll += KryllUp;
         Player.notSleeping += SaveMenuDown;
         Player.cancelPaused += MenusDown;
+        Player.notSleeping += NotSleep;
+
         StoreManager.itemWasBought += UpdateMoney;
+
         GameController.onGameWasStarted += GameScreen;
-        Npc.dialogueUp += DialogueManagerUp;
-        Npc.dialogueDown += DialogueManagerDown;
-        ExpConverter.levelMenuUp += MenuManager;
-        Stats.onBaseStatsUpdate += UpdateBoost;
-        Items.onItemClick += UseMenuHandling;
-        Objective.onObjectiveClick += ObjectiveDescription;
-        Bed.bed += SaveMenuUp;
-        PortalConnector.portalListUp += MenuManager;
         GameController.gameWasSaved += SaveGame;
         GameController.onQuitGame += OnQuit;
-        missionCleared += ObjectiveClear;
-        itemAdded += ItemPopUp;
-        areaChange += AreaChange;
+
+        Npc.dialogueUp += DialogueManagerUp;
+        Npc.dialogueDown += DialogueManagerDown;
+
+        ExpConverter.levelMenuUp += MenuManager;
+
+        Stats.onBaseStatsUpdate += UpdateBoost;
+
+        Items.onItemClick += UseMenuHandling;
+
+        Objective.onObjectiveClick += ObjectiveDescription;
+
+        Bed.bed += Sleep;
+        
+        PortalConnector.portalListUp += MenuManager;
+        
         Skill.sendSkill += SetSkillToSlot;
         SkillButton.sendSkillSlot += SetLastSkillSlot;
+
         CinematicManager.unfade += UnFade;
         CinematicManager.gameStart += GameStart;
+
         Cauldron.potionMaking += MenuManager;
+
         SpellTagSlot.spellInvent += SpellTagListUp;
         SpellTag.spellListDown += SpellTagListDown;
         SpellTagSlot.sendThisSlot += SetLastSelectedSpellTagSlot;
         SpellTag.sendThisSpell += SetSpell;
+
+        #endregion
+        
+        missionCleared += ObjectiveClear;
+        itemAdded += ItemPopUp;
+        areaChange += AreaChange;
+        bedTime += SaveMenuUp;
+        outaBed += SaveMenuDown;
+
+        
     }
     void Start() {
 
@@ -311,7 +327,7 @@ public class UiManager : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)) {
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)||Input.GetButtonDown("Pause")) {
             GetSelected();
         }
         if (Player.GetPlayer().Pause) {
@@ -323,7 +339,7 @@ public class UiManager : MonoBehaviour {
         }
         if (Input.GetButtonDown("Pause")) {
             PauseMenuControl(0);
-
+            GetSelected();
         }
 
 
@@ -479,12 +495,36 @@ public class UiManager : MonoBehaviour {
             }
         }
     }
-    private void SaveMenuUp(GameObject loc, GameObject res) {
+    #region Sleep Management
+    private void SaveMenuUp() {
         saveMenu.SetActive(true);
+        playerUi.SetActive(false);
     }
     private void SaveMenuDown() {
         saveMenu.SetActive(false);
+        playerUi.SetActive(true);
     }
+    private void Sleep() {
+        StartCoroutine(FadeRealQuick(bedTime));
+    }
+    private void NotSleep() {
+        StartCoroutine(FadeRealQuick(outaBed));
+    }
+    private IEnumerator FadeRealQuick(UnityAction action) {
+        YieldInstruction wait = new WaitForSeconds(1);
+        while (isActiveAndEnabled && black.color.a <= 0.99) {
+            yield return null;
+            FadeToBlack();
+        }
+        if (action != null) {
+            action();
+        }
+        
+        UnFade();
+    }
+
+    #endregion
+    
     #region spellTag Manangement
     private void SpellTagListUp() {
         spellTagList.SetActive(true);
@@ -891,6 +931,7 @@ public class UiManager : MonoBehaviour {
         mpBoost.text = Player.GetPlayer().stats.MpBoost.ToString();
         healthBoost.text = Player.GetPlayer().stats.HealthBoost.ToString();
         abilityPoints.text = "Ability Points: " + Player.GetPlayer().stats.Abilitypoints.ToString();
+        abilityPointsCost.text = "Cost :" + Player.GetPlayer().stats.RequiredExp;
     }
     private void ViewStatsUpWindow() {
         baseAttack.text = "Attack = " + Player.GetPlayer().stats.BaseAttack.ToString();
@@ -898,8 +939,7 @@ public class UiManager : MonoBehaviour {
         baseHealth.text = "Health = " + Player.GetPlayer().stats.BaseHealth.ToString();
         baseMp.text = "Mp = " + Player.GetPlayer().stats.BaseMp.ToString();
         lvMenuExp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
-
-
+        UpdateBoost();
     }
     public void UpQuantity() {
 

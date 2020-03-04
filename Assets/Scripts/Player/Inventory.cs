@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-
 public class Inventory
 {
     [SerializeField]
@@ -14,20 +13,7 @@ public class Inventory
     [SerializeField] private Button useButton;
     //private List<string> itemNames = new List<string>();
     private List<GameObject> buttons = new List<GameObject>();
-    /*private GameObject pocket;
-    private GameObject pageTitle;
-    private GameObject pageNum;
     
-    private GameObject lastItemSelected;
-    private bool pocketActive;*/
-
-
-    /*public bool PocketActive { get => pocketActive; set => pocketActive = value; }
-    public int Page { get => page; set => page = value; }
-    
-    public GameObject Pocket { get => pocket; set => pocket = value; }
-    public GameObject PageTitle { get => pageTitle; set => pageTitle = value; }
-    public GameObject PageNum { get => pageNum; set => pageNum = value; }*/
     public List<GameObject> Buttons { get => buttons; set => buttons = value; }
     public List<ItemData> Items { get => items; set => items = value; }
 
@@ -37,9 +23,6 @@ public class Inventory
     {
         ItemData.ItemDataUpdate += UpdateInvent;
         GameController.onGameWasStarted += UpdateInvent;
-        
-        /*CraftingTable.crafting += SetToCraftingMenu;
-        UiManager.notCrafting += SetBackToInvent;*/
     }
     public void AddItem(ItemData item)
     {
@@ -53,7 +36,7 @@ public class Inventory
         }
         else
         {
-			UiManager.itemAdded(item.ItemDescription, SpriteAssign.SetImage(item));
+			//UiManager.itemAdded(item.ItemDescription, SpriteAssign.SetImage(item));
             Items.Add(item);
             item.Quantity = 0;
             item.Quantity++;
@@ -61,23 +44,6 @@ public class Inventory
 
         }
     }
-    
-    /*private void SetToCraftingMenu()
-    {
-
-        foreach (GameObject b in Buttons)
-        {
-            b.transform.SetParent(UiManager.ItemList.transform);
-
-        }
-    }
-    private void SetBackToInvent() {
-        foreach (GameObject b in Buttons)
-        {
-            b.transform.SetParent(Pocket.transform);
-
-        }
-    }*/
     public ItemData GetItem(ItemData item)
     {
         foreach (ItemData i in Items)
@@ -121,56 +87,11 @@ public class Inventory
         }
         return false;
     }
-
-    /*public void DisplayInventory()
-    {
-        if (!PocketActive)
-        {
-            PocketActive = true;
-            Pocket.SetActive(true);
-        }
-        switch (Page)
-        {
-            case 0:
-                PageTitle.GetComponent<Text>().text = "Materials";
-                PageNum.GetComponent<Text>().text = "0";
-                break;
-            case 1:
-                PageTitle.GetComponent<Text>().text = "Craft Recipes";
-                PageNum.GetComponent<Text>().text = "1";
-                break;
-            case 2:
-                PageTitle.GetComponent<Text>().text = "Weapons";
-                PageNum.GetComponent<Text>().text = "2";
-                break;
-            case 3:
-                PageTitle.GetComponent<Text>().text = "Key Items";
-                PageNum.GetComponent<Text>().text = "3";
-                break;
-        }
-    }
-    private void DeleteEmptyItems()
-    {
-        foreach (ItemData i in items)
-        {
-
-        }
-    }
-    public void InventOff()
-    {
-        Pocket.SetActive(false);
-        PocketActive = false;
-    }*/
-
     public void ButtonCreation(ItemData i)
     {
-
-
         GameObject c = new GameObject();
         c.name = "Item";
-        //c.AddComponent<Image>();
         c.AddComponent<Text>();
-        
         c.AddComponent<Items>();
         c.GetComponent<Items>().data = i;
         c.GetComponent<Text>().text= i.ItemName;
@@ -178,20 +99,9 @@ public class Inventory
         c.GetComponent<Text>().color = Color.black;
         c.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
         c.GetComponent<Text>().resizeTextForBestFit = true;
-        //c.GetComponent<Image>().sprite = SpriteAssign.SetImage(i); ;
         c.transform.SetParent(SetToInvent(i));
-        //Color hC  = new Color(1,0,0);
-        //c.GetComponent<Button>().colors.highlightedColor = hC; 
-        //c.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-        //c.transform.localPosition = new Vector3(0, 0, 2);
-        
         string d = i.ItemDescription;
         c.GetComponent<Button>().onClick.AddListener(c.GetComponent<Items>().IconClick);
-        
-
-        //c.AddComponent<CanvasGroup>();
-        //c.GetComponent<CanvasGroup>().interactable=false;
-        //c.GetComponent<FollowMouse>().enabled=false;
         GameObject t = new GameObject();
         t.AddComponent<CanvasRenderer>();
         t.AddComponent<Text>();
@@ -227,7 +137,6 @@ public class Inventory
     }
     private void UpdateInvent()
     {
-
         if (buttons.Count != 0)
         {
             foreach (GameObject b in Buttons)
@@ -243,6 +152,6 @@ public class Inventory
             }
         }
     }
-    //DisplayInventory();
+    
 }
 
