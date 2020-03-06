@@ -31,7 +31,7 @@ public class CommandInputBehavior : StateMachineBehaviour
             }
         }
 		if (stateInfo.normalizedTime > 0.4&&slash!=null && stateInfo.normalizedTime < 0.6f) {
-			Instantiate(slash,Player.GetPlayer().transform.position+ Player.GetPlayer().transform.forward, Player.GetPlayer().transform.rotation);
+			Instantiate(slash,Player.GetPlayer().CenterPoint.transform.position, Player.GetPlayer().transform.rotation);
 		}
         //Player.GetPlayer().transform.position = Vector3.MoveTowards();
     }

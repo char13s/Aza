@@ -28,7 +28,7 @@ public class Slam : StateMachineBehaviour
         }
         if (stateInfo.normalizedTime > 0.2f&& stateInfo.normalizedTime < 0.98f) {
             if (spin) {
-                Instantiate(boom, Player.GetPlayer().DemonSword.transform);
+                
             }
             else {
                 Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);

@@ -114,6 +114,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private GameObject rightHand;
     [SerializeField] private GameObject zaWarudosRange;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject centerPoint;
     [Space]
     [Header("HitBoxes")]
     [SerializeField] private GameObject AoeHitbox;
@@ -278,7 +279,7 @@ public class Player : MonoBehaviour {
 
     public bool TeleportTriggered { get => teleportTriggered; set => teleportTriggered = value; }
     //I set the clamp on the weapon thing to 0 cuz demon fist werent ready for testing yet.
-    public int Weapon { get => weapon; set { weapon = Mathf.Clamp(value, 0, 2); anim.SetInteger("Weapon", weapon); if (weaponSwitch != null) { weaponSwitch(); } } }
+    public int Weapon { get => weapon; set { weapon = Mathf.Clamp(value, 0, 0); anim.SetInteger("Weapon", weapon); if (weaponSwitch != null) { weaponSwitch(); } } }
 
     public GameObject FistHitBox { get => fistHitBox; set => fistHitBox = value; }
     public bool StopTime { get => stopTime; set { stopTime = value; anim.SetBool("TimeStop", stopTime); } }
@@ -289,6 +290,8 @@ public class Player : MonoBehaviour {
 
     public GameObject BattleCamTarget { get => battleCamTarget; set => battleCamTarget = value; }
     public float BurstForce { get => burstForce; set => burstForce = value; }
+    public GameObject CenterPoint { get => centerPoint; set => centerPoint = value; }
+
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
@@ -479,7 +482,7 @@ public class Player : MonoBehaviour {
         MoveSpeed = 6;
         LockedOn = false;
         stats.Start();
-        FireTrail.SetActive(false);
+
         mask.SetActive(false);
         GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
         Destroy(aura);

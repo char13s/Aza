@@ -165,7 +165,15 @@ public class UiManager : MonoBehaviour {
 	[SerializeField] private GameObject howToAttack;
 	[SerializeField] private GameObject howToGuard;
 	[SerializeField] private GameObject howToRoll;
-	[Header("Fonts")]
+    [Space]
+    [SerializeField] private GameObject howTodash;
+    [SerializeField] private GameObject howToDash;
+    [SerializeField] private GameObject howToJump;
+    [SerializeField] private GameObject howToLockOn;
+    [SerializeField] private GameObject howToUseSkills;
+    [SerializeField] private GameObject howToUseRelics;
+
+    [Header("Fonts")]
 	[SerializeField] private Font luckiestGuy;
 	[Header("KryllUI")]
 	[SerializeField] private GameObject kryllUi;
@@ -195,6 +203,12 @@ public class UiManager : MonoBehaviour {
 	[SerializeField] private Text swordProficency;
 	[Header("Title Screen Menu")]
 	[SerializeField] private GameObject newGameButton;
+    [Header("Dialogues")]
+    [SerializeField] private GameObject dialogueBox;
+    [SerializeField] private GameObject intro;
+    [SerializeField] private GameObject landed;
+    [SerializeField] private GameObject enemyAppeared;
+
 	//[SerializeField]private GameObject quit
     //Events
     public static UnityAction missionCleared;
@@ -294,6 +308,9 @@ public class UiManager : MonoBehaviour {
         SpellTag.spellListDown += SpellTagListDown;
         SpellTagSlot.sendThisSlot += SetLastSelectedSpellTagSlot;
         SpellTag.sendThisSpell += SetSpell;
+
+        DialogueTrigger.triggered += DialogueManagement;
+        DialogueTrigger.close += CloseDialogue;
 
         #endregion
         
@@ -547,6 +564,39 @@ public class UiManager : MonoBehaviour {
     }
     #endregion
 
+    #region Dialogue Management
+    private void DialogueManagement(int text) {
+        dialogueBox.SetActive(true);
+        switch (text) {
+            case 0:
+                intro.SetActive(true);
+                break;
+            case 1:
+                landed.SetActive(true);
+                break;
+            case 2:
+                enemyAppeared.SetActive(true);
+                break;
+        }
+    }
+    private void CloseDialogue(int text) {
+        dialogueBox.SetActive(false);
+        switch (text) {
+            case 0:
+                intro.SetActive(false);
+                break;
+            case 1:
+                landed.SetActive(false);
+                break;
+            case 2:
+                enemyAppeared.SetActive(false);
+                break;
+        }
+    }
+    private void Dashu() {
+
+    }
+    #endregion
     private void AccessHowTos(int s) {
 
         switch (s) {
