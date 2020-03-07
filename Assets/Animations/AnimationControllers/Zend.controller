@@ -692,7 +692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 660eb9bde61542e49bc232b5cae26cae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackId: 6
+  attackId: 2
 --- !u!1101 &-8372424739927433263
 AnimatorStateTransition:
   m_ObjectHideFlags: 3
@@ -1915,34 +1915,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &-6923200193910412756
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Grounded
-    m_EventTreshold: 2
-  - m_ConditionMode: 6
-    m_ConditionEvent: CommandInput
-    m_EventTreshold: 2
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 175558123353017136}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.024218678
-  m_TransitionOffset: 0
-  m_ExitTime: 0.9850001
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1101 &-6907728040216586420
 AnimatorStateTransition:
   m_ObjectHideFlags: 3
@@ -8714,11 +8686,11 @@ AnimatorState:
   - {fileID: 1101890720684361882}
   - {fileID: 1101057515140445440}
   - {fileID: 1101566640956960358}
-  - {fileID: -6923200193910412756}
   - {fileID: -2685628510097612678}
   - {fileID: 4747006585843411977}
   - {fileID: -6727341972791331756}
   - {fileID: 1628931082188292732}
+  - {fileID: 2286179457666295288}
   m_StateMachineBehaviours:
   - {fileID: 8577480206572504282}
   m_Position: {x: 50, y: 50, z: 0}
@@ -10396,6 +10368,34 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &2286179457666295288
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Grounded
+    m_EventTreshold: 0
+  - m_ConditionMode: 6
+    m_ConditionEvent: CommandInput
+    m_EventTreshold: 2
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -883609196780520927}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.8450983
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &2305249621107318988
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

@@ -110,10 +110,10 @@ public class Stats {
     public void Start() {
         baseHealth = 22;
         healthLeft = baseHealth;
-        baseMp = 10;
+        baseMp = 15;
         mpLeft = baseMp;
-        baseAttack = 10;
-        baseDefense = 8;
+        baseAttack = 12;
+        baseDefense = 11;
         intellect = 6;
         level = 1;
         exp = 0;

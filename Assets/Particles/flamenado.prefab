@@ -27,10 +27,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5410596322984292820}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 422.75378, y: 551.34937, z: -875.474}
+  m_LocalPosition: {x: 427.56955, y: 551.32837, z: -862.36786}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 147457901531728613}
+  - {fileID: 961557786121538883}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -136,7 +136,7 @@ PrefabInstance:
     - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].value
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
@@ -218,6 +218,11 @@ PrefabInstance:
       propertyPath: InheritVelocityModule.m_Curve.maxCurve.m_Curve.Array.data[1].value
       value: 0.7027018
       objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -280,7 +285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27e6e0b4099678947b7b0b69afaf3989, type: 3}
---- !u!4 &147457901531728613 stripped
+--- !u!4 &961557786121538883 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1104441392863020349, guid: 27e6e0b4099678947b7b0b69afaf3989,
     type: 3}

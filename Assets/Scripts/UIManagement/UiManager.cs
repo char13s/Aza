@@ -156,6 +156,7 @@ public class UiManager : MonoBehaviour {
 	[SerializeField] private GameObject loadedGame;
 	[SerializeField] private GameObject defeated;
 	[SerializeField] private GameObject loadingIcon;
+    [SerializeField] private GameObject endScreen;
 	[Header("ItemObtainedPopWindow")]
 	[SerializeField] private GameObject itemWindow;
 	[SerializeField] private Image imageWindow;
@@ -312,6 +313,7 @@ public class UiManager : MonoBehaviour {
         DialogueTrigger.triggered += DialogueManagement;
         DialogueTrigger.close += CloseDialogue;
 
+        EndGameTrigger.end += EndScreen;
         #endregion
         
         missionCleared += ObjectiveClear;
@@ -595,6 +597,11 @@ public class UiManager : MonoBehaviour {
     }
     private void Dashu() {
 
+    }
+    #endregion
+    #region
+    private void EndScreen() {
+        endScreen.SetActive(true);
     }
     #endregion
     private void AccessHowTos(int s) {

@@ -47,8 +47,8 @@ public class GameController : MonoBehaviour {
         }
         instance = this;
         SpawnSetters.setSpawner += SetSpawner;
-        
-        
+        Player.onPlayerDeath += OnPlayerDead;
+        EndGameTrigger.end += OnPlayerWin;
         pc = Player.GetPlayer();
         
     }
@@ -127,7 +127,17 @@ public class GameController : MonoBehaviour {
 
 
     }
-
+    private void OnPlayerDead() {
+        StartCoroutine(EndGame());
+    }
+    private void OnPlayerWin() {
+        StartCoroutine(EndGame());
+    }
+    private IEnumerator EndGame() {
+        YieldInstruction wait = new WaitForSeconds(2f);
+        yield return wait;
+        OnQuit();
+    }
     private IEnumerator LoadCoroutine() {
 
         yield return null;

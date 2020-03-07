@@ -109,11 +109,11 @@ public class HitBox : MonoBehaviour
             }   
         }
 
-        /*if (other.gameObject.CompareTag("SlimeTree"))
+        if (other.gameObject.CompareTag("SlimeTree"))
         {
-            Instantiate(fire, other.gameObject.transform);
-            Destroy(other.gameObject, 4);
-        }*/
+            Instantiate(fire, other.gameObject.transform.position,Quaternion.identity);
+            Destroy(other.gameObject, 2);
+        }
         if (other.gameObject.CompareTag("Dummy"))
         {
 

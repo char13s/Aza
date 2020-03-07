@@ -460,12 +460,12 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         //Instantiate(ouch, transform.position,Quaternion.identity);
         //Destroy(ouch, 0.5f);
 		Instantiate(cut,transform);
-        
+        StopCoroutine(attackCoroutine);
     }
     
     private IEnumerator HitCoroutine()
     {
-        YieldInstruction wait = new WaitForSeconds(2);
+        YieldInstruction wait = new WaitForSeconds(3.5f);
         yield return wait;
         Hit = false;
         State = EnemyAiStates.Idle;
@@ -591,7 +591,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         }
         OnHit();}
     }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
-    public void CalculateAttack() { pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack - (int)(stats.Defense * 1.6f)); }
+    public void CalculateAttack() { pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack - (pc.stats.Defense)); }
     public void SlimeHasDied()
     {
         int exp = baseHealth * baseExpYield;

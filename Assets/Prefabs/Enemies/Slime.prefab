@@ -345,8 +345,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.5809097, y: 0.44409227, z: 0.5929947}
-  m_Center: {x: -0.024158478, y: 0.27795386, z: 0.0102005005}
+  m_Size: {x: 0.78822845, y: 0.44409227, z: 0.86263573}
+  m_Center: {x: -0.015359014, y: 0.27795386, z: 0.0145325065}
 --- !u!114 &2313167133622813292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,7 +361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats:
     baseHealth: 20
-    baseAttack: 4
+    baseAttack: 2
     baseDefense: 2
     baseMp: 0
   canvas: {fileID: 2313167134663449198}
@@ -1042,6 +1042,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FireShrail
+      objectReference: {fileID: 0}
+    - target: {fileID: 3296163395186565205, guid: 7018d58fa6508e840913f1d3f80809c3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3296163395186565909, guid: 7018d58fa6508e840913f1d3f80809c3,
         type: 3}
