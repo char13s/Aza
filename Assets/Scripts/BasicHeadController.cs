@@ -41,6 +41,7 @@ public class BasicHeadController : MonoBehaviour
     [SerializeField] private Transform root;
     [SerializeField] private Transform head;
     [SerializeField] private Transform headTarget;
+    [SerializeField] private GameObject target;
     //[Tooltip("The axis of the head bone that will face towards the head target.")]
     //[SerializeField] private Vector3 headForward = new Vector3(0, 0, 1);
     [SerializeField] private Vector3 localOffsetEulerAngles = new Vector3(0, 0, 0);
@@ -87,7 +88,7 @@ public class BasicHeadController : MonoBehaviour
     }
     private void Start()
     {
-        headTarget = ThreeDCamera.Retical.transform;
+        headTarget = target.transform;
     }
     public void OnEnable()
     {

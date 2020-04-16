@@ -2,18 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class GroundChecker : MonoBehaviour
-{
+public class GroundChecker : MonoBehaviour {
     private Player pc;
     private bool ground;
+    private AudioClip landing;
     public static event UnityAction<bool> groundStatus;
+    public static event UnityAction<AudioClip> landed;
     // Start is called before the first frame update
-    private void Start()
-    {
+    private void Awake() {
         
+       
+    }
+    private void Start()
+    {landing = AudioManager.GetAudio().LandingSound;
+
+        StartCoroutine(Wait());
+        
+    }
+    private IEnumerator Wait() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
         pc = Player.GetPlayer();
     }
-
     // Update is called once per frame
     private void Update()
     {
@@ -41,6 +51,9 @@ public class GroundChecker : MonoBehaviour
         {
 
             ground = true;
+            if (landed!=null) {
+                landed(landing);
+            }
         }
         
 

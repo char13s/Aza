@@ -44,6 +44,7 @@ public class Enemy : MonoBehaviour
     private PlayerBattleSceneMovement pb;
     private Animator anim;
     private AudioSource sound;
+    private Rigidbody rbody;
     #endregion
 
     #region Coroutines
@@ -57,6 +58,7 @@ public class Enemy : MonoBehaviour
     
 
     private Vector3 startLocation;
+    [SerializeField] private GameObject farHitPoint;
     [SerializeField] private GameObject slimeTree;
     [SerializeField] private GameObject slime;
 
@@ -70,7 +72,8 @@ public class Enemy : MonoBehaviour
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
-    
+
+    private bool striking;
     [SerializeField] private int flip;
     private static List<Enemy> enemies = new List<Enemy>(32);
     private int behavior;
@@ -78,19 +81,20 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]private bool boss;
 	private bool frozen;
+    private bool yeet;
 
-	public static event UnityAction<Enemy> onAnyDefeated;
+    public static event UnityAction<Enemy> onAnyDefeated;
     public static event UnityAction onAnyEnemyDead;
 	public static event UnityAction onHit;
-
+    public static event UnityAction guardBreak;
     #region Getters and Setters
 public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
-    public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !Dead) { Dead = true; } } }
+    public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !dead) { Dead = true; } } }
 
     public bool Attack { get => attack; set { attack = value; Anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; Anim.SetBool("Walking", walk); } }
 
-    public bool Hit { get => hit; set { hit = value; if (Hit) { recoveryCoroutine = StartCoroutine(RecoveryCoroutine()); GetComponent<Rigidbody>().isKinematic = false; hitCoroutine = StartCoroutine(HitCoroutine()); } Anim.SetBool("Hurt", hit); if (onHit != null) {
+    public bool Hit { get => hit; set { hit = value; if (hit) { OnHit(); } Anim.SetBool("Hurt", hit); if (onHit != null) {
 				onHit();
 			}
 		} }
@@ -153,11 +157,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         Anim = GetComponent<Animator>();
         nav = GetComponent<NavMeshAgent>();
         sound = GetComponent<AudioSource>();
+        rbody = GetComponent<Rigidbody>();
         StatusEffects.onStatusUpdate += StatusControl;
         StatCalculation();
         state = EnemyAiStates.Null;
 		ZaWarudo.timeFreeze += FreezeEnemy;
         UiManager.nullEnemies += FreezeEnemy;
+        ShieldHitBox.punch += Punch;
         //UiManager.portal += EnemiesNeedToRespawn;
     }
     // Start is called before the first frame update
@@ -174,10 +180,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
         onAnyDefeated += EnemyDeath;
+        ReactionRange.dodged += SlowEnemy;
+        //EnemyHitBox.hit += CalculateAttack;
+        //EnemyHitBox.guardHit += HitGuard;
         Enemies.Add(this);
         pb = pc.GetComponent<PlayerBattleSceneMovement>();
         //InvokeRepeating("Attacking", 2f, 2f);
-        level += Player.GetPlayer().stats.Level;
+       // level += Player.GetPlayer().stats.Level;
         //Health = level * baseHealth;
         startLocation = transform.position;
         HealthLeft = stats.Health;
@@ -224,8 +233,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private void StatCalculation()
     {
-        Health = stats.BaseHealth * level;
-        stats.Attack = stats.BaseAttack * (level / 2);
+        Health = stats.BaseHealth;
+        stats.Attack = stats.BaseAttack;
         stats.Defense = stats.BaseDefense * level;
     }
     private IEnumerator StatusCoroutine(float StatusLength)
@@ -307,7 +316,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             if (Distance > 6 && !dead) {
                 State = EnemyAiStates.ReturnToSpawn;
             }
-            if (Hit) { State = EnemyAiStates.Hit;Debug.Log("Enemy was hit!!"); }
+            if (Hit) { State = EnemyAiStates.Hit;
+            }
             if (Dead) { State = EnemyAiStates.Dead; }
         }
 
@@ -340,6 +350,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
 
         Attack = true;
+        striking = true;
         attackCoroutine = StartCoroutine(AttackCoroutine());
         //hitBox.SetActive(true);
     }
@@ -424,7 +435,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Walk = true;
         //transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 1 * Time.deltaTime);
-        if (Player.GetPlayer().Nav.enabled) {
+        if (pc.Nav.enabled) {
             //nav.SetDestination(Player.GetPlayer().transform.position);
             
         }
@@ -432,7 +443,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
         //transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
-        transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 4 * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, pc.transform.position, 4 * Time.deltaTime);
         
     }
     private void UIMaintence()
@@ -442,25 +453,23 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         EnemyHp.maxValue = stats.Health;
         EnemyHp.value = stats.HealthLeft;
     }
+    //private void WasShieldSlapped() {
+    //    hit
+    //
+    //}
     private void OnHit()
     {
         sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
-        //GameObject d = new GameObject();
-        //d.transform.SetParent(canvas.transform);
-        //d.transform.localPosition = new Vector3(0.4F, 0, 0);
-        //d.transform.rotation = new Quaternion(0, 0, 0, 0);
-        //d.AddComponent<Text>();
-        //d.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
-        //d.GetComponent<Text>().resizeTextForBestFit = true;
-        //d.GetComponent<Text>().color = Color.red;
-        //d.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-        //d.GetComponent<Text>().text = Mathf.Abs(level - (2 * pc.stats.Attack)).ToString()
-        //ouch.AddComponent<HitText>();
-        //ouch.GetComponent<HitText>().Text = "- " + Mathf.Max(1, (pc.stats.Attack + (int)addition) - stats.Defense).ToSting(); ;
-        //Instantiate(ouch, transform.position,Quaternion.identity);
-        //Destroy(ouch, 0.5f);
-		Instantiate(cut,transform);
-        StopCoroutine(attackCoroutine);
+
+        //rbody.isKinematic = tr;
+        //nav.enabled = false;
+        if (state != EnemyAiStates.Null) {
+            hitCoroutine = StartCoroutine(HitCoroutine());
+
+        }
+        
+        Instantiate(cut,transform);
+        //StopCoroutine(attackCoroutine);
     }
     
     private IEnumerator HitCoroutine()
@@ -469,6 +478,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         yield return wait;
         Hit = false;
         State = EnemyAiStates.Idle;
+        recoveryCoroutine = StartCoroutine(RecoveryCoroutine());
 
     }
     private IEnumerator RecoveryCoroutine()
@@ -479,7 +489,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             yield return wait;
             if (Grounded)
             {
-                GetComponent<Rigidbody>().isKinematic = true;
+                rbody.isKinematic = true;
                 nav.enabled = true;
             }
         }
@@ -492,6 +502,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         yield return wait;
         transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
         Attack = false;
+        striking = false;
         //hitBox.SetActive(false);
 
     }
@@ -500,7 +511,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 
         while (isActiveAndEnabled)
         {
-            YieldInstruction wait = new WaitForSeconds(attackDelay);
+            YieldInstruction wait = new WaitForSeconds(AttackDelay);
             yield return wait;
             if (attacking)
             {
@@ -536,9 +547,12 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);
 
-    
+    public GameObject FarHitPoint { get => farHitPoint; set => farHitPoint = value; }
+    public bool Yeet { get => yeet; set { StartCoroutine(ResetYeet()); yeet = value; } }
 
-	private void OnTriggerStay(Collider other)
+    public int AttackDelay { get => attackDelay; set => attackDelay = value; }
+
+    private void OnTriggerStay(Collider other)
     {
         if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack"))
         {
@@ -547,16 +561,51 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (!Boss) { 
+        if (!boss) { 
         if (other.gameObject.CompareTag("Attack")) {
-            GetComponent<NavMeshAgent>().enabled = false;
+            nav.enabled = false;
 
         }}
     }
     public void KnockBack(Vector3 hitForce) {
         if (!boss) { 
-        GetComponent<Rigidbody>().AddForce(hitForce, ForceMode.VelocityChange);}
-
+        rbody.AddForce(hitForce,ForceMode.VelocityChange);}
+        Debug.Log("push");
+    }
+    private void Punch(Enemy enemy) {
+        if (this == enemy) {
+            Hit = true;
+            Debug.Log("Works");
+            StartCoroutine(Punched());
+            StartCoroutine(StopKnockBack());
+            Yeet = false;
+        }
+        
+        
+    }
+    private IEnumerator Punched() {
+        while (isActiveAndEnabled&&!yeet) {
+            Debug.Log("yeet");
+        yield return null;
+       transform.position=Vector3.MoveTowards(transform.position, farHitPoint.transform.position, 50*Time.deltaTime);
+        }
+        //rbody.AddForce(Vector3.forward * -50, ForceMode.Impulse);
+    }
+    private IEnumerator StopKnockBack() {
+        YieldInstruction wait = new WaitForSeconds(0.09f);
+        yield return wait;
+        Yeet = true;
+        StopCoroutine(Punched());
+        Debug.Log("stopped");
+    }
+    private IEnumerator ResetYeet() {
+        yield return null;
+        Yeet = false;
+    }
+    private void SlowEnemy() {
+        if (striking) {
+            FreezeEnemy();
+        }
     }
     public void OnDefeat()
     {
@@ -566,9 +615,9 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         Instantiate(deathEffect, transform);
         //deathEffect.transform.position = transform.position;
         Destroy(gameObject, 2.5f);
-        switch (Player.GetPlayer().Weapon) {
+        switch (pc.Weapon) {
             case 0:
-                Player.GetPlayer().stats.SwordProficency += 5;
+                pc.stats.SwordProficency += 5;
                 break;
             case 1:
                 break;
@@ -577,10 +626,12 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     public void CalculateDamage(float addition)
     {
-        if (!dead) { 
-        HealthLeft -= Mathf.Max(1, (pc.stats.Attack+(int)addition) - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
-            ouch.GetComponent<HitText>().Text = "- " + Mathf.Max(1, (pc.stats.Attack + (int)addition) - stats.Defense).ToString(); ;
-            Instantiate(ouch, transform.position+new Vector3(0.4f,0.4f,0), Quaternion.identity);
+        if (!dead) {
+            HealthLeft--;
+            Debug.Log("Slime: Ouch!");
+            //Mathf.Max(1, (pc.stats.Attack+(int)addition) - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
+            //ouch.GetComponent<HitText>().Text = "- " + Mathf.Max(1, (pc.stats.Attack + (int)addition) - stats.Defense).ToString(); ;
+            //Instantiate(ouch, transform.position+new Vector3(0.4f,0.4f,0), Quaternion.identity);
             
             Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
@@ -591,7 +642,22 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         }
         OnHit();}
     }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
-    public void CalculateAttack() { pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack - (pc.stats.Defense)); }
+    public void CalculateAttack() {
+        pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
+        
+    }
+    public void HitGuard() {
+        if (pc.stats.MPLeft > 0) {
+            pc.stats.MPLeft -= Mathf.Max(1, stats.Attack );
+
+        }
+        else {
+            
+            if (guardBreak != null) {
+                guardBreak();
+            }
+        } 
+    }
     public void SlimeHasDied()
     {
         int exp = baseHealth * baseExpYield;

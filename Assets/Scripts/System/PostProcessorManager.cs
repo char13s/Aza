@@ -35,6 +35,7 @@ using UnityEngine.Rendering.PostProcessing;
         VirtualCameraManager.grey += TimeSlow;
         VirtualCameraManager.ungrey += Default;
 		Player.zaWarudo += ZaWarudo;
+        //Player.timeHasBegunToMove += Default;
     }
     // Start is called before the first frame update
     void Start()
@@ -56,7 +57,7 @@ using UnityEngine.Rendering.PostProcessing;
 		YieldInstruction wait = new WaitForSeconds(4);
 		yield return wait;
 		timeStop = false;
-		
+        Default();
 	}
     public void Default() {
 		if (!timeStop) { 

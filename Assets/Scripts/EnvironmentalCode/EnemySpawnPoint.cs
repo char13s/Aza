@@ -34,13 +34,13 @@ public class EnemySpawnPoint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canSpawn) { 
+         
             if (Vector3.Distance(transform.position, Player.GetPlayer().transform.position) < 5&&!spawned)
             {
                 SpawnEnemy();
 
             }
-        }
+        
         
        
 

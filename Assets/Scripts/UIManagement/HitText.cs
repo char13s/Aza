@@ -11,7 +11,7 @@ public class HitText : MonoBehaviour {
     }
     private void Awake() {
         //counter = GetComponentInChildren<Text>();
-        Debug.Log("bruh woke");
+
         
     }
 

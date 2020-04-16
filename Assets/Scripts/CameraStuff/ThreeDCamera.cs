@@ -13,8 +13,8 @@ public class ThreeDCamera : CameraLogic
     //[SerializeField] private GameObject reticalObject;
     [SerializeField] private GameObject bodyTarget;
     private Vector3 currentEulerAngles;
-    private readonly float maxXRotation=40;
-    private float minXRotation = 10;
+    [SerializeField]private float maxXRotation;
+    [SerializeField]private float minXRotation;
     private float distanceFromZend=5;
 	private Vector3 target;
     private Vector3 offset;
@@ -34,7 +34,7 @@ public class ThreeDCamera : CameraLogic
     {
         Player.aiming += Aiming;
         Player.notAiming += NotAiming;
-        Player.lockOn += LockedOn;
+        //Player.lockOn += LockedOn;
         Player.kintoun += Kintoun;
         instance = this;
         xZOrientation = new GameObject("xZOrienatation").transform;
@@ -78,8 +78,8 @@ public class ThreeDCamera : CameraLogic
     }
 	private IEnumerator WaitABitCoroutine() {
 
-
-		yield return null;
+        YieldInstruction wait = new WaitForSeconds(1);
+		yield return wait;
         target = Body.transform.position;
 
 	}
@@ -100,7 +100,7 @@ public class ThreeDCamera : CameraLogic
         offset = new Vector3(0, 0, 0);
         //transform.position -= new Vector3(0, 1, 0);
         //currentEulerAngles.x = 10;
-        minXRotation = 10;
+        //minXRotation = 10;
         //aiming = false;
     }
     private void LockedOn() {
@@ -123,13 +123,29 @@ public class ThreeDCamera : CameraLogic
         
         float x = Input.GetAxis("RightStickX");
         float y = Input.GetAxis("RightStickY");
-        
-        //distanceFromZend += Input.mouseScrollDelta.y*Time.deltaTime;
 
+        //distanceFromZend += Input.mouseScrollDelta.y*Time.deltaTime;
         ApplyRotationOffset(x,y,ref currentEulerAngles);
-		
+        
 			RotateCamera(x, y, Body.transform.position);
+
+        
         //in case this breaks put bodyTarget.transform.position
+        //if (Input.GetButton("R1")) {
+        //    //currentEulerAngles = transform.eulerAngles;
+        //    //currentEulerAngles.y = Player.GetPlayer().transform.localRotation.y;
+        //    //currentEulerAngles.z = Player.GetPlayer().transform.localRotation.z;
+        //    //transform.eulerAngles = currentEulerAngles;
+        //    //transform
+        //    Vector3 targetdirection = Player.GetPlayer().transform.forward;
+        //    targetdirection.x = currentEulerAngles.x;
+        //
+        //    transform.rotation = Quaternion.LookRotation(targetdirection, Vector3.up);
+        //    xZOrientation.eulerAngles = new Vector3(0, targetdirection.y, 0);
+        //    //transform.eulerAngles =v3;
+        //}
+        
+
         
     }
 

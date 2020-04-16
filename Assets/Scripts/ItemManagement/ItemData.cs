@@ -11,17 +11,13 @@ public class ItemData
     [SerializeField] private string itemName;
     [SerializeField] private int id;
     private int quantity;
-    
-    
-   
-    
-
     //[SerializeField] private Sprite sprite;
     [SerializeField] private string itemDescription;
 
     public static UnityAction useMenuUp;
     //private GameObject useMenu;
     public static UnityAction ItemDataUpdate;
+    public static event UnityAction mask;
     public int ID { get => id; set => id = value; }
     public int Quantity { get => quantity; set { quantity = Mathf.Clamp(value, 0, 999); if (ItemDataUpdate != null) { ItemDataUpdate(); } } }
     
@@ -38,7 +34,7 @@ public class ItemData
     {
         
         GameController.onGameWasStarted += NullQuantity;
-        Debug.Log("started!");
+        
     }
     //public GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public void Start()
@@ -47,7 +43,7 @@ public class ItemData
         
         
     }
-    private void NullQuantity() { Debug.Log("Quantity nulled"); quantity = 0; }
+    private void NullQuantity() {  quantity = 0; }
     public void UseItem()
     {
         switch (id)
@@ -87,9 +83,14 @@ public class ItemData
             case 12://Heal burn
                 BurnHeal();
                 break;
+            case 113:
+                if (mask != null) {
+                    mask();
+                }
+                break;
         }
         Quantity--;
-        UiManager.UseMenu.SetActive(false);
+        //UiManager.UseMenu.SetActive(false);
 
     }
 

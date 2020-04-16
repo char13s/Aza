@@ -20,7 +20,7 @@ public class KillZone : MonoBehaviour
             if (respawn != null) {
                 respawn();
             }
-            Debug.Log("okay..");
+
         }
     }
 }

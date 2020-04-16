@@ -4,52 +4,143 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class Inventory
-{
+public class Inventory {
     [SerializeField]
     private List<ItemData> items = new List<ItemData>();
-    private int page = 0;
-
+    private List<SpellTag> relics = new List<SpellTag>();
+    private int itemIndex = 0;
+    private ItemData mainItem;
+    private int selectedList;
+    private ItemData leftItem;
+    private ItemData rightItem;
+    private bool control;
     [SerializeField] private Button useButton;
     //private List<string> itemNames = new List<string>();
     private List<GameObject> buttons = new List<GameObject>();
-    
+    public static event UnityAction<Sprite,string,string> mainItemSet;
+    public static event UnityAction<Sprite> leftItemSet;
+    public static event UnityAction<Sprite> rightItemSet;
+    public static event UnityAction<int> menuSet;
     public List<GameObject> Buttons { get => buttons; set => buttons = value; }
     public List<ItemData> Items { get => items; set => items = value; }
+    public ItemData MainItem { get => mainItem; set { mainItem = value; MainItemManagement(); } }
+
+    public ItemData LeftItem { get => leftItem; set { leftItem = value; } }
+    public ItemData RightItem { get => rightItem; set { rightItem = value; } }
+    public int ItemIndex { get => itemIndex; set { itemIndex = Mathf.Clamp(value, 0, Items.Count) ; } }
+
+    public int SelectedList { get => selectedList; set { selectedList = value; } }
 
 
     // Start is called before the first frame update
-    public void Start()
-    {
+    public void Start() {
         ItemData.ItemDataUpdate += UpdateInvent;
         GameController.onGameWasStarted += UpdateInvent;
+        Player.dpadRight += RightSlide;
+        Player.dpadLeft += LeftSlide;
+        Player.dpadUp += SwitchSelected;
+        Player.dpadDown += SwitchSelected;
+        Player.skills += SwitchDpadControl;
+        Debug.Log(Items.Count);
     }
-    public void AddItem(ItemData item)
-    {
 
-        if (HasItem(item.ID))
-        {
+    #region Quick Item Menu
+    private void SwitchDpadControl(bool val) {
+        control = val;
+    }
+    private void RightSlide() {
+        if (control) {
+            ItemIndex++;
+            if (itemIndex == Items.Count) {
+                ItemIndex = 0;
+            }
+            MainItemSwitching();
+        }
+    }
+    private void LeftSlide() {
+        if (control) {
+            if (itemIndex == 0) {
+                ItemIndex = Items.Count;
+            }
+
+            ItemIndex--;
+
+            MainItemSwitching();
+        }
+    }
+    private void MainItemSwitching() {
+        if (items.Count != 0) {
+            MainItem = items[ItemIndex];
+        }
+    }
+    private void SwitchSelected() {
+        switch (SelectedList) {
+            case 0:
+                SelectedList = 1;
+                if (menuSet != null) {
+                    menuSet(SelectedList);
+                }
+                break;
+            case 1:
+                SelectedList = 0;
+                if (menuSet != null) {
+                    menuSet(SelectedList);
+                }
+                break;
+        }
+
+    }
+    private void MenuSwitch() {
+
+    }
+
+    #endregion
+
+    public void AddItem(ItemData item) {
+
+        if (HasItem(item.ID)) {
             ItemData i = GetItem(item);
 
             i.Quantity++;
+            //Debug.Log(i.Quantity);
+            
+                MainItemManagement();
+            
             //inventory.Add(item);
         }
-        else
-        {
-			//UiManager.itemAdded(item.ItemDescription, SpriteAssign.SetImage(item));
+        else {
+            //UiManager.itemAdded(item.ItemDescription, SpriteAssign.SetImage(item));
             Items.Add(item);
             item.Quantity = 0;
             item.Quantity++;
-            ButtonCreation(item);
+            //ButtonCreation(item);
+
+        }
+        //if (items.Count == 1) {
+        //    MainItem = item;
+        //}
+        Debug.Log(Items.Count);
+        MainItem=items[ItemIndex];
+        MainItemManagement();
+    }
+    public void AddRelic(SpellTag relic) {
+        relics.Add(relic);
+    }
+    #region Item management
+    private void MainItemManagement() {
+        if (mainItem != null) {
+
+            if (mainItemSet != null) {
+                mainItemSet(SetImage(mainItem), mainItem.ItemName, mainItem.Quantity.ToString());
+            }
+        }
+        else {
 
         }
     }
-    public ItemData GetItem(ItemData item)
-    {
-        foreach (ItemData i in Items)
-        {
-            if (i.ID == item.ID)
-            {
+    public ItemData GetItem(ItemData item) {
+        foreach (ItemData i in Items) {
+            if (i.ID == item.ID) {
 
                 return i;
             }
@@ -57,44 +148,51 @@ public class Inventory
 
         return null;
     }
-    public void UseItem(Items item)
-    {
-
-        item.data.Quantity--;//change this mess
-        if (item.data.Quantity == 0)
-        {
-            Items.Remove(item.data);
+    public void UseItem() {
+        if (mainItem != null) {
+            mainItem.UseItem();
+            mainItem.Quantity--;//change this mess
+            MainItemManagement();
+            if (mainItem.Quantity == 0) {
+                Items.Remove(mainItem);
+                if (leftItem != null) {
+                    mainItem = leftItem;
+                }
+                else {
+                    mainItem = null;
+                }
+            }
         }
-
     }
+    #endregion
 
-    public void SellItem(Items item, int n)
-    {
+    //private void UseRelic() {
+    //    relics.
+    //}
+    public void SellItem(Items item, int n) {
         item.data.Quantity -= n;
-        if (item.data.Quantity == 0)
-        {
+        if (item.data.Quantity == 0) {
             Items.Remove(item.data);
         }
     }
-    public bool HasItem(int ID)
-    {
-        foreach (ItemData i in Items)
-        {
-            if (i.ID == ID)
-            {
+    public bool HasItem(int ID) {
+        foreach (ItemData i in Items) {
+            if (i.ID == ID) {
                 return true;
             }
         }
         return false;
     }
-    public void ButtonCreation(ItemData i)
-    {
+    private Sprite SetImage(ItemData i) {
+        return SpriteAssign.SetImage(i);
+    }
+    public void ButtonCreation(ItemData i) {
         GameObject c = new GameObject();
         c.name = "Item";
         c.AddComponent<Text>();
         c.AddComponent<Items>();
         c.GetComponent<Items>().data = i;
-        c.GetComponent<Text>().text= i.ItemName;
+        c.GetComponent<Text>().text = i.ItemName;
         c.AddComponent<Button>();
         c.GetComponent<Text>().color = Color.black;
         c.GetComponent<Text>().font = UiManager.GetUiManager().LuckiestGuy;
@@ -115,43 +213,33 @@ public class Inventory
     }
 
     private Transform SetToInvent(ItemData i) {
-        switch (i.Type)
-        {
+        switch (i.Type) {
             case ItemData.ItemType.Normal:
                 return UiManager.GetUiManager().ItemInvent.transform;
-                
             default:
                 break;
         }
         return null;
-
     }
-    private void GetQuantity(Text t, ItemData i)
-    {
+    private void GetQuantity(Text t, ItemData i) {
         t.text = i.Quantity.ToString();
-        if (i.Quantity == 0)
-        {
+        if (i.Quantity == 0) {
             items.Remove(i);
         }
-
     }
-    private void UpdateInvent()
-    {
-        if (buttons.Count != 0)
-        {
-            foreach (GameObject b in Buttons)
-            {
-                GetQuantity(b.transform.GetChild(0).GetComponent<Text>(), b.GetComponent<Items>().data);
-
-
-                if (b.GetComponent<Items>().data.Quantity == 0)
-                {
-                    Debug.Log("Item was removed");
-                    b.SetActive(false);
-                }
-            }
-        }
+    private void UpdateInvent() {
+        //if (buttons.Count != 0) {
+        //    foreach (GameObject b in Buttons) {
+        //        GetQuantity(b.transform.GetChild(0).GetComponent<Text>(), b.GetComponent<Items>().data);
+        //
+        //
+        //        if (b.GetComponent<Items>().data.Quantity == 0) {
+        //            Debug.Log("Item was removed");
+        //            b.SetActive(false);
+        //        }
+        //    }
+        //}
     }
-    
+
 }
 

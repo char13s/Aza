@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Arrow : MonoBehaviour
-{
+public class Arrow : MonoBehaviour {
     private enum ArrowType { Basic, Stun };
     [SerializeField] private ArrowType type;
     [SerializeField] private float power;
     [SerializeField] private float speed;
+    [SerializeField] private GameObject fire;
     private Vector3 direction;
+    private Player pc;
     [SerializeField] private GameObject boom;
     // Start is called before the first frame update
+    
     void Start()
     {
-        direction = Player.GetPlayer().AimmingPoint.transform.forward;
-        transform.rotation = Player.GetPlayer().AimmingPoint.transform.rotation;
+        pc = Player.GetPlayer();
+        direction = pc.ArrowPoint.transform.forward;
+        transform.rotation = pc.ArrowPoint.transform.rotation;
         LayerMask.GetMask("Ground");
         Destroy(gameObject,5);
     }
@@ -23,8 +26,8 @@ public class Arrow : MonoBehaviour
     void Update()
     {
         if (Player.GetPlayer().LockedOn) {
-            transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().BattleMode.EnemyTarget.transform.position, 30 * Time.deltaTime);
-            transform.rotation = Quaternion.LookRotation(transform.position - Player.GetPlayer().BattleMode.EnemyTarget.transform.position);
+            transform.position = Vector3.MoveTowards(transform.position, pc.BattleMode.EnemyTarget.transform.position, 30 * Time.deltaTime);
+            transform.rotation = Quaternion.LookRotation(transform.position - pc.BattleMode.EnemyTarget.transform.position);
         }
         else {
             transform.position += direction * speed * Time.deltaTime;
@@ -57,8 +60,9 @@ public class Arrow : MonoBehaviour
         {
             GetComponent<Rigidbody>().useGravity = false;
             
-            Debug.Log(other.name);
+            
             Instantiate(boom, transform.position, transform.rotation);
+            Instantiate(fire, transform.position, transform.rotation);
             Destroy(gameObject);
         }
     }

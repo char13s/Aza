@@ -46,11 +46,10 @@ public class Mage : Enemy
     public override void Idle()
     {
         base.Idle();
-        Debug.Log("Idle bitch");
     }
     private IEnumerator WaitCoroutine()
     {
-        YieldInstruction wait = new WaitForSeconds(1);
+        YieldInstruction wait = new WaitForSeconds(AttackDelay);
         yield return wait;
         Animations = 1;
     }
@@ -58,7 +57,7 @@ public class Mage : Enemy
     {
         YieldInstruction wait = new WaitForSeconds(15);
         yield return wait;
-        Animations = 7;
+        Animations = 1;
     }
     private void ConditionalActions()
     {
@@ -69,11 +68,7 @@ public class Mage : Enemy
 
 
         }
-        if (ssp.SpawnedEnemies.Count < 5 && State == EnemyAiStates.Idle)
-        {
 
-            Animations = 2;
-        }
         if (State == EnemyAiStates.Chasing)
         {
             Chasing();

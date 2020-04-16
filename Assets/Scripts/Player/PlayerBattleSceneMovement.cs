@@ -9,19 +9,25 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private int t;//targeted enemy in the array of enemies
     private Enemy enemyTarget;
     public static event UnityAction onLockOn;
-    public List<Enemy> Enemies { get => enemies; set => enemies = value; }
-    public int T { get => t; set { t = value;  Mathf.Clamp(t, 0, Enemies.Count); } }
-    public Enemy EnemyTarget { get => enemyTarget; set { enemyTarget = value; Debug.Log("oof"); } }
-    public float RotateSpeed { get => rotateSpeed; set { rotateSpeed = value;Mathf.Clamp(value,5,8); } }
-
-    private AxisButton dPadLeft = new AxisButton("DPad Left");
-    private AxisButton dPadRight = new AxisButton("DPad Right");
+    private Enemy closestEnemy;
+    private bool slide;
     private bool pressed;
     private bool locked;
     private float rotateSpeed;
+    private GameObject aimPoint;
+    private GameObject leftPoint;
 
+    private AxisButton dPadLeft = new AxisButton("DPad Left");
+    private AxisButton dPadRight = new AxisButton("DPad Right");
     private AxisButton L2 = new AxisButton("L2");
-    private bool slide;
+    private bool rotLock;
+
+    public List<Enemy> Enemies { get => enemies; set => enemies = value; }
+    public int T { get => t; set { t = value; Mathf.Clamp(t, 0, Enemies.Count); } }
+    public Enemy EnemyTarget { get => enemyTarget; set { enemyTarget = value; } }
+    public float RotateSpeed { get => rotateSpeed; set { rotateSpeed = value; Mathf.Clamp(value, 5, 8); } }
+
+    public Enemy ClosestEnemy { get => closestEnemy; set => closestEnemy = value; }
 
     private void Awake() {
         Player.attackModeUp += LockOnFuctionality;
@@ -29,16 +35,23 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         Player.onPlayerDeath += RemoveAllEnemies;
         AIKryll.teleport += TeleportAttacking;
         GameController.onGameWasStarted += RemoveAllEnemies;
+        GameController.returnToLevelSelect += RemoveAllEnemies;
         Player.findClosestEnemy += GetClosestEnemy;
         Player.playerIsLockedOn += Locked;
         Player.unlocked += Unlocked;
+        CommandInputBehavior.stopMove += SetLock;
+        CommandInputBehavior.resetMove += ResetLock;
+        Dodge.stopMove += SetLock;
+        Dodge.resetMove += ResetLock;
+        //Dash.dashu += RemoveAllEnemies;
         T = 0;
 
     }
     private void Start() {
 
         pc = Player.GetPlayer();
-
+        aimPoint = pc.AimmingPoint;
+        leftPoint = Player.GetPlayer().LeftPoint;
     }
     private void RemoveTheDead(Enemy enemy) {
         Enemies.Remove(enemy);
@@ -51,37 +64,54 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         Vector3 position = transform.position;
         for (int i = 0; i < Enemy.TotalCount; i++) {
             Enemy current = Enemy.GetEnemy(i);
-            bool shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 324;
+            bool shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 361;
             int index = enemies.IndexOf(current);
             if (shouldBeInList != index >= 0) {
                 if (shouldBeInList) {
                     enemies.Add(current);
+                    if (enemies.Count > 1) {
+                        GetClosestEnemy();
+
+                    }
+
                 }
                 else { enemies.RemoveAt(index); }
             }
         }
-        if (Enemies.Count > 0 && pc.LockedOn) {
-            SwitchLockOn();
+        if (pc.LockedOn) {
+
             GetInput();
+            if (enemies.Count == 0) {
+                BasicMovement();
+            }
+
         }
     }
     private void LockOnFuctionality() {
-        
+
 
 
     }
 
-    private void Locked() { locked = true; Debug.Log("lokced on to T"); }
+    private void Locked() { locked = true; }
     private void Unlocked() { locked = false; }
     private void GetInput() {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
-        float mH = Input.GetAxisRaw("MouseX");
-        float jH = Input.GetAxisRaw("Camera");
+
         if (Enemies.Count > 0) {
-            LockOn(x, y, mH, jH, Enemies[T]);
+            LockOn(x, y, Enemies[T]);
         }
-        //MovementInputs(x,y);
+        //
+        if (L2.GetButton()) {
+            GetCombatMovement(x, y);
+
+        }
+        else {
+            MovementInputs(x, y);
+
+        }
+
     }
 
     private void LockOff() {
@@ -97,24 +127,112 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     }
     private void EnemyLockedTo() {
         EnemyTarget = enemies[T]; //Enemy.GetEnemy(enemies.IndexOf(enemies[T])); stupid code -_-
-        Player.GetPlayer().BattleCamTarget.transform.position = EnemyTarget.transform.position;
-        Debug.Log(T);
+        pc.BattleCamTarget.transform.position = EnemyTarget.transform.position;
+
     }
     private void GetClosestEnemy() {
-        float enDist = EnDist(enemies[T]);
-        foreach (Enemy en in Enemies) {
+        if (T<enemies.Count) {
+            float enDist = EnDist(enemies[T].gameObject);
 
-            if (EnDist(en) < enDist) {
-                T = Enemies.IndexOf(en);
+            foreach (Enemy en in Enemies) {
+                ClosestEnemy = en;
+                if (EnDist(en.gameObject) < enDist) {
+                    T = Enemies.IndexOf(en);
+                }
             }
         }
     }
-    private float EnDist(Enemy target) => Vector3.Distance(target.transform.position, pc.transform.position);
-    private void LockOn(float x, float y, float mH, float jH, Enemy target) {
+    private void GetCombatMovement(float x, float y) {
+
+
+        if (x == 0 && y == 0) {
+            //Player.GetPlayer().CombatAnimations = 0;
+        }
+        if (x == 0) {
+            Debug.Log("Combat Jump");
+            if (y <= -0.3f) {
+                Debug.Log("Combat BackJump");
+                pc.CombatAnimations = 1;
+
+            }
+            if (y >= 0.3f) {
+                Debug.Log("Combat BackJump");
+                pc.CombatAnimations = 5;
+
+            }
+        }
+        if (y == 0) {
+            if (x <= -0.5f) {
+                pc.CombatAnimations = 2;
+            }
+            if (x >= 0.5f) {
+                pc.CombatAnimations = 3;
+            }
+        }
+
+
+    }
+    private float EnDist(GameObject target) => Vector3.Distance(target.transform.position, pc.transform.position);
+    private void SetLock() {
+        rotLock = true;
+    }
+    private void ResetLock() {
+        rotLock = false;
+    }
+    private void BasicMovement() {
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
+        RotateSpeed = 18 - EnDist(aimPoint);
+        Vector3 delta = aimPoint.transform.position - pc.transform.position;
+        delta.y = 0;
+        if (!rotLock) {
+            transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
+
+        }
+
+        //transform.LookAt(Enemies[T].transform.position,Vector3.up);
+        //transform.RotateAround(aimPoint.transform.position, aimPoint.transform.up, -x * rotateSpeed * 2 * Time.deltaTime);
+
+        transform.position = Vector3.MoveTowards(transform.position, leftPoint.transform.position, pc.MoveSpeed * x * Time.deltaTime);
+
+        transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, pc.MoveSpeed * y * Time.deltaTime);
+
+    }
+
+    private void LockOn(float x, float y, Enemy target) {
+
+        SwitchLockOn();
         LockOff();
         enemies[T].LockedOn = true;
         EnemyLockedTo();
         //if (!slide) { 
+
+
+        if (Enemies[T] != null && !slide) {
+
+            if (onLockOn != null) {
+                onLockOn();
+            }
+            RotateSpeed = 18 - EnDist(target.gameObject);
+            //Player.GetPlayer().Nav.enabled = true;
+            Vector3 delta = target.transform.position - pc.transform.position;
+            delta.y = 0;
+            if (!rotLock) {
+                transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
+
+            }
+
+            //transform.LookAt(Enemies[T].transform.position,Vector3.up);
+            transform.RotateAround(target.transform.position, target.transform.up, -x * rotateSpeed * pc.MoveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, pc.MoveSpeed * y * Time.deltaTime);
+
+        }
+        if (Enemies[T].Dead) {
+            GetClosestEnemy();
+        }
+    }
+
+    private void MovementInputs(float x, float y) {
         if (x == 0) {
             if (y > 0)//forward
             {
@@ -138,7 +256,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         if (x < -0.3)//left
         {
             pc.Direction = 1;
-            Debug.Log("left");
+
         }
         if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) {
             pc.Moving = true;
@@ -148,67 +266,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             pc.Moving = false;
             pc.Animations = 0;
         }
-        if (Enemies[T] != null&&!slide) {
-
-            if (onLockOn != null) {
-                onLockOn();
-            }
-            RotateSpeed = 18 - EnDist(target);
-            //Player.GetPlayer().Nav.enabled = true;
-            Vector3 delta = target.transform.position - pc.transform.position;
-            delta.y = 0;
-            transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
-            //transform.LookAt(Enemies[T].transform.position,Vector3.up);
-            transform.RotateAround(target.transform.position, target.transform.up, -x * rotateSpeed * pc.MoveSpeed * Time.deltaTime);
-            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, pc.MoveSpeed * y * Time.deltaTime);
-
-        }
-        if (Enemies[T].Dead) {
-            GetClosestEnemy();
-        }
     }
-    private void MovementInputs(float x,float y) {
-        if (L2.GetButton()&&!slide) {
-            slide = true;
-            StartCoroutine(Dash());
-            
-            
-        }if (x == 0) {
-                if (y > 0)//forward
-                {
-                    Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * 10, ForceMode.VelocityChange);
-
-                }
-
-                if (y < 0)//back
-                {
-                    Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * -10, ForceMode.VelocityChange);
-
-                }
-            }
-
-            if (x > 0.3)//right
-            {
-                Vector3 delta = enemyTarget.transform.position - pc.transform.position;
-                delta.y = 0;
-                transform.rotation = Quaternion.LookRotation(delta, Vector3.right);
-                Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward*10,ForceMode.VelocityChange);
-            }
-
-            if (x < -0.3)//left
-            {
-                Vector3 delta = enemyTarget.transform.position - pc.transform.position;
-                delta.y = 0;
-                transform.rotation = Quaternion.LookRotation(delta, -Vector3.right);
-                Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * 10, ForceMode.VelocityChange);
-            }
-    }
-    private IEnumerator Dash() {
-        YieldInstruction wait = new WaitForSeconds(0.5f);
-        yield return wait;
-        slide = false;
-
-    }
+    //private IEnumerator Dash() {
+    //    YieldInstruction wait = new WaitForSeconds(0.5f);
+    //    yield return wait;
+    //    slide = false;
+    //
+    //}
     private void SwitchLockOn() {
         if (Input.GetAxis("DPad Right") > 0 && dPadRight.GetButtonDown()) {
             T++;

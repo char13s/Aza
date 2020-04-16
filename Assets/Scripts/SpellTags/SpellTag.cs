@@ -9,6 +9,8 @@ public class SpellTag : MonoBehaviour
 {
     [SerializeField] private int spellId;
     [SerializeField] private string spellName;
+    [SerializeField] private int cooldown;
+    [SerializeField] private int maxCooldown;
     public static event UnityAction<SpellTag> sendThisSpell;
     public static event UnityAction spellListDown;
     #region Skill related events
@@ -23,6 +25,7 @@ public class SpellTag : MonoBehaviour
 
     public int Quantity { get => quantity; set => quantity = value; }
     public string SpellName { get => spellName; set => spellName = value; }
+    public int Cooldown { get => cooldown; set => cooldown = value; }
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +39,10 @@ public class SpellTag : MonoBehaviour
         
     }
     public void Activate() {
-        UseSpell();
+        if (cooldown == 0) {
+            UseSpell();
+        }
+        
         //Quantity--;
     }
     private void SetSpellToSlot() {

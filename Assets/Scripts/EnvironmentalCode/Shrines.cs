@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class Shrines : MonoBehaviour
 {
-    [SerializeField] private int amountRequired;
-    [SerializeField] private int exp;
-    [SerializeField] private GameObject portal;
+    [SerializeField] private SpellTag relic;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,16 +18,13 @@ public class Shrines : MonoBehaviour
     }
     private void OpenPortal() {
 
-        if (exp >= amountRequired) {
-
-            portal.SetActive(true);
-        }
+        
     }
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Player")) {
             if(Input.GetButtonDown("X")){
-
+                Player.GetPlayer().items.AddRelic(relic);
 
             }
         }

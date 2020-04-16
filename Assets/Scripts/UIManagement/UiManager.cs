@@ -8,164 +8,170 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 #pragma warning disable 0649
 public class UiManager : MonoBehaviour {
-	[Header("Tutorial Stuff")]
-	[SerializeField] private GameObject movementTutorial;
-	[SerializeField] private GameObject miniMapTutorial;
-	[SerializeField] private GameObject pauseTutorial;
-	[SerializeField] private GameObject combatTutorial;
-	[SerializeField] private GameObject background;
-	[SerializeField] private GameObject tutorMenu;
-	[SerializeField] private GameObject backButton;
-	[SerializeField] private GameObject fireBallTutorial;
-	[SerializeField] private GameObject flameTornadoTutorial;
-	[SerializeField] private GameObject HeavySwingTutorial;
-	[Space]
-	#region PlayerUI
-	[Header("PlayerUI")]
-	[SerializeField] private GameObject playerUi;
-	[SerializeField] private Image black;
-	[SerializeField] private GameObject miniMap;
-	[SerializeField] private Text exp;
-	[SerializeField] private Text level;
-	[SerializeField] private Text health;
-	[SerializeField] private Text money;
-	[SerializeField] private GameObject abilities;
-	[SerializeField] private Text stamina;
-	[SerializeField] private Slider healthBar;
-	[SerializeField] private Slider staminaBar;
-	[SerializeField] private Slider expBar;
-	[SerializeField] private GameObject abilityClose;
-	[Space]
-	#endregion
+    [Header("Tutorial Stuff")]
+    [SerializeField] private GameObject movementTutorial;
+    [SerializeField] private GameObject miniMapTutorial;
+    [SerializeField] private GameObject pauseTutorial;
+    [SerializeField] private GameObject combatTutorial;
+    [SerializeField] private GameObject background;
+    [SerializeField] private GameObject tutorMenu;
+    [SerializeField] private GameObject backButton;
+    [SerializeField] private GameObject fireBallTutorial;
+    [SerializeField] private GameObject flameTornadoTutorial;
+    [SerializeField] private GameObject HeavySwingTutorial;
+    [Space]
+    #region PlayerUI
+    [Header("PlayerUI")]
+    [SerializeField] private GameObject playerUi;
+    [SerializeField] private Image black;
+    [SerializeField] private GameObject miniMap;
+    [SerializeField] private Text exp;
+    [SerializeField] private Text level;
+    [SerializeField] private Text health;
+    [SerializeField] private Text money;
+    [SerializeField] private GameObject abilities;
+    [SerializeField] private Text stamina;
+    [SerializeField] private Slider healthBar;
+    [SerializeField] private Slider staminaBar;
+    [SerializeField] private Slider expBar;
+    [SerializeField] private GameObject abilityClose;
+    [Space]
+    #endregion
 
-	#region Abilities
-	[Header("Abilities")]
-	[SerializeField] private Text attack;
-	[SerializeField] private Text defense;
-	[SerializeField] private Text intelligence;
-	[SerializeField] private Text healthAb;
-	[SerializeField] private Text staminaAb;
-	[SerializeField] private Text mpBoost;
-	[SerializeField] private Text attackBoost;
-	[SerializeField] private Text defenseBoost;
-	[SerializeField] private Text healthBoost;
-	[SerializeField] private GameObject mainMenuCanvas;
-	[SerializeField] private GameObject mainCanvas;
-	[SerializeField] private GameObject pauseMenu;
+    #region Abilities
+    [Header("Abilities")]
+    [SerializeField] private Text attack;
+    [SerializeField] private Text defense;
+    [SerializeField] private Text intelligence;
+    [SerializeField] private Text healthAb;
+    [SerializeField] private Text staminaAb;
+    [SerializeField] private Text mpBoost;
+    [SerializeField] private Text attackBoost;
+    [SerializeField] private Text defenseBoost;
+    [SerializeField] private Text healthBoost;
+    [SerializeField] private GameObject mainMenuCanvas;
+    [SerializeField] private GameObject mainCanvas;
+    [SerializeField] private GameObject pauseMenu;
 
-	[Space]
-	#endregion
-	#region EventSystems
-	[Header("EventSystems")]
-	[SerializeField] private GameObject mainEventSystem;
-	[SerializeField] private GameObject mainMenuEventSystem;
-	[Space]
-	#endregion
-
-
-	[Space]
-
-	[Header("StoreMenu")]
-	[SerializeField] private GameObject StoreMenuPrefab;
-	private static GameObject storeMenu;
-	[SerializeField] private GameObject storeMenuDefaultButton;
-	[SerializeField] private GameObject quantityWindow;
-	[SerializeField] private Text displayedQuantity;
-	private int quantity;
-	[Space]
-	[Header("UseMenu")]
-	[SerializeField] private GameObject useMenuPrefab;
-	[SerializeField] private Button useButtonPrefab;
-	[SerializeField] private Button itemDescriptionButtonPrefab;
-	[SerializeField] private Button giveButtonPrefab;
-	[SerializeField] private Button dropButtonPrefab;
-	[SerializeField] private GameObject useMenuDefaultButton;
-	private static GameObject useMenu;
-	private static Button useButton;
-	private static Button itemDescriptionButton;
-	private static Button giveButton;
-	private static Button dropButton;
-	[Space]
+    [Space]
+    #endregion
+    #region EventSystems
+    [Header("EventSystems")]
+    [SerializeField] private GameObject mainEventSystem;
+    [SerializeField] private GameObject mainMenuEventSystem;
+    [Space]
+    #endregion
 
 
+    [Space]
 
-	[Space]
-	[Header("Dialogue Management")]
-	private static GameObject dialogueMenu;
-	[SerializeField] private GameObject dialogueMenuPrefab;
-	[SerializeField] private Text dialogueText;
-	[SerializeField] private Text whoseTalking;
-	[Space]
-	#region StatBuildMenu
-	[Header("StatBuildMenu")]
-	[SerializeField] private GameObject levelMenuPrefab;
-	[SerializeField] private Text baseAttack;
-	[SerializeField] private Text baseDefense;
-	[SerializeField] private Text baseMp;
-	[SerializeField] private Text baseHealth;
-	[SerializeField] private Text expRequired;
-	[SerializeField] private Text lvMenuExp;
-	[SerializeField] private Text abilityPoints;
-	[SerializeField] private Text abilityPointsCost;
-	[SerializeField] private Text itemAbilityPointsCost;
-	[SerializeField] private GameObject levelMenuDefaultButton;
-	[Space]
-	#endregion
-	#region Equipment Window
-	[Header("EquipmentWindow")]
-
-	[SerializeField] private Text healthDisplay;
-	[SerializeField] private Text attackDisplay;
-	[SerializeField] private Text defenseDisplay;
-	[SerializeField] private Text mpDisplay;
-	[SerializeField] private GameObject spellTags;
-	private SpellTagSlot lastSpellSlotSelected;
-
-	[Space]
-	#endregion
-	[Header("OLDPauseMenu")]
-	[SerializeField] private GameObject invent;
-
-	//[SerializeField] private GameObject options;
-	[SerializeField] private GameObject objectiveMenu;
-	[SerializeField] private GameObject statusWindow;
-
-	[Space]
-	[Header("Videos")]
-	[SerializeField] private VideoClip combo1;
-	[SerializeField] private VideoClip combo2;
-	[SerializeField] private VideoClip combo3;
-	[SerializeField] private VideoClip combo4;
+    [Header("StoreMenu")]
+    [SerializeField] private GameObject StoreMenuPrefab;
+    private static GameObject storeMenu;
+    [SerializeField] private GameObject storeMenuDefaultButton;
+    [SerializeField] private GameObject quantityWindow;
+    [SerializeField] private Text displayedQuantity;
+    private int quantity;
+    [Space]
+    [Header("UseMenu")]
+    [SerializeField] private GameObject useMenuPrefab;
+    [SerializeField] private Button useButtonPrefab;
+    [SerializeField] private Button itemDescriptionButtonPrefab;
+    [SerializeField] private Button giveButtonPrefab;
+    [SerializeField] private Button dropButtonPrefab;
+    [SerializeField] private GameObject useMenuDefaultButton;
+    private static GameObject useMenu;
+    private static Button useButton;
+    private static Button itemDescriptionButton;
+    private static Button giveButton;
+    private static Button dropButton;
+    [Space]
 
 
-	[Space]
-	[Header("Objective menu")]
-	[SerializeField] private Text descriptionBox;
-	[SerializeField] private GameObject missionListing;
-	[SerializeField] private Button activeQuest;
-	[SerializeField] private Button completedQuest;
-	private List<Objective> objectives = new List<Objective>();
 
-	[Header("Options")]
-	[SerializeField] private GameObject optDefaultButton;
-	[Header("Pop Up Windows")]
-	[SerializeField] private GameObject newObjectiveWindow;
-	[SerializeField] private GameObject objectiveClear;
-	[SerializeField] private GameObject objectiveUpdated;
-	[SerializeField] private GameObject savedGame;
-	[SerializeField] private GameObject loadedGame;
-	[SerializeField] private GameObject defeated;
-	[SerializeField] private GameObject loadingIcon;
+    [Space]
+    [Header("Dialogue Management")]
+    private static GameObject dialogueMenu;
+    [SerializeField] private GameObject dialogueMenuPrefab;
+    [SerializeField] private Text dialogueText;
+    [SerializeField] private Text whoseTalking;
+    [Space]
+    #region StatBuildMenu
+    [Header("Stat Build Menu")]
+    [SerializeField] private GameObject MeditationMenu;
+    [SerializeField] private GameObject levelMenuPrefab;
+    [SerializeField] private Text baseAttack;
+    [SerializeField] private Text baseDefense;
+    [SerializeField] private Text baseMp;
+    [SerializeField] private Text baseHealth;
+    [SerializeField] private Text expRequired;
+    [SerializeField] private Text lvMenuExp;
+    [SerializeField] private Text abilityPoints;
+    [SerializeField] private Text abilityPointsCost;
+    [SerializeField] private Text itemAbilityPointsCost;
+    [SerializeField] private GameObject levelMenuDefaultButton;
+    [SerializeField] private Text kryllLevel;
+    [SerializeField] private GameObject skillTree;
+    [Space]
+    #endregion
+    #region Equipment Window
+    [Header("EquipmentWindow")]
+
+    [SerializeField] private Text healthDisplay;
+    [SerializeField] private Text attackDisplay;
+    [SerializeField] private Text defenseDisplay;
+    [SerializeField] private Text mpDisplay;
+    [SerializeField] private GameObject spellTags;
+    private SpellTagSlot lastSpellSlotSelected;
+
+    [Space]
+    #endregion
+    [Header("OLDPauseMenu")]
+    [SerializeField] private GameObject invent;
+
+    //[SerializeField] private GameObject options;
+    [SerializeField] private GameObject objectiveMenu;
+    [SerializeField] private GameObject statusWindow;
+
+    [Space]
+    [Header("Videos")]
+    [SerializeField] private VideoClip combo1;
+    [SerializeField] private VideoClip combo2;
+    [SerializeField] private VideoClip combo3;
+    [SerializeField] private VideoClip combo4;
+
+
+    [Space]
+    [Header("Objective menu")]
+    [SerializeField] private Text descriptionBox;
+    [SerializeField] private GameObject missionListing;
+    [SerializeField] private Button activeQuest;
+    [SerializeField] private Button completedQuest;
+    private List<Objective> objectives = new List<Objective>();
+
+    [Header("Options")]
+    [SerializeField] private GameObject optDefaultButton;
+
+    [Header("Pop Up Windows")]
+    [SerializeField] private GameObject newObjectiveWindow;
+    [SerializeField] private GameObject objectiveClear;
+    [SerializeField] private GameObject objectiveUpdated;
+    [SerializeField] private GameObject savedGame;
+    [SerializeField] private GameObject loadedGame;
+    [SerializeField] private GameObject defeated;
+    [SerializeField] private GameObject loadingIcon;
     [SerializeField] private GameObject endScreen;
-	[Header("ItemObtainedPopWindow")]
-	[SerializeField] private GameObject itemWindow;
-	[SerializeField] private Image imageWindow;
-	[SerializeField] private Text itemDescrp;
-	[Space]
-	[Header("PopUpTutorials")]
-	[SerializeField] private GameObject howToAttack;
-	[SerializeField] private GameObject howToGuard;
-	[SerializeField] private GameObject howToRoll;
+
+    [Header("ItemObtainedPopWindow")]
+    [SerializeField] private GameObject itemWindow;
+    [SerializeField] private Image imageWindow;
+    [SerializeField] private Text itemDescrp;
+    [Space]
+
+    [Header("PopUpTutorials")]
+    [SerializeField] private GameObject howToAttack;
+    [SerializeField] private GameObject howToGuard;
+    [SerializeField] private GameObject howToRoll;
     [Space]
     [SerializeField] private GameObject howTodash;
     [SerializeField] private GameObject howToDash;
@@ -175,42 +181,93 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private GameObject howToUseRelics;
 
     [Header("Fonts")]
-	[SerializeField] private Font luckiestGuy;
-	[Header("KryllUI")]
-	[SerializeField] private GameObject kryllUi;
-	[SerializeField] private Text distFromZend;
-	[Header("Save Menu")]
-	[SerializeField] private GameObject saveMenu;
-	[Header("Pause Menu")]
-	[SerializeField] private GameObject menus;
-	[SerializeField] private GameObject items;
-	[SerializeField] private GameObject equipment;
-	[SerializeField] private GameObject skills;
-	[SerializeField] private GameObject stats;
-	[SerializeField] private GameObject options;
-	[SerializeField] private GameObject pauseMenuDefaultButton;
-	private static UiManager instance;
-	[Header("Skill Menu")]
-	[SerializeField] private GameObject skillList;
-	private SkillButton lastSelectedSkillSlot;
+    [SerializeField] private Font luckiestGuy;
 
-	[Header("Items")]
-	[SerializeField] private GameObject itemInvent;
-	[SerializeField] private GameObject portalList;
-	[Header("Spell Tag Menu")]
-	[SerializeField] private GameObject spellTagList;
-	[Header("Stats Menu")]
-	[SerializeField] private Text swordLevel;
-	[SerializeField] private Text swordProficency;
-	[Header("Title Screen Menu")]
-	[SerializeField] private GameObject newGameButton;
+    [Header("KryllUI")]
+    [SerializeField] private GameObject kryllUi;
+    [SerializeField] private Text distFromZend;
+
+    [Header("Save Menu")]
+    [SerializeField] private GameObject saveMenu;
+    [SerializeField] private GameObject saveMenuDefault;
+
+    [Header("Pause Menu")]
+    [SerializeField] private GameObject menus;
+    [SerializeField] private GameObject items;
+    [SerializeField] private GameObject equipment;
+    [SerializeField] private GameObject skills;
+    [SerializeField] private GameObject stats;
+    [SerializeField] private GameObject options;
+    [SerializeField] private GameObject pauseMenuDefaultButton;
+    private static UiManager instance;
+
+    [Header("Skill Menu")]
+    [SerializeField] private GameObject skillList;
+    [SerializeField] private GameObject skillListDefault;
+    [SerializeField] private GameObject skillDefaultButton;
+    [SerializeField] private SkillButton triangle;
+    [SerializeField] private SkillButton circle;
+    [SerializeField] private SkillButton square;
+    [SerializeField] private SkillButton x;
+    private SkillButton lastSelectedSkillSlot;
+
+    [Header("QuickSkillMenu")]
+    [SerializeField] private GameObject quickSkillMenu;
+    [SerializeField] private Text skillslot1;
+    [SerializeField] private Text skillslot2;
+    [SerializeField] private Text skillslot3;
+    [SerializeField] private Text skillslot4;
+    [SerializeField] private Image currentWeapon;
+
+    [Header("Skin Menu")]
+    [SerializeField] private GameObject skinMenu;
+
+    [Space]
+    [Header("QuickAccessMenu")]
+    [SerializeField] private GameObject itemInvent;
+    [SerializeField] private Image mainItem;
+    [SerializeField] private Text mainItemQuantity;
+    [SerializeField] private Text mainItemName;
+    [SerializeField] private Image leftItem;
+    [SerializeField] private Image rightItem;
+    [SerializeField] private GameObject itemsList;
+    [SerializeField] private GameObject relicList;
+    [Space]
+
+    [Header("PortalList")]
+    [SerializeField] private GameObject portalList;
+    [SerializeField] private GameObject portalDefaultObject;
+
+    [Space]
+    [Header("Spell Tag Menu")]
+    [SerializeField] private GameObject spellTagList;
+
+    [Header("Stats Menu")]
+    [SerializeField] private Text swordLevel;
+    [SerializeField] private Text swordProficency;
+
+    [Header("Title Screen Menu")]
+    [SerializeField] private GameObject newGameButton;
+
     [Header("Dialogues")]
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private GameObject intro;
     [SerializeField] private GameObject landed;
     [SerializeField] private GameObject enemyAppeared;
 
-	//[SerializeField]private GameObject quit
+    [Header("Level Selection Window")]
+    [SerializeField] private GameObject missionDetails;
+    [SerializeField] private Image levelPicture;
+    [SerializeField] private Text bossInfo;
+    [SerializeField] private Text objective;
+    [SerializeField] private Sprite[] rewards;
+    [SerializeField] private Button loadLevel;
+    [SerializeField] private Button goBack;
+    [SerializeField] private GameObject levelSelectWindow;
+    [SerializeField] private GameObject levelSelectionDefault;
+    [Space]
+
+    //[SerializeField]private GameObject quit
     //Events
     public static UnityAction missionCleared;
     public static event UnityAction sealPlayerInput;
@@ -221,9 +278,15 @@ public class UiManager : MonoBehaviour {
     public static UnityAction nullEnemies;
     public static UnityAction bedTime;
     public static UnityAction outaBed;
+    public static UnityAction disablePlayer;
+    public static UnityAction onNewGame;
+    public static event UnityAction load;
+    public static event UnityAction<int> nextLevel;
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
     private int menuState;
+    private Player pc;
+    private SpriteAssign sprites;
     #region Getters and Setters
     public static GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public static Button UseButton { get => useButton; set => useButton = value; }
@@ -267,6 +330,16 @@ public class UiManager : MonoBehaviour {
         storeMenu = StoreMenuPrefab;
 
         dialogueMenu = dialogueMenuPrefab;
+        SetButton();
+
+
+        missionCleared += ObjectiveClear;
+        itemAdded += ItemPopUp;
+        areaChange += AreaChange;
+        bedTime += SaveMenuUp;
+        outaBed += SaveMenuDown;
+    }
+    void Start() {
         #region outside events
         AIKryll.sendDist += DistFromKyrllToZend;
         AIKryll.zend += KryllDown;
@@ -275,32 +348,43 @@ public class UiManager : MonoBehaviour {
         Player.notSleeping += SaveMenuDown;
         Player.cancelPaused += MenusDown;
         Player.notSleeping += NotSleep;
-
+        Player.skills += QuickSkillmenu;
+        Player.weaponSwitch += WeaponSwitch;
         StoreManager.itemWasBought += UpdateMoney;
 
         GameController.onGameWasStarted += GameScreen;
         GameController.gameWasSaved += SaveGame;
         GameController.onQuitGame += OnQuit;
+        GameController.continueGame += LevelSelect;
+        GameController.continueGame += SelectLevelButton;
+        GameController.setCanvas += SetCanvas;
+        GameController.returnToLevelSelect += LevelSelect;
+        GameController.returnToLevelSelect += UnFade;
+        GameController.onoLevelLoaded += UnFade;
+        GameController.respawn += SetPlayerUI;
+        //GameController.respawn+=
 
-        Npc.dialogueUp += DialogueManagerUp;
-        Npc.dialogueDown += DialogueManagerDown;
+        //Npc.dialogueUp += DialogueManagerUp;
+        //Npc.dialogueDown += DialogueManagerDown;
 
         ExpConverter.levelMenuUp += MenuManager;
 
         Stats.onBaseStatsUpdate += UpdateBoost;
 
         Items.onItemClick += UseMenuHandling;
-
+        Inventory.mainItemSet += SetImage;
+        Inventory.menuSet += QuickAccessMenu;
         Objective.onObjectiveClick += ObjectiveDescription;
 
         Bed.bed += Sleep;
-        
+
         PortalConnector.portalListUp += MenuManager;
-        
+        PortalConnector.backToLevelSelect += Portal;
+
         Skill.sendSkill += SetSkillToSlot;
         SkillButton.sendSkillSlot += SetLastSkillSlot;
 
-        CinematicManager.unfade += UnFade;
+        //CinematicManager.unfade += UnFade;
         CinematicManager.gameStart += GameStart;
 
         Cauldron.potionMaking += MenuManager;
@@ -313,28 +397,31 @@ public class UiManager : MonoBehaviour {
         DialogueTrigger.triggered += DialogueManagement;
         DialogueTrigger.close += CloseDialogue;
 
+        LevelObject.selectLevel += SetMissionDetails;
         EndGameTrigger.end += EndScreen;
-        #endregion
         
-        missionCleared += ObjectiveClear;
-        itemAdded += ItemPopUp;
-        areaChange += AreaChange;
-        bedTime += SaveMenuUp;
-        outaBed += SaveMenuDown;
-
-        
-    }
-    void Start() {
-
         Stats.onLevelUp += StatsUpdate;
         Stats.onShowingStats += ViewStats;
         Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
+
         Enemy.onAnyEnemyDead += EnemyDeath;
-		//DefaultObject = newGameButton;
+
+        Player.onPlayerDeath += OnPlayerDeath;
+
+        
+        #endregion
+        pc = Player.GetPlayer();
+        sprites = SpriteAssign.GetSprite();
+        WeaponSwitch();
+        //GameController.returnToLevelSelect += SetPlayerUIOff;
+        //playerUi.SetActive(false);
+        //UnFade();
+        //DefaultObject = newGameButton;
         //GetSelected();
         //Cursor.lockState = CursorLockMode.Locked;
     }
+
     void OnEnable() {
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
 
@@ -346,7 +433,7 @@ public class UiManager : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)||Input.GetButtonDown("Pause")) {
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2) || Input.GetButtonDown("Pause")) {
             GetSelected();
         }
         if (Player.GetPlayer().Pause) {
@@ -361,12 +448,43 @@ public class UiManager : MonoBehaviour {
             GetSelected();
         }
 
-
+        if (GameController.GetGameController().GameMode < 1) {
+            Inputs();
+        }
         //if (missionListing.transform.childCount > 0) { 
         //ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
         //}SetCanvas();
         CancelMenu();
     }
+    private void Inputs() {
+
+        if (levelSelectWindow.activeSelf) {
+            if (Input.GetButtonDown("Triangle")) {
+                levelSelectWindow.SetActive(false);
+                saveMenu.SetActive(true);
+                DefaultObject = saveMenuDefault;
+            }
+
+            if (Input.GetButtonDown("Square")) {
+                levelSelectWindow.SetActive(false);
+                skills.SetActive(true);
+                DefaultObject = skillDefaultButton;
+            }
+        }
+        else {
+            if (Input.GetButtonDown("Circle")) {
+                saveMenu.SetActive(false);
+                missionDetails.SetActive(false);
+                skills.SetActive(false);
+                skillList.SetActive(false);
+                levelSelectWindow.SetActive(true);
+                DefaultObject = levelMenuDefaultButton;
+            }
+
+        }
+
+    }
+
     private IEnumerator WaitForPauseMenu() {
         yield return null;
         PauseMenuControl(0);
@@ -381,26 +499,114 @@ public class UiManager : MonoBehaviour {
         MenusDown();
         StartCoroutine(WaitToLoad());
     }
-    public void Portal(int connector) {
-        
-        portalList.SetActive(false);
-        StartCoroutine(JustWait(connector));
-        StartFade();
-        
+    //private void SetWeaponImage() {
+    //
+    //}
+    public void Portal() {
+
+        //portalList.SetActive(false);
+        //StartCoroutine(JustWait(connector));
+        StartFade(null);
+
     }
     private IEnumerator WaitToLoad() {
         YieldInstruction wait = new WaitForSeconds(3);
         yield return wait;
         UnFade();
     }
+    #region Level Selection shit
+    private void SetButton() {
+
+        loadLevel.onClick.AddListener(LoadLevel);
+    }
+    private void LevelSelect() {
+        levelSelectWindow.SetActive(true);
+
+        //playerUi.SetActive(false);
+
+        DefaultObject = levelSelectionDefault.gameObject;
+
+    }
+    private void SelectLevelButton() {
+        DefaultObject = levelSelectionDefault;
+    }
+    public void LoadLevel() {
+        Player.GetPlayer().Dead = false;
+        missionDetails.SetActive(false);
+        StartFade(load);
+    }
+    private void SetMissionDetails(Sprite[] rewards, string details, int lvl) {
+
+        if (nextLevel != null) {
+            nextLevel(lvl);
+        }
+        levelSelectWindow.SetActive(false);
+        missionDetails.SetActive(true);
+        DefaultObject = loadLevel.gameObject;
+        Debug.Log("Set Mission Details");
+    }
+    #endregion
+    #region Quick menu methods
+    private void QuickSkillmenu(bool val) {
+        quickSkillMenu.SetActive(val);
+        skillslot1.text = triangle.SkillName.text;
+        skillslot2.text = circle.SkillName.text;
+        skillslot3.text = square.SkillName.text;
+        skillslot4.text = x.SkillName.text;
+    }
+    private void WeaponSwitch() {
+
+        switch (pc.Weapon) {
+            case 0:
+                currentWeapon.sprite = sprites.Sword;
+                break;
+            case 1:
+                currentWeapon.sprite = sprites.Bow;
+                break;
+        }
+
+    }
+
+    #endregion
     #region Event Handlers
+
+    private void SetPlayerUI() {
+        playerUi.SetActive(true);
+    }
+    private void SetPlayerUIOff() {
+        playerUi.SetActive(false);
+    }
+    private void QuickAccessMenu(int menu) {
+        switch (menu) {
+            case 0:
+                itemsList.SetActive(true);
+                relicList.SetActive(false);
+                break;
+            case 1:
+                itemsList.SetActive(false);
+                relicList.SetActive(true);
+                break;
+        }
+    }
     private void SetSkillToSlot(Skill skill) {
         lastSelectedSkillSlot.SkillAssigned = skill;
         skillList.SetActive(false);
+        DefaultObject = skillDefaultButton;
     }
     private void SetLastSkillSlot(SkillButton slot) {
         lastSelectedSkillSlot = slot;
+        DefaultObject = skillListDefault;
         skillList.SetActive(true);
+
+    }
+    private void SetImage(Sprite i, string name, string quantity) {
+        mainItem.sprite = i;
+        mainItemName.text = name;
+        mainItemQuantity.text = quantity;
+    }
+    private void OnPlayerDeath() {
+        SetPlayerUIOff();
+        StartFade(load);
 
     }
     //private void DialogueManagement(string lines) {
@@ -414,6 +620,10 @@ public class UiManager : MonoBehaviour {
         }
         storeMenu.SetActive(true);
     }
+    //public void OpenSkillTree() {
+    //    skillTree.SetActive(true);
+    //    levelMenuPrefab.SetActive(false);
+    //}
     public void PauseMenuControl(int num) {
         MenuState = num;
         menus.SetActive(false);
@@ -440,6 +650,7 @@ public class UiManager : MonoBehaviour {
             case 3:
 
                 skills.SetActive(true);
+                DefaultObject = skillDefaultButton;
                 break;
             case 4:
                 stats.SetActive(true);
@@ -462,19 +673,24 @@ public class UiManager : MonoBehaviour {
         howToAttack.SetActive(true);
 
     }
-    private void MenuManager(int menu) {
+    public void MenuManager(int menu) {
         if (sealPlayerInput != null) {
             sealPlayerInput();
         }
-        PauseGame();
+        //PauseGame();
         switch (menu) {
             case 0:
+
                 break;
             case 1:
                 storeMenu.SetActive(true);
                 break;
             case 2:
-                LevelUpMenuUp();
+                if (disablePlayer != null) {
+                    disablePlayer();
+                }
+                MeditationMenu.SetActive(true);
+
                 break;
             case 3:
                 quantityWindow.SetActive(true);
@@ -482,7 +698,36 @@ public class UiManager : MonoBehaviour {
                 break;
             case 4:
                 portalList.SetActive(true);
+                DefaultObject = portalDefaultObject;
                 break;
+            case 5:
+                skillTree.SetActive(true);
+                break;
+            case 6:
+                LevelUpMenuUp();
+                break;
+        }
+    }
+    private void LevelUpMenuUp() {
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
+        levelMenuPrefab.SetActive(true);
+        ViewStatsUpWindow();
+        DefaultObject = levelMenuDefaultButton;
+        //EventSystem.current.SetSelectedGameObject(DefaultObject);
+    }
+    private void MenusDown() {
+        levelMenuPrefab.SetActive(false);
+        storeMenu.SetActive(false);
+        if (unsealPlayerInput != null) {
+            unsealPlayerInput();
+        }
+        portalList.SetActive(false);
+        MeditationMenu.SetActive(false);
+        if (menuState == 0) {
+            Player.GetPlayer().Pause = false;
+            pauseMenu.SetActive(false);
         }
     }
     private void OnQuit() {
@@ -510,7 +755,7 @@ public class UiManager : MonoBehaviour {
         }
         if (portalList.activeSelf) {
             if (Input.GetButtonDown("Circle")) {
-                portalList.SetActive(false);
+
             }
         }
     }
@@ -538,12 +783,12 @@ public class UiManager : MonoBehaviour {
         if (action != null) {
             action();
         }
-        
-        UnFade();
+
+        //UnFade();
     }
 
     #endregion
-    
+
     #region spellTag Manangement
     private void SpellTagListUp() {
         spellTagList.SetActive(true);
@@ -555,13 +800,13 @@ public class UiManager : MonoBehaviour {
         lastSpellSlotSelected = slot;
     }
     private void SetSpell(SpellTag spell) {
-        
+
         lastSpellSlotSelected.Spell = spell;
         Debug.Log(spell);
         Debug.Log(spell.SpellName);
         Debug.Log(lastSpellSlotSelected);
         //Debug.Log(lastSpellSlotSelected.SpellName.text);
-        
+
         lastSpellSlotSelected.SpellName.text = spell.SpellName;
     }
     #endregion
@@ -638,23 +883,28 @@ public class UiManager : MonoBehaviour {
         black.color = color;
 
     }
-    private void StartFade() {
-        Debug.Log("start fade was called");
-        StartCoroutine(FadeScreen());
+    public void NewGame() {
+        StartFade(onNewGame);
+
+    }
+    private void StartFade(UnityAction action) {
+
+        StartCoroutine(FadeScreen(action));
     }
     private IEnumerator WaitTilFaded() {
         yield return new WaitUntil(() => black.color.a > 0.98);
         MenusDown();
     }
-    private IEnumerator FadeScreen() {
+    private IEnumerator FadeScreen(UnityAction action) {
         while (isActiveAndEnabled && black.color.a <= 0.99) {
             yield return null;
             FadeToBlack();
         }
         MenusDown();
+        //levelSelectWindow.SetActive(false);
         loadingIcon.SetActive(true);
-        if (nullEnemies != null) {
-            nullEnemies();
+        if (action != null) {
+            action();
         }
     }
     private void NextScene(Vector3 travelPoint) {
@@ -671,13 +921,18 @@ public class UiManager : MonoBehaviour {
         StartCoroutine(WaitToArrangeCoroutine());
     }
     private void UnFade() {
+        StartCoroutine(WaitToUnFade());
+    }
+    private IEnumerator WaitToUnFade() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
         StartCoroutine(FadeBackIn());
     }
     private IEnumerator FadeBackIn() {
         while (isActiveAndEnabled && black.color.a >= 0) {
             yield return null;
             Color color = black.color;
-            color.a -= 0.03f;
+            color.a -= 0.01f;
             black.color = color;
         }
         loadingIcon.SetActive(false);
@@ -728,39 +983,15 @@ public class UiManager : MonoBehaviour {
         //GetSelected();
     }
     private void GetSelected() {
-        EventSystem.current.SetSelectedGameObject(DefaultObject);
-        Debug.Log(EventSystem.current.currentSelectedGameObject);
+
+        StartCoroutine(FindSelected());
         //mainMenuEventSystem.GetComponent<EventSystem>().SetSelectedGameObject(DefaultObject);
     }
-
-
-    private void LevelUpMenuUp() {
-        if (sealPlayerInput != null) {
-            sealPlayerInput();
-        }
-        if (!levelMenuPrefab.activeSelf) {
-            levelMenuPrefab.SetActive(true);
-
-        }
-        ViewStatsUpWindow();
-
-        DefaultObject = levelMenuDefaultButton;
-        //EventSystem.current.SetSelectedGameObject(DefaultObject);
+    private IEnumerator FindSelected() {
+        YieldInstruction wait = new WaitForSeconds(0.3f);
+        yield return wait;
+        EventSystem.current.SetSelectedGameObject(DefaultObject);
     }
-    private void MenusDown() {
-        levelMenuPrefab.SetActive(false);
-        storeMenu.SetActive(false);
-        if (unsealPlayerInput != null) {
-            unsealPlayerInput();
-        }
-        if (menuState == 0) {
-            Player.GetPlayer().Pause = false;
-            pauseMenu.SetActive(false);
-        }
-    }
-
-
-
     private void SetCanvas() {
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
             mainMenuCanvas.SetActive(true);
@@ -909,8 +1140,10 @@ public class UiManager : MonoBehaviour {
     public void SoulsToAbility() {
         if (Player.GetPlayer().stats.Exp > Player.GetPlayer().stats.RequiredExp) {
             Player.GetPlayer().stats.Abilitypoints++;
+            Player.GetPlayer().stats.KryllLevel++;
             Player.GetPlayer().stats.Exp -= Player.GetPlayer().stats.RequiredExp;
             Player.GetPlayer().stats.RequiredExp = (int)(Player.GetPlayer().stats.RequiredExp * 1.2f);
+            kryllLevel.text = "Lv. " + Player.GetPlayer().stats.KryllLevel;
             lvMenuExp.text = "Spirits :" + Player.GetPlayer().stats.Exp;
             abilityPointsCost.text = "Cost :" + Player.GetPlayer().stats.RequiredExp;
         }

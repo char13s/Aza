@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 7059629483281964690}
   m_Layer: 0
   m_Name: SkullFace
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,7 +103,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7383452609753104572}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 253.49217, y: 30.572216, z: -125.642525}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1680413042067239119}
@@ -124,12 +124,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     type: 3
+    itemName: Demon Mask
     id: 113
-    sellableValue: 0
-    shield: 0
-    mask: 0
-    weapon: 0
-    selling: 0
     itemDescription: A mask that grants access to demon power!
 --- !u!1 &8343195751087384672
 GameObject:

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SaveLoad
 {
-
+    
 
     public static void Save(Player player)
     {
@@ -17,6 +17,14 @@ public class SaveLoad
         Game data =new Game(player);
         bf.Serialize(file, data);
         file.Close();
+        
+    }
+    public static bool DoesFileExist() {
+        string path = Application.persistentDataPath + "/savedGames.gd";
+        return File.Exists(path);
+    }
+    public static void DeleteFile() {
+        string path = Application.persistentDataPath + "/savedGames.gd";
         
     }
     public static Game Load()

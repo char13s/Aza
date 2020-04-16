@@ -16,6 +16,8 @@ public class SkillButton : MonoBehaviour
     public int MpRequired { get => mpRequired; set => mpRequired = value; }
     public Skill SkillAssigned { get => skillAssigned; set { skillAssigned = value;SetSkill(); } }
 
+    public Text SkillName { get => skillName; set => skillName = value; }
+
     private void Awake() {
         GameController.onQuitGame += NullSkill;
         GameController.onNewGame += NullSkill;
@@ -35,7 +37,7 @@ public class SkillButton : MonoBehaviour
     }
     public void SetSkill() {
 
-        skillName.text = skillAssigned.SkillName;
+        SkillName.text = skillAssigned.SkillName;
         MpRequired = skillAssigned.MpCost;
         skill = skillAssigned.SkillId;
     }

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyTornado : MonoBehaviour
-{
+public class EnemyTornado : MonoBehaviour {
     private Vector3 direction;
+    private int timer;
     [SerializeField] private GameObject boom;
+    [SerializeField] private ParticleSystem tornado;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,9 +16,17 @@ public class EnemyTornado : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        timer++;
         transform.Rotate(0, 20, 0, Space.Self);
         transform.position += direction * 4f * Time.deltaTime;
+        if (timer == 180) {
+            Defuse();
+        }
+    }
+    private void Defuse() {
+
+        tornado.Stop();
+        Destroy(gameObject, 1);
     }
     private void OnTriggerEnter(Collider other)
     {

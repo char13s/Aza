@@ -4,118 +4,123 @@ using UnityEngine;
 using UnityEngine.Events;
 using XInputDotNetPure;
 #pragma warning disable 0649
-public class HitBox : MonoBehaviour
-{
+public class HitBox : MonoBehaviour {
     private Player pc;
     [SerializeField] private AudioClip hit;
     [SerializeField] private AudioClip swing;
     [SerializeField] private GameObject effects;
     [SerializeField] private GameObject fire;
     [SerializeField] private GameObject smallFire;
+    [SerializeField] private GameObject farHitPoint;
+    [SerializeField] private GameObject highHitPoint;
     private AudioSource audio;
-    private List<Enemy> enemies=new List<Enemy>();
+    private List<GameObject> enemies = new List<GameObject>();
     private GameObject enemyImAttacking;
 
-    //public static UnityAction<> onEnemyHit;
+    public static UnityAction onEnemyHit;
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
     public AudioClip Swing { get => swing; set => swing = value; }
 
 
 
-    private void Awake()
-    {
-        audio = Player.GetPlayer().Sfx;
+    private void Awake() {
+        
     }
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         pc = Player.GetPlayer();
+        audio = Player.GetPlayer().Sfx;
 
     }
-    void OnEnable()
-    {
-        //Debug.Log("Swoosh");
+    void OnEnable() {
+        Debug.Log("Swoosh");
+        
         //audio.PlayOneShot(swing);
     }
     private void OnDisable() {
+        Debug.Log("SwooshEd");
         enemies.Clear();
     }
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
 
     }
-    private Vector3 HitKnockback()
-    {
-        switch (pc.SkillId)
-        {
+    //private Vector3 HitKnockback() {
+    //    switch (pc.SkillId) {
+    //        case 0:
+    //
+    //            switch (KnockBackBehavior.HitId) {
+    //                case 1:
+    //
+    //                    return Player.GetPlayer().transform.forward * 2f;
+    //                case 2:
+    //
+    //                    return Player.GetPlayer().transform.forward * -1.1f;
+    //                case 3:
+    //
+    //                    
+    //                case 4:
+    //
+    //                    return Player.GetPlayer().transform.forward + new Vector3(0, 5, 0);
+    //
+    //                case 5:
+    //                    Debug.Log("fuck you slime");
+    //                    return 
+    //                case 6:
+    //                    Debug.Log("fuck you slime");
+    //                    return Player.GetPlayer().transform.forward * 1;
+    //            }
+    //            return transform.forward + new Vector3(0, 0, 0);
+    //
+    //        default: return Player.GetPlayer().transform.forward * -2;
+    //    }
+    //}
+    private void Knockback(GameObject enemy) {
+
+        switch (KnockBackBehavior.HitId) {
             case 0:
-
-                switch (KnockBackBehavior.HitId)
-                {
-                    case 1:
-
-                        return Player.GetPlayer().transform.forward * 2f;
-                    case 2:
-
-                        return Player.GetPlayer().transform.forward * -1.1f;
-                    case 3:
-
-                        return Player.GetPlayer().transform.forward * 7.5f;
-                    case 4:
-
-                        return Player.GetPlayer().transform.forward + new Vector3(0, 5, 0);
-
-                    case 5:
-                        Debug.Log("fuck you slime");
-                        return Player.GetPlayer().transform.forward * 12;
-                    case 6:
-                        Debug.Log("fuck you slime");
-                        return Player.GetPlayer().transform.forward * 1;
-                }
-                return transform.forward + new Vector3(0, 0, 0);
-
-            default: return Player.GetPlayer().transform.forward * -2;
+                enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, Player.GetPlayer().HitPoint.transform.position, 10 * Time.deltaTime);
+                break;
+            case 1:
+                
+                enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 );//Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime); //;;(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime
+                break;
+            case 2:
+                enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, highHitPoint.transform.position, 10 * Time.deltaTime);
+                break;
+            
         }
+
     }
 
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Enemy")&&!enemies.Contains(other.GetComponent<Enemy>()))
-        {
-            
-            //GameObject burn=Instantiate(smallFire,other.transform);
-            //Destroy(burn,3f);
-            
-                //EnemyImAttacking = other.gameObject;
-                Instantiate(effects, other.gameObject.transform);
-            //audio.PlayOneShot(hit);
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.CompareTag("Enemy") && !enemies.Contains(other.gameObject)) {
+            Instantiate(effects, other.gameObject.transform);
 
-            //other.GetComponent<NavMeshAgent>().enabled = false;
-
-            
-            if (other != null&&other.GetComponent<Enemy>() && !enemies.Contains(other.GetComponent<Enemy>())) {
-                if (enemies.Contains(other.GetComponent<Enemy>())) {
-                    Debug.Log("wtf");
+            if (other != null && other.GetComponent<Enemy>() && !enemies.Contains(other.gameObject)) {
+                if (enemies.Contains(other.gameObject)) {
+                    Debug.Log("this enemy is already in the list but is still being hit");
                 }
-                Debug.Log("Hit");
-                enemies.Add(other.GetComponent<Enemy>());
+                Debug.Log("an enemy was hit");
+                if (onEnemyHit != null) {
+                    onEnemyHit();
+                }
+                enemies.Add(other.gameObject);
                 other.GetComponent<Enemy>().CalculateDamage(0);
-                other.GetComponent<Enemy>().KnockBack(HitKnockback());
-                other.GetComponent<Enemy>().Grounded = false;
+                //other.GetComponent<Enemy>().KnockBack(HitKnockback());
+                Knockback(other.gameObject);
+                //other.GetComponent<Enemy>().Grounded = false;
                 GamePad.SetVibration(0, 0.2f, 0.2f);
                 StartCoroutine(StopRumble());
-            }   
+            }
         }
 
-        if (other.gameObject.CompareTag("SlimeTree"))
-        {
-            Instantiate(fire, other.gameObject.transform.position,Quaternion.identity);
+        if (other.gameObject.CompareTag("SlimeTree")) {
+            Instantiate(fire, other.gameObject.transform.position, Quaternion.identity);
             Destroy(other.gameObject, 2);
         }
-        if (other.gameObject.CompareTag("Dummy"))
-        {
+        if (other.gameObject.CompareTag("Dummy")) {
 
             Instantiate(effects, other.gameObject.transform);
             other.GetComponent<Dummy>().Hit = true;
@@ -126,8 +131,7 @@ public class HitBox : MonoBehaviour
         yield return wait;
         GamePad.SetVibration(0, 0, 0);
     }
-    private void OnTriggerExit(Collider other)
-    {
+    private void OnTriggerExit(Collider other) {
         //EnemyImAttacking = null;
     }
 }

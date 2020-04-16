@@ -6,6 +6,8 @@ public class FlameTornado : MonoBehaviour
 {
     private Vector3 direction;
     [SerializeField]private GameObject boom;
+    [SerializeField] private ParticleSystem tornado;
+    private int timer;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,9 +17,17 @@ public class FlameTornado : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        timer++;
         transform.Rotate(0, 20, 0, Space.Self);
         transform.position += direction * 2.5f * Time.deltaTime;
+        if (timer == 180) {
+            Defuse();
+        }
+    }
+    private void Defuse() {
+
+        tornado.Stop();
+        Destroy(gameObject, 1);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -27,7 +37,9 @@ public class FlameTornado : MonoBehaviour
             //other.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
             
             Instantiate(boom, transform.position, transform.rotation);
-            Destroy(gameObject);
+            //tornado.Stop();
+            
+            //Destroy(gameObject);
             if (other != null && other.GetComponent<Enemy>())
             {
                 other.gameObject.GetComponent<Enemy>().CalculateDamage(8);

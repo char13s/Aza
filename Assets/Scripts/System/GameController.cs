@@ -7,18 +7,23 @@ using UnityEngine.Events;
 using UnityEngine.AI;
 #pragma warning disable 0649
 public class GameController : MonoBehaviour {
-    private Player pc;
+    //private Player pc;
     private PlayableAza aza;
 
 
     [SerializeField] private EventSystem eventSystem;
-
+    [SerializeField] private GameObject loadRespawn;
     [SerializeField] private GameObject normalCamera;
+    [SerializeField] private Player pc;
     [Space]
     [SerializeField] private GameObject cinematicManager;
-    [SerializeField] private GameObject spawn;
+    [SerializeField]private GameObject spawn;
+    [SerializeField] private GameObject forestSpawn;
     [Space]
+    private int currentLevel;
+    private int nextLevel;
     private bool load;
+    private bool dontLoad;
     private static GameController instance;
     private Coroutine loadCoroutine;
     private Coroutine deadCoroutine;
@@ -28,16 +33,24 @@ public class GameController : MonoBehaviour {
     public static event UnityAction onGameWasStarted;
     public static event UnityAction onQuitGame;
     public static event UnityAction onLoadGame;
+    public static event UnityAction continueGame;
     public static event UnityAction update;
     public static event UnityAction awake;
     public static event UnityAction<int> titleScreen;
     public static event UnityAction gameWasSaved;
+    public static event UnityAction onoLevelLoaded;
+    public static event UnityAction respawn;
+    public static event UnityAction setCanvas;
+    
+    public static event UnityAction returnToLevelSelect;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
     public static PlayableAza Aza => (instance == null) ? null : instance.aza;
 
     public GameObject Spawn { get => spawn; set => spawn = value; }
-    public int GameMode { get => gameMode; set { gameMode = value; } }
+    public int GameMode { get => gameMode; set { gameMode = value;  }  }
+
+    public int NextLevel { get => nextLevel; set => nextLevel = value; }
 
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake() {
@@ -47,19 +60,23 @@ public class GameController : MonoBehaviour {
         }
         instance = this;
         SpawnSetters.setSpawner += SetSpawner;
-        Player.onPlayerDeath += OnPlayerDead;
-        EndGameTrigger.end += OnPlayerWin;
-        pc = Player.GetPlayer();
+        
+        
         
     }
 
     void OnEnable() {
+        //pc = Player.GetPlayer();
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
         SceneManager.sceneLoaded += SceneManagement;
         if (awake != null)
             awake();
         onNewGame += OnNewGame;
-        
+
+        UiManager.onNewGame += NewGame;
+        UiManager.nextLevel += SetNextLevel;
+        UiManager.load += LevelManagement;
+        PortalConnector.backToLevelSelect += OnPlayerDeath;
     }
 
     void OnDisable() {
@@ -67,6 +84,7 @@ public class GameController : MonoBehaviour {
         //onNewGame -= OnNewGame;
     }
     void Start() {
+        
         Player.onPlayerDeath += OnPlayerDeath;
 
 
@@ -93,9 +111,20 @@ public class GameController : MonoBehaviour {
         else {
             Time.timeScale = 1;
         }}
+        //Debug.Log(SceneManager.);
     }
     private void SetSpawner(GameObject newSpawn) {
         spawn = newSpawn;
+    }
+    private void BackToLevelSelection() {
+        StartCoroutine(WaitToUnload());
+    }
+    private IEnumerator WaitToUnload() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
+        
+        SceneManager.UnloadSceneAsync(currentLevel);
+
     }
     private void ShowNavi() {
 
@@ -104,10 +133,43 @@ public class GameController : MonoBehaviour {
         mesh.vertices = nav.vertices;
         mesh.triangles = nav.indices;
     }
+    private void SetNextLevel(int nextLvl) {
+        NextLevel = nextLvl;
+    }
+    private void LevelManagement() {
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
+        Debug.Log(SceneManager.GetSceneByBuildIndex(0).name);
+
+        //if (SaveLoad.DoesFileExist()) {
+        //    StartCoroutine(WaitToLoadScene(2));
+        //
+        //}
+        //else {
+        //    StartCoroutine(WaitToLoadScene(2));
+        //}
+        StartCoroutine(WaitToLoadScene(nextLevel));
+    }
+    private IEnumerator WaitToLoadScene(int lvl) {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
+        if (lvl==2) {
+            //SceneManager.UnloadSceneAsync(currentLevel);
+            spawn = forestSpawn;
+        }
+        Debug.Log(lvl); if (!Player.GetPlayer().Dead) { 
+        SceneManager.LoadSceneAsync(lvl,LoadSceneMode.Additive);
+        GameMode = 1;
+        currentLevel = lvl;
+        if (respawn != null) {respawn();
+
+        }
+        }
+        
+    }
     private void SceneManagement(Scene scene, LoadSceneMode mode) {
-        Debug.Log("ugh");
+
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
-            
+            Debug.Log("Scene 1 up");
             pc.gameObject.SetActive(false);
             if (titleScreen != null) {
                 titleScreen(0);
@@ -115,17 +177,28 @@ public class GameController : MonoBehaviour {
             //eventSystem.gameObject.SetActive(false);
         }
         else {
-
+            
+            //if (respawn != null) {
+            //    respawn();
+            //}
             pc.gameObject.SetActive(true);
 
             eventSystem.gameObject.SetActive(true);
         }
-        if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null) {
+        //if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null) {
+        //
+        //    SceneManager.MoveGameObjectToScene(pc.gameObject, SceneManager.GetSceneByBuildIndex(0));
+        //}
 
-            SceneManager.MoveGameObjectToScene(pc.gameObject, SceneManager.GetSceneByBuildIndex(0));
+
+    }
+    private void LevelLoader(int level) {
+        switch (level) {
+            case 2:
+                SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+                break;
+
         }
-
-
     }
     private void OnPlayerDead() {
         StartCoroutine(EndGame());
@@ -147,14 +220,32 @@ public class GameController : MonoBehaviour {
     }
     private IEnumerator DeadCoroutine() {
         yield return new WaitForSeconds(1.5f);
-        BackToMainMenu();
+        //BackToMainMenu();
 
     }
     private void OnPlayerDeath() {
-        deadCoroutine = StartCoroutine(DeadCoroutine());
+        //deadCoroutine = StartCoroutine(DeadCoroutine());
+        StartCoroutine(LoadGameOverScreen());
+    }
+
+    private IEnumerator LoadGameOverScreen() {
+        YieldInstruction wait = new WaitForSeconds(5);
+        yield return wait;
+        BackToLevelSelect();
+    
+    }
+    private void BackToLevelSelect() {
+        spawn = loadRespawn;
+        GameMode = 0;
+        if (currentLevel != 0) { 
+        SceneManager.UnloadSceneAsync(currentLevel);}
+        //if (respawn != null)
+        //    respawn();
+        if (returnToLevelSelect != null) {
+            returnToLevelSelect();
+        }
 
     }
-    
     public void SaveGame() {
         SaveLoad.Save(instance.pc);
         if (gameWasSaved != null) {
@@ -162,9 +253,12 @@ public class GameController : MonoBehaviour {
         }
     }
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
-
+        if (onoLevelLoaded != null) {
+            onoLevelLoaded();
+        }
+        
         if (SceneManager.GetSceneByBuildIndex(2).isLoaded) {
-            CameraLogic.Switchable = true;
+            //CameraLogic.Switchable = true;
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
             pc.Loaded = true;
             
@@ -175,7 +269,7 @@ public class GameController : MonoBehaviour {
             }
 
         }
-        normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
+        //normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
 
         Vector3 position;
 
@@ -208,7 +302,7 @@ public class GameController : MonoBehaviour {
             instance.load = false;
         }
     }
-    public void NewGame() {
+    private void NewGame() {
         StartGame();
 
         if (onGameWasStarted != null) {
@@ -236,7 +330,13 @@ public class GameController : MonoBehaviour {
         instance.load = true;
         StartGame();
     }
-
+    public void ContinueGame() {
+        if (continueGame != null) {
+            continueGame();
+        }
+        Debug.Log("Continue");
+        StartGame();
+    }
     public void LoadGame() {
 
         
@@ -271,16 +371,18 @@ public class GameController : MonoBehaviour {
     }
 
     public void StartGame() {
-        GameMode = 1;
+        
         SceneManager.UnloadSceneAsync(1);
-
-        SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);
+        if(setCanvas != null){
+            setCanvas();
+        }
+        //SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);
 
 
     }
 
     public void BackToMainMenu() {
-
+        GameMode = 0;
         if (onQuitGame != null) {
             onQuitGame();
         }

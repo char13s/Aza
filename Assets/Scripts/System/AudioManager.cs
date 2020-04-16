@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
-{
+public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip swing;
+    [SerializeField] private AudioClip jump;
     [SerializeField] private AudioClip bang;
     [SerializeField] private AudioClip rock;
     [SerializeField] private AudioClip slimeHit;
+
+    [Header("Zend Sounds")]
+    [SerializeField] private AudioClip landingSound;
+    [SerializeField] private AudioClip drawSword;
+    [SerializeField] private AudioClip dash;
+    [SerializeField] private AudioClip doubleJump;
+    [Header("SoundTracks")]
     [SerializeField] private AudioClip titleScreen;
+    [SerializeField] private AudioClip houseMusic;
+    [SerializeField] private AudioClip level1;
     [SerializeField] private AudioClip wormDiving;
 
     private AudioSource audio;
@@ -18,6 +27,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip Bang { get => bang; set => bang = value; }
     public AudioClip Rock { get => rock; set => rock = value; }
     public AudioClip SlimeHit { get => slimeHit; set => slimeHit = value; }
+    public AudioClip LandingSound { get => landingSound; set => landingSound = value; }
+    public AudioClip Jump { get => jump; set => jump = value; }
+    public AudioClip DrawSword { get => drawSword; set => drawSword = value; }
+    public AudioClip Dash { get => dash; set => dash = value; }
+    public AudioClip DoubleJump { get => doubleJump; set => doubleJump = value; }
 
     public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
     private void Awake()
@@ -60,8 +74,6 @@ public class AudioManager : MonoBehaviour
         YieldInstruction wait = new WaitForSeconds(0.3f);
         while (isActiveAndEnabled && audio.volume > 0f) {
             yield return null;
-            Debug.Log("bro");
-
             FadeOutVolume();
         }
         StartCoroutine(FadeOut(val));

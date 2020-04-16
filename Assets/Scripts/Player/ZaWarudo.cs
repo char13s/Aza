@@ -8,10 +8,10 @@ public class ZaWarudo : MonoBehaviour
 	public static event UnityAction timeFreeze;
     // Start is called before the first frame update
     private void OnEnable() {
-        Debug.Log("field is up");
+        //Debug.Log("field is up");
     }
     private void OnDisable() {
-        Debug.Log("field is down");
+        //Debug.Log("field is down");
     }
     void Start()
     {
@@ -27,7 +27,11 @@ public class ZaWarudo : MonoBehaviour
 	private void OnTriggerEnter(Collider other) {
 		if (other.CompareTag("Enemy")) {
             Debug.Log("freeze these fools");
-			other.GetComponent<Enemy>().Frozen=true;
+            if (other.GetComponent<Enemy>() != null) {
+                other.GetComponent<Enemy>().Frozen=true;
+
+            }
+			
 
 		}
 		

@@ -5,7 +5,7 @@ public class PortalConnector : MonoBehaviour
 {
     [SerializeField] private GameObject portal;
     public static event UnityAction<int> portalListUp;
-    
+    public static event UnityAction backToLevelSelect;
     
     // Start is called before the first frame update
     void Start()
@@ -27,8 +27,11 @@ public class PortalConnector : MonoBehaviour
     {
         if (other.CompareTag("Player")) {
             if (Input.GetButtonDown("X")) {
-                if (portalListUp != null) {
-                    portalListUp(4);
+                //if (portalListUp != null) {
+                //    portalListUp(4);
+                //}
+                if (backToLevelSelect != null) {
+                    backToLevelSelect();
                 }
             }
         }

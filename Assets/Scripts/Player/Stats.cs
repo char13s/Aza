@@ -68,6 +68,7 @@ public class Stats {
 
     public int SwordProficency { get => swordProficency; set => swordProficency = value; }
     public int SwordLevel { get => swordLevel; set => swordLevel = value; }
+    public byte KryllLevel { get => kryllLevel; set => kryllLevel = value; }
 
     public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return Mathf.Abs(Exp - expNeeded); }
     public int ExpCurrent() { return Exp - (4 * ((Level - 1) * (Level - 1) * (Level - 1))); }
@@ -108,7 +109,7 @@ public class Stats {
         }
     }
     public void Start() {
-        baseHealth = 22;
+        baseHealth = 12;
         healthLeft = baseHealth;
         baseMp = 15;
         mpLeft = baseMp;
