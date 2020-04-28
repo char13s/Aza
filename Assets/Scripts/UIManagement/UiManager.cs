@@ -151,6 +151,7 @@ public class UiManager : MonoBehaviour {
 
     [Header("Options")]
     [SerializeField] private GameObject optDefaultButton;
+    //[SerializeField] private 
 
     [Header("Pop Up Windows")]
     [SerializeField] private GameObject newObjectiveWindow;
@@ -171,14 +172,17 @@ public class UiManager : MonoBehaviour {
     [Header("PopUpTutorials")]
     [SerializeField] private GameObject howToAttack;
     [SerializeField] private GameObject howToGuard;
-    [SerializeField] private GameObject howToRoll;
+    [SerializeField] private GameObject howToMove;
+    [SerializeField] private GameObject cameraControls;
     [Space]
-    [SerializeField] private GameObject howTodash;
+
     [SerializeField] private GameObject howToDash;
     [SerializeField] private GameObject howToJump;
     [SerializeField] private GameObject howToLockOn;
     [SerializeField] private GameObject howToUseSkills;
     [SerializeField] private GameObject howToUseRelics;
+    [SerializeField] private GameObject howToUseBow;
+
 
     [Header("Fonts")]
     [SerializeField] private Font luckiestGuy;
@@ -267,6 +271,8 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private GameObject levelSelectionDefault;
     [Space]
 
+    [SerializeField] private GameObject choicePanel;
+
     //[SerializeField]private GameObject quit
     //Events
     public static UnityAction missionCleared;
@@ -282,11 +288,14 @@ public class UiManager : MonoBehaviour {
     public static UnityAction onNewGame;
     public static event UnityAction load;
     public static event UnityAction<int> nextLevel;
+    public static event UnityAction demonSword;
+    public static event UnityAction angelSword;
     [SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
     private int menuState;
     private Player pc;
     private SpriteAssign sprites;
+    private bool tutorialUp;
     #region Getters and Setters
     public static GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public static Button UseButton { get => useButton; set => useButton = value; }
@@ -399,7 +408,7 @@ public class UiManager : MonoBehaviour {
 
         LevelObject.selectLevel += SetMissionDetails;
         EndGameTrigger.end += EndScreen;
-        
+
         Stats.onLevelUp += StatsUpdate;
         Stats.onShowingStats += ViewStats;
         Stats.onMPLeft += MPChange;
@@ -409,7 +418,9 @@ public class UiManager : MonoBehaviour {
 
         Player.onPlayerDeath += OnPlayerDeath;
 
-        
+        EventManager.sceneChanger += LoadLevelHelper;
+        EventTrigger.chooseSword += ChoicePanelUp;
+        TutorialTriggers.requestTutorial += TutorialUpProcessor;
         #endregion
         pc = Player.GetPlayer();
         sprites = SpriteAssign.GetSprite();
@@ -447,14 +458,18 @@ public class UiManager : MonoBehaviour {
             PauseMenuControl(0);
             GetSelected();
         }
-
+        if (tutorialUp) {
+            if (Input.GetButtonDown("Circle")) {
+                ClearTutorials();
+            }
+        }
         if (GameController.GetGameController().GameMode < 1) {
             Inputs();
         }
         //if (missionListing.transform.childCount > 0) { 
         //ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
         //}SetCanvas();
-        CancelMenu();
+
     }
     private void Inputs() {
 
@@ -484,7 +499,42 @@ public class UiManager : MonoBehaviour {
         }
 
     }
+    private void TutorialUpProcessor(int num) {
+        tutorialUp = true;
+        switch (num) {
+            case 0:
+                howToMove.SetActive(true);
+                break;
+            case 1:
+                howToAttack.SetActive(true);
+                break;
+            case 2:
+                howToGuard.SetActive(true);
+                break;
+            case 3:
+                howToUseRelics.SetActive(true);
+                break;
+            case 4:
+                howToUseSkills.SetActive(true);
+                break;
+            case 5:
+                howToUseBow.SetActive(true);
+                break;
+        }
+    }
+    private void ClearTutorials() {
+        howToMove.SetActive(false);
 
+        howToAttack.SetActive(false);
+
+        howToGuard.SetActive(false);
+
+        howToUseRelics.SetActive(false);
+
+        howToUseSkills.SetActive(false);
+
+        howToUseBow.SetActive(false);
+    }
     private IEnumerator WaitForPauseMenu() {
         yield return null;
         PauseMenuControl(0);
@@ -530,13 +580,18 @@ public class UiManager : MonoBehaviour {
     private void SelectLevelButton() {
         DefaultObject = levelSelectionDefault;
     }
+    private void LoadLevelHelper(int lvl) {
+        if (nextLevel != null) {
+            nextLevel(lvl);
+        }
+        LoadLevel();
+    }
     public void LoadLevel() {
         Player.GetPlayer().Dead = false;
         missionDetails.SetActive(false);
         StartFade(load);
     }
     private void SetMissionDetails(Sprite[] rewards, string details, int lvl) {
-
         if (nextLevel != null) {
             nextLevel(lvl);
         }
@@ -584,7 +639,7 @@ public class UiManager : MonoBehaviour {
                 break;
             case 1:
                 itemsList.SetActive(false);
-                relicList.SetActive(true);
+                //relicList.SetActive(true);
                 break;
         }
     }
@@ -737,28 +792,23 @@ public class UiManager : MonoBehaviour {
 
 
     #endregion
-    private void CancelMenu() {
-        if (howToAttack.activeSelf) {
-            if (Input.GetButtonDown("Circle")) {
-                howToAttack.SetActive(false);
-            }
-        }
-        if (howToGuard.activeSelf) {
-            if (Input.GetButtonDown("X")) {
-                howToGuard.SetActive(false);
-            }
-        }
-        if (howToRoll.activeSelf) {
-            if (Input.GetButtonDown("X")) {
-                howToRoll.SetActive(false);
-            }
-        }
-        if (portalList.activeSelf) {
-            if (Input.GetButtonDown("Circle")) {
-
-            }
-        }
+    #region Choice shit
+    private void ChoicePanelUp() {
+        choicePanel.SetActive(true);
     }
+    public void DemonSword() {
+        if (demonSword != null) {
+            demonSword();
+        }
+        choicePanel.SetActive(false);
+    }
+    public void AngelSword() {
+        if (angelSword != null) {
+            angelSword();
+        }
+        choicePanel.SetActive(false);
+    }
+    #endregion
     #region Sleep Management
     private void SaveMenuUp() {
         saveMenu.SetActive(true);
@@ -849,23 +899,7 @@ public class UiManager : MonoBehaviour {
         endScreen.SetActive(true);
     }
     #endregion
-    private void AccessHowTos(int s) {
 
-        switch (s) {
-
-            case 0:
-                howToAttack.SetActive(true);
-                break;
-            case 1:
-                howToGuard.SetActive(true);
-                break;
-            case 2:
-                howToRoll.SetActive(true);
-                break;
-        }
-
-
-    }
     private void AreaChange(Vector3 travelPoint) {
 
         StartCoroutine(FadeOutCoroutine(travelPoint));

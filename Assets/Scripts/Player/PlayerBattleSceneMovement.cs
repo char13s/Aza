@@ -23,7 +23,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private bool rotLock;
 
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
-    public int T { get => t; set { t = value; Mathf.Clamp(t, 0, Enemies.Count); } }
+    public int T { get => t; set { t = value; Mathf.Clamp(t, 0, Enemies.Count-1); } }
     public Enemy EnemyTarget { get => enemyTarget; set { enemyTarget = value; } }
     public float RotateSpeed { get => rotateSpeed; set { rotateSpeed = value; Mathf.Clamp(value, 5, 8); } }
 
@@ -79,7 +79,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             }
         }
         if (pc.LockedOn) {
-
+            pc.MoveSpeed = 3;
             GetInput();
             if (enemies.Count == 0) {
                 BasicMovement();
@@ -99,7 +99,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
-        if (Enemies.Count > 0) {
+        if (Enemies.Count != 0) {
             LockOn(x, y, Enemies[T]);
         }
         //
@@ -180,6 +180,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         rotLock = false;
     }
     private void BasicMovement() {
+
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         RotateSpeed = 18 - EnDist(aimPoint);
@@ -194,7 +195,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         //transform.RotateAround(aimPoint.transform.position, aimPoint.transform.up, -x * rotateSpeed * 2 * Time.deltaTime);
 
         transform.position = Vector3.MoveTowards(transform.position, leftPoint.transform.position, pc.MoveSpeed * x * Time.deltaTime);
-
+        
         transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, pc.MoveSpeed * y * Time.deltaTime);
 
     }
@@ -259,11 +260,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
 
         }
         if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) {
-            pc.Moving = true;
+            
             pc.Animations = 1;
         }
         else {
-            pc.Moving = false;
+           
             pc.Animations = 0;
         }
     }

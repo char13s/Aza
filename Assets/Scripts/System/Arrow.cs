@@ -62,7 +62,7 @@ public class Arrow : MonoBehaviour {
             
             
             Instantiate(boom, transform.position, transform.rotation);
-            Instantiate(fire, transform.position, transform.rotation);
+            //Instantiate(fire, transform.position, transform.rotation);
             Destroy(gameObject);
         }
     }

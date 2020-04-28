@@ -6,8 +6,8 @@ using XInputDotNetPure;
 #pragma warning disable 0649
 public class HitBox : MonoBehaviour {
     private Player pc;
-    [SerializeField] private AudioClip hit;
-    [SerializeField] private AudioClip swing;
+    
+    
     [SerializeField] private GameObject effects;
     [SerializeField] private GameObject fire;
     [SerializeField] private GameObject smallFire;
@@ -19,18 +19,14 @@ public class HitBox : MonoBehaviour {
 
     public static UnityAction onEnemyHit;
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
-    public AudioClip Swing { get => swing; set => swing = value; }
-
-
-
     private void Awake() {
         
     }
     // Start is called before the first frame update
     void Start() {
         pc = Player.GetPlayer();
-        audio = Player.GetPlayer().Sfx;
-
+        audio = pc.Sfx;
+        
     }
     void OnEnable() {
         Debug.Log("Swoosh");
@@ -117,12 +113,12 @@ public class HitBox : MonoBehaviour {
         }
 
         if (other.gameObject.CompareTag("SlimeTree")) {
-            Instantiate(fire, other.gameObject.transform.position, Quaternion.identity);
+            //Instantiate(fire, other.gameObject.transform.position, Quaternion.identity);
             Destroy(other.gameObject, 2);
         }
         if (other.gameObject.CompareTag("Dummy")) {
 
-            Instantiate(effects, other.gameObject.transform);
+            //Instantiate(effects, other.gameObject.transform);
             other.GetComponent<Dummy>().Hit = true;
         }
     }

@@ -45,8 +45,8 @@ public class Dash : StateMachineBehaviour {
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         pc.RBody.useGravity = true;
-        pc.LeftHand.SetActive(false);
-        pc.RightHand.SetActive(false);
+       
+       
         GamePad.SetVibration(0, 0, 0);
     }
 

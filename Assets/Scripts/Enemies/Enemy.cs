@@ -9,13 +9,12 @@ using XInputDotNetPure;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Rigidbody))]
-public class Enemy : MonoBehaviour
-{
+public class Enemy : MonoBehaviour {
 
     private EnemyAiStates state;
-    
-    
-    public enum EnemyAiStates {Null,Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
+
+
+    public enum EnemyAiStates { Null, Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
     internal StatusEffects status = new StatusEffects();
     [SerializeField]
     internal StatsController stats = new StatsController();
@@ -28,15 +27,21 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject deathEffect;
 
     #endregion
+    [Space]
+    [Header("Enemy Parameters")]
     [SerializeField] private int level;
     [SerializeField] private int attackDelay;
     [SerializeField] private int baseExpYield;
     [SerializeField] private int baseHealth;
+    [SerializeField] private float attackDistance;
+    [Space]
+    [Header("Object Refs")]
     [SerializeField] private GameObject hitBox;
     
     [SerializeField] private GameObject drop;
 	[SerializeField] private GameObject cut;
     [SerializeField] private Slider EnemyHp;
+
 
     #region Script References
     private NavMeshAgent nav;
@@ -179,6 +184,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         pc = Player.GetPlayer();
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
+        PortalConnector.backToLevelSelect += OnPlayerDeath;
         onAnyDefeated += EnemyDeath;
         ReactionRange.dodged += SlowEnemy;
         //EnemyHitBox.hit += CalculateAttack;
@@ -662,8 +668,9 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         int exp = baseHealth * baseExpYield;
         pc.stats.AddExp(exp);
+        if (drop != null) { 
         Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
-        drop.transform.position = transform.position;
+        drop.transform.position = transform.position;}
 
     }
 

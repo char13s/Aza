@@ -29,7 +29,8 @@ public class FireBall : MonoBehaviour
         Debug.Log(other.name);
         if (other.gameObject.CompareTag("Enemy"))
         {
-            other.gameObject.GetComponent<Enemy>().CalculateDamage(5);
+            if (other != null) { 
+            other.gameObject.GetComponent<Enemy>().CalculateDamage(5);}
        
         
         

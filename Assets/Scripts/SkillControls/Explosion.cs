@@ -33,7 +33,7 @@ public class Explosion : MonoBehaviour
         while (isActiveAndEnabled)
         {
 
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(0.5f);
             repeatCoroutine = StartCoroutine(RepeatCoroutine());
         }
 

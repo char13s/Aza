@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour {
     public static event UnityAction onoLevelLoaded;
     public static event UnityAction respawn;
     public static event UnityAction setCanvas;
-    
+    public static event UnityAction readyDeathCam;
     public static event UnityAction returnToLevelSelect;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
@@ -60,9 +60,8 @@ public class GameController : MonoBehaviour {
         }
         instance = this;
         SpawnSetters.setSpawner += SetSpawner;
-        
-        
-        
+        EventManager.setSpawner += SetSpawner;
+        onNewGame += TheBeginningOfTheGame;      
     }
 
     void OnEnable() {
@@ -87,7 +86,7 @@ public class GameController : MonoBehaviour {
         
         Player.onPlayerDeath += OnPlayerDeath;
 
-
+        EventManager.sceneChanger += SetNextLevel;
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) {
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         }
@@ -128,10 +127,10 @@ public class GameController : MonoBehaviour {
     }
     private void ShowNavi() {
 
-        NavMeshTriangulation nav = NavMesh.CalculateTriangulation();
-        Mesh mesh = new Mesh();
-        mesh.vertices = nav.vertices;
-        mesh.triangles = nav.indices;
+        //NavMeshTriangulation nav = NavMesh.CalculateTriangulation();
+        //Mesh mesh = new Mesh();
+        //mesh.vertices = nav.vertices;
+        //mesh.triangles = nav.indices;
     }
     private void SetNextLevel(int nextLvl) {
         NextLevel = nextLvl;
@@ -152,7 +151,7 @@ public class GameController : MonoBehaviour {
     private IEnumerator WaitToLoadScene(int lvl) {
         YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
-        if (lvl==2) {
+        if (lvl==4) {//write some bs to handle spawns based on what lvl yatta yatta 
             //SceneManager.UnloadSceneAsync(currentLevel);
             spawn = forestSpawn;
         }
@@ -160,8 +159,8 @@ public class GameController : MonoBehaviour {
         SceneManager.LoadSceneAsync(lvl,LoadSceneMode.Additive);
         GameMode = 1;
         currentLevel = lvl;
-        if (respawn != null) {respawn();
-
+        if (respawn != null) {
+                respawn();
         }
         }
         
@@ -252,14 +251,15 @@ public class GameController : MonoBehaviour {
             gameWasSaved();
         }
     }
+
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
         if (onoLevelLoaded != null) {
             onoLevelLoaded();
         }
         
-        if (SceneManager.GetSceneByBuildIndex(2).isLoaded) {
+        if (SceneManager.GetSceneByBuildIndex(nextLevel).isLoaded) {
             //CameraLogic.Switchable = true;
-            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
+            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextLevel));
             pc.Loaded = true;
             
             //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 0);
@@ -311,6 +311,12 @@ public class GameController : MonoBehaviour {
         if (onNewGame != null)
             onNewGame();
 
+    }
+    private void TheBeginningOfTheGame() {
+        SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);//Cinematic Scene
+        if (readyDeathCam != null) {
+            readyDeathCam();
+        }
     }
     private void OnNewGame() {
         //Vector3 position;

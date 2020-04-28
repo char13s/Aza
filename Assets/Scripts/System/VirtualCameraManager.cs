@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 using Cinemachine;
 public class VirtualCameraManager : MonoBehaviour
@@ -8,9 +10,15 @@ public class VirtualCameraManager : MonoBehaviour
     [SerializeField] private CinemachineFreeLook freeCam;
     [SerializeField] private CinemachineVirtualCamera main;
     [SerializeField] private CinemachineVirtualCamera battleCam;
+
     [SerializeField] private CinemachineVirtualCamera meditationCam;
     [SerializeField] private CinemachineVirtualCamera titleScreenCam;
+
     [SerializeField] private CinemachineVirtualCamera archeryCam;
+
+    [SerializeField] private CinemachineVirtualCamera weakZendCam;
+    [SerializeField] private CinemachineVirtualCamera deathCam;
+    [SerializeField] private CinemachineVirtualCamera swordsCam;
     [Space]
     [Header("ObjectRefs")]
     [SerializeField] private GameObject lookAtTarget;
@@ -18,7 +26,8 @@ public class VirtualCameraManager : MonoBehaviour
     [SerializeField] private GameObject titleScreenObjs;
     [SerializeField] private GameObject aimingPoint;
     [Space]
-    
+
+    private Player pc;
     private bool freelook;
     private Vector3 currentEulerAngles;
 
@@ -26,6 +35,7 @@ public class VirtualCameraManager : MonoBehaviour
 
     public static event UnityAction grey;
     public static event UnityAction ungrey;
+    public static event UnityAction weakZend;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -42,19 +52,28 @@ public class VirtualCameraManager : MonoBehaviour
         GameController.onNewGame += TurnOffTitleScreenCam;
         GameController.respawn += TurnOffTitleScreenCam;
         GameController.returnToLevelSelect+=TurnTitleCamOn;
+        GameController.readyDeathCam += DeathCamUp;
+
+
     }
     void Start()
     {
+        pc = Player.GetPlayer();
+        EventManager.endOfDeathIntro += WeakZendCam;
+
+        EventTrigger.chooseSword+=SwordsCam;
+        UiManager.demonSword += SwordsCamDown;
+        UiManager.angelSword += SwordsCamDown;
         aimingPoint = Player.GetPlayer().AimmingPoint;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("R3")) {
-
-            FreeLookControls();
-        }
+        //if (Input.GetButtonDown("R3")) {
+        //
+        //    FreeLookControls();
+        //}
     }
     private void FreeLookControls() {
         if (freelook) {
@@ -83,13 +102,13 @@ public class VirtualCameraManager : MonoBehaviour
     private void LookingForTarget() {
         //main.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 1;
         battleCam.m_Priority = 24;
-        if (Player.GetPlayer().BattleMode.EnemyTarget != null) {
-            battleCam.m_LookAt = Player.GetPlayer().BattleMode.EnemyTarget.transform;
+        if (pc.BattleMode.EnemyTarget != null) {
+            //ttleCam.m_LookAt = Player.GetPlayer().BattleMode.EnemyTarget.transform;
         }
         else {
             battleCam.m_LookAt = aimingPoint.transform;
         }
-
+        main.transform.position = battleCam.transform.position;
         //if (grey != null) {
         //    grey();
         //}
@@ -124,6 +143,7 @@ public class VirtualCameraManager : MonoBehaviour
         meditationCam.Priority = 25;
 
     }
+    #region TitleScreen cam
     private void TurnOffTitleScreenCam() {
         titleScreenCam.m_Priority = 0;
         titleScreenObjs.SetActive(false);
@@ -132,5 +152,30 @@ public class VirtualCameraManager : MonoBehaviour
         Debug.Log("TitleCamComesBackOn");
         titleScreenCam.m_Priority = 35;
         titleScreenObjs.SetActive(true);
+    }
+
+    #endregion
+
+    private IEnumerator WaitToSwitchCam() {
+        YieldInstruction wait = new WaitForSeconds(3);
+        yield return wait;
+        WeakZendCam();
+    }
+    private void WeakZendCam() {
+        deathCam.m_Priority = 0;
+        pc.Weak=true;
+    }
+    private void TurnWeakZendCamOff() {
+        weakZendCam.m_Priority = 0;
+    }
+    private void DeathCamUp() {
+        deathCam.m_Priority = 990;
+
+    }
+    private void SwordsCam() {
+        swordsCam.m_Priority = 30;
+    }
+    private void SwordsCamDown() {
+        swordsCam.m_Priority = 0;
     }
 }

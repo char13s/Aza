@@ -11,10 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 4579633b58323a440aa66d632ea1f8c6
-  - enabled: 1
-    path: Assets/Scenes/Forest.unity
-    guid: f2e1099d51bafb7458d7e989a68f0e80
   - enabled: 0
     path: Assets/Scenes/Town.unity
     guid: 4bcb38927653d4447907f28342b1faa2
+  - enabled: 1
+    path: Assets/Scenes/CinematicScene.unity
+    guid: 835f7a1fc0713e9459c5ee99b8b3d07b
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: c90497eda6788ca43b432a74e29bebf2
+  - enabled: 1
+    path: Assets/Scenes/Forest.unity
+    guid: f2e1099d51bafb7458d7e989a68f0e80
   m_configObjects: {}

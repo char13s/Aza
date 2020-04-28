@@ -8,6 +8,8 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip bang;
     [SerializeField] private AudioClip rock;
     [SerializeField] private AudioClip slimeHit;
+    [SerializeField] private AudioClip hit;
+    
 
     [Header("Zend Sounds")]
     [SerializeField] private AudioClip landingSound;
@@ -20,7 +22,8 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip level1;
     [SerializeField] private AudioClip wormDiving;
 
-    private AudioSource audio;
+    private AudioSource masterAudio;
+    private AudioSource sfxAudio;
     private static AudioManager instance;
 
     public AudioClip Swing { get => swing; set => swing = value; }
@@ -32,6 +35,7 @@ public class AudioManager : MonoBehaviour {
     public AudioClip DrawSword { get => drawSword; set => drawSword = value; }
     public AudioClip Dash { get => dash; set => dash = value; }
     public AudioClip DoubleJump { get => doubleJump; set => doubleJump = value; }
+    public AudioClip Hit { get => hit; set => hit = value; }
 
     public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
     private void Awake()
@@ -44,7 +48,8 @@ public class AudioManager : MonoBehaviour {
         {
             instance = this;
         }
-        audio = GetComponent<AudioSource>();
+        masterAudio = GetComponent<AudioSource>();
+        sfxAudio = GetComponentInChildren<AudioSource>();
         AreaTransition.rock += SetMusic;
         GameController.titleScreen += Fade;
         FreeFallZend.diving += Fade;
@@ -62,24 +67,24 @@ public class AudioManager : MonoBehaviour {
     }
     private void SetMusic()
     {
-        audio.clip =Rock;
+        masterAudio.clip =Rock;
         
     }
     private void FadeOutVolume() {
-        audio.volume-=0.1f;
+        masterAudio.volume-=0.1f;
         
     }
      
     private IEnumerator FadeOutCoroutine(int val) {
         YieldInstruction wait = new WaitForSeconds(0.3f);
-        while (isActiveAndEnabled && audio.volume > 0f) {
+        while (isActiveAndEnabled && masterAudio.volume > 0f) {
             yield return null;
             FadeOutVolume();
         }
         StartCoroutine(FadeOut(val));
     }
     private IEnumerator FadeOut(int val) {
-        yield return new WaitUntil(()=> audio.volume == 0);
+        yield return new WaitUntil(()=> masterAudio.volume == 0);
         BackGroundMusicManager(val);
 
     }
@@ -90,13 +95,16 @@ public class AudioManager : MonoBehaviour {
     private void BackGroundMusicManager(int trackNumber) {  
         switch (trackNumber) {
             case 0:
-                audio.clip = titleScreen;
+                masterAudio.clip = titleScreen;
                 break;
             case 1:
-                audio.clip = wormDiving;
+                masterAudio.clip = wormDiving;
                 break;
         }
-        audio.volume = 0.5f;
-        audio.Play();
+        masterAudio.volume = 0.5f;
+        masterAudio.Play();
+    }
+    private void RetrieveSfx(AudioClip sound) {
+        sfxAudio.PlayOneShot(sound);
     }
 }

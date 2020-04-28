@@ -4,8 +4,11 @@ using UnityEngine.Events;
 public class CommandInputBehavior : StateMachineBehaviour {
     private AudioClip swing;
     private AudioSource sound;
+    private Player pc;
+    private WeakZend wz;
     [SerializeField] private bool jump;
     private bool hit;
+    private bool weakZend;
     [SerializeField]private bool stab;
 	[SerializeField] private float move;
 	[SerializeField] private GameObject slash;
@@ -19,7 +22,8 @@ public class CommandInputBehavior : StateMachineBehaviour {
     }
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        sound=Player.GetPlayer().Sfx;
+        pc = Player.GetPlayer();
+        sound=pc.Sfx;
         swing = AudioManager.GetAudio().Swing;
         if (jump) {
             swing = AudioManager.GetAudio().Jump;
@@ -28,12 +32,12 @@ public class CommandInputBehavior : StateMachineBehaviour {
             swing = AudioManager.GetAudio().Swing;
         }
         sound.PlayOneShot(swing);
-        Player.GetPlayer().CmdInput = 0;
-        Player.GetPlayer().MoveSpeed = 0;
-        Player.GetPlayer().Nav.enabled = false;
-		Player.GetPlayer().RBody.isKinematic = false;
-        //Player.GetPlayer().Trail.SetActive(true);
-        Player.GetPlayer().transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
+        pc.CmdInput = 0;
+        pc.MoveSpeed = 0;
+        pc.Nav.enabled = false;
+		pc.RBody.isKinematic = false;
+        //pc().Trail.SetActive(true);
+        pc.transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
         if (stab) {
             if (stopMove != null) {
                 stopMove();
@@ -46,15 +50,15 @@ public class CommandInputBehavior : StateMachineBehaviour {
         GetInput();
         if (stateInfo.normalizedTime > 0.1f && stateInfo.normalizedTime < 0.6f) {
             if (!hit) {
-                Player.GetPlayer().transform.position += Player.GetPlayer().transform.forward * move * Time.deltaTime;
+                pc.transform.position += pc.transform.forward * move * Time.deltaTime;
             }
             
             if (reminant != null) { 
-            Instantiate(reminant, Player.GetPlayer().transform.position, Player.GetPlayer().transform.rotation);
+            Instantiate(reminant, pc.transform.position, pc.transform.rotation);
             }
         }
 		if (stateInfo.normalizedTime > 0.4&&slash!=null && stateInfo.normalizedTime < 0.6f) {
-			Instantiate(slash,Player.GetPlayer().CenterPoint.transform.position, Player.GetPlayer().transform.rotation);
+			Instantiate(slash,pc.CenterPoint.transform.position, pc.transform.rotation);
 		}
         //Player.GetPlayer().transform.position = Vector3.MoveTowards();
     }
@@ -62,33 +66,33 @@ public class CommandInputBehavior : StateMachineBehaviour {
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (standoPowah != null) { 
-        Instantiate(standoPowah, Player.GetPlayer().transform.position , Player.GetPlayer().transform.rotation);
+        Instantiate(standoPowah, pc.transform.position , pc.transform.rotation);
         }
         hit = false;
         GamePad.SetVibration(0, 0, 0);
         if (resetMove != null) {
             resetMove();
         }
+        //pc.MoveSpeed = 6;
         //Player.GetPlayer().Trail.SetActive(false); 
         //Player.GetPlayer().Nav.enabled = true;
     }
     private void MoveControl() {
-       //if (stab) {
-       //    hit = true;
-       //}
-        //
+        if (!stab) { 
+           hit = true;}
     }
     private void GetInput() {
         if (Input.GetButtonDown("Square"))
         {
-            Player.GetPlayer().CmdInput = 1;
+            pc.CmdInput = 1;
         }
 
         if (Input.GetButtonDown("Triangle"))
         {
-            Player.GetPlayer().CmdInput = 2;
+            pc.CmdInput = 2;
         }
 
     }
+    
 
 }
