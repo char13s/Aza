@@ -12,10 +12,11 @@ public class BaseBehavoirs : StateMachineBehaviour
         pc.CmdInput = 0;
        pc.MoveSpeed = 6;
         pc.SpinAttack = false;
-        pc.Anim.SetLayerWeight(3,1);
+        //pc.Anim.SetLayerWeight(3,1);
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        
         if (Input.GetButton("Square")) {
 
         }

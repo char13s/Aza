@@ -108,6 +108,15 @@ public class Player : MonoBehaviour {
     private int guardAnimations;
     private bool doubleJump;
     private bool spinAttack;
+    private bool withdraw;
+
+    private int demonLayer;
+    private int angelLayer;
+    private int scytheLayer;
+    private int legsLayer;
+    private int guardLayer;
+    private int castLayer;
+
     #endregion
     #region Random stuff
     [Space]
@@ -247,7 +256,7 @@ public class Player : MonoBehaviour {
     public bool PickUp1 { get => pickUp; set { pickUp = value; anim.SetBool("PickUp", pickUp); } }
     public bool Wall { get => wall; set => wall = value; }
     public bool Climbing1 { get => climbing; set { climbing = value; anim.SetBool("Climbing", climbing); } }
-    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); if (grounded) { RBody.isKinematic = true; nav.enabled = true; SecondJump = false; CantDoubleJump = true; } } }
+    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded);WeaponManagement(); if (grounded) { RBody.isKinematic = true; nav.enabled = true; SecondJump = false; CantDoubleJump = true; } } }
 
     public bool WallMoving { get => wallMoving; set { wallMoving = value; anim.SetBool("WallMoving", wallMoving); } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
@@ -370,6 +379,8 @@ public class Player : MonoBehaviour {
     public bool Weak { get => weak; set { weak = value; anim.SetBool("Weak", weak); } }
 
     public GameObject WoodenSwordHitBox { get => woodenSwordHitBox; set => woodenSwordHitBox = value; }
+    public int LegsLayer { get => legsLayer; set => legsLayer = value; }
+    public bool Withdraw1 { get => withdraw; set { withdraw = value;anim.SetBool("Withdraw", withdraw); } }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -439,6 +450,7 @@ public class Player : MonoBehaviour {
         UpperCutBehavior.sendGoingUp += GoingUp;
 
         EventTrigger.chooseSword += ChooseSword;
+        WithdrawSword.withdraw += Withdraw;
 
         #region Item subs
         ItemData.mask += PowerUpp;
@@ -458,7 +470,12 @@ public class Player : MonoBehaviour {
         stats.Start();
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
-
+        demonLayer = anim.GetLayerIndex("DemonSwordLayer");
+        angelLayer = anim.GetLayerIndex("AngelSwordLayer");
+        guardLayer = anim.GetLayerIndex("GuardLayer");
+        LegsLayer = anim.GetLayerIndex("RunningLayer");
+        castLayer = anim.GetLayerIndex("MagicLayer");
+        
         grounded = anim.GetBool("Grounded");
         InputSealed = true;
     }
@@ -568,22 +585,26 @@ public class Player : MonoBehaviour {
     }
     #region Event handlers
     private void DemonSwordChose() {
+        Attacking = false;
+        Weak = false;
         weaponMin = 0;
         weaponMax = 1;
         Weapon = 0;
     }
     private void AngelSwordChose() {
+        Attacking = false;
+        Weak = false;
         weaponMin = 1;
         weaponMax = 2;
         Weapon = 2;
     }
     private void ChooseSword() {
-        Weak = false;
+       
         woodenSword.SetActive(false);
 
     }
     private void SetCastBack() {
-        anim.SetLayerWeight(5, 0);
+        anim.SetLayerWeight(castLayer, 0);
     }
     private void DrawSwordOut(AudioClip sound) {
         Debug.Log("Securing that bag");
@@ -593,8 +614,10 @@ public class Player : MonoBehaviour {
         sfx.PlayOneShot(sound);
     }
     private void OnHit() {
-        Hit = true;
-        Debug.Log("A nigga was hit");
+        if (!hit) {
+            Hit = true;
+        }
+        
     }
     private void EnableBody() {
         Body.SetActive(true);
@@ -710,10 +733,15 @@ public class Player : MonoBehaviour {
     //    sfx.PlayOneShot(sound);
     //}
     private void GroundSoundManagement(AudioClip sound) {
-        ClothesSfx.clip = sound;
+        if (sendSfx != null) {
+            sendSfx(sound);
+        }
+        //ClothesSfx.clip = sound;
     }
     private void SoundEffects(AudioClip sound) {
-        sfx.PlayOneShot(sound);
+        if (sendSfx != null) {
+            sendSfx(sound);
+        }
     }
     #endregion
     private void GetAllInput() {
@@ -771,7 +799,7 @@ public class Player : MonoBehaviour {
             if (Input.GetButtonDown("Circle") && items.Items.Count > 0) {
                 items.UseItem();
 
-                anim.SetLayerWeight(5, 1);
+                anim.SetLayerWeight(castLayer, 1);
                 CastItem = true;
                 Debug.Log("Item used");
             }
@@ -952,7 +980,7 @@ public class Player : MonoBehaviour {
     private IEnumerator SetLayerWait() {
         YieldInstruction wait = new WaitForSeconds(0.1f);
         yield return wait;
-        anim.SetLayerWeight(3, 1);
+        anim.SetLayerWeight(legsLayer, 1);
 
     }
     private void WhileSleep() {
@@ -1103,7 +1131,7 @@ public class Player : MonoBehaviour {
             notAiming();
 
         }
-
+        
         AttackBow.SetActive(false);
         BowUp = false;
 
@@ -1258,6 +1286,8 @@ public class Player : MonoBehaviour {
 
 
             Jumping = true;
+            anim.SetLayerWeight(demonLayer,0);
+            anim.SetLayerWeight(angelLayer, 0);
             nav.enabled = false;
             RBody.isKinematic = false;
             Grounded = false;
@@ -1400,23 +1430,33 @@ public class Player : MonoBehaviour {
         //demonSwordBack.SetActive(true);
         //attackBow.SetActive(false);
         ////demonSwordBack.SetActive(true);
-        if (!weak) {
+        if (!weak&&attacking&&grounded) {
             switch (weapon) {
                 case 0:
-                    anim.SetLayerWeight(2, 1);
+                    anim.SetLayerWeight(demonLayer, 1);
                     break;
                 case 1:
-                    anim.SetLayerWeight(7, 1);
+                    anim.SetLayerWeight(1, 1);
                     break;
                 case 2:
-                    anim.SetLayerWeight(8, 1);
+                    anim.SetLayerWeight(angelLayer, 1);
                     break;
             }
         }
 
     }
     private void Withdraw() {
-        anim.SetLayerWeight(2, 0);
+        Withdraw1 = false;
+        Attacking = false;
+        DemonSword.SetActive(false);
+        demonSwordBack.SetActive(true);
+        demonFistLeft.SetActive(false);
+        demonFistRight.SetActive(false);
+        attackBow.SetActive(false);
+        angelSword.SetActive(false);
+        anim.SetLayerWeight(demonLayer, 0);
+        anim.SetLayerWeight(angelLayer,0);
+        bowUp = false;
     }
     private void Sword() {
 
@@ -1440,12 +1480,12 @@ public class Player : MonoBehaviour {
 
             if (Input.GetButtonDown("R1")) {
                 Debug.Log("attacking is false");
-                Attacking = false;
+                Withdraw1 = true;
                 //LockedOn = false;
                 return;
             }
 
-
+           
 
             if (Input.GetButtonUp("Square") && !skillIsActive && !boutaSpin) {
                 CmdInput = 1;
@@ -1482,13 +1522,13 @@ public class Player : MonoBehaviour {
 
             LockedOn = true;
 
-            anim.SetLayerWeight(4, 1);
+            anim.SetLayerWeight(guardLayer, 1);
 
         }
 
         else {
             //Attacking = true;
-            anim.SetLayerWeight(4, 0);
+            anim.SetLayerWeight(guardLayer, 0);
             Guard = false;
             shieldBack.SetActive(true);
         }

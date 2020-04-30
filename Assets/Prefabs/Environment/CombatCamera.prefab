@@ -32571,6 +32571,7 @@ MonoBehaviour:
   bang: {fileID: 8300000, guid: 07d222c72261d4e4b9ab939eda4f3059, type: 3}
   rock: {fileID: 8300000, guid: 21848ae8eca609b429a6b0c60a7cff44, type: 3}
   slimeHit: {fileID: 8300000, guid: 6bd4b066e496d07408faaf578cb8da31, type: 3}
+  hit: {fileID: 0}
   landingSound: {fileID: 8300000, guid: 124dd1736eb368f41a90ccf51881c458, type: 3}
   drawSword: {fileID: 8300000, guid: e9a872feb8183bd4281893480fda5ed9, type: 3}
   dash: {fileID: 8300000, guid: 9bd77aa60f79d504dbef5facce747c53, type: 3}
@@ -32579,6 +32580,8 @@ MonoBehaviour:
   houseMusic: {fileID: 0}
   level1: {fileID: 0}
   wormDiving: {fileID: 8300000, guid: 3a665ada9350094499225d2c0eef59d0, type: 3}
+  death: {fileID: 8300000, guid: 935b25e575520af4893f2f3ec6934eee, type: 3}
+  mysteriousHarmonies: {fileID: 0}
 --- !u!1 &3791178207761825584
 GameObject:
   m_ObjectHideFlags: 0

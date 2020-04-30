@@ -48,7 +48,7 @@ public class Enemy : MonoBehaviour {
     private Player pc;
     private PlayerBattleSceneMovement pb;
     private Animator anim;
-    private AudioSource sound;
+    //private AudioSource sound;
     private Rigidbody rbody;
     #endregion
 
@@ -92,6 +92,7 @@ public class Enemy : MonoBehaviour {
     public static event UnityAction onAnyEnemyDead;
 	public static event UnityAction onHit;
     public static event UnityAction guardBreak;
+    public static event UnityAction<AudioClip> sendsfx;
     #region Getters and Setters
 public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !dead) { Dead = true; } } }
@@ -161,7 +162,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Anim = GetComponent<Animator>();
         nav = GetComponent<NavMeshAgent>();
-        sound = GetComponent<AudioSource>();
+        //sound = GetComponent<AudioSource>();
         rbody = GetComponent<Rigidbody>();
         StatusEffects.onStatusUpdate += StatusControl;
         StatCalculation();
@@ -465,8 +466,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     //}
     private void OnHit()
     {
-        sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
-
+        //sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
+        if (sendsfx != null) {
+            sendsfx(AudioManager.GetAudio().SlimeHit);
+        }
         //rbody.isKinematic = tr;
         //nav.enabled = false;
         if (state != EnemyAiStates.Null) {
@@ -655,7 +658,9 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     public void HitGuard() {
         if (pc.stats.MPLeft > 0) {
             pc.stats.MPLeft -= Mathf.Max(1, stats.Attack );
-
+            if (sendsfx != null) {
+                sendsfx(AudioManager.GetAudio().HitShield);
+            }
         }
         else {
             

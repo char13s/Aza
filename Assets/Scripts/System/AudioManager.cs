@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip rock;
     [SerializeField] private AudioClip slimeHit;
     [SerializeField] private AudioClip hit;
+    [SerializeField] private AudioClip hitShield;
     
 
     [Header("Zend Sounds")]
@@ -21,6 +22,8 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip houseMusic;
     [SerializeField] private AudioClip level1;
     [SerializeField] private AudioClip wormDiving;
+    [SerializeField] private AudioClip death;
+    [SerializeField] private AudioClip mysteriousHarmonies;
 
     private AudioSource masterAudio;
     private AudioSource sfxAudio;
@@ -36,6 +39,7 @@ public class AudioManager : MonoBehaviour {
     public AudioClip Dash { get => dash; set => dash = value; }
     public AudioClip DoubleJump { get => doubleJump; set => doubleJump = value; }
     public AudioClip Hit { get => hit; set => hit = value; }
+    public AudioClip HitShield { get => hitShield; set => hitShield = value; }
 
     public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
     private void Awake()
@@ -52,6 +56,7 @@ public class AudioManager : MonoBehaviour {
         sfxAudio = GetComponentInChildren<AudioSource>();
         AreaTransition.rock += SetMusic;
         GameController.titleScreen += Fade;
+        //GameController.onoLevelLoaded+=
         FreeFallZend.diving += Fade;
     }
     // Start is called before the first frame update
@@ -92,12 +97,19 @@ public class AudioManager : MonoBehaviour {
         StartCoroutine(FadeOutCoroutine(val));
         //BackGroundMusicManager(val);
     }
-    private void BackGroundMusicManager(int trackNumber) {  
+    private void BackGroundMusicManager(int trackNumber) {
+        
         switch (trackNumber) {
             case 0:
-                masterAudio.clip = titleScreen;
+                masterAudio.clip = null;
                 break;
             case 1:
+                masterAudio.clip = titleScreen;
+                break;
+            case 2:
+                masterAudio.clip = death;
+                break;
+            default:
                 masterAudio.clip = wormDiving;
                 break;
         }

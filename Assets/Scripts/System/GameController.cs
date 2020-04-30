@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour {
     [SerializeField]private GameObject spawn;
     [SerializeField] private GameObject forestSpawn;
     [Space]
+
     private int currentLevel;
     private int nextLevel;
     private bool load;
@@ -170,9 +171,7 @@ public class GameController : MonoBehaviour {
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
             Debug.Log("Scene 1 up");
             pc.gameObject.SetActive(false);
-            if (titleScreen != null) {
-                titleScreen(0);
-            }
+            
             //eventSystem.gameObject.SetActive(false);
         }
         else {
@@ -255,6 +254,9 @@ public class GameController : MonoBehaviour {
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
         if (onoLevelLoaded != null) {
             onoLevelLoaded();
+        }
+        if (titleScreen != null) {
+            titleScreen(scene.buildIndex);
         }
         
         if (SceneManager.GetSceneByBuildIndex(nextLevel).isLoaded) {

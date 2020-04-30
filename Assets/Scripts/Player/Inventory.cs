@@ -76,13 +76,13 @@ public class Inventory {
     private void SwitchSelected() {
         switch (SelectedList) {
             case 0:
-                SelectedList = 1;
+                SelectedList = 0;
                 if (menuSet != null) {
                     menuSet(SelectedList);
                 }
                 break;
             case 1:
-                SelectedList = 0;
+                SelectedList = 1;
                 if (menuSet != null) {
                     menuSet(SelectedList);
                 }

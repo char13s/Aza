@@ -251,8 +251,8 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private Text swordProficency;
 
     [Header("Title Screen Menu")]
-    [SerializeField] private GameObject newGameButton;
-
+    [SerializeField] private Button newGameButton;
+    [SerializeField] private Button continueButton;
     [Header("Dialogues")]
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private GameObject intro;
@@ -487,7 +487,7 @@ public class UiManager : MonoBehaviour {
             }
         }
         else {
-            if (Input.GetButtonDown("Circle")) {
+            if (Input.GetButtonDown("Circle")&&SceneManager.sceneCount==1) {
                 saveMenu.SetActive(false);
                 missionDetails.SetActive(false);
                 skills.SetActive(false);
@@ -800,12 +800,14 @@ public class UiManager : MonoBehaviour {
         if (demonSword != null) {
             demonSword();
         }
+        LoadLevelHelper(4);
         choicePanel.SetActive(false);
     }
     public void AngelSword() {
         if (angelSword != null) {
             angelSword();
         }
+        LoadLevelHelper(4);
         choicePanel.SetActive(false);
     }
     #endregion
@@ -918,6 +920,7 @@ public class UiManager : MonoBehaviour {
 
     }
     public void NewGame() {
+        newGameButton.enabled = false;
         StartFade(onNewGame);
 
     }
@@ -982,17 +985,10 @@ public class UiManager : MonoBehaviour {
 
         Player.GetPlayer().InputSealed = false;
     }
-    private void PauseGame() {
-        Player.GetPlayer().Pause = true;
-
-    }
+    #region shit I dont use
     public void FuckU() {
 
         Debug.Log("fucks i give : 0");
-
-    }
-    private void GameScreen() {
-        StartCoroutine(WaitCoroutine());
 
     }
     private void ObjectiveMenuHandling() {
@@ -1011,6 +1007,25 @@ public class UiManager : MonoBehaviour {
         DescriptionBox.text = objective;
 
     }
+
+    public void AddObjective(Objective o) {
+
+        objectives.Add(o);
+        Instantiate(o, MissionListing.transform);
+        newObjectiveWindow.SetActive(true);
+        StartCoroutine(WindowFade(newObjectiveWindow));
+    }
+    #endregion
+    private void PauseGame() {
+        Player.GetPlayer().Pause = true;
+
+    }
+    
+    private void GameScreen() {
+        StartCoroutine(WaitCoroutine());
+
+    }
+    
     private void UseMenuHandling() {
 
         DefaultObject = useButton.gameObject;
@@ -1022,7 +1037,7 @@ public class UiManager : MonoBehaviour {
         //mainMenuEventSystem.GetComponent<EventSystem>().SetSelectedGameObject(DefaultObject);
     }
     private IEnumerator FindSelected() {
-        YieldInstruction wait = new WaitForSeconds(0.3f);
+        YieldInstruction wait = new WaitForSeconds(0.1f);
         yield return wait;
         EventSystem.current.SetSelectedGameObject(DefaultObject);
     }
@@ -1334,13 +1349,7 @@ public class UiManager : MonoBehaviour {
         StartCoroutine(WindowFade(savedGame));
     }
 
-    public void AddObjective(Objective o) {
-
-        objectives.Add(o);
-        Instantiate(o, MissionListing.transform);
-        newObjectiveWindow.SetActive(true);
-        StartCoroutine(WindowFade(newObjectiveWindow));
-    }
+   
 
 
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {

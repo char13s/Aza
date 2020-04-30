@@ -17,13 +17,14 @@ public class CommandInputBehavior : StateMachineBehaviour {
 
     public static event UnityAction stopMove;
     public static event UnityAction resetMove;
+    public static event UnityAction<AudioClip> sendsfx;
     private void Awake() {
         HitBox.onEnemyHit += MoveControl;
     }
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         pc = Player.GetPlayer();
-        sound=pc.Sfx;
+        //sound=pc.Sfx;
         swing = AudioManager.GetAudio().Swing;
         if (jump) {
             swing = AudioManager.GetAudio().Jump;
@@ -31,7 +32,10 @@ public class CommandInputBehavior : StateMachineBehaviour {
         else {
             swing = AudioManager.GetAudio().Swing;
         }
-        sound.PlayOneShot(swing);
+        //sound.PlayOneShot(swing);
+        if (sendsfx != null) {
+            sendsfx(swing);
+        }
         pc.CmdInput = 0;
         pc.MoveSpeed = 0;
         pc.Nav.enabled = false;
@@ -79,7 +83,8 @@ public class CommandInputBehavior : StateMachineBehaviour {
     }
     private void MoveControl() {
         if (!stab) { 
-           hit = true;}
+          // hit = true;
+        }
     }
     private void GetInput() {
         if (Input.GetButtonDown("Square"))

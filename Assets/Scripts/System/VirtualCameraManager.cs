@@ -59,7 +59,7 @@ public class VirtualCameraManager : MonoBehaviour
     void Start()
     {
         pc = Player.GetPlayer();
-        EventManager.endOfDeathIntro += WeakZendCam;
+        EventManager.endOfDeathIntro += CamTransitions;
 
         EventTrigger.chooseSword+=SwordsCam;
         UiManager.demonSword += SwordsCamDown;
@@ -155,9 +155,11 @@ public class VirtualCameraManager : MonoBehaviour
     }
 
     #endregion
-
+    private void CamTransitions() {
+        StartCoroutine(WaitToSwitchCam());
+    }
     private IEnumerator WaitToSwitchCam() {
-        YieldInstruction wait = new WaitForSeconds(3);
+        YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
         WeakZendCam();
     }
