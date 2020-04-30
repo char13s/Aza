@@ -151,6 +151,11 @@ public class UiManager : MonoBehaviour {
 
     [Header("Options")]
     [SerializeField] private GameObject optDefaultButton;
+	[SerializeField] private GameObject optionMenu;
+	[SerializeField] private GameObject soundSettings;
+	[SerializeField] private GameObject gameSettings;
+	[SerializeField] private Slider masterVolume;
+	[SerializeField] private Slider sfxVolume;
     //[SerializeField] private 
 
     [Header("Pop Up Windows")]
@@ -273,9 +278,10 @@ public class UiManager : MonoBehaviour {
 
     [SerializeField] private GameObject choicePanel;
 
-    //[SerializeField]private GameObject quit
-    //Events
-    public static UnityAction missionCleared;
+	//[SerializeField]private GameObject quit
+	//Events
+	#region Events
+	public static UnityAction missionCleared;
     public static event UnityAction sealPlayerInput;
     public static event UnityAction unsealPlayerInput;
     public static UnityAction<string, Sprite> itemAdded;
@@ -290,7 +296,11 @@ public class UiManager : MonoBehaviour {
     public static event UnityAction<int> nextLevel;
     public static event UnityAction demonSword;
     public static event UnityAction angelSword;
-    [SerializeField] private GameObject defaultObject;
+	public static event UnityAction<float> sendMasterVolume;
+	public static event UnityAction<float> sendSfxVolume;
+	#endregion
+
+	[SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
     private int menuState;
     private Player pc;
@@ -421,7 +431,9 @@ public class UiManager : MonoBehaviour {
         EventManager.sceneChanger += LoadLevelHelper;
         EventTrigger.chooseSword += ChoicePanelUp;
         TutorialTriggers.requestTutorial += TutorialUpProcessor;
-        #endregion
+		#endregion
+		masterVolume.onValueChanged.AddListener(OnMasterVolumeChange);
+		sfxVolume.onValueChanged.AddListener(OnSFXVolumeChange);
         pc = Player.GetPlayer();
         sprites = SpriteAssign.GetSprite();
         WeaponSwitch();
@@ -622,10 +634,19 @@ public class UiManager : MonoBehaviour {
 
     }
 
-    #endregion
-    #region Event Handlers
-
-    private void SetPlayerUI() {
+	#endregion
+	#region Event Handlers
+	private void OnMasterVolumeChange(float val) {
+		if (sendMasterVolume != null) {
+			sendMasterVolume(val);
+		}
+	}
+	private void OnSFXVolumeChange(float val) {
+		if (sendSfxVolume != null) {
+			sendSfxVolume(val);
+		}
+	}
+	private void SetPlayerUI() {
         playerUi.SetActive(true);
     }
     private void SetPlayerUIOff() {
@@ -664,11 +685,17 @@ public class UiManager : MonoBehaviour {
         StartFade(load);
 
     }
-    //private void DialogueManagement(string lines) {
-    //dialogueText.text = lines;
-    //}
-    #endregion
-    #region Menus
+	//private void DialogueManagement(string lines) {
+	//dialogueText.text = lines;
+	//}
+	#endregion
+	#region Menus
+	public void OptionsMenu() {
+		optionMenu.SetActive(true);
+	}
+	public void SoundSettingsUp() {
+		soundSettings.SetActive(true);
+	}
     public void StoreUp() {
         if (sealPlayerInput != null) {
             sealPlayerInput();

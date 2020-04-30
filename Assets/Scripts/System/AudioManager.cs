@@ -29,6 +29,9 @@ public class AudioManager : MonoBehaviour {
     private AudioSource sfxAudio;
     private static AudioManager instance;
 
+	
+	private float sfxVolume;
+
     public AudioClip Swing { get => swing; set => swing = value; }
     public AudioClip Bang { get => bang; set => bang = value; }
     public AudioClip Rock { get => rock; set => rock = value; }
@@ -40,8 +43,9 @@ public class AudioManager : MonoBehaviour {
     public AudioClip DoubleJump { get => doubleJump; set => doubleJump = value; }
     public AudioClip Hit { get => hit; set => hit = value; }
     public AudioClip HitShield { get => hitShield; set => hitShield = value; }
+	
 
-    public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
+	public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -62,7 +66,7 @@ public class AudioManager : MonoBehaviour {
     // Start is called before the first frame update
     void Start()
     {
-        
+		UiManager.sendSfxVolume += SetSfxVolume;
     }
 
     // Update is called once per frame
@@ -70,7 +74,13 @@ public class AudioManager : MonoBehaviour {
     {
         
     }
-    private void SetMusic()
+	private void SetMasterVolume(float val) {
+		masterAudio.volume = val;
+	}
+	private void SetSfxVolume(float val) {
+		sfxAudio.volume = val;
+	}
+	private void SetMusic()
     {
         masterAudio.clip =Rock;
         
