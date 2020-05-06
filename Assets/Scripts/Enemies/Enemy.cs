@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour {
     [SerializeField] private GameObject hitBox;
     
     [SerializeField] private GameObject drop;
+    [SerializeField] private GameObject soul;
 	[SerializeField] private GameObject cut;
     [SerializeField] private Slider EnemyHp;
 
@@ -77,6 +78,7 @@ public class Enemy : MonoBehaviour {
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
+    [SerializeField]private bool weak;
 
     private bool striking;
     [SerializeField] private int flip;
@@ -188,6 +190,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         PortalConnector.backToLevelSelect += OnPlayerDeath;
         onAnyDefeated += EnemyDeath;
         ReactionRange.dodged += SlowEnemy;
+        //UiManager.killAll += KillEnemy;
         //EnemyHitBox.hit += CalculateAttack;
         //EnemyHitBox.guardHit += HitGuard;
         Enemies.Add(this);
@@ -262,6 +265,9 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
 
 
+    }
+    private void KillEnemy() {
+        Destroy(this);
     }
     #region Event handlers
     private void SwitchFreezeOn() {
@@ -637,7 +643,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         if (!dead) {
             HealthLeft--;
-            Debug.Log("Slime: Ouch!");
+
             //Mathf.Max(1, (pc.stats.Attack+(int)addition) - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
             //ouch.GetComponent<HitText>().Text = "- " + Mathf.Max(1, (pc.stats.Attack + (int)addition) - stats.Defense).ToString(); ;
             //Instantiate(ouch, transform.position+new Vector3(0.4f,0.4f,0), Quaternion.identity);
@@ -650,9 +656,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             lowHealth = true;
         }
         OnHit();}
+        
     }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
     public void CalculateAttack() {
-        pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
+        if (!weak) {
+            pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
+        }
+        
         
     }
     public void HitGuard() {
@@ -673,9 +683,15 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         int exp = baseHealth * baseExpYield;
         pc.stats.AddExp(exp);
-        if (drop != null) { 
+        if (drop != null&&!weak) { 
         Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
-        drop.transform.position = transform.position;}
+        drop.transform.position = transform.position;
+            
+        }
+        if (soul != null) {
+            Instantiate(soul, transform.position + new Vector3(0, 0.18f, 0), Quaternion.identity);
+            soul.transform.position = transform.position;
+        }
 
     }
 

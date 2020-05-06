@@ -20,7 +20,7 @@ public class SpinAttackSetUp : StateMachineBehaviour
         }
 
         if (Input.GetButtonUp("Square")) {
-            
+            pc.LightAttack = false;
             pc.BoutaSpin = false;
             if (charge > 0.99) {
                 pc.SpinAttack = true;
@@ -35,6 +35,6 @@ public class SpinAttackSetUp : StateMachineBehaviour
         pc.BoutaSpin = false;
     }
     private void Spark() {
-        Instantiate(spark,pc.DemonSword.transform.position,Quaternion.identity);
+        Instantiate(spark,pc.DemonSword.transform);
     }
 }

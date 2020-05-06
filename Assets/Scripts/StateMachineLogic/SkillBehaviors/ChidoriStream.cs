@@ -9,5 +9,6 @@ public class ChidoriStream : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
         Instantiate(chidoriStream,pc.transform);
+        pc.CmdInput = 0;
     }
 }

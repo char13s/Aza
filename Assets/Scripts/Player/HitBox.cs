@@ -30,12 +30,12 @@ public class HitBox : MonoBehaviour {
         
     }
     void OnEnable() {
-        Debug.Log("Swoosh");
+
         
         //audio.PlayOneShot(swing);
     }
     private void OnDisable() {
-        Debug.Log("SwooshEd");
+
         enemies.Clear();
     }
     // Update is called once per frame
@@ -97,9 +97,9 @@ public class HitBox : MonoBehaviour {
 
             if (other != null && other.GetComponent<Enemy>() && !enemies.Contains(other.gameObject)) {
                 if (enemies.Contains(other.gameObject)) {
-                    Debug.Log("this enemy is already in the list but is still being hit");
+                    
                 }
-                Debug.Log("an enemy was hit");
+
                 if (onEnemyHit != null) {
                     onEnemyHit();
                 }

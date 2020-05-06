@@ -9,7 +9,7 @@ public class ExitArrowIdle : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         pc = Player.GetPlayer();
-        pc.AttackBow.SetActive(false);
+       // pc.AttackBow.SetActive(false);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

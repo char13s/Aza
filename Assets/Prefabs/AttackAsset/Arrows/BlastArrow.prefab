@@ -238,7 +238,7 @@ MonoBehaviour:
   type: 0
   power: 5
   speed: 50
-  fire: {fileID: 1104441392863020350, guid: 27e6e0b4099678947b7b0b69afaf3989, type: 3}
+  fire: {fileID: 2425362128049503189, guid: 6dae887dcd869434f800a328e6c69a9c, type: 3}
   boom: {fileID: 7381281483615101918, guid: 0f4e1ac9dad18714a9e14d551839d74c, type: 3}
 --- !u!54 &8227272863994200316
 Rigidbody:

@@ -16,12 +16,18 @@ public class Hurt : StateMachineBehaviour
    {
         
         
-    }
+   }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {//Player.GetPlayer().Hit = false;
+    {
+        Player.GetPlayer().Hit = false;
      Debug.Log("ummm");   
+    }
+    private IEnumerable turnHitOff() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
+        Player.GetPlayer().Hit = false;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -11,6 +11,7 @@ public class FireBall : MonoBehaviour
     {
         direction = Player.GetPlayer().transform.forward;
         LayerMask.GetMask("Ground");
+        Destroy(gameObject, 9f);
     }
 
     // Update is called once per frame
@@ -29,7 +30,7 @@ public class FireBall : MonoBehaviour
         Debug.Log(other.name);
         if (other.gameObject.CompareTag("Enemy"))
         {
-            if (other != null) { 
+            if (other.gameObject.GetComponent<Enemy>() != null) { 
             other.gameObject.GetComponent<Enemy>().CalculateDamage(5);}
        
         

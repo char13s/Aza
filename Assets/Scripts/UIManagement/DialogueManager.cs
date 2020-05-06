@@ -25,6 +25,7 @@ public class DialogueManager : MonoBehaviour {
             if (requestNextLine != null) {
                 requestNextLine();
             }
+
         }
     }
     private void DialogueUp(bool val) {

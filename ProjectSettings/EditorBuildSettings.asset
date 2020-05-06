@@ -20,7 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
     guid: c90497eda6788ca43b432a74e29bebf2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Forest.unity
     guid: f2e1099d51bafb7458d7e989a68f0e80
+  - enabled: 1
+    path: Assets/Scenes/DemoBattleScene.unity
+    guid: aaeb4345763304b4e84817cc69a2b83d
   m_configObjects: {}

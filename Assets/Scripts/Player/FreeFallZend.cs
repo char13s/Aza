@@ -49,10 +49,10 @@ public class FreeFallZend : MonoBehaviour
         }
         rbody =GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
-        WallDetector.up += UpDetector;
-        WallDetector.down += DownDetector;
-        WallDetector.left += LeftDetector;
-        WallDetector.right += RightDetector;
+        //WallDetector.up += UpDetector;
+        //WallDetector.down += DownDetector;
+        //WallDetector.left += LeftDetector;
+        //WallDetector.right += RightDetector;
         GameController.onNewGame += StartGame;
         EndOfPortal.prepareToLand += ReadyToLand;
     }

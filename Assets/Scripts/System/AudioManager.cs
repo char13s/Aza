@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
+    [SerializeField] private GameObject sfxSource;
+    [Space]
     [SerializeField] private AudioClip swing;
     [SerializeField] private AudioClip jump;
     [SerializeField] private AudioClip bang;
@@ -10,6 +12,9 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip slimeHit;
     [SerializeField] private AudioClip hit;
     [SerializeField] private AudioClip hitShield;
+    [SerializeField] private AudioClip pause;
+    [SerializeField] private AudioClip click;
+    [SerializeField] private AudioClip buttonClick;
     
 
     [Header("Zend Sounds")]
@@ -18,6 +23,7 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip dash;
     [SerializeField] private AudioClip doubleJump;
     [Header("SoundTracks")]
+    [SerializeField] private AudioClip soundTracks;
     [SerializeField] private AudioClip titleScreen;
     [SerializeField] private AudioClip houseMusic;
     [SerializeField] private AudioClip level1;
@@ -25,11 +31,12 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip death;
     [SerializeField] private AudioClip mysteriousHarmonies;
 
+    
     private AudioSource masterAudio;
     private AudioSource sfxAudio;
     private static AudioManager instance;
 
-	
+    private float masterVolume;
 	private float sfxVolume;
 
     public AudioClip Swing { get => swing; set => swing = value; }
@@ -43,9 +50,10 @@ public class AudioManager : MonoBehaviour {
     public AudioClip DoubleJump { get => doubleJump; set => doubleJump = value; }
     public AudioClip Hit { get => hit; set => hit = value; }
     public AudioClip HitShield { get => hitShield; set => hitShield = value; }
-	
+    public float MasterVolume { get => masterVolume; set { masterVolume = value;masterAudio.volume = masterVolume; } }
+    public float SfxVolume { get => sfxVolume; set { sfxVolume = value;sfxAudio.volume = sfxVolume; } }
 
-	public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
+    public static AudioManager GetAudio() => instance.GetComponent<AudioManager>();
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -57,16 +65,26 @@ public class AudioManager : MonoBehaviour {
             instance = this;
         }
         masterAudio = GetComponent<AudioSource>();
-        sfxAudio = GetComponentInChildren<AudioSource>();
+        sfxAudio = sfxSource.GetComponent<AudioSource>();
         AreaTransition.rock += SetMusic;
         GameController.titleScreen += Fade;
         //GameController.onoLevelLoaded+=
         FreeFallZend.diving += Fade;
+        
     }
     // Start is called before the first frame update
     void Start()
     {
 		UiManager.sendSfxVolume += SetSfxVolume;
+        UiManager.sendMasterVolume += SetMasterVolume;
+        UiManager.pause += Pause;
+        Player.sendSfx += RetrieveSfx;
+        CommandInputBehavior.sendsfx += RetrieveSfx;
+        Enemy.sendsfx += RetrieveSfx;
+        UIButton.click += OnClick;
+        DialogueManager.requestNextLine += OnClick;
+        Inventory.set += OnClick;
+        MasterVolume = 0.3f;
     }
 
     // Update is called once per frame
@@ -75,14 +93,14 @@ public class AudioManager : MonoBehaviour {
         
     }
 	private void SetMasterVolume(float val) {
-		masterAudio.volume = val;
+		MasterVolume = val;
 	}
 	private void SetSfxVolume(float val) {
-		sfxAudio.volume = val;
+		SfxVolume = val;
 	}
 	private void SetMusic()
     {
-        masterAudio.clip =Rock;
+        masterAudio.clip = Rock;
         
     }
     private void FadeOutVolume() {
@@ -123,10 +141,20 @@ public class AudioManager : MonoBehaviour {
                 masterAudio.clip = wormDiving;
                 break;
         }
-        masterAudio.volume = 0.5f;
+        masterAudio.volume = MasterVolume;
         masterAudio.Play();
     }
     private void RetrieveSfx(AudioClip sound) {
         sfxAudio.PlayOneShot(sound);
     }
+    public void OnClick() {
+        sfxAudio.PlayOneShot(buttonClick);
+    }
+    public void OnSelected() {
+        sfxAudio.PlayOneShot(click);
+    }
+    private void Pause() {
+        sfxAudio.PlayOneShot(pause);
+    }
+
 }

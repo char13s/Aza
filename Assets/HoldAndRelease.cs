@@ -19,7 +19,7 @@ public class HoldAndRelease : StateMachineBehaviour {
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         if (pc.BowUp) {
-            if (Input.GetButtonUp("Square")) {
+            if (Input.GetButtonUp("L1")) {
                 pc.CmdInput = 0;
             }
         }

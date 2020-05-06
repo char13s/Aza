@@ -392,7 +392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats:
     baseHealth: 3
-    baseAttack: 2
+    baseAttack: 0
     baseDefense: 2
     baseMp: 0
   canvas: {fileID: 2313167134663449198}
@@ -404,8 +404,10 @@ MonoBehaviour:
   attackDelay: 2
   baseExpYield: 15
   baseHealth: 10
+  attackDistance: 0
   hitBox: {fileID: 5206741836199000521}
   drop: {fileID: 4012060356533637717, guid: 12c09df2632e1e145b9c45c838dcb645, type: 3}
+  soul: {fileID: 0}
   cut: {fileID: 5754920302586766889, guid: b43b1190931a6db4d8a418505c6f522b, type: 3}
   EnemyHp: {fileID: 2313167135260982762}
   farHitPoint: {fileID: 5888903828669152773}
@@ -413,6 +415,7 @@ MonoBehaviour:
     type: 3}
   slime: {fileID: 2313167134750843311}
   ouch: {fileID: 3403200122732432855, guid: 4aa6fb711ab6cc6468b28b91f4931e7b, type: 3}
+  weak: 1
   flip: 1
   boss: 0
 --- !u!54 &5052483079137612084

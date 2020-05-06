@@ -21,6 +21,7 @@ public class Inventory {
     public static event UnityAction<Sprite> leftItemSet;
     public static event UnityAction<Sprite> rightItemSet;
     public static event UnityAction<int> menuSet;
+    public static event UnityAction set;
     public List<GameObject> Buttons { get => buttons; set => buttons = value; }
     public List<ItemData> Items { get => items; set => items = value; }
     public ItemData MainItem { get => mainItem; set { mainItem = value; MainItemManagement(); } }
@@ -76,15 +77,21 @@ public class Inventory {
     private void SwitchSelected() {
         switch (SelectedList) {
             case 0:
+                SelectedList = 1;
+                if (menuSet != null) {
+                    menuSet(SelectedList);
+                }
+                if (set != null) {
+                    set();
+                }
+                break;
+            case 1:
                 SelectedList = 0;
                 if (menuSet != null) {
                     menuSet(SelectedList);
                 }
-                break;
-            case 1:
-                SelectedList = 1;
-                if (menuSet != null) {
-                    menuSet(SelectedList);
+                if (set != null) {
+                    set();
                 }
                 break;
         }

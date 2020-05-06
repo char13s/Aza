@@ -13,16 +13,19 @@ public class ArrowBehavior : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
         arrow = ArrowSelected();
+        if (pc.Weak) {
+            arrow = basic;
+        }
         Instantiate(arrow, pc.transform.position + new Vector3(0, 0.4F, 0), Quaternion.identity);
     }
     private GameObject ArrowSelected() {
-        switch (pc.ArrowType) {
+        switch (pc.Style) {
             case 0:
-                return fireArrow;
-            case 1:
-                return thunderArrow;
-            case 2:
                 return basic;
+            case 1:
+                return fireArrow;
+            case 2:
+                return thunderArrow;
             default:return basic;
         }
     }

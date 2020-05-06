@@ -19,7 +19,9 @@ public class VirtualCameraManager : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera weakZendCam;
     [SerializeField] private CinemachineVirtualCamera deathCam;
     [SerializeField] private CinemachineVirtualCamera swordsCam;
-    [Space]
+
+    [Header("Cinematic cams")]
+    [SerializeField] private CinemachineVirtualCamera firstDemonSpawn;
     [Header("ObjectRefs")]
     [SerializeField] private GameObject lookAtTarget;
     [SerializeField] private GameObject body;
@@ -36,6 +38,7 @@ public class VirtualCameraManager : MonoBehaviour
     public static event UnityAction grey;
     public static event UnityAction ungrey;
     public static event UnityAction weakZend;
+    public static event UnityAction spawnDemon;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -52,14 +55,16 @@ public class VirtualCameraManager : MonoBehaviour
         GameController.onNewGame += TurnOffTitleScreenCam;
         GameController.respawn += TurnOffTitleScreenCam;
         GameController.returnToLevelSelect+=TurnTitleCamOn;
-        GameController.readyDeathCam += DeathCamUp;
+        GameController.readyDeathCam += DeathCamTransitions;
 
 
     }
     void Start()
     {
         pc = Player.GetPlayer();
-        EventManager.endOfDeathIntro += CamTransitions;
+        EventManager.endOfDeathIntro += WeakZendCamTransitions;
+        EventManager.demonSpawning += FirstDemonSpawn;
+        EventManager.demonWryed += DemonWryed;
 
         EventTrigger.chooseSword+=SwordsCam;
         UiManager.demonSword += SwordsCamDown;
@@ -155,13 +160,24 @@ public class VirtualCameraManager : MonoBehaviour
     }
 
     #endregion
-    private void CamTransitions() {
-        StartCoroutine(WaitToSwitchCam());
+    private void DeathCamTransitions() {
+        StartCoroutine(WaitToSwitchCam(1));
     }
-    private IEnumerator WaitToSwitchCam() {
-        YieldInstruction wait = new WaitForSeconds(1);
+    private void WeakZendCamTransitions() {
+        StartCoroutine(WaitToSwitchCam(0));
+    }
+    private IEnumerator WaitToSwitchCam(int val) {
+        YieldInstruction wait = new WaitForSeconds(0.5f);
         yield return wait;
-        WeakZendCam();
+        switch (val) {
+            case 0:
+                WeakZendCam();
+                break;
+            case 1:
+                DeathCamUp();
+                break;
+        }
+        
     }
     private void WeakZendCam() {
         deathCam.m_Priority = 0;
@@ -172,12 +188,24 @@ public class VirtualCameraManager : MonoBehaviour
     }
     private void DeathCamUp() {
         deathCam.m_Priority = 990;
-
+        deathCam.gameObject.GetComponent<SceneDialogue>().enabled = true;
     }
     private void SwordsCam() {
         swordsCam.m_Priority = 30;
+        swordsCam.gameObject.GetComponent<SceneDialogue>().enabled = true;
     }
     private void SwordsCamDown() {
         swordsCam.m_Priority = 0;
+    }
+    private void FirstDemonSpawn() {
+        firstDemonSpawn.m_Priority = 100;
+        if (spawnDemon != null) {
+            spawnDemon();
+        }
+        firstDemonSpawn.gameObject.GetComponent<SceneDialogue>().enabled = true;
+    }
+    private void DemonWryed() {
+        firstDemonSpawn.m_Priority = 0;
+
     }
 }

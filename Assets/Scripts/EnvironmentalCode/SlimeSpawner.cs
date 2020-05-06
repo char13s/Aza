@@ -54,7 +54,7 @@ public class SlimeSpawner : MonoBehaviour
             yield return new WaitForSeconds(10f);
             
 
-            if (SpawnedEnemies.Count < 5)
+            if (SpawnedEnemies.Count < 2)
             {
                 
                 SpawnedEnemies.Add(Instantiate(slime, spawnPoint.transform.position+SpawnPointOffset(), Quaternion.identity).GetComponent<Slime>());

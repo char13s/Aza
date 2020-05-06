@@ -258,6 +258,7 @@ public class UiManager : MonoBehaviour {
     [Header("Title Screen Menu")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continueButton;
+    [SerializeField] private GameObject endOfDemoScreen;
     [Header("Dialogues")]
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private GameObject intro;
@@ -275,7 +276,7 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private GameObject levelSelectWindow;
     [SerializeField] private GameObject levelSelectionDefault;
     [Space]
-
+    [SerializeField] private GameObject choiceDefaultButton;
     [SerializeField] private GameObject choicePanel;
 
 	//[SerializeField]private GameObject quit
@@ -298,6 +299,8 @@ public class UiManager : MonoBehaviour {
     public static event UnityAction angelSword;
 	public static event UnityAction<float> sendMasterVolume;
 	public static event UnityAction<float> sendSfxVolume;
+    public static event UnityAction pause;
+    public static event UnityAction<bool> killAll;
 	#endregion
 
 	[SerializeField] private GameObject defaultObject;
@@ -377,7 +380,7 @@ public class UiManager : MonoBehaviour {
         GameController.continueGame += LevelSelect;
         GameController.continueGame += SelectLevelButton;
         GameController.setCanvas += SetCanvas;
-        GameController.returnToLevelSelect += LevelSelect;
+        //GameController.returnToLevelSelect += LevelSelect;
         GameController.returnToLevelSelect += UnFade;
         GameController.onoLevelLoaded += UnFade;
         GameController.respawn += SetPlayerUI;
@@ -429,11 +432,13 @@ public class UiManager : MonoBehaviour {
         Player.onPlayerDeath += OnPlayerDeath;
 
         EventManager.sceneChanger += LoadLevelHelper;
-        EventTrigger.chooseSword += ChoicePanelUp;
+        EventManager.chooseSword += ChoicePanelUp;
         TutorialTriggers.requestTutorial += TutorialUpProcessor;
 		#endregion
 		masterVolume.onValueChanged.AddListener(OnMasterVolumeChange);
 		sfxVolume.onValueChanged.AddListener(OnSFXVolumeChange);
+        OnMasterVolumeChange(0.3f);
+        OnSFXVolumeChange(0.3f);
         pc = Player.GetPlayer();
         sprites = SpriteAssign.GetSprite();
         WeaponSwitch();
@@ -468,6 +473,10 @@ public class UiManager : MonoBehaviour {
         }
         if (Input.GetButtonDown("Pause")) {
             PauseMenuControl(0);
+            DefaultObject = pauseMenuDefaultButton;
+            if (pause != null) {
+                pause();
+            }
             GetSelected();
         }
         if (tutorialUp) {
@@ -504,7 +513,7 @@ public class UiManager : MonoBehaviour {
                 missionDetails.SetActive(false);
                 skills.SetActive(false);
                 skillList.SetActive(false);
-                levelSelectWindow.SetActive(true);
+                //levelSelectWindow.SetActive(true);
                 DefaultObject = levelMenuDefaultButton;
             }
 
@@ -513,6 +522,9 @@ public class UiManager : MonoBehaviour {
     }
     private void TutorialUpProcessor(int num) {
         tutorialUp = true;
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
         switch (num) {
             case 0:
                 howToMove.SetActive(true);
@@ -535,6 +547,10 @@ public class UiManager : MonoBehaviour {
         }
     }
     private void ClearTutorials() {
+        
+        if (unsealPlayerInput != null) {
+            unsealPlayerInput();
+        }
         howToMove.SetActive(false);
 
         howToAttack.SetActive(false);
@@ -655,11 +671,11 @@ public class UiManager : MonoBehaviour {
     private void QuickAccessMenu(int menu) {
         switch (menu) {
             case 0:
-                itemsList.SetActive(true);
-                relicList.SetActive(false);
+                itemsList.SetActive(false);
+                //relicList.SetActive(false);
                 break;
             case 1:
-                itemsList.SetActive(false);
+                itemsList.SetActive(true);
                 //relicList.SetActive(true);
                 break;
         }
@@ -691,7 +707,7 @@ public class UiManager : MonoBehaviour {
 	#endregion
 	#region Menus
 	public void OptionsMenu() {
-		optionMenu.SetActive(true);
+        PauseMenuControl(5);
 	}
 	public void SoundSettingsUp() {
 		soundSettings.SetActive(true);
@@ -706,6 +722,9 @@ public class UiManager : MonoBehaviour {
     //    skillTree.SetActive(true);
     //    levelMenuPrefab.SetActive(false);
     //}
+    public void GameSettingsUp() {
+        gameSettings.SetActive(true);
+    }
     public void PauseMenuControl(int num) {
         MenuState = num;
         menus.SetActive(false);
@@ -721,7 +740,7 @@ public class UiManager : MonoBehaviour {
                 equipment.SetActive(false);
                 skills.SetActive(false);
                 stats.SetActive(false);
-                options.SetActive(false);
+                soundSettings.SetActive(false);
                 break;
             case 1:
                 items.SetActive(true);
@@ -739,7 +758,7 @@ public class UiManager : MonoBehaviour {
                 ViewStats();
                 break;
             case 5:
-                options.SetActive(true);
+                soundSettings.SetActive(true);
                 break;
         }
 
@@ -800,12 +819,13 @@ public class UiManager : MonoBehaviour {
         //EventSystem.current.SetSelectedGameObject(DefaultObject);
     }
     private void MenusDown() {
-        levelMenuPrefab.SetActive(false);
-        storeMenu.SetActive(false);
-        if (unsealPlayerInput != null) {
-            unsealPlayerInput();
-        }
-        portalList.SetActive(false);
+        //levelMenuPrefab.SetActive(false);
+        //storeMenu.SetActive(false);
+        //if (unsealPlayerInput != null) {
+        //    unsealPlayerInput();
+        //}
+        //portalList.SetActive(false);
+        optionMenu.SetActive(false);
         MeditationMenu.SetActive(false);
         if (menuState == 0) {
             Player.GetPlayer().Pause = false;
@@ -822,19 +842,26 @@ public class UiManager : MonoBehaviour {
     #region Choice shit
     private void ChoicePanelUp() {
         choicePanel.SetActive(true);
+       
+        
+        DefaultObject = choiceDefaultButton;
     }
     public void DemonSword() {
         if (demonSword != null) {
             demonSword();
         }
+        
         LoadLevelHelper(4);
+        
         choicePanel.SetActive(false);
     }
     public void AngelSword() {
         if (angelSword != null) {
             angelSword();
         }
+       
         LoadLevelHelper(4);
+        
         choicePanel.SetActive(false);
     }
     #endregion
@@ -970,6 +997,9 @@ public class UiManager : MonoBehaviour {
         if (action != null) {
             action();
         }
+        if (killAll != null) {
+            killAll(true);
+        }
     }
     private void NextScene(Vector3 travelPoint) {
         StopCoroutine(FadeOutCoroutine(travelPoint));
@@ -996,10 +1026,16 @@ public class UiManager : MonoBehaviour {
         while (isActiveAndEnabled && black.color.a >= 0) {
             yield return null;
             Color color = black.color;
-            color.a -= 0.01f;
+            color.a -= 0.1f;
             black.color = color;
         }
         loadingIcon.SetActive(false);
+        if (unsealPlayerInput != null) {
+            unsealPlayerInput();
+        }
+        if (killAll != null) {
+            killAll(false);
+        }
     }
     private IEnumerator WaitToArrangeCoroutine() {
         YieldInstruction wait = new WaitForSeconds(3);

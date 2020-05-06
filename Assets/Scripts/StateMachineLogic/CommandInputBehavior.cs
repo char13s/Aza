@@ -14,6 +14,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
 	[SerializeField] private GameObject slash;
     [SerializeField] private GameObject standoPowah;
     [SerializeField] private GameObject reminant;
+    private bool fired;
 
     public static event UnityAction stopMove;
     public static event UnityAction resetMove;
@@ -36,6 +37,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
         if (sendsfx != null) {
             sendsfx(swing);
         }
+        pc.Guard = false;
         pc.CmdInput = 0;
         pc.MoveSpeed = 0;
         pc.Nav.enabled = false;
@@ -61,8 +63,9 @@ public class CommandInputBehavior : StateMachineBehaviour {
             Instantiate(reminant, pc.transform.position, pc.transform.rotation);
             }
         }
-		if (stateInfo.normalizedTime > 0.4&&slash!=null && stateInfo.normalizedTime < 0.6f) {
+		if (stateInfo.normalizedTime > 0.4&&slash!=null && stateInfo.normalizedTime < 0.6f&&!fired) {
 			Instantiate(slash,pc.CenterPoint.transform.position, pc.transform.rotation);
+            fired = true;
 		}
         //Player.GetPlayer().transform.position = Vector3.MoveTowards();
     }
@@ -73,6 +76,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
         Instantiate(standoPowah, pc.transform.position , pc.transform.rotation);
         }
         hit = false;
+        fired = false;
         GamePad.SetVibration(0, 0, 0);
         if (resetMove != null) {
             resetMove();

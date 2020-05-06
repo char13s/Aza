@@ -9,6 +9,8 @@ public class SceneDialogue : MonoBehaviour
     [SerializeField]private bool forBeginning;
     [SerializeField] private int eventNum;
     private int current;
+    private bool done;
+    [SerializeField]private bool turnOffWholeObject;
     public static event UnityAction<int> sendEndEvent;
     public int Current { get => current; set => current = value; } //Mathf.Clamp(value,0,lines.Length-1); } }
 
@@ -16,20 +18,28 @@ public class SceneDialogue : MonoBehaviour
     public static event UnityAction<string> sendLine;
     public static event UnityAction<bool> pullUpDialogue;
     public static event UnityAction<bool> turnOffDialogue;
+    public static event UnityAction sealPlayerInput;
+    public static event UnityAction unsealPlayerInput;
     // Start is called before the first frame update
     void Start()
     {
         GameController.onNewGame += TheFirstDialouge;
         DialogueManager.requestNextLine += ProcessLineRequest;
     }
-
+    private void OnEnable() {
+        StartCoroutine(WaitABit());
+        Current = 0;
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
+    }
     // Update is called once per frame
     void Update()
     {
         
     }
     private IEnumerator WaitABit() {
-        YieldInstruction wait = new WaitForSeconds(3);
+        YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
         if (pullUpDialogue != null) {
             pullUpDialogue(true);
@@ -40,6 +50,7 @@ public class SceneDialogue : MonoBehaviour
         if (sendLine != null) {
             sendLine(lines[0]);
         }
+        
     }
     private void TheFirstDialouge() {
         if (forBeginning) {
@@ -47,20 +58,35 @@ public class SceneDialogue : MonoBehaviour
         }
     }
     private void ProcessLineRequest() {
-        Current++;
-        if (current == lines.Length) {
-            if (turnOffDialogue != null) {
-                turnOffDialogue(false);
+        if (!done) {
+            Current++;
+            if (current == lines.Length) {
+                if (turnOffDialogue != null) {
+                    turnOffDialogue(false);
+                }
+                if (sendEndEvent != null) {
+                    sendEndEvent(eventNum);
+                }
+                if (unsealPlayerInput != null) {
+                    unsealPlayerInput();
+                }
+                done = true;
+                if (turnOffWholeObject) {
+                    gameObject.SetActive(false);
+                }
+                else {
+                    GetComponent<SceneDialogue>().enabled = false;
+                }
+                
             }
-            if (sendEndEvent != null) {
-                sendEndEvent(eventNum);
+            else {
+                Debug.Log(current);
+                if (sendLine != null) {
+                    sendLine(lines[Current]);
+                }
             }
         }
-        else {
-            if (sendLine != null) {
-                sendLine(lines[current]);
-            }
-        }
+        
         
     }
 }

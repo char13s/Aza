@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour {
     [SerializeField] private GameObject cinematicManager;
     [SerializeField]private GameObject spawn;
     [SerializeField] private GameObject forestSpawn;
+    [SerializeField] private GameObject demoSpawn;
     [Space]
 
     private int currentLevel;
@@ -154,10 +155,15 @@ public class GameController : MonoBehaviour {
         yield return wait;
         if (lvl==4) {//write some bs to handle spawns based on what lvl yatta yatta 
             //SceneManager.UnloadSceneAsync(currentLevel);
-            spawn = forestSpawn;
+            spawn = demoSpawn;
         }
+        
         Debug.Log(lvl); if (!Player.GetPlayer().Dead) { 
         SceneManager.LoadSceneAsync(lvl,LoadSceneMode.Additive);
+            if (lvl > 1) {
+                SceneManager.UnloadSceneAsync(lvl - 1);
+            }
+            //SceneManager.UnloadSceneAsync(lvl-1);
         GameMode = 1;
         currentLevel = lvl;
         if (respawn != null) {

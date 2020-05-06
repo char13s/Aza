@@ -9,7 +9,7 @@ public class TutorialTriggers : MonoBehaviour
     public static event UnityAction<int> requestTutorial;
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
+        if (other.CompareTag("Player")&&!triggered) {
             if (requestTutorial != null) {
                 requestTutorial(tutorialNum);
             }
