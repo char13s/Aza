@@ -4,13 +4,19 @@ using UnityEngine.UI;
 public class LevelObject : MonoBehaviour
 {
     public static event UnityAction<Sprite[],string,int> selectLevel;
+    public static event UnityAction<GameObject> setSpawn;
     [SerializeField] private Sprite[] rewards;
     [SerializeField] private string details;
     [SerializeField] private int level;
+    [SerializeField] private GameObject levelSpawn;
+    [SerializeField] private bool button;
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Button>().onClick.AddListener(IconClick);
+        if (button) {
+            GetComponent<Button>().onClick.AddListener(IconClick);
+        }
+        
     }
 
     // Update is called once per frame
@@ -22,5 +28,11 @@ public class LevelObject : MonoBehaviour
         if (selectLevel != null) {
             selectLevel(rewards,details,level);
         }
+        if (setSpawn != null) {
+            setSpawn(levelSpawn);
+        }
+    }
+    public void ActivateLevel() {
+        IconClick();
     }
 }

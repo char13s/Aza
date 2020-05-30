@@ -8,7 +8,7 @@ public class DialogueManager : MonoBehaviour {
     [SerializeField] private GameObject textPanel;
     private bool dialogueIsRunning;
     public static event UnityAction requestNextLine;
-    
+    public static event UnityAction skipDialogue;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,11 +21,19 @@ public class DialogueManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("X")&&dialogueIsRunning) {
+        if (Input.GetButtonDown("Circle")&&dialogueIsRunning) {
             if (requestNextLine != null) {
                 requestNextLine();
             }
 
+        }
+        if (Input.GetButtonDown("Square")) {
+            if (skipDialogue != null) {
+                skipDialogue();
+            }
+            if (requestNextLine != null) {
+                requestNextLine();
+            }
         }
     }
     private void DialogueUp(bool val) {

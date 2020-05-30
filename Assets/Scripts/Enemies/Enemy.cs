@@ -313,14 +313,14 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
                 attacking = false;
 
             }
-            if (Distance < 1f && !dead && !Hit)
+            if (Distance < 1.5f && !dead && !Hit)
             {
 
                 State = EnemyAiStates.Attacking;
 
             }
 
-            if (Distance > 1f && Distance < 6f && !dead&&!Hit)
+            if (Distance > 1.5f && Distance < 6f && !dead&&!Hit)
             {
                 nav.enabled = true;
                 //Debug.Log("fuk");
@@ -401,15 +401,17 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     public virtual void PlantATree()
     {
+        if (slimeTree != null) { 
         Instantiate(slimeTree, transform.position + new Vector3(4, 0.14f, 0), Quaternion.identity);
-        slimeTree.transform.position = transform.position;
+        slimeTree.transform.position = transform.position;}
         State = EnemyAiStates.Idle;
 
     }
     public virtual void SpawnAFriend()
     {
+        if (slime != null) { 
         Instantiate(slime, transform.position + new Vector3(4, 0.14f, 0), Quaternion.identity);
-        slime.transform.position = transform.position;
+        slime.transform.position = transform.position;}
         State = EnemyAiStates.Idle;
     }
     private void GetHelp()
@@ -466,18 +468,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         EnemyHp.maxValue = stats.Health;
         EnemyHp.value = stats.HealthLeft;
     }
-    //private void WasShieldSlapped() {
-    //    hit
-    //
-    //}
+
     private void OnHit()
     {
         //sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
         if (sendsfx != null) {
             sendsfx(AudioManager.GetAudio().SlimeHit);
         }
-        //rbody.isKinematic = tr;
-        //nav.enabled = false;
         if (state != EnemyAiStates.Null) {
             hitCoroutine = StartCoroutine(HitCoroutine());
 
@@ -642,12 +639,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     public void CalculateDamage(float addition)
     {
         if (!dead) {
-            HealthLeft--;
-
-            //Mathf.Max(1, (pc.stats.Attack+(int)addition) - stats.Defense);//WRITE THE FUCKING ENEMY'S STATS CLASS
-            //ouch.GetComponent<HitText>().Text = "- " + Mathf.Max(1, (pc.stats.Attack + (int)addition) - stats.Defense).ToString(); ;
-            //Instantiate(ouch, transform.position+new Vector3(0.4f,0.4f,0), Quaternion.identity);
-            
+            HealthLeft -= Mathf.Clamp((pc.stats.Attack - stats.Defense),0,999);  
             Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
         {

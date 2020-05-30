@@ -20,10 +20,25 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
     guid: c90497eda6788ca43b432a74e29bebf2
-  - enabled: 0
-    path: Assets/Scenes/Forest.unity
-    guid: f2e1099d51bafb7458d7e989a68f0e80
   - enabled: 1
     path: Assets/Scenes/DemoBattleScene.unity
     guid: aaeb4345763304b4e84817cc69a2b83d
+  - enabled: 1
+    path: Assets/Scenes/DeathScene.unity
+    guid: b2c17169cac69fc4f94c3ad7ed4e8c65
+  - enabled: 1
+    path: Assets/Scenes/Forest.unity
+    guid: f2e1099d51bafb7458d7e989a68f0e80
+  - enabled: 0
+    path: Assets/Scenes/Test01.unity
+    guid: 9c186dedfe39dda41b0e722c57899fc1
+  - enabled: 1
+    path: Assets/Scenes/NewTutorialBeginning.unity
+    guid: 9ed505839ca7b5d409cd90464da03310
+  - enabled: 1
+    path: Assets/Scenes/AngelLostCivil.unity
+    guid: e3309560f07a79c4e94f14128f08f4fe
+  - enabled: 1
+    path: Assets/Scenes/DemonLevel1.unity
+    guid: 4ae674e4109187149becdbb6f79e4986
   m_configObjects: {}

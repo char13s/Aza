@@ -44,6 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isQuestTriggered: 0
-  spawn: 0
-  enemy: {fileID: 2313167133622813292, guid: e4e1576c7c45eb146ba9b4189cf369ca, type: 3}
+  enemy: {fileID: 8875301683035306595, guid: ace980f97f4e37249af7a542ef9bb5b1, type: 3}
   spawnIn: {fileID: 2020061169180018092, guid: 14809bb15aff7194291a72567c7f1351, type: 3}

@@ -22,11 +22,15 @@ public class VirtualCameraManager : MonoBehaviour
 
     [Header("Cinematic cams")]
     [SerializeField] private CinemachineVirtualCamera firstDemonSpawn;
+    [SerializeField] private CinemachineVirtualCamera nextCam;
+    [SerializeField] private CinemachineVirtualCamera dedCam;
     [Header("ObjectRefs")]
     [SerializeField] private GameObject lookAtTarget;
     [SerializeField] private GameObject body;
     [SerializeField] private GameObject titleScreenObjs;
     [SerializeField] private GameObject aimingPoint;
+    [SerializeField] private GameObject fire;
+    [SerializeField] private GameObject lightning;
     [Space]
 
     private Player pc;
@@ -48,7 +52,7 @@ public class VirtualCameraManager : MonoBehaviour
         //Player.onPlayerDeath += TurnTitleCamOn;
         UiManager.portal += ControlMainCam;
 
-		PlayerBattleSceneMovement.onLockOn += AimBattleCam;
+
 
         ExpConverter.levelMenuUp += MeditationCam;
 
@@ -69,6 +73,11 @@ public class VirtualCameraManager : MonoBehaviour
         EventTrigger.chooseSword+=SwordsCam;
         UiManager.demonSword += SwordsCamDown;
         UiManager.angelSword += SwordsCamDown;
+        UiManager.bothSwords += SwordsCamDown;
+        EventManager.nextCam += NextCam;
+        EventManager.demoRestart += RestartDemo;
+       //EventManager.demoRestart += DedCamDown;
+       //Player.Player
         aimingPoint = Player.GetPlayer().AimmingPoint;
     }
 
@@ -105,7 +114,7 @@ public class VirtualCameraManager : MonoBehaviour
         archeryCam.m_Priority = priority;
     }
     private void LookingForTarget() {
-        //main.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 1;
+        
         battleCam.m_Priority = 24;
         if (pc.BattleMode.EnemyTarget != null) {
             //ttleCam.m_LookAt = Player.GetPlayer().BattleMode.EnemyTarget.transform;
@@ -114,32 +123,12 @@ public class VirtualCameraManager : MonoBehaviour
             battleCam.m_LookAt = aimingPoint.transform;
         }
         main.transform.position = battleCam.transform.position;
-        //if (grey != null) {
-        //    grey();
-        //}
+
     }
     private void NotAiming() {
-        //main.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 6;
-        //main.m_LookAt = Player.GetPlayer().transform;
         battleCam.m_Priority = 1;
-        //if (ungrey != null)
-        //{
-        //    ungrey();
-        //}
     }
-	private void AimBattleCam() {
 
-        
-        //if (Player.GetPlayer().BattleMode.EnemyTarget != null&&Player.GetPlayer().LockedOn) {
-        //    //main.GetRig(1).LookAt = 
-        //    main.m_LookAt=Player.GetPlayer().BattleMode.EnemyTarget.transform;
-        //    //battleCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 7.5f+(Vector3.Distance(Player.GetPlayer().BattleMode.EnemyTarget.transform.position, Player.GetPlayer().transform.position)/2);
-        //    //battleCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 10;
-        //}
-        //else {
-        //    main.GetRig(1).LookAt = body.transform;
-        //}
-    }
 	private void RetargetBattleCam() {
 		battleCam.m_LookAt = Player.GetPlayer().transform;
         battleCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Vector3.Distance(Player.GetPlayer().BattleMode.EnemyTarget.transform.position, Player.GetPlayer().transform.position);
@@ -181,6 +170,7 @@ public class VirtualCameraManager : MonoBehaviour
     }
     private void WeakZendCam() {
         deathCam.m_Priority = 0;
+        Debug.Log("wtf");
         pc.Weak=true;
     }
     private void TurnWeakZendCamOff() {
@@ -196,6 +186,8 @@ public class VirtualCameraManager : MonoBehaviour
     }
     private void SwordsCamDown() {
         swordsCam.m_Priority = 0;
+        lightning.SetActive(false);
+        fire.SetActive(false);
     }
     private void FirstDemonSpawn() {
         firstDemonSpawn.m_Priority = 100;
@@ -208,4 +200,26 @@ public class VirtualCameraManager : MonoBehaviour
         firstDemonSpawn.m_Priority = 0;
 
     }
+    private void NextCam(int val) {
+        if (val!=0){
+           nextCam.gameObject.GetComponent<SceneDialogue>().enabled = true;
+
+        }
+        nextCam.Priority = val;
+    }
+    private void DedCamUp() {
+        dedCam.Priority = 100;
+    }
+    private void DedCamDown() {
+        dedCam.Priority = 0;
+    }
+    private void RestartDemo() {
+        StartCoroutine(ReturnToTitleSoon());
+    }
+    private IEnumerator ReturnToTitleSoon() {
+        YieldInstruction wait = new WaitForSeconds(2.5f);
+        yield return wait;
+        TurnTitleCamOn();
+    }
+    
 }

@@ -9,6 +9,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private int t;//targeted enemy in the array of enemies
     private Enemy enemyTarget;
     public static event UnityAction onLockOn;
+    public static event UnityAction<int> playBattleTheme;
     private Enemy closestEnemy;
     private bool slide;
     private bool pressed;
@@ -22,6 +23,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private AxisButton L2 = new AxisButton("L2");
     private bool rotLock;
     private bool cutscening;
+    private bool playing;
+    private bool casual;
 
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
     public int T { get => t; set { t = value; Mathf.Clamp(t, 0, Enemies.Count); } }
@@ -116,7 +119,21 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             T = 0;
         }
 
-
+        if (enemyTarget != null && !playing) {
+            playing = true;
+            casual = false;
+            if (playBattleTheme != null) {
+                playBattleTheme(8);
+            }
+        }
+       if (enemyTarget == null&&!casual) {
+          playing = false;
+          casual = true;
+          if (playBattleTheme != null) {
+              playBattleTheme(7);
+          }
+       
+          }
     }
     private void LockOnFuctionality() {
 

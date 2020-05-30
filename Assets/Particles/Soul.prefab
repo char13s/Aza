@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2574271175096531139}
   - component: {fileID: 2574271175096531138}
   - component: {fileID: 2574271175096531141}
+  - component: {fileID: 6641665030986844650}
+  - component: {fileID: 2594272637538643331}
   m_Layer: 0
   m_Name: Soul
   m_TagString: Untagged
@@ -26,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2574271175096531140}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.403, z: -0.567}
+  m_LocalPosition: {x: 429.17322, y: 551.33466, z: -857.05194}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2574271176535429497}
@@ -4755,6 +4757,32 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!65 &6641665030986844650
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2574271175096531140}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.024423, y: 1.0244232, z: 1.0244232}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2594272637538643331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2574271175096531140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a38ccbeb209ca2b48b8853a2f9bc13b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collect: {fileID: 6468006291029811915, guid: 3410e196f78a6ff4091201337dba8bd0, type: 3}
 --- !u!1 &2574271176535429496
 GameObject:
   m_ObjectHideFlags: 0

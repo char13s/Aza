@@ -371,12 +371,14 @@ MonoBehaviour:
   attackDistance: 0
   hitBox: {fileID: 8875301681297451078}
   drop: {fileID: 0}
+  soul: {fileID: 2574271175096531140, guid: c66028f0de23d5642a4e653f7a9184a3, type: 3}
   cut: {fileID: 5754920302586766889, guid: b43b1190931a6db4d8a418505c6f522b, type: 3}
   EnemyHp: {fileID: 5833682366006941874}
   farHitPoint: {fileID: 8875301681853314870}
   slimeTree: {fileID: 0}
   slime: {fileID: 0}
   ouch: {fileID: 0}
+  weak: 0
   flip: -1
   boss: 0
 --- !u!195 &8875301683035306605
@@ -388,7 +390,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 579428115507422062}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.32
+  m_Radius: 0.6
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50

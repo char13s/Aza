@@ -8,9 +8,9 @@ public class ArrowIdle : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        pc = Player.GetPlayer();
-        pc.AttackBow.SetActive(true);
-        pc.BowUp = true;
+        //pc = Player.GetPlayer();
+        //pc.AttackBow.SetActive(true);
+        //pc.BowUp = true;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

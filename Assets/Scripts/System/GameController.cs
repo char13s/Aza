@@ -61,6 +61,7 @@ public class GameController : MonoBehaviour {
             return;
         }
         instance = this;
+        LevelObject.setSpawn += SetSpawner;
         SpawnSetters.setSpawner += SetSpawner;
         EventManager.setSpawner += SetSpawner;
         onNewGame += TheBeginningOfTheGame;      
@@ -78,6 +79,8 @@ public class GameController : MonoBehaviour {
         UiManager.nextLevel += SetNextLevel;
         UiManager.load += LevelManagement;
         PortalConnector.backToLevelSelect += OnPlayerDeath;
+        EventManager.demoRestart += DemoRestart;
+        EventManager.unloadDeathScene += UnloadDeathScene;
     }
 
     void OnDisable() {
@@ -86,7 +89,7 @@ public class GameController : MonoBehaviour {
     }
     void Start() {
         
-        Player.onPlayerDeath += OnPlayerDeath;
+        Player.onPlayerDeath += OnPlayerDead;
 
         EventManager.sceneChanger += SetNextLevel;
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) {
@@ -115,7 +118,7 @@ public class GameController : MonoBehaviour {
         //Debug.Log(SceneManager.);
     }
     private void SetSpawner(GameObject newSpawn) {
-        spawn = newSpawn;
+        Spawn = newSpawn;
     }
     private void BackToLevelSelection() {
         StartCoroutine(WaitToUnload());
@@ -123,20 +126,25 @@ public class GameController : MonoBehaviour {
     private IEnumerator WaitToUnload() {
         YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
-        
         SceneManager.UnloadSceneAsync(currentLevel);
 
     }
-    private void ShowNavi() {
-
-        //NavMeshTriangulation nav = NavMesh.CalculateTriangulation();
-        //Mesh mesh = new Mesh();
-        //mesh.vertices = nav.vertices;
-        //mesh.triangles = nav.indices;
+    private void DemoRestart() {
+       // Application.Quit();
+        StartCoroutine(WaitToUnloadDemo());
+    }
+    private IEnumerator WaitToUnloadDemo() {
+        YieldInstruction wait = new WaitForSeconds(2);
+        yield return wait;
+        if(SceneManager.GetSceneByBuildIndex(4).isLoaded) {
+            SceneManager.UnloadSceneAsync(4);
+        }
+       
     }
     private void SetNextLevel(int nextLvl) {
         NextLevel = nextLvl;
     }
+   
     private void LevelManagement() {
         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
         Debug.Log(SceneManager.GetSceneByBuildIndex(0).name);
@@ -154,23 +162,26 @@ public class GameController : MonoBehaviour {
         YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
         if (lvl==4) {//write some bs to handle spawns based on what lvl yatta yatta 
-            //SceneManager.UnloadSceneAsync(currentLevel);
+            //SceneManager.UnloadSceneAsync(4);
             spawn = demoSpawn;
         }
         
-        Debug.Log(lvl); if (!Player.GetPlayer().Dead) { 
+        Debug.Log(lvl);
         SceneManager.LoadSceneAsync(lvl,LoadSceneMode.Additive);
-            if (lvl > 1) {
-                SceneManager.UnloadSceneAsync(lvl - 1);
-            }
+        if (lvl > 1&&SceneManager.GetSceneByBuildIndex(lvl-1).isLoaded) {
+            SceneManager.UnloadSceneAsync(lvl - 1);
+        }
             //SceneManager.UnloadSceneAsync(lvl-1);
         GameMode = 1;
         currentLevel = lvl;
         if (respawn != null) {
                 respawn();
         }
-        }
         
+        
+    }
+    private void UnloadDeathScene() {
+        SceneManager.UnloadSceneAsync(5);
     }
     private void SceneManagement(Scene scene, LoadSceneMode mode) {
 
@@ -185,9 +196,12 @@ public class GameController : MonoBehaviour {
             //if (respawn != null) {
             //    respawn();
             //}
-            pc.gameObject.SetActive(true);
+            
 
             eventSystem.gameObject.SetActive(true);
+        }
+        if (currentLevel > 2&& currentLevel!=5) {
+            pc.gameObject.SetActive(true);
         }
         //if (SceneManager.GetSceneByBuildIndex(2).isLoaded && instance != null) {
         //
@@ -230,12 +244,18 @@ public class GameController : MonoBehaviour {
     private void OnPlayerDeath() {
         //deadCoroutine = StartCoroutine(DeadCoroutine());
         StartCoroutine(LoadGameOverScreen());
+        Debug.Log("The player has died");
     }
 
     private IEnumerator LoadGameOverScreen() {
-        YieldInstruction wait = new WaitForSeconds(5);
+        YieldInstruction wait = new WaitForSeconds(3);
         yield return wait;
-        BackToLevelSelect();
+        SceneManager.UnloadSceneAsync(4);
+    
+    SetNextLevel(5);
+        LevelManagement();
+        pc.gameObject.SetActive(false);
+       
     
     }
     private void BackToLevelSelect() {

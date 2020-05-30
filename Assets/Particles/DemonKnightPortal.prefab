@@ -14549,7 +14549,7 @@ MonoBehaviour:
   eventNum: 6
   hit: {fileID: 4057973752594337530, guid: cf957a4884acf8344b6d1d146a22d0f4, type: 3}
   portalHealth: {fileID: 6686305633967597955}
-  maxEnemyNum: 5
+  maxEnemyNum: 10
 --- !u!1001 &8580632050849198931
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14557,10 +14557,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7096813832251144719}
     m_Modifications:
+    - target: {fileID: 3160965015281947674, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
         type: 3}
       propertyPath: m_Name
       value: EnemyCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3160965015419878741, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
         type: 3}
@@ -14685,7 +14695,7 @@ PrefabInstance:
     - target: {fileID: 3160965015655354308, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f, type: 3}

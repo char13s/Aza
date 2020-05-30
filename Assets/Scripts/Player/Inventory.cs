@@ -40,7 +40,7 @@ public class Inventory {
         Player.dpadRight += RightSlide;
         Player.dpadLeft += LeftSlide;
         Player.dpadUp += SwitchSelected;
-        Player.dpadDown += SwitchSelected;
+        //Player.dpadDown += SwitchSelected;
         Player.skills += SwitchDpadControl;
         Debug.Log(Items.Count);
     }

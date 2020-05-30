@@ -76,33 +76,6 @@ public class Stats {
         exp += points;
 
     }
-    /*void LevelUp(int points)
-    {
-        if (Level <= 20)
-        {
-            Health += 3;
-            Attack += 2;
-            Defense += 2;
-            MP += 5;
-
-        }
-        if (Level > 20 && Level <= 50)
-        {
-            Health += 5;
-            Attack += 3;
-            Defense += 4;
-            MP += 5;
-        }
-        if (Level > 50 && Level < 99)
-        {
-            Health += 7;
-            Attack += 6;
-            Defense += 6;
-            MP += 5;
-        }
-        
-    }*/
-
     public void DisplayAbilities() {
         if (onShowingStats != null) {
             onShowingStats();
@@ -113,7 +86,7 @@ public class Stats {
         healthLeft = baseHealth;
         baseMp = 15;
         mpLeft = baseMp;
-        baseAttack = 12;
+        baseAttack = 3;
         baseDefense = 11;
         intellect = 6;
         level = 1;

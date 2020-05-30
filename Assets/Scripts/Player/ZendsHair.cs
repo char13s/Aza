@@ -6,11 +6,17 @@ public class ZendsHair : MonoBehaviour
 {
     [SerializeField] private Material demonHair;
     [SerializeField] private Material angelHair;
-    // Start is called before the first frame update
+    [SerializeField] private Material baseHair;
+    private Player pc;
+    private void Awake() {
+        
+    }
     void Start()
     {
+        pc = Player.GetPlayer();
        UiManager.angelSword += Saintity;
        UiManager.demonSword += Demonize;
+        Player.formChange += ChangeHair;
     }
 
     // Update is called once per frame
@@ -23,5 +29,21 @@ public class ZendsHair : MonoBehaviour
     }
     private void Saintity() {
         GetComponent<SkinnedMeshRenderer>().material = angelHair;
+    }
+    private void Base() {
+        GetComponent<SkinnedMeshRenderer>().material = baseHair;
+    }
+    private void ChangeHair(int val) {
+        switch (val) {
+            case 0:
+                Base();
+                break;
+            case 1:
+                Demonize();
+                break;
+            case 2:
+                Saintity();
+                break;
+        }
     }
 }

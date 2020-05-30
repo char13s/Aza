@@ -25,6 +25,8 @@ public class SceneDialogue : MonoBehaviour
     {
         GameController.onNewGame += TheFirstDialouge;
         DialogueManager.requestNextLine += ProcessLineRequest;
+        DialogueManager.skipDialogue += SkipDialogue;
+        EventManager.demoRestart += UnDone;
     }
     private void OnEnable() {
         StartCoroutine(WaitABit());
@@ -86,7 +88,15 @@ public class SceneDialogue : MonoBehaviour
                 }
             }
         }
-        
-        
+    }
+    private void SkipDialogue() {
+        Current = lines.Length - 1;
+    }
+    private void UnDone() {
+        done = false;
+        Current = 0;
+       //if (sealPlayerInput != null) {
+       //    sealPlayerInput();
+       //}
     }
 }

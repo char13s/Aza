@@ -9,9 +9,18 @@ public class EventManager : MonoBehaviour
     public static event UnityAction secondDeath;
     public static event UnityAction demonSpawning;
     public static event UnityAction demonWryed;
+    public static event UnityAction<int> nextCam;
+    public static event UnityAction demoRestart;
+    public static event UnityAction demonForestUp;
+    public static event UnityAction unloadDeathScene;
+
     [SerializeField]private GameObject spawn;
     [SerializeField] private GameObject firstDemon;
     [SerializeField] private GameObject firstDemonSpawn;
+
+    [Header("objects refs")]
+    [SerializeField] private GameObject firstDeath;
+    [SerializeField] private GameObject secondDemoDeath;
     
     // Start is called before the first frame update
     void Start()
@@ -63,7 +72,35 @@ public class EventManager : MonoBehaviour
                 }
                 break;
             case 6:
-                Debug.Log("Okay so far so good...");
+                if (nextCam != null) {
+                    nextCam(1000);
+                }
+                break;
+            case 7:
+                if (nextCam != null) {
+                    nextCam(0);
+                }
+                break;
+            case 8:
+                if (demoRestart != null) {
+                    demoRestart();
+                }
+                if (nextCam != null) {
+                    nextCam(0);
+                }
+                break;
+            case 9:
+                if (demonForestUp != null) {
+                    demonForestUp();
+                }
+                break;
+            case 10:
+                if (demoRestart != null) {
+                    demoRestart();
+                }
+                if (unloadDeathScene != null) {
+                    unloadDeathScene();
+                }
                 break;
         }
     }

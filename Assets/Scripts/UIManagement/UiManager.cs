@@ -35,6 +35,11 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private Slider staminaBar;
     [SerializeField] private Slider expBar;
     [SerializeField] private GameObject abilityClose;
+    [SerializeField] private GameObject souls;
+    [SerializeField] private Text soulCount;
+    [SerializeField] private GameObject soulUpPosition;
+    [SerializeField] private GameObject soulDownPosition;
+    [SerializeField] private int soulsObtained;
     [Space]
     #endregion
 
@@ -279,8 +284,6 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private GameObject choiceDefaultButton;
     [SerializeField] private GameObject choicePanel;
 
-	//[SerializeField]private GameObject quit
-	//Events
 	#region Events
 	public static UnityAction missionCleared;
     public static event UnityAction sealPlayerInput;
@@ -297,6 +300,7 @@ public class UiManager : MonoBehaviour {
     public static event UnityAction<int> nextLevel;
     public static event UnityAction demonSword;
     public static event UnityAction angelSword;
+    public static event UnityAction bothSwords;
 	public static event UnityAction<float> sendMasterVolume;
 	public static event UnityAction<float> sendSfxVolume;
     public static event UnityAction pause;
@@ -354,7 +358,6 @@ public class UiManager : MonoBehaviour {
         dialogueMenu = dialogueMenuPrefab;
         SetButton();
 
-
         missionCleared += ObjectiveClear;
         itemAdded += ItemPopUp;
         areaChange += AreaChange;
@@ -384,11 +387,6 @@ public class UiManager : MonoBehaviour {
         GameController.returnToLevelSelect += UnFade;
         GameController.onoLevelLoaded += UnFade;
         GameController.respawn += SetPlayerUI;
-        //GameController.respawn+=
-
-        //Npc.dialogueUp += DialogueManagerUp;
-        //Npc.dialogueDown += DialogueManagerDown;
-
         ExpConverter.levelMenuUp += MenuManager;
 
         Stats.onBaseStatsUpdate += UpdateBoost;
@@ -434,6 +432,9 @@ public class UiManager : MonoBehaviour {
         EventManager.sceneChanger += LoadLevelHelper;
         EventManager.chooseSword += ChoicePanelUp;
         TutorialTriggers.requestTutorial += TutorialUpProcessor;
+        EventManager.demoRestart += ChangeSword;
+
+        Souls.soulCount += UpdateUI;
 		#endregion
 		masterVolume.onValueChanged.AddListener(OnMasterVolumeChange);
 		sfxVolume.onValueChanged.AddListener(OnSFXVolumeChange);
@@ -467,9 +468,7 @@ public class UiManager : MonoBehaviour {
         if (Player.GetPlayer().Pause) {
             if (MenuState > 0 && Input.GetButtonDown("Circle")) {
                 StartCoroutine(WaitForPauseMenu());
-
             }
-
         }
         if (Input.GetButtonDown("Pause")) {
             PauseMenuControl(0);
@@ -479,7 +478,7 @@ public class UiManager : MonoBehaviour {
             }
             GetSelected();
         }
-        if (tutorialUp) {
+        if (tutorialUp||pc.Pause) {
             if (Input.GetButtonDown("Circle")) {
                 ClearTutorials();
             }
@@ -487,111 +486,26 @@ public class UiManager : MonoBehaviour {
         if (GameController.GetGameController().GameMode < 1) {
             Inputs();
         }
-        //if (missionListing.transform.childCount > 0) { 
-        //ObjectiveDescription(missionListing.transform.GetChild(0).GetComponent<Objective>().Description[missionListing.transform.GetChild(0).GetComponent<Objective>().CurrentDescription]);
-        //}SetCanvas();
-
     }
-    private void Inputs() {
-
-        if (levelSelectWindow.activeSelf) {
-            if (Input.GetButtonDown("Triangle")) {
-                levelSelectWindow.SetActive(false);
-                saveMenu.SetActive(true);
-                DefaultObject = saveMenuDefault;
-            }
-
-            if (Input.GetButtonDown("Square")) {
-                levelSelectWindow.SetActive(false);
-                skills.SetActive(true);
-                DefaultObject = skillDefaultButton;
-            }
-        }
-        else {
-            if (Input.GetButtonDown("Circle")&&SceneManager.sceneCount==1) {
-                saveMenu.SetActive(false);
-                missionDetails.SetActive(false);
-                skills.SetActive(false);
-                skillList.SetActive(false);
-                //levelSelectWindow.SetActive(true);
-                DefaultObject = levelMenuDefaultButton;
-            }
-
-        }
-
+    
+    #region Soul Shit
+    private void UpdateUI() {
+        soulsObtained++;
+        soulCount.text = soulsObtained.ToString();
+        SoulsUp();
+        StopCoroutine(DropSoulCount());
+        StartCoroutine(DropSoulCount());
     }
-    private void TutorialUpProcessor(int num) {
-        tutorialUp = true;
-        if (sealPlayerInput != null) {
-            sealPlayerInput();
-        }
-        switch (num) {
-            case 0:
-                howToMove.SetActive(true);
-                break;
-            case 1:
-                howToAttack.SetActive(true);
-                break;
-            case 2:
-                howToGuard.SetActive(true);
-                break;
-            case 3:
-                howToUseRelics.SetActive(true);
-                break;
-            case 4:
-                howToUseSkills.SetActive(true);
-                break;
-            case 5:
-                howToUseBow.SetActive(true);
-                break;
-        }
+    private void SoulsUp() {
+        souls.transform.position = soulUpPosition.transform.position;
     }
-    private void ClearTutorials() {
-        
-        if (unsealPlayerInput != null) {
-            unsealPlayerInput();
-        }
-        howToMove.SetActive(false);
-
-        howToAttack.SetActive(false);
-
-        howToGuard.SetActive(false);
-
-        howToUseRelics.SetActive(false);
-
-        howToUseSkills.SetActive(false);
-
-        howToUseBow.SetActive(false);
-    }
-    private IEnumerator WaitForPauseMenu() {
-        yield return null;
-        PauseMenuControl(0);
-
-    }
-    private IEnumerator JustWait(int connector) {
+    private IEnumerator DropSoulCount() {
         YieldInstruction wait = new WaitForSeconds(3);
         yield return wait;
-        if (portal != null) {
-            portal(connector);
-        }
-        MenusDown();
-        StartCoroutine(WaitToLoad());
-    }
-    //private void SetWeaponImage() {
-    //
-    //}
-    public void Portal() {
 
-        //portalList.SetActive(false);
-        //StartCoroutine(JustWait(connector));
-        StartFade(null);
-
+        souls.transform.position = soulDownPosition.transform.position;
     }
-    private IEnumerator WaitToLoad() {
-        YieldInstruction wait = new WaitForSeconds(3);
-        yield return wait;
-        UnFade();
-    }
+    #endregion
     #region Level Selection shit
     private void SetButton() {
 
@@ -701,12 +615,110 @@ public class UiManager : MonoBehaviour {
         StartFade(load);
 
     }
-	//private void DialogueManagement(string lines) {
-	//dialogueText.text = lines;
-	//}
-	#endregion
-	#region Menus
-	public void OptionsMenu() {
+    //private void DialogueManagement(string lines) {
+    //dialogueText.text = lines;
+    //}
+    #endregion
+    #region Menus
+    private void Inputs() {
+
+        if (levelSelectWindow.activeSelf) {
+            if (Input.GetButtonDown("Triangle")) {
+                levelSelectWindow.SetActive(false);
+                saveMenu.SetActive(true);
+                DefaultObject = saveMenuDefault;
+            }
+
+            if (Input.GetButtonDown("Square")) {
+                levelSelectWindow.SetActive(false);
+                skills.SetActive(true);
+                DefaultObject = skillDefaultButton;
+            }
+        }
+        else {
+            if (Input.GetButtonDown("Circle") && SceneManager.sceneCount == 1) {
+                saveMenu.SetActive(false);
+                missionDetails.SetActive(false);
+                skills.SetActive(false);
+                skillList.SetActive(false);
+                //levelSelectWindow.SetActive(true);
+                DefaultObject = levelMenuDefaultButton;
+            }
+
+        }
+
+    }
+    private void TutorialUpProcessor(int num) {
+        tutorialUp = true;
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
+        switch (num) {
+            case 0:
+                howToMove.SetActive(true);
+                break;
+            case 1:
+                howToAttack.SetActive(true);
+                break;
+            case 2:
+                howToGuard.SetActive(true);
+                break;
+            case 3:
+                howToUseRelics.SetActive(true);
+                break;
+            case 4:
+                howToUseSkills.SetActive(true);
+                break;
+            case 5:
+                howToUseBow.SetActive(true);
+                break;
+        }
+    }
+    private void ClearTutorials() {
+        tutorialUp = false;
+        if (unsealPlayerInput != null) {
+            unsealPlayerInput();
+        }
+        howToMove.SetActive(false);
+
+        howToAttack.SetActive(false);
+
+        howToGuard.SetActive(false);
+
+        howToUseRelics.SetActive(false);
+
+        howToUseSkills.SetActive(false);
+
+        howToUseBow.SetActive(false);
+    }
+    private IEnumerator WaitForPauseMenu() {
+        yield return null;
+        PauseMenuControl(0);
+
+    }
+    private IEnumerator JustWait(int connector) {
+        YieldInstruction wait = new WaitForSeconds(3);
+        yield return wait;
+        if (portal != null) {
+            portal(connector);
+        }
+        MenusDown();
+        StartCoroutine(WaitToLoad());
+    }
+
+    public void Portal() {
+
+        //portalList.SetActive(false);
+        //StartCoroutine(JustWait(connector));
+        StartFade(null);
+
+    }
+    private IEnumerator WaitToLoad() {
+        YieldInstruction wait = new WaitForSeconds(3);
+        yield return wait;
+        UnFade();
+    }
+    public void OptionsMenu() {
         PauseMenuControl(5);
 	}
 	public void SoundSettingsUp() {
@@ -842,9 +854,16 @@ public class UiManager : MonoBehaviour {
     #region Choice shit
     private void ChoicePanelUp() {
         choicePanel.SetActive(true);
-       
-        
+
+        StartCoroutine(WaitToSeal());
         DefaultObject = choiceDefaultButton;
+    }
+    private IEnumerator WaitToSeal() {
+        YieldInstruction wait = new WaitForSeconds(0.2f);
+        yield return wait;
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
     }
     public void DemonSword() {
         if (demonSword != null) {
@@ -855,6 +874,10 @@ public class UiManager : MonoBehaviour {
         
         choicePanel.SetActive(false);
     }
+    private void ChangeSword() {
+        LoadLevelHelper(1);
+        newGameButton.enabled = true;
+    }
     public void AngelSword() {
         if (angelSword != null) {
             angelSword();
@@ -863,6 +886,17 @@ public class UiManager : MonoBehaviour {
         LoadLevelHelper(4);
         
         choicePanel.SetActive(false);
+    }
+    public void BothSwords() {
+        if (bothSwords != null) {
+            bothSwords();
+        }
+        LoadLevelHelper(4);
+
+        choicePanel.SetActive(false);
+    }
+    private void FirstMission() {
+
     }
     #endregion
     #region Sleep Management
@@ -975,15 +1009,21 @@ public class UiManager : MonoBehaviour {
     }
     public void NewGame() {
         newGameButton.enabled = false;
+        ClearScreen();
         StartFade(onNewGame);
 
+    }
+    private IEnumerator WaitToReturnButton() {
+        YieldInstruction wait = new WaitForSeconds(5);
+        yield return wait;
+        newGameButton.enabled = true;
     }
     private void StartFade(UnityAction action) {
 
         StartCoroutine(FadeScreen(action));
     }
     private IEnumerator WaitTilFaded() {
-        yield return new WaitUntil(() => black.color.a > 0.98);
+        yield return new WaitUntil(() => black.color.a > 1);
         MenusDown();
     }
     private IEnumerator FadeScreen(UnityAction action) {
@@ -991,6 +1031,7 @@ public class UiManager : MonoBehaviour {
             yield return null;
             FadeToBlack();
         }
+        Debug.Log("Fuck that fade");
         MenusDown();
         //levelSelectWindow.SetActive(false);
         loadingIcon.SetActive(true);
@@ -1000,6 +1041,11 @@ public class UiManager : MonoBehaviour {
         if (killAll != null) {
             killAll(true);
         }
+    }
+    private void ClearScreen() {
+        Color color = black.color;
+        color.a = 0;
+        black.color = color;
     }
     private void NextScene(Vector3 travelPoint) {
         StopCoroutine(FadeOutCoroutine(travelPoint));
@@ -1011,7 +1057,7 @@ public class UiManager : MonoBehaviour {
     }
     private IEnumerator FadeCoroutine() {
 
-        yield return new WaitUntil(() => black.color.a >= 0.98);
+        yield return new WaitUntil(() => black.color.a >= 1);
         StartCoroutine(WaitToArrangeCoroutine());
     }
     private void UnFade() {
@@ -1026,7 +1072,7 @@ public class UiManager : MonoBehaviour {
         while (isActiveAndEnabled && black.color.a >= 0) {
             yield return null;
             Color color = black.color;
-            color.a -= 0.1f;
+            color.a -= 0.01f;
             black.color = color;
         }
         loadingIcon.SetActive(false);
@@ -1041,11 +1087,7 @@ public class UiManager : MonoBehaviour {
         YieldInstruction wait = new WaitForSeconds(3);
 
         yield return wait;
-
-
-
         Player.GetPlayer().Nav.enabled = true;
-
         Player.GetPlayer().InputSealed = false;
     }
     #region shit I dont use
@@ -1081,14 +1123,10 @@ public class UiManager : MonoBehaviour {
     #endregion
     private void PauseGame() {
         Player.GetPlayer().Pause = true;
-
-    }
-    
+    } 
     private void GameScreen() {
         StartCoroutine(WaitCoroutine());
-
     }
-    
     private void UseMenuHandling() {
 
         DefaultObject = useButton.gameObject;
@@ -1119,7 +1157,6 @@ public class UiManager : MonoBehaviour {
         }
 
     }
-
 
     #region Tutorial Logic
     public void MoveTutor() {
@@ -1365,7 +1402,6 @@ public class UiManager : MonoBehaviour {
     }
     #endregion
 
-
     private IEnumerator WaitCoroutine() {
         YieldInstruction wait = new WaitForSeconds(0.4f);
         yield return wait;
@@ -1406,15 +1442,10 @@ public class UiManager : MonoBehaviour {
 
 
     #endregion
-
     public void SaveGame() {
         savedGame.SetActive(true);
         StartCoroutine(WindowFade(savedGame));
     }
-
-   
-
-
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
         SetCanvas();
 

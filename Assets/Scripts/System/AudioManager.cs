@@ -30,6 +30,7 @@ public class AudioManager : MonoBehaviour {
     [SerializeField] private AudioClip wormDiving;
     [SerializeField] private AudioClip death;
     [SerializeField] private AudioClip mysteriousHarmonies;
+    [SerializeField] private AudioClip battleTheme;
 
     
     private AudioSource masterAudio;
@@ -79,11 +80,13 @@ public class AudioManager : MonoBehaviour {
         UiManager.sendMasterVolume += SetMasterVolume;
         UiManager.pause += Pause;
         Player.sendSfx += RetrieveSfx;
+        PlayerBattleSceneMovement.playBattleTheme += BackGroundMusicManager;
         CommandInputBehavior.sendsfx += RetrieveSfx;
         Enemy.sendsfx += RetrieveSfx;
         UIButton.click += OnClick;
         DialogueManager.requestNextLine += OnClick;
         Inventory.set += OnClick;
+        Souls.soundOff += OnClick;
         MasterVolume = 0.3f;
     }
 
@@ -137,6 +140,9 @@ public class AudioManager : MonoBehaviour {
             case 2:
                 masterAudio.clip = death;
                 break;
+           case 8:
+               masterAudio.clip = battleTheme;
+               break;
             default:
                 masterAudio.clip = wormDiving;
                 break;
