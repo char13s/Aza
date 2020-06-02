@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4193159197279633702}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: transform1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3150081586225215472}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Castle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   m_Component:
   - component: {fileID: 858313128009704384}
   - component: {fileID: 7239596855442318240}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: GameObject (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5795958479789029953}
   - component: {fileID: 6876303265160039380}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7853057152952925100}
   - component: {fileID: 7841696770937471797}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,6 +202,53 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &2580670027280819309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4886040804727071041}
+  - component: {fileID: 2053242189969742085}
+  m_Layer: 0
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4886040804727071041
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2580670027280819309}
+  m_LocalRotation: {x: -0, y: 0.36071494, z: -0, w: 0.93267614}
+  m_LocalPosition: {x: 0.5, y: 0.822, z: -0.145}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1550793810194797015}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 42.288002, z: 0}
+--- !u!208 &2053242189969742085
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2580670027280819309}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.455, y: 0.785, z: 0.575}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &2584748538636264388
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1550793810194797015}
   - component: {fileID: -7680472312438378253}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: CastleCornerWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -238,6 +285,7 @@ Transform:
   - {fileID: 8904648732902057134}
   - {fileID: 7661357942849590948}
   - {fileID: 858313128009704384}
+  - {fileID: 4886040804727071041}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
@@ -265,7 +313,7 @@ GameObject:
   - component: {fileID: 7554282092444906748}
   - component: {fileID: 7046331575320221646}
   - component: {fileID: 5859041770650258989}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Castle4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +389,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7432356135460570501}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Castle3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -373,7 +421,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8904648732902057134}
   - component: {fileID: 8656423282279900156}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -419,7 +467,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1926220073921467876}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: transform2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -450,7 +498,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7661357942849590948}
   - component: {fileID: 8844583554117729872}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: GameObject (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

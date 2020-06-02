@@ -245,7 +245,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Health = stats.BaseHealth;
         stats.Attack = stats.BaseAttack;
-        stats.Defense = stats.BaseDefense * level;
+        stats.Defense = stats.BaseDefense;
     }
     private IEnumerator StatusCoroutine(float StatusLength)
     {

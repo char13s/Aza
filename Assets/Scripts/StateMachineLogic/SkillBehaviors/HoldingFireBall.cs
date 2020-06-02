@@ -8,6 +8,7 @@ public class HoldingFireBall : StateMachineBehaviour
     [SerializeField] private GameObject fire;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
+        
         //Instantiate(fire,pc.RightHand.transform.position,Quaternion.identity);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {

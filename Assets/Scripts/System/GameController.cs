@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour {
     [SerializeField]private GameObject spawn;
     [SerializeField] private GameObject forestSpawn;
     [SerializeField] private GameObject demoSpawn;
+
     [Space]
 
     private int currentLevel;
@@ -30,6 +31,7 @@ public class GameController : MonoBehaviour {
     private Coroutine loadCoroutine;
     private Coroutine deadCoroutine;
     private int gameMode;
+    List<Scene> openScenes = new List<Scene>();
 
     public static event UnityAction onNewGame;
     public static event UnityAction onGameWasStarted;
@@ -45,6 +47,7 @@ public class GameController : MonoBehaviour {
     public static event UnityAction setCanvas;
     public static event UnityAction readyDeathCam;
     public static event UnityAction returnToLevelSelect;
+    public static event UnityAction returnToSpawn;
     // Start is called before the first frame update
     public static Player Zend => (instance == null) ? null : instance.pc;
     public static PlayableAza Aza => (instance == null) ? null : instance.aza;
@@ -64,7 +67,7 @@ public class GameController : MonoBehaviour {
         LevelObject.setSpawn += SetSpawner;
         SpawnSetters.setSpawner += SetSpawner;
         EventManager.setSpawner += SetSpawner;
-        onNewGame += TheBeginningOfTheGame;      
+        //onNewGame += TheBeginningOfTheGame;      
     }
 
     void OnEnable() {
@@ -168,16 +171,22 @@ public class GameController : MonoBehaviour {
         
         Debug.Log(lvl);
         SceneManager.LoadSceneAsync(lvl,LoadSceneMode.Additive);
-        if (lvl > 1&&SceneManager.GetSceneByBuildIndex(lvl-1).isLoaded) {
-            SceneManager.UnloadSceneAsync(lvl - 1);
+        //if (lvl > 1&&SceneManager.GetSceneByBuildIndex(lvl-1).isLoaded) {
+        //    SceneManager.UnloadSceneAsync(lvl - 1);
+        //}
+
+        foreach (Scene level in openScenes) {
+
+            SceneManager.UnloadSceneAsync(level);
         }
+        openScenes.Clear();
             //SceneManager.UnloadSceneAsync(lvl-1);
         GameMode = 1;
         currentLevel = lvl;
         if (respawn != null) {
                 respawn();
         }
-        
+        StartCoroutine(ResetActiveScene());
         
     }
     private void UnloadDeathScene() {
@@ -219,7 +228,9 @@ public class GameController : MonoBehaviour {
         }
     }
     private void OnPlayerDead() {
-        StartCoroutine(EndGame());
+        if (returnToSpawn != null) {
+            returnToSpawn();
+        }
     }
     private void OnPlayerWin() {
         StartCoroutine(EndGame());
@@ -237,8 +248,8 @@ public class GameController : MonoBehaviour {
 
     }
     private IEnumerator DeadCoroutine() {
-        yield return new WaitForSeconds(1.5f);
-        //BackToMainMenu();
+        yield return new WaitForSeconds(2f);
+        BackToMainMenu();
 
     }
     private void OnPlayerDeath() {
@@ -261,10 +272,6 @@ public class GameController : MonoBehaviour {
     private void BackToLevelSelect() {
         spawn = loadRespawn;
         GameMode = 0;
-        if (currentLevel != 0) { 
-        SceneManager.UnloadSceneAsync(currentLevel);}
-        //if (respawn != null)
-        //    respawn();
         if (returnToLevelSelect != null) {
             returnToLevelSelect();
         }
@@ -285,19 +292,19 @@ public class GameController : MonoBehaviour {
             titleScreen(scene.buildIndex);
         }
         
+        if (scene.buildIndex > 1){
+            openScenes.Add(scene);
+        }
         if (SceneManager.GetSceneByBuildIndex(nextLevel).isLoaded) {
             //CameraLogic.Switchable = true;
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextLevel));
             pc.Loaded = true;
-            
-            //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 0);
-
             foreach (GameObject b in pc.items.Buttons) {
                 b.GetComponent<Items>().data.Quantity = 0;
             }
 
         }
-        //normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
+        
 
         Vector3 position;
 
@@ -346,15 +353,18 @@ public class GameController : MonoBehaviour {
             readyDeathCam();
         }
     }
+    private IEnumerator ResetActiveScene() {
+        YieldInstruction wait = new WaitForSeconds(2);
+        yield return wait;
+        if (SceneManager.GetSceneByBuildIndex(nextLevel).isLoaded) {
+            //CameraLogic.Switchable = true;
+            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(nextLevel));
+        }
+    }
     private void OnNewGame() {
-        //Vector3 position;
+
         pc.stats.Start();
-        //position.x = 80.83f;
-        //position.y = -1.918f;
-        //position.z = -30.16f;
-        //pc.Grounded = false;
-        //normalCamera.transform.position = new Vector3(80.92751f, 8.582001f, -47.71f);
-        //pc.transform.position = position;
+   
         pc.transform.position = Spawn.transform.position;
         pc.transform.rotation = Spawn.transform.rotation;
         pc.items.Items = new List<ItemData>();

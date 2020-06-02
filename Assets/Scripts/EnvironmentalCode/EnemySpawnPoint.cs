@@ -12,7 +12,7 @@ public class EnemySpawnPoint : MonoBehaviour
     [SerializeField] private Enemy enemy;
     [SerializeField] private GameObject spawnIn;
 
-    public bool Spawn { get => spawn; set { spawn = value; } }
+    public bool Spawn { get => spawn; set { spawn = value;if (spawn) { SpawnEnemy(); } } }
 
     private void Awake()
     {
@@ -21,34 +21,11 @@ public class EnemySpawnPoint : MonoBehaviour
         FreeFallZend.landed += SequenceSpawning;
         UiManager.portal += ResetSpwan;
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-
-    }
-    private void OnEnable() {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-         
-            if (Vector3.Distance(transform.position, Player.GetPlayer().transform.position) < 5&&!spawned)
-            {
-                SpawnEnemy();
-
-            }
-        
-        
-       
-
-    }
     private void ResetSpwan(int c) {
         
         canSpawn = true;
         spawned = false;
+        spawn = false;
     }
     private void SequenceSpawning(Vector3 loc,bool val) {
         CanSpawn();

@@ -1,13 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class Hurt : StateMachineBehaviour
 {
+    private Player pc;
+    [SerializeField] private float move;
+    public static event UnityAction unseal;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().Hit = false;
+        pc = Player.GetPlayer();
+        pc.Hit = false;
+        pc.transform.position += pc.transform.forward * move * Time.deltaTime;
+        if (unseal != null) {
+            unseal();
+        }
         //Debug.Log("ummm");
     }
 
@@ -21,13 +29,16 @@ public class Hurt : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().Hit = false;
+        if (unseal != null) {
+            unseal();
+        }
+        pc.Hit = false;
      Debug.Log("ummm");   
     }
     private IEnumerable turnHitOff() {
         YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
-        Player.GetPlayer().Hit = false;
+        pc.Hit = false;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

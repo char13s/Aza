@@ -324,6 +324,7 @@ public class Player : MonoBehaviour {
     private bool castItem;
     private bool strongAttack;
     private bool lightAttack;
+    private bool endure;
 
     public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
@@ -389,6 +390,7 @@ public class Player : MonoBehaviour {
     public int SkullMask { get => skullMask; set => skullMask = value; }
     public bool Charging { get => charging; set { charging = value;anim.SetBool("Charging",charging); } }
     public int Bulbs { get => bulbs; set => bulbs = value; }
+    public GameObject WoodenSword { get => woodenSword; set => woodenSword = value; }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -433,8 +435,8 @@ public class Player : MonoBehaviour {
         DoubleJump.doubleJump += SoundEffects;
 
         CinematicManager.unfade += SealInput;
-        CinematicManager.gameStart += UnsealInput;
-
+        //CinematicManager.gameStart += UnsealInput;
+        GameController.returnToLevelSelect += ReturnToSpawn;
         KillZone.respawn += ReturnToSpawn;
         SpellTag.triggerZaWarudo += ZaWarudo;
         JudgementCut.stop += ZaWarudo;
@@ -467,8 +469,8 @@ public class Player : MonoBehaviour {
         SceneDialogue.sealPlayerInput += StopRunning;
 
         EventManager.demoRestart += SetDefault;
-
-        dpadLeft += AngelUp;
+        Hurt.unseal += UnsealInput;
+        //dpadLeft += AngelUp;
         dpadRight += DemonUp;
         dpadDown += Base;
         Interactable.sealJump += JumpSealer;
@@ -476,6 +478,8 @@ public class Player : MonoBehaviour {
         Interactable.bulbCollected += LightBulbAdjuster;
         LightBulbHolder.removeBulb += LightBulbAdjuster;
         Podium.skullUsed += SkullMaskAdjuster;
+        FormSwitch.inviciblity += Endure;
+        MovingStates.returnSpeed += ReturnSpeed;
         
         #region Item subs
         ItemData.mask += PowerUpp;
@@ -609,7 +613,7 @@ public class Player : MonoBehaviour {
     private void GetAllInput() {
         //Archery();
 
-        if (!jumping && grounded && !lockedOn && MoveSpeed > 0) {
+        if (!jumping && grounded && !lockedOn) {
             MovementInput();
         }
         else if (cmdInput == 0) {
@@ -645,7 +649,7 @@ public class Player : MonoBehaviour {
                 }
                 StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
                 if (weak) {
-                    woodenSword.SetActive(false);
+                    WoodenSword.SetActive(false);
                 }
 
             }
@@ -655,7 +659,7 @@ public class Player : MonoBehaviour {
                     archery(0);
                 }
                 if (weak) {
-                    woodenSword.SetActive(true);
+                    WoodenSword.SetActive(true);
                 }
                 BowUp = false;
                 StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
@@ -724,10 +728,7 @@ public class Player : MonoBehaviour {
             }
 
         }
-        else {
-
-            RBody.drag = 0;
-        }
+        
     }
 
     #region Time Stuff
@@ -940,10 +941,10 @@ public class Player : MonoBehaviour {
             }
             if (!grounded) {
                 if (Jumping) {
-                    MoveSpeed = 13;
+                    //MoveSpeed = 13;
                 }
                 else {
-                    MoveSpeed = 3f;
+                    //MoveSpeed = 3f;
 
                 }
 
@@ -1028,7 +1029,7 @@ public class Player : MonoBehaviour {
     }
     private IEnumerator MpDrain() {
         while (isActiveAndEnabled) {
-            YieldInstruction wait = new WaitForSeconds(1.5f);
+            YieldInstruction wait = new WaitForSeconds(3f);
             yield return wait;
             stats.MPLeft--;
             if (stats.MPLeft == 0) {
@@ -1110,7 +1111,7 @@ public class Player : MonoBehaviour {
         yield return wait;
         RBody.useGravity = true;
         Boosting = false;
-        MoveSpeed = 6;
+        //oveSpeed = 6;
     }
 
     private void Spells() {
@@ -1471,6 +1472,7 @@ public class Player : MonoBehaviour {
     }
     private void SkullMaskAdjuster(int val) {
         SkullMask += val;
+        Debug.Log("number of skulls should go up");
     }
     private void JumpSealer(bool val) {
         JumpSeal = val;
@@ -1488,7 +1490,7 @@ public class Player : MonoBehaviour {
         fireTrailL.SetActive(false);
         demonSwordBack.SetActive(false);
         demonScabbard.SetActive(false);
-        woodenSword.SetActive(false);
+        WoodenSword.SetActive(false);
         Style = 0;
     }
     private void StyleSwitch() {
@@ -1565,7 +1567,7 @@ public class Player : MonoBehaviour {
         if (formChange != null) {
             formChange(1);
         }
-        mpDrain = StartCoroutine(MpDrain());
+       mpDrain = StartCoroutine(MpDrain());
         //Attacking = false;
         stats.Attack = 5;
         Weapon = 0;
@@ -1587,12 +1589,12 @@ public class Player : MonoBehaviour {
         Blank();
         demonSwordBack.SetActive(true);
         demonScabbard.SetActive(true);
-        woodenSword.SetActive(true);
+        WoodenSword.SetActive(true);
     }
     private void ChooseSword() {
 
-        woodenSword.SetActive(false);
-
+        WoodenSword.SetActive(false);
+         
     }
     private void SetCastBack() {
         anim.SetLayerWeight(castLayer, 0);
@@ -1604,9 +1606,13 @@ public class Player : MonoBehaviour {
         drawn = true;
         sfx.PlayOneShot(sound);
     }
+    private void Endure(bool val) {
+        endure = val;
+    }
     private void OnHit() {
-        if (!hit) {
+        if (!hit&&!endure) {
             Hit = true;
+            SealInput();
         }
 
     }
@@ -1635,6 +1641,7 @@ public class Player : MonoBehaviour {
 
         MovePlayerObject();
         transform.position = GameController.GetGameController().Spawn.transform.position;
+        UnsealInput();
         //StartCoroutine(WaitToLand());
     }
     private void GroundSlamForce(float force) {
@@ -1670,7 +1677,7 @@ public class Player : MonoBehaviour {
         PostProcessorManager.GetProcessorManager().Default();
         Attacking = false;
         CmdInput = 0;
-        MoveSpeed = 6;
+        //MoveSpeed = 6;
         LockedOn = false;
         stats.Start();
         //ReturnToSpawn();
@@ -1681,7 +1688,7 @@ public class Player : MonoBehaviour {
         battleMode.Enemies.Clear();
         Dead = false;
         Money = 1000;
-        weak = true;
+        //eak = true;
         zendsLHorn.SetActive(false);
         zendsRHorn.SetActive(false);
         fireTrailR.SetActive(false);
@@ -1726,7 +1733,14 @@ public class Player : MonoBehaviour {
         PowerUp = true;
 
     }
-
+    private void ReturnSpeed(float val) {
+        StartCoroutine(Lowkey(val));
+    }
+    private IEnumerator Lowkey(float val) {
+        YieldInstruction wait = new WaitForSeconds(0.3f);
+        yield return wait;
+        MoveSpeed = val;
+    }
     #endregion
 
     #region Sounds
@@ -1745,4 +1759,20 @@ public class Player : MonoBehaviour {
         }
     }
     #endregion
+
+    private void OnTriggerEnter(Collider other) {
+    
+    if (other.CompareTag("Item")) {
+    
+        stats.HealthLeft += 2;
+            Destroy(other.gameObject);
+    
+    }
+    
+}
+    //private void OnCollisionEnter(Collision collision) {
+    //    if (collision.gameObject.CompareTag("Item")) {
+    //        stats.HealthLeft += 2;
+    //    }
+    //}
 }

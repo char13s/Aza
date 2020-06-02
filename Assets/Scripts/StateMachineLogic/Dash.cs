@@ -31,7 +31,7 @@ public class Dash : StateMachineBehaviour {
         GamePad.SetVibration(0, 0.2f, 0.1f);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        pc.RBody.drag = 0;
+        //pc.RBody.drag = 0;
         if (freefall) {
             if (FreeFallZend.GetFreeFallingZend().Falling) {
                 Instantiate(reminant, FreeFallZend.GetFreeFallingZend().transform.position + new Vector3(0, 0, -0.25f), FreeFallZend.GetFreeFallingZend().transform.rotation);

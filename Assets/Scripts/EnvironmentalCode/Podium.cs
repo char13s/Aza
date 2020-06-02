@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 public class Podium : MonoBehaviour
 {
-    [SerializeField] private bool lit;
+    private bool lit;
     [SerializeField] private GameObject skull;
     private Player pc;
 

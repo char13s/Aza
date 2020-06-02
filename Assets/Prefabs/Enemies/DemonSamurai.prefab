@@ -708,7 +708,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    baseHealth: 6
+    baseHealth: 15
     baseAttack: 4
     baseDefense: 1
     baseMp: 0
@@ -717,7 +717,7 @@ MonoBehaviour:
   lockOnArrow: {fileID: 3556496144484561185}
   deathEffect: {fileID: 6226294637186662721, guid: 968487dedef163e46b1dc9b44bfdaa38,
     type: 3}
-  level: 7
+  level: 1
   attackDelay: 2
   baseExpYield: 30
   baseHealth: 19

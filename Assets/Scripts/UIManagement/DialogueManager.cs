@@ -27,14 +27,14 @@ public class DialogueManager : MonoBehaviour {
             }
 
         }
-        if (Input.GetButtonDown("Square")) {
-            if (skipDialogue != null) {
-                skipDialogue();
-            }
-            if (requestNextLine != null) {
-                requestNextLine();
-            }
-        }
+        //if (Input.GetButtonDown("Square")) {
+        //    if (skipDialogue != null) {
+        //        skipDialogue();
+        //    }
+        //    if (requestNextLine != null) {
+        //        requestNextLine();
+        //    }
+        //}
     }
     private void DialogueUp(bool val) {
         textPanel.SetActive(val);

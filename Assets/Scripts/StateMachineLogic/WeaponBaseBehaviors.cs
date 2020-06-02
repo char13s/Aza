@@ -14,6 +14,8 @@ public class WeaponBaseBehaviors : StateMachineBehaviour
     }
    
     private void GetWeapon() {
+        pc.DemonSword.SetActive(false);
+        pc.WoodenSword.SetActive(false);
         switch (typeWeapon) {
             case 0:pc.DemonSword.SetActive(true);
 
@@ -22,7 +24,7 @@ public class WeaponBaseBehaviors : StateMachineBehaviour
                 //pc.AngelSword.SetActive(true);
                 break;
             case 2:
-                pc.Scythe.SetActive(true);
+                pc.WoodenSword.SetActive(true);
                 break;
             //case 3:
             //    break;

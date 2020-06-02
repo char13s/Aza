@@ -355,9 +355,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    baseHealth: 12
+    baseHealth: 34
     baseAttack: 0
-    baseDefense: 0
+    baseDefense: 1
     baseMp: 0
   canvas: {fileID: 5833682365542727478}
   levelText: {fileID: 5833682367007100390}
@@ -371,7 +371,7 @@ MonoBehaviour:
   attackDistance: 0
   hitBox: {fileID: 8875301681297451078}
   drop: {fileID: 0}
-  soul: {fileID: 2574271175096531140, guid: c66028f0de23d5642a4e653f7a9184a3, type: 3}
+  soul: {fileID: 0}
   cut: {fileID: 5754920302586766889, guid: b43b1190931a6db4d8a418505c6f522b, type: 3}
   EnemyHp: {fileID: 5833682366006941874}
   farHitPoint: {fileID: 8875301681853314870}

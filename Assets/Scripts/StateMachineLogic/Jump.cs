@@ -6,18 +6,22 @@ public class Jump : StateMachineBehaviour
 {
     [SerializeField] private float move;
     [SerializeField] private GameObject burst;
+    private Player pc;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().Grounded = false;
-        Player.GetPlayer().CantDoubleJump = false;
+        pc = Player.GetPlayer();
+        pc.Grounded = false;
+        pc.CantDoubleJump = false;
+        
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().transform.position = Vector3.MoveTowards(Player.GetPlayer().transform.position, Player.GetPlayer().JumpPoint.transform.position, move * Time.deltaTime);
-        Player.GetPlayer().Grounded = false;
+        pc.transform.position = Vector3.MoveTowards(pc.transform.position,pc.HitPoint.transform.position,move*Time.deltaTime); 
+        pc.transform.position = Vector3.MoveTowards(pc.transform.position, pc.JumpPoint.transform.position, move * Time.deltaTime);
+        pc.Grounded = false;
         
         //Player.GetPlayer().GroundChecker.SetActive(false);
     }

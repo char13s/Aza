@@ -283,7 +283,7 @@ public class UiManager : MonoBehaviour {
     [Space]
     [SerializeField] private GameObject choiceDefaultButton;
     [SerializeField] private GameObject choicePanel;
-
+    [SerializeField] private GameObject demoOverScreen;
 	#region Events
 	public static UnityAction missionCleared;
     public static event UnityAction sealPlayerInput;
@@ -313,6 +313,7 @@ public class UiManager : MonoBehaviour {
     private Player pc;
     private SpriteAssign sprites;
     private bool tutorialUp;
+    private bool dialogue;
     #region Getters and Setters
     public static GameObject UseMenu { get => useMenu; set => useMenu = value; }
     public static Button UseButton { get => useButton; set => useButton = value; }
@@ -435,6 +436,9 @@ public class UiManager : MonoBehaviour {
         EventManager.demoRestart += ChangeSword;
 
         Souls.soulCount += UpdateUI;
+        DialogueTrigger1.dialogueUp += DialogueUp;
+        SceneDialogue.turnOffDialogue += DialogueUp;
+        Interactable.endDemo += DemoOver;
 		#endregion
 		masterVolume.onValueChanged.AddListener(OnMasterVolumeChange);
 		sfxVolume.onValueChanged.AddListener(OnSFXVolumeChange);
@@ -463,7 +467,7 @@ public class UiManager : MonoBehaviour {
 
     void Update() {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2) || Input.GetButtonDown("Pause")) {
-            GetSelected();
+            //GetSelected();
         }
         if (Player.GetPlayer().Pause) {
             if (MenuState > 0 && Input.GetButtonDown("Circle")) {
@@ -612,8 +616,17 @@ public class UiManager : MonoBehaviour {
     }
     private void OnPlayerDeath() {
         SetPlayerUIOff();
+        int num = SceneManager.GetActiveScene().buildIndex;
+        if (nextLevel != null) {
+            nextLevel(num);
+        }
         StartFade(load);
 
+    }
+    private void DemoOver() {
+        SetPlayerUIOff();
+        StartFade(null);
+        demoOverScreen.SetActive(true);
     }
     //private void DialogueManagement(string lines) {
     //dialogueText.text = lines;
@@ -1010,7 +1023,9 @@ public class UiManager : MonoBehaviour {
     public void NewGame() {
         newGameButton.enabled = false;
         ClearScreen();
+        SetMissionDetails(null, null, 6);
         StartFade(onNewGame);
+        LoadLevel();
 
     }
     private IEnumerator WaitToReturnButton() {
@@ -1038,6 +1053,7 @@ public class UiManager : MonoBehaviour {
         if (action != null) {
             action();
         }
+        
         if (killAll != null) {
             killAll(true);
         }
@@ -1076,9 +1092,12 @@ public class UiManager : MonoBehaviour {
             black.color = color;
         }
         loadingIcon.SetActive(false);
-        if (unsealPlayerInput != null) {
-            unsealPlayerInput();
+        if (!dialogue) {
+            if (unsealPlayerInput != null) {
+                unsealPlayerInput();
+            }
         }
+        
         if (killAll != null) {
             killAll(false);
         }
@@ -1126,6 +1145,9 @@ public class UiManager : MonoBehaviour {
     } 
     private void GameScreen() {
         StartCoroutine(WaitCoroutine());
+    }
+    private void DialogueUp(bool val) {
+        dialogue = val;
     }
     private void UseMenuHandling() {
 

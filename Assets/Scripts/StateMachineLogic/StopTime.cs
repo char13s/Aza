@@ -7,7 +7,7 @@ public class StopTime : StateMachineBehaviour
 
 
     
-    public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         if (zaWarudo != null) {
             zaWarudo();
         }

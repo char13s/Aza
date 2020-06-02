@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 #pragma warning disable 0649
-public class SlimeSpawner : MonoBehaviour
-{
+public class SlimeSpawner : MonoBehaviour {
     private static List<SlimeSpawner> slimeTrees = new List<SlimeSpawner>(10);
     [SerializeField] private Enemy slime;
     [SerializeField] private GameObject spawnPoint;
+    [SerializeField] private int maxSlimeCount;
     private List<Enemy> spawnedEnemies;
 
     public List<Enemy> SpawnedEnemies { get => spawnedEnemies; set => spawnedEnemies = value; }
@@ -54,7 +54,7 @@ public class SlimeSpawner : MonoBehaviour
             yield return new WaitForSeconds(10f);
             
 
-            if (SpawnedEnemies.Count < 2)
+            if (SpawnedEnemies.Count < maxSlimeCount)
             {
                 
                 SpawnedEnemies.Add(Instantiate(slime, spawnPoint.transform.position+SpawnPointOffset(), Quaternion.identity).GetComponent<Slime>());

@@ -15,7 +15,8 @@ public class Interactable : MonoBehaviour
     public static event UnityAction<int> skullCollected;
     public static event UnityAction<int> bulbCollected;
     public static event UnityAction<GameObject> checkForBulb;
-
+    public static event UnityAction soundOff;
+    public static event UnityAction endDemo;
     private void OnTriggerEnter(Collider other) {
         if (sealJump != null) {
             sealJump(true);
@@ -31,6 +32,11 @@ public class Interactable : MonoBehaviour
         }
     }
     private void OnTriggerExit(Collider other) {
+        if (sealJump != null) {
+            sealJump(false);
+        }
+    }
+    private void OnDestroy() {
         if (sealJump != null) {
             sealJump(false);
         }
@@ -57,6 +63,13 @@ public class Interactable : MonoBehaviour
                 if (skullCollected != null) {
                     skullCollected(1);
                 }
+                if (soundOff != null) {
+                    soundOff();
+                }
+                if (endDemo != null) {
+                    endDemo();
+                }
+                Debug.Log("SKull Collected");
                 break;
             case InteractableType.LightBulbHolder:
                 if (checkForBulb != null) {
@@ -68,9 +81,11 @@ public class Interactable : MonoBehaviour
                 if (bulbCollected != null) {
                     bulbCollected(1);
                 }
-                
-                Destroy(gameObject);
                 break;
+                
+        }
+        if (collectible) {
+            Destroy(gameObject);
         }
     }
 }

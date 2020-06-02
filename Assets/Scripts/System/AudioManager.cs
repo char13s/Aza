@@ -87,6 +87,7 @@ public class AudioManager : MonoBehaviour {
         DialogueManager.requestNextLine += OnClick;
         Inventory.set += OnClick;
         Souls.soundOff += OnClick;
+        Interactable.soundOff += OnClick;
         MasterVolume = 0.3f;
     }
 

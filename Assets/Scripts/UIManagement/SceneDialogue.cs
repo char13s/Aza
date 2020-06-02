@@ -25,7 +25,7 @@ public class SceneDialogue : MonoBehaviour
     {
         GameController.onNewGame += TheFirstDialouge;
         DialogueManager.requestNextLine += ProcessLineRequest;
-        DialogueManager.skipDialogue += SkipDialogue;
+        //DialogueManager.skipDialogue += SkipDialogue;
         EventManager.demoRestart += UnDone;
     }
     private void OnEnable() {
@@ -52,7 +52,9 @@ public class SceneDialogue : MonoBehaviour
         if (sendLine != null) {
             sendLine(lines[0]);
         }
-        
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
     }
     private void TheFirstDialouge() {
         if (forBeginning) {

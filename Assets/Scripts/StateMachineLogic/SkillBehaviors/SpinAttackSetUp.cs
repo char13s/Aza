@@ -13,6 +13,7 @@ public class SpinAttackSetUp : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
+        pc.MoveSpeed = 0;
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         if (Input.GetButton("Square")) {

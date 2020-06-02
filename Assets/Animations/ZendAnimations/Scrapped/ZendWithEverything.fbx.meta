@@ -252,6 +252,9 @@ ModelImporter:
   - first:
       137: 13700002
     second: Hair
+  - first:
+      74: -3100369314251171874
+    second: Idle
   externalObjects: {}
   materials:
     importMaterials: 1

@@ -20,7 +20,7 @@ public class Slam : StateMachineBehaviour {
             AoeHitbox.SetActive(true);
             //Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
             GamePad.SetVibration(0, 0.75f, 0.75f);
-            Player.GetPlayer().RBody.drag = 0;
+            //Player.GetPlayer().RBody.drag = 0;
         }
         if (stateInfo.normalizedTime > 0.2f && stateInfo.normalizedTime < 0.98f) {
             if (spin) {

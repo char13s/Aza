@@ -7,6 +7,6 @@ public class AttackRun : StateMachineBehaviour
     private Player pc;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
-        pc.MoveSpeed = 6;
+        //pc.MoveSpeed = 6;
     }
 }
