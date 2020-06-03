@@ -1106,7 +1106,7 @@ public class UiManager : MonoBehaviour {
         YieldInstruction wait = new WaitForSeconds(3);
 
         yield return wait;
-        Player.GetPlayer().Nav.enabled = true;
+        //Player.GetPlayer().Nav.enabled = true;
         Player.GetPlayer().InputSealed = false;
     }
     #region shit I dont use

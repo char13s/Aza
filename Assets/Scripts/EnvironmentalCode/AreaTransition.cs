@@ -127,7 +127,7 @@ public class AreaTransition : MonoBehaviour
         if (transition != null) {
             transition();
         }
-        Player.GetPlayer().Nav.enabled = true;
+        //Player.GetPlayer().Nav.enabled = true;
         Player.GetPlayer().Grounded = false;
         Player.GetPlayer().InputSealed = false;
         

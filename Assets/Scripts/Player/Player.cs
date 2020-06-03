@@ -196,7 +196,7 @@ public class Player : MonoBehaviour {
     private int hitCounter;
     //private Vector3 delta;
     private bool perfectGuard;
-    private NavMeshAgent nav;
+    //private NavMeshAgent nav;
     private PlayerBattleSceneMovement battleMode;
     private Animator anim;
     private Vector3 displacement;//world space 
@@ -265,7 +265,7 @@ public class Player : MonoBehaviour {
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
-    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { RBody.isKinematic = true; nav.enabled = true; SecondJump = false; CantDoubleJump = true; } } }
+    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { /*RBody.isKinematic = true; /*nav.enabled = true;*/ SecondJump = false; CantDoubleJump = true; } } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
     public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
     public bool Guard { get => guard; set { guard = value; if (value) Moving = false; anim.SetBool("Guard", guard); } }
@@ -276,14 +276,14 @@ public class Player : MonoBehaviour {
     public bool Dead { get => dead; set { dead = value; anim.SetBool("Dead", dead); if (dead) { OnDeath(); } else { } } }
     public int Direction { get => direction; set { direction = value; anim.SetInteger("Direction", direction); } }
     public bool Pause { get => pause; set { pause = value; if (pause) { Time.timeScale = 0; } else { Time.timeScale = 1; } } }
-    public bool Loaded { get => loaded; set { loaded = value; Nav.enabled = value; } }
+    public bool Loaded { get => loaded; set { loaded = value;/*Nav.enabled=true*/  } }
     public PlayerBattleSceneMovement BattleMode { get => battleMode; set => battleMode = value; }
     public GameObject DemonSword { get => demonSword; set { demonSword = value; if (!demonSword.activeSelf) { drawn = false; } } }
     public GameObject HitBox { get => hitBox; set { hitBox = value; } }
 
     public int SkillId { get => skillId; set { skillId = value; anim.SetInteger("Skill ID", skillId); if (skillId == 0) { SkillIsActive = false; } } }
     public Rigidbody RBody { get => rBody; set => rBody = value; }
-    public NavMeshAgent Nav { get => nav; set { nav = value; } }
+    
     public Animator Anim { get => anim; set => anim = value; }
     
     public bool PerfectGuard { get => perfectGuard; set => perfectGuard = value; }
@@ -488,7 +488,7 @@ public class Player : MonoBehaviour {
         ClothesSfx = zend.GetComponent<AudioSource>();
         Anim = GetComponent<Animator>();
         rBody = GetComponent<Rigidbody>();
-        nav = GetComponent<NavMeshAgent>();
+        
         anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
@@ -561,7 +561,7 @@ public class Player : MonoBehaviour {
     private void UnsealInput() => InputSealed = false;
     private void MovePlayerObject() {
         Attacking = false;
-        Nav.enabled = false;
+        //Nav.enabled = false;
         InputSealed = true;
         RBody.isKinematic = false;
         Grounded = false;
@@ -595,18 +595,29 @@ public class Player : MonoBehaviour {
     }
     private void DialogueUp() => InputSealed = true;
     private void DialogueDown() => InputSealed = false;
-    public void Move(float speed) {
-        transform.position += displacement * speed * Time.deltaTime;
+    private void Move(float speed) {
+        //transform.position += displacement * speed * Time.deltaTime;
+        //rBody.AddForce(displacement*100);
+        
+        rBody.velocity= displacement * speed;
+        //Debug.Log(displacement);
         Rotate();
     }
+
     private void Rotate() {
         if (Vector3.SqrMagnitude(displacement) > 0.01f) {
             transform.forward = displacement;
         }
     }
+    private void AirMove(float speed) {
+        //transform.position += displacement * speed * Time.deltaTime;
+        RBody.AddForce(displacement/25, ForceMode.VelocityChange);
+        Rotate();
+    }
     private void CheckPlayerHealth() {
         if (stats.HealthLeft <= 0 && !dead) { Dead = true; }
     }
+    
     #endregion
 
 
@@ -715,17 +726,17 @@ public class Player : MonoBehaviour {
             AirMovementInput();
 
             //}
-            if (!jumping && !boosting && !locked) {
-                //RBody.useGravity = false;
-                transform.position -= new Vector3(0, 0.1f, 0);
-            }
-            else {
-                // RBody.useGravity = true; ;
-            }
-            if (Input.GetButton("X") && !jumping && !boosting && !SecondJump) {
-                //RBody.drag = 25;
-                //RBody.useGravity = false;
-            }
+           //if (!jumping && !boosting && !locked) {
+           ////    //RBody.useGravity = false;
+           //    transform.position -= new Vector3(0, 0.1f, 0);
+           //}
+            //else {
+            //    // RBody.useGravity = true; ;
+            //}
+            //if (Input.GetButton("X") && !jumping && !boosting && !SecondJump) {
+            //    //RBody.drag = 25;
+            //    //RBody.useGravity = false;
+            //}
 
         }
         
@@ -777,8 +788,8 @@ public class Player : MonoBehaviour {
         Withdraw();
     }
     private void AirMovementInput() {
-        float x = Input.GetAxisRaw("Horizontal") * 0.005f * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * 0.005f * Time.deltaTime;
+        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
+        float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
         if (ThreeDCamera.IsActive && !lockedOn) {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
@@ -925,11 +936,11 @@ public class Player : MonoBehaviour {
         Vector3 offset = new Vector3(0, 0, 0);
         if (x != 0 || y != 0) {
             if (!Jumping && grounded) {
-                nav.enabled = true;
+                //nav.enabled = true;
                 Animations = 1;
                 //anim.SetLayerWeight(6,0);
                 if (Input.GetButtonDown("X")) {
-                    nav.enabled = false;
+                    //nav.enabled = false;
                     //MoveSpeed = 0.2f;
                 }
                 //MoveSpeed = 6;
@@ -940,21 +951,23 @@ public class Player : MonoBehaviour {
 
             }
             if (!grounded) {
-                if (Jumping) {
+               
                     //MoveSpeed = 13;
-                }
-                else {
+                    AirMove(MoveSpeed);
+                
+                
+
+            }else {
                     //MoveSpeed = 3f;
+                    Move(MoveSpeed);
 
                 }
-
-            }
-            Move(MoveSpeed);
+            
         }
         else {
 
             Animations = 0;
-            nav.enabled = false;
+            //nav.enabled = false;
             //Moving = false;
         }
     }
@@ -1045,25 +1058,26 @@ public class Player : MonoBehaviour {
 
         if (Input.GetButtonDown("X") && grounded) {
             SkillId = 10;
-            if (AIKryll.disableCollider != null) {
-                AIKryll.disableCollider();
-            }
+            //if (AIKryll.disableCollider != null) {
+            //    AIKryll.disableCollider();
+            //}
             Jumping = true;
             anim.SetLayerWeight(demonLayer, 0);
             anim.SetLayerWeight(angelLayer, 0);
-            nav.enabled = false;
-            RBody.isKinematic = false;
+            //nav.enabled = false;
+            //RBody.isKinematic = false;
             Grounded = false;
             StopCoroutine(WaitToFall());
             GroundChecker.groundStatus -= OnGrounded;
             StartCoroutine(ResetGroundCheck(0.3f));
             StartCoroutine(WaitToFall());
+            RBody.AddForce(new Vector3(0,333,0),ForceMode.Impulse);
         }
 
     }
     private void GoingUp() {
         //umping = true;
-        nav.enabled = false;
+        //nav.enabled = false;
         RBody.isKinematic = false;
 
     }
@@ -1075,7 +1089,7 @@ public class Player : MonoBehaviour {
             if (!Grounded) {
                 Grounded = false;
 
-                nav.enabled = false;
+                //nav.enabled = false;
 
 
             }
@@ -1087,18 +1101,18 @@ public class Player : MonoBehaviour {
         }
         if (dash && Boosting) {
 
-            if (Grounded) {
-                BurstForce = 15;
-            }
-            else {
-                BurstForce = 20;
-                CmdInput = 0;
-                RBody.isKinematic = false;
-                //RBody.AddForce(transform.forward * BurstForce, ForceMode.VelocityChange);
-                if (RBody.isKinematic) {
-                    Debug.Log("wtf is good?");
-                }
-            }
+            //if (Grounded) {
+            //    BurstForce = 15;
+            //}
+            //else {
+            //    BurstForce = 20;
+            //    CmdInput = 0;
+            //    RBody.isKinematic = false;
+            //    //RBody.AddForce(transform.forward * BurstForce, ForceMode.VelocityChange);
+            //    if (RBody.isKinematic) {
+            //        Debug.Log("wtf is good?");
+            //    }
+            //}
 
 
             //MoveSpeed = 13;
@@ -1109,7 +1123,7 @@ public class Player : MonoBehaviour {
     private IEnumerator Boost() {
         YieldInstruction wait = new WaitForSeconds(0.5f);
         yield return wait;
-        RBody.useGravity = true;
+        //RBody.useGravity = true;
         Boosting = false;
         //oveSpeed = 6;
     }
@@ -1649,7 +1663,7 @@ public class Player : MonoBehaviour {
     }
     private void OnGrounded(bool val) {
         Grounded = val;
-        RBody.isKinematic = val;
+        //RBody.isKinematic = val;
     }
 
     private void OnDead() {

@@ -8,7 +8,7 @@ public class Dodge : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Player.GetPlayer().MoveSpeed = 0;
-        Player.GetPlayer().Nav.enabled = false;
+        //Player.GetPlayer().Nav.enabled = false;
         Player.GetPlayer().RBody.isKinematic = false;
         Player.GetPlayer().CombatAnimations = 0;
         //if (stopMove != null) {

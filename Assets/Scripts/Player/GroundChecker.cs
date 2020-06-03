@@ -33,18 +33,18 @@ public class GroundChecker : MonoBehaviour {
         }
 
     }
-    private void IsGrounded() {
-
-        if (pc.Nav.isOnNavMesh)
-        {
-            pc.Grounded = true;
-        }
-        else
-        {
-            pc.Grounded = false;
-        }
-        
-    }
+    //private void IsGrounded() {
+    //
+    //    if (pc.Nav.isOnNavMesh)
+    //    {
+    //        pc.Grounded = true;
+    //    }
+    //    else
+    //    {
+    //        pc.Grounded = false;
+    //    }
+    //    
+    //}
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject != null )

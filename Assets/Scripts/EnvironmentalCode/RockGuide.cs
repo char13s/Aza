@@ -23,7 +23,7 @@ public class RockGuide : MonoBehaviour
             Debug.Log("okayyyy");
             if (Input.GetButtonDown("X"))
             {
-                Player.GetPlayer().Nav.SetDestination(destination.transform.position); 
+                //Player.GetPlayer().Nav.SetDestination(destination.transform.position); 
             }
         }
     }

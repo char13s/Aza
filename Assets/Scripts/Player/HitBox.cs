@@ -18,6 +18,7 @@ public class HitBox : MonoBehaviour {
     private GameObject enemyImAttacking;
 
     public static UnityAction onEnemyHit;
+    public static event UnityAction<Enemy,float> sendFlying;
     public static event UnityAction<AudioClip> sendsfx;
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
     private void Awake() {

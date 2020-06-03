@@ -20,8 +20,8 @@ public class AttackingBehavior : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (stateInfo.normalizedTime > 0.9) { Player.GetPlayer().RBody.isKinematic = true; }
-        float time = 0;
+        //if (stateInfo.normalizedTime > 0.9) { Player.GetPlayer().RBody.isKinematic = true; }
+        //float time = 0;
         /*if (Input.GetButtonDown("Square") && !pressed)
         {
             pressed = true;

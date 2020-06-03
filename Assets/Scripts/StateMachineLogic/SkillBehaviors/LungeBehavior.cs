@@ -18,7 +18,7 @@ public class LungeBehavior : StateMachineBehaviour
                 Player.GetPlayer().transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
             }
         }
-        Player.GetPlayer().Move(13);
+        //Player.GetPlayer().Move(13);
         
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

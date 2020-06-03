@@ -9,9 +9,9 @@ public class Slam : StateMachineBehaviour {
     public static event UnityAction<float> slam;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         AoeHitbox = Player.GetPlayer().AoeHitbox1;
-        if (slam != null) {
-            slam(10375);
-        }
+        //if (slam != null) {
+        //    slam(10375);
+        //}
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -35,9 +35,9 @@ public class Slam : StateMachineBehaviour {
         }
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if (slam != null) {
-            slam(68.5f);
-        }
+        //if (slam != null) {
+        //    slam(68.5f);
+        //}
         GamePad.SetVibration(0, 0, 0);
         //Instantiate(boom, Player.GetPlayer().DemonSword.transform.position, Quaternion.identity);
         AoeHitbox.SetActive(false);

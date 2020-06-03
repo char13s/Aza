@@ -22,26 +22,27 @@ public class Dash : StateMachineBehaviour {
         if (burst != null) {
             Instantiate(burst, pc.transform.position, pc.transform.rotation);
         }
-        pc.RBody.AddForce(pc.transform.forward * pc.BurstForce, ForceMode.VelocityChange);
+        //pc.RBody.AddForce(pc.transform.forward * 1000, ForceMode.Impulse);
         //burst.transform.position=
         if (dash != null) {
             dash(sound);
         }
         pc.RBody.useGravity = false;
         GamePad.SetVibration(0, 0.2f, 0.1f);
+        pc.RBody.AddForce(pc.transform.forward * 1200, ForceMode.Impulse);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         //pc.RBody.drag = 0;
-        if (freefall) {
-            if (FreeFallZend.GetFreeFallingZend().Falling) {
-                Instantiate(reminant, FreeFallZend.GetFreeFallingZend().transform.position + new Vector3(0, 0, -0.25f), FreeFallZend.GetFreeFallingZend().transform.rotation);
-            }
-        }
-        else {
+        //if (freefall) {
+        //    if (FreeFallZend.GetFreeFallingZend().Falling) {
+        //        Instantiate(reminant, FreeFallZend.GetFreeFallingZend().transform.position + new Vector3(0, 0, -0.25f), FreeFallZend.GetFreeFallingZend().transform.rotation);
+        //    }
+        //}
+        
             Instantiate(reminant, pc.transform.position, pc.transform.rotation);
-        }
+        
         pc.RBody.isKinematic = false;
-       pc.RBody.AddForce(pc.transform.forward * pc.BurstForce, ForceMode.VelocityChange);
+       //pc.RBody.AddForce(pc.transform.forward*900, ForceMode.Impulse);
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         pc.RBody.useGravity = true;

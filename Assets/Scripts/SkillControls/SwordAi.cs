@@ -26,7 +26,7 @@ public class SwordAi : MonoBehaviour
     {
         if (other.CompareTag("Enemy")) {
             Destroy(gameObject,2f);
-            Player.GetPlayer().Nav.enabled=false;
+            //Player.GetPlayer().Nav.enabled=false;
             Player.GetPlayer().transform.position = transform.position;
         }
     }
