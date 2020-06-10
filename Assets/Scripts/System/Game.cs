@@ -4,28 +4,22 @@ using UnityEngine;
 [System.Serializable]
 public class Game
 {
-
-
-   
     private List<ItemData> items;
     private Stats stats;
-    private float[] playerPosition;
-    private int lasLevel;
+    private GameObject spawn;
+    private int skullCount;
+    private int lighBulbCount;
+    private int lastLevel;
     public List<ItemData> Items { get => items; set => items = value; }
-    public float[] PlayerPosition { get => playerPosition; set => playerPosition = value; }
     public Stats Stats { get => stats; set => stats = value; }
+    public GameObject Spawn { get => spawn; set => spawn = value; }
 
     public Game(Player player){
-        
+        Spawn = GameController.GetGameController().Spawn;
+        skullCount = Player.GetPlayer().SkullMask;
+        lighBulbCount = Player.GetPlayer().Bulbs;
         Items = player.items.Items;
         stats = player.stats;
-        
-        PlayerPosition = new float[3];
-        PlayerPosition[0] = player.transform.position.x;
-        PlayerPosition[1] = player.transform.position.y;
-        PlayerPosition[2] = player.transform.position.z;
-    }
-    public void SetDefaults() {
-
+        Debug.Log("Game was saved");
     }
 }

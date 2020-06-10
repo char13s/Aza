@@ -34,7 +34,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     public Enemy ClosestEnemy { get => closestEnemy; set => closestEnemy = value; }
 
     private void Awake() {
-        Player.attackModeUp += LockOnFuctionality;
+        //Player.attackModeUp += LockOnFuctionality;
         Enemy.onAnyDefeated += RemoveTheDead;
         Player.onPlayerDeath += RemoveAllEnemies;
         AIKryll.teleport += TeleportAttacking;
@@ -73,28 +73,24 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private void Update() {
         Vector3 position = transform.position;
         if (!cutscening) {
-
-
-        
-        
-        for (int i = 0; i < Enemy.TotalCount; i++) {
-            Enemy current = Enemy.GetEnemy(i);
+            for (int i = 0; i < Enemy.TotalCount; i++) {
+                Enemy current = Enemy.GetEnemy(i);
                 bool shouldBeInList = false;
-                if (current != null) {shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 361; }
-            
-            int index = enemies.IndexOf(current);
-            if (shouldBeInList != index >= 0) {
-                if (shouldBeInList) {
-                    enemies.Add(current);
-                    if (enemies.Count > 1) {
-                        GetClosestEnemy();
+                if (current != null) { shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 361; }
+
+                int index = enemies.IndexOf(current);
+                if (shouldBeInList != index >= 0) {
+                    if (shouldBeInList) {
+                        enemies.Add(current);
+                        if (enemies.Count > 1) {
+                            GetClosestEnemy();
+
+                        }
 
                     }
-
+                    else { enemies.RemoveAt(index); }
                 }
-                else { enemies.RemoveAt(index); }
             }
-        }
         }
         if (pc.LockedOn) {
             SwitchLockOn();
@@ -111,7 +107,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         if (enemies.Count == 0) {
             ClosestEnemy = null;
         }
-        if (t > enemies.Count&&t>0) {
+        if (t > enemies.Count && t > 0) {
             Debug.Log("wtf are you doing, imma move this down");
             T--;
         }
@@ -126,19 +122,14 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
                 playBattleTheme(8);
             }
         }
-       if (enemyTarget == null&&!casual) {
-          playing = false;
-          casual = true;
-          if (playBattleTheme != null) {
-              playBattleTheme(7);
-          }
-       
-          }
-    }
-    private void LockOnFuctionality() {
+        if (enemyTarget == null && !casual) {
+            playing = false;
+            casual = true;
+            if (playBattleTheme != null) {
+                playBattleTheme(7);
+            }
 
-
-
+        }
     }
 
     private void Locked() { locked = true; }
@@ -147,8 +138,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
-        if (enemies.Count != 0&&t<enemies.Count) {
-            Debug.Log(T);
+        if (enemies.Count != 0 && t < enemies.Count) {
+
             LockOn(x, y, Enemies[T]);
         }
         //
@@ -180,7 +171,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
 
     }
     private void GetClosestEnemy() {
-        if (T<enemies.Count) {
+        if (T < enemies.Count) {
             float enDist = EnDist(enemies[T].gameObject);
 
             foreach (Enemy en in Enemies) {
@@ -229,7 +220,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         rotLock = false;
     }
     private void BasicMovement() {
-       
+
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         RotateSpeed = 18 - EnDist(aimPoint);
@@ -239,11 +230,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
 
         }
-        
+
         transform.position = Vector3.MoveTowards(transform.position, leftPoint.transform.position, pc.MoveSpeed * x * Time.deltaTime);
-        
+
         transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, pc.MoveSpeed * y * Time.deltaTime);
-        MovementInputs(x,y);
+        MovementInputs(x, y);
 
     }
 
@@ -307,11 +298,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
 
         }
         if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) {
-            
+
             pc.Animations = 1;
         }
         else {
-           
+
             pc.Animations = 0;
         }
     }

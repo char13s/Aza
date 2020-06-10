@@ -8,6 +8,7 @@ public class Interactable : MonoBehaviour
     [SerializeField] private InteractableType type;
 
     private bool collected;
+    private bool touched;
     [SerializeField]private bool collectible;
 
     public static event UnityAction<bool> sealJump;
@@ -17,17 +18,19 @@ public class Interactable : MonoBehaviour
     public static event UnityAction<GameObject> checkForBulb;
     public static event UnityAction soundOff;
     public static event UnityAction endDemo;
+    public static event UnityAction saveGame;
     private void OnTriggerEnter(Collider other) {
         if (sealJump != null) {
             sealJump(true);
         }
     }
     private void OnTriggerStay(Collider other) {
-        if (Input.GetButtonDown("Circle")&&!collected) {
+        if (Input.GetButtonDown("Circle")&&!collected&&!touched) {
             if (collectible) {
                 collected = true;
             }
-            
+            touched = true;
+            StartCoroutine(Untouch());
             Interact();    
         }
     }
@@ -55,6 +58,9 @@ public class Interactable : MonoBehaviour
                 break;
             case InteractableType.Portal:
                 GetComponent<LevelObject>().ActivateLevel();
+                if (saveGame != null) {
+                    saveGame();
+                }
                 break;
             case InteractableType.Podium:
                 GetComponent<Podium>().CheckToLite();
@@ -87,5 +93,10 @@ public class Interactable : MonoBehaviour
         if (collectible) {
             Destroy(gameObject);
         }
+    }
+    private IEnumerator Untouch() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
+        touched = false;
     }
 }

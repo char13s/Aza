@@ -10,8 +10,8 @@ public class FallFaster : StateMachineBehaviour
         pc = Player.GetPlayer();
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        if(animatorStateInfo.normalizedTime<0.9f)
-        pc.transform.position -= new Vector3(0,fallRate,0);
+        if (animatorStateInfo.normalizedTime < 0.9f)
+            pc.RBody.AddForce(pc.transform.up*-2,ForceMode.VelocityChange);
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         

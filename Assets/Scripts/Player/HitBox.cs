@@ -77,14 +77,23 @@ public class HitBox : MonoBehaviour {
 
         switch (KnockBackBehavior.HitId) {
             case 0:
-                enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, Player.GetPlayer().HitPoint.transform.position, 10 * Time.deltaTime);
+                if (sendFlying != null) {
+                    sendFlying(enemy.GetComponent<Enemy>(),400);
+                }
+                //enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, Player.GetPlayer().HitPoint.transform.position, 10 * Time.deltaTime);
                 break;
             case 1:
-                
-                enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 );//Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime); //;;(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime
+                if (sendFlying != null) {
+                    sendFlying(enemy.GetComponent<Enemy>(), 1750);
+                }
+                Debug.Log("K");
+                //enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 );//Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime); //;;(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime
                 break;
             case 2:
-                enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, highHitPoint.transform.position, 10 * Time.deltaTime);
+                if (sendFlying != null) {
+                    sendFlying(enemy.GetComponent<Enemy>(), 400);
+                }
+                //enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, highHitPoint.transform.position, 10 * Time.deltaTime);
                 break;
             
         }

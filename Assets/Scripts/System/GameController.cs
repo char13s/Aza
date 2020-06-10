@@ -93,7 +93,7 @@ public class GameController : MonoBehaviour {
     void Start() {
         
         Player.onPlayerDeath += OnPlayerDead;
-
+        Interactable.saveGame += SaveGame;
         EventManager.sceneChanger += SetNextLevel;
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) {
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
@@ -277,7 +277,7 @@ public class GameController : MonoBehaviour {
         }
 
     }
-    public void SaveGame() {
+    private void SaveGame() {
         SaveLoad.Save(instance.pc);
         if (gameWasSaved != null) {
             gameWasSaved();
@@ -304,36 +304,16 @@ public class GameController : MonoBehaviour {
             }
 
         }
-        
-
-        Vector3 position;
-
-        //pc.Pause = false;
-
         if (instance.load) {
             if (onLoadGame != null) {
                 onLoadGame();
             }
-
-            Game data = SaveLoad.Load();
-            position.x = data.PlayerPosition[0];
-            position.y = data.PlayerPosition[1];
-            position.z = data.PlayerPosition[2];
-            pc.transform.position = position;
-            pc.stats = data.Stats;
-            pc.items.Items = new List<ItemData>();
-            foreach (GameObject b in pc.items.Buttons) {
-                b.GetComponent<Items>().data.Quantity = 0;
-            }
+            
             if (onGameWasStarted != null) {
                 onGameWasStarted();
                 Debug.Log("Game was reloaded");
             }
-            foreach (ItemData it in data.Items) {
-                pc.items.Items.Add(it);
-                pc.items.ButtonCreation(it);
-                Debug.Log("ouchie ouch");
-            }
+            
             instance.load = false;
         }
     }
@@ -381,23 +361,34 @@ public class GameController : MonoBehaviour {
         Debug.Log("Continue");
         StartGame();
     }
-    public void LoadGame() {
-
-        
-        pc.Pause = false;
+    private void LoadShit() {
         Game data = SaveLoad.Load();
-        Vector3 position;
-        position.x = data.PlayerPosition[0];
-        position.y = data.PlayerPosition[1];
-        position.z = data.PlayerPosition[2];
-        pc.transform.position = position;
+        pc.transform.position = data.Spawn.transform.position;
         pc.stats = data.Stats;
-        pc.items.Items.Clear();
+        pc.items.Items = new List<ItemData>();
+        foreach (ItemData it in data.Items) {
+            pc.items.Items.Add(it);
+            pc.items.ButtonCreation(it);
+            Debug.Log("ouchie ouch");
+        }
+        foreach (ItemData it in data.Items) {
+            pc.items.Items.Add(it);
+            pc.items.ButtonCreation(it);
+            Debug.Log("ouchie ouch");
+        }
 
         foreach (GameObject b in pc.items.Buttons) {
-            Destroy(b);
+            b.GetComponent<Items>().data.Quantity = 0;
         }
-        pc.items.Buttons.Clear();
+    }
+    public void LoadGame() {
+        pc.Pause = false;
+        //Game data = SaveLoad.Load();
+        LoadShit();
+        //foreach (GameObject b in pc.items.Buttons) {
+        //    Destroy(b);
+        //}
+        //pc.items.Buttons.Clear();
         //pc.items.Items =;
 
         if (onGameWasStarted != null) {
@@ -405,12 +396,12 @@ public class GameController : MonoBehaviour {
 
             Debug.Log("Game was reloaded");
         }
-        foreach (ItemData it in data.Items) {
-
-            pc.items.Items.Add(it);
-            pc.items.ButtonCreation(it);
-            Debug.Log("ouchie ouch");
-        }
+        //foreach (ItemData it in data.Items) {
+        //
+        //    pc.items.Items.Add(it);
+        //    pc.items.ButtonCreation(it);
+        //    Debug.Log("ouchie ouch");
+        //}
         Debug.Log(pc.items.Items.Count);
     }
 

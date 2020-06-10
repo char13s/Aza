@@ -480,7 +480,9 @@ public class Player : MonoBehaviour {
         Podium.skullUsed += SkullMaskAdjuster;
         FormSwitch.inviciblity += Endure;
         MovingStates.returnSpeed += ReturnSpeed;
-        
+        KillOtherLayers.weight += LayerControl;
+        BaseBehavoirs.grounded += ZeroVelocity;
+        PoisonLake.poisoned += TakeDamage;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
@@ -559,6 +561,17 @@ public class Player : MonoBehaviour {
     }
     private void SealInput() => InputSealed = true;
     private void UnsealInput() => InputSealed = false;
+    private void LayerControl(int val) {
+        switch (style) {
+            case 1:
+                anim.SetLayerWeight(demonLayer, val);
+                break;
+            case 2:
+                anim.SetLayerWeight(angelLayer, val);
+                break;
+        }
+        
+    }
     private void MovePlayerObject() {
         Attacking = false;
         //Nav.enabled = false;
@@ -596,22 +609,23 @@ public class Player : MonoBehaviour {
     private void DialogueUp() => InputSealed = true;
     private void DialogueDown() => InputSealed = false;
     private void Move(float speed) {
-        //transform.position += displacement * speed * Time.deltaTime;
+        transform.position += displacement *speed* Time.deltaTime;
         //rBody.AddForce(displacement*100);
         
-        rBody.velocity= displacement * speed;
+        //rBody.velocity= displacement * speed;
         //Debug.Log(displacement);
         Rotate();
     }
 
     private void Rotate() {
-        if (Vector3.SqrMagnitude(displacement) > 0.01f) {
+        if (Vector3.SqrMagnitude(displacement) > 0.01f&&!boosting) {
             transform.forward = displacement;
         }
     }
     private void AirMove(float speed) {
         //transform.position += displacement * speed * Time.deltaTime;
         RBody.AddForce(displacement/25, ForceMode.VelocityChange);
+        
         Rotate();
     }
     private void CheckPlayerHealth() {
@@ -624,10 +638,10 @@ public class Player : MonoBehaviour {
     private void GetAllInput() {
         //Archery();
 
-        if (!jumping && grounded && !lockedOn) {
+        if (!jumping && grounded && !lockedOn&&!boosting) {
             MovementInput();
         }
-        else if (cmdInput == 0) {
+        else if (cmdInput == 0&&!boosting) {
             CalculateRotation();
 
         }
@@ -711,7 +725,7 @@ public class Player : MonoBehaviour {
 
             }
         }
-        if (jumping) {
+        if (jumping||boosting) {
             RBody.useGravity = false;
         }
         else {
@@ -1078,7 +1092,7 @@ public class Player : MonoBehaviour {
     private void GoingUp() {
         //umping = true;
         //nav.enabled = false;
-        RBody.isKinematic = false;
+        //RBody.isKinematic = false;
 
     }
     private void Dashu() {
@@ -1096,7 +1110,7 @@ public class Player : MonoBehaviour {
 
             Boosting = true;
             dash = true;
-            RBody.isKinematic = false;
+            //RBody.isKinematic = false;
 
         }
         if (dash && Boosting) {
@@ -1686,6 +1700,10 @@ public class Player : MonoBehaviour {
     private void Respawn() {
         transform.position = GameController.GetGameController().Spawn.transform.position;
     }
+    private void TakeDamage(int damage) {
+        stats.HealthLeft -= damage;
+        GamePad.SetVibration(0, 0.2f, 0.2f);
+    }
     private void SetDefault() {
 
         PostProcessorManager.GetProcessorManager().Default();
@@ -1746,6 +1764,9 @@ public class Player : MonoBehaviour {
         PoweredUp = true;
         PowerUp = true;
 
+    }
+    private void ZeroVelocity() {
+        rBody.velocity = new Vector3(0,0,0);
     }
     private void ReturnSpeed(float val) {
         StartCoroutine(Lowkey(val));

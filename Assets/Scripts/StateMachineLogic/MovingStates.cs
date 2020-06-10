@@ -10,17 +10,18 @@ public class MovingStates : StateMachineBehaviour
     public static event UnityAction<float> returnSpeed;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
-        pc.MoveSpeed = speedOfState;
-        
+        if (pc.Anim.GetLayerWeight(layerIndex) == 1) {
+            pc.MoveSpeed = speedOfState;
+        }
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        if (pc.MoveSpeed == 0&&pc.CmdInput==0&&pc.Anim.GetLayerWeight(layerIndex)==1 && pc.Anim.GetLayerWeight(2) == 0) {
+        if (layerIndex==0 && pc.Anim.GetLayerWeight(2) == 0) {
             pc.MoveSpeed = speedOfState;
         }
         
     }
-    public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        
-    }
+    //public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
+    //    
+    //}
     
 }

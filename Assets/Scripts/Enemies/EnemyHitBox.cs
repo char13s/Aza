@@ -20,13 +20,6 @@ public class EnemyHitBox : MonoBehaviour
         player = Player.GetPlayer();
         enemy = GetComponentInParent<Enemy>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))

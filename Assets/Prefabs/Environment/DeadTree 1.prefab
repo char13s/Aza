@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 2089545349081826000}
   - component: {fileID: 7035898959907829990}
   - component: {fileID: 3645665791498732575}
-  - component: {fileID: 6450626509734240258}
-  - component: {fileID: 4940370663515786193}
+  - component: {fileID: 1410043009784168626}
   m_Layer: 0
   m_Name: DeadTree 1
   m_TagString: Untagged
@@ -80,23 +79,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!208 &6450626509734240258
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3072818015973241027}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.99, y: 2.6690001, z: 0.93}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: -0.061000004, y: 2.2800002, z: -0.19600001}
-  m_TimeToStationary: 0.5
---- !u!65 &4940370663515786193
+--- !u!65 &1410043009784168626
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,5 +90,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.18, y: 5.337353, z: 1.46}
-  m_Center: {x: -0.060691476, y: 2.2797868, z: -0.19587085}
+  m_Size: {x: 2.163391, y: 5.337353, z: 1.8140628}
+  m_Center: {x: -0.037841797, y: 2.2797868, z: 0.005542159}

@@ -190,6 +190,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         PortalConnector.backToLevelSelect += OnPlayerDeath;
         onAnyDefeated += EnemyDeath;
         ReactionRange.dodged += SlowEnemy;
+        HitBox.sendFlying += KnockBack;
         //UiManager.killAll += KillEnemy;
         //EnemyHitBox.hit += CalculateAttack;
         //EnemyHitBox.guardHit += HitGuard;
@@ -273,10 +274,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 	}
 	private void FreezeEnemy() {
         Debug.Log("Froze");
-		
-		GetComponent<Rigidbody>().useGravity = false;
 		anim.speed = 0;
-		state = EnemyAiStates.Null;
+		State = EnemyAiStates.Null;
 		StartCoroutine(UnFreeze());
 	}
 	private IEnumerator UnFreeze() {
@@ -285,10 +284,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 		UnFreezeEnemy();
 	}
 	private void UnFreezeEnemy() {
-		
-		GetComponent<Rigidbody>().useGravity = true;
 		anim.speed = 1;
-		state = EnemyAiStates.Idle;
+		State = EnemyAiStates.Idle;
 	}
     private void NullEnemy() {
         State = EnemyAiStates.Null;
@@ -300,7 +297,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 
         if (state != EnemyAiStates.LowHealth)
         {
-            if (State != EnemyAiStates.Chasing && !dead)
+            if (state != EnemyAiStates.Chasing && !dead)
             {
                 Walk = false;
                 
@@ -353,7 +350,8 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             case EnemyAiStates.Chasing:
                 Chasing();
                 break;
-
+            default:
+                break;
         }
     }
     //public  void FixedUpdate() {  }
@@ -476,7 +474,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             hitCoroutine = StartCoroutine(HitCoroutine());
 
         }
-        
+        transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
         Instantiate(cut,transform);
         //StopCoroutine(attackCoroutine);
     }
@@ -552,10 +550,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         }
     }
     
-    public void KnockBack(Vector3 hitForce) {
-        if (!boss) { 
-        rbody.AddForce(hitForce,ForceMode.VelocityChange);}
-        Debug.Log("push");
+    private void KnockBack(Enemy en,float hitForce) {
+        if (en==this) { 
+        rbody.AddForce(transform.forward*-hitForce*2,ForceMode.Impulse);
+        Debug.Log("push");}
     }
     private void Punch(Enemy enemy) {
         if (this == enemy) {

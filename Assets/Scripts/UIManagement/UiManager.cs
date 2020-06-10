@@ -490,6 +490,9 @@ public class UiManager : MonoBehaviour {
         if (GameController.GetGameController().GameMode < 1) {
             Inputs();
         }
+        if (Input.GetKeyDown(KeyCode.Equals)) {
+            Debug.Log(EventSystem.current.currentSelectedGameObject.name);
+        }
     }
     
     #region Soul Shit
@@ -541,8 +544,13 @@ public class UiManager : MonoBehaviour {
         if (nextLevel != null) {
             nextLevel(lvl);
         }
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
         levelSelectWindow.SetActive(false);
-        missionDetails.SetActive(true);
+        LoadLevel();
+        //missionDetails.SetActive(true);
+        //GameController.GetGameController().GameMode = 2;
         DefaultObject = loadLevel.gameObject;
         Debug.Log("Set Mission Details");
     }
@@ -1025,7 +1033,7 @@ public class UiManager : MonoBehaviour {
         ClearScreen();
         SetMissionDetails(null, null, 6);
         StartFade(onNewGame);
-        LoadLevel();
+        //LoadLevel();
 
     }
     private IEnumerator WaitToReturnButton() {
