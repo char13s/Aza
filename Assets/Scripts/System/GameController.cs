@@ -67,6 +67,7 @@ public class GameController : MonoBehaviour {
         LevelObject.setSpawn += SetSpawner;
         SpawnSetters.setSpawner += SetSpawner;
         EventManager.setSpawner += SetSpawner;
+        
         //onNewGame += TheBeginningOfTheGame;      
     }
 
@@ -94,6 +95,7 @@ public class GameController : MonoBehaviour {
         
         Player.onPlayerDeath += OnPlayerDead;
         Interactable.saveGame += SaveGame;
+        SpawnSetters.saveGame += SaveGame;
         EventManager.sceneChanger += SetNextLevel;
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) {
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
@@ -363,7 +365,7 @@ public class GameController : MonoBehaviour {
     }
     private void LoadShit() {
         Game data = SaveLoad.Load();
-        pc.transform.position = data.Spawn.transform.position;
+        pc.transform.position = new Vector3(data.Position[0],data.Position[1],data.Position[2]);
         pc.stats = data.Stats;
         pc.items.Items = new List<ItemData>();
         foreach (ItemData it in data.Items) {

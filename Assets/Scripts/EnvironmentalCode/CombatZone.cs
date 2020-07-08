@@ -6,12 +6,14 @@ public class CombatZone : MonoBehaviour {
 
     [SerializeField] private FireWalls[] walls;
     [SerializeField] private EnemySpawnPoint[] enemies;
+    private bool activated;
     // Start is called before the first frame update
   
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
+        if (other.CompareTag("Player")&&!activated) {
             ActivateTheWalls();
             ActivateTheEnemies();
+            activated = true;
         }
     }
     private void ActivateTheWalls() {

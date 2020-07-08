@@ -21,58 +21,18 @@ public class HitBox : MonoBehaviour {
     public static event UnityAction<Enemy,float> sendFlying;
     public static event UnityAction<AudioClip> sendsfx;
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
-    private void Awake() {
-        
-    }
+
     // Start is called before the first frame update
     void Start() {
         pc = Player.GetPlayer();
         audio = pc.Sfx;
         
     }
-    void OnEnable() {
-
-        
-        //audio.PlayOneShot(swing);
-    }
     private void OnDisable() {
 
         enemies.Clear();
     }
-    // Update is called once per frame
-    void Update() {
 
-    }
-    //private Vector3 HitKnockback() {
-    //    switch (pc.SkillId) {
-    //        case 0:
-    //
-    //            switch (KnockBackBehavior.HitId) {
-    //                case 1:
-    //
-    //                    return Player.GetPlayer().transform.forward * 2f;
-    //                case 2:
-    //
-    //                    return Player.GetPlayer().transform.forward * -1.1f;
-    //                case 3:
-    //
-    //                    
-    //                case 4:
-    //
-    //                    return Player.GetPlayer().transform.forward + new Vector3(0, 5, 0);
-    //
-    //                case 5:
-    //                    Debug.Log("fuck you slime");
-    //                    return 
-    //                case 6:
-    //                    Debug.Log("fuck you slime");
-    //                    return Player.GetPlayer().transform.forward * 1;
-    //            }
-    //            return transform.forward + new Vector3(0, 0, 0);
-    //
-    //        default: return Player.GetPlayer().transform.forward * -2;
-    //    }
-    //}
     private void Knockback(GameObject enemy) {
 
         switch (KnockBackBehavior.HitId) {

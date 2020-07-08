@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using XInputDotNetPure;
 #pragma warning disable 0649
 
-[RequireComponent(typeof(NavMeshAgent))]
+
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour {
 
@@ -188,7 +188,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
         PortalConnector.backToLevelSelect += OnPlayerDeath;
-        onAnyDefeated += EnemyDeath;
+        //onAnyDefeated += EnemyDeath;
         ReactionRange.dodged += SlowEnemy;
         HitBox.sendFlying += KnockBack;
         //UiManager.killAll += KillEnemy;
@@ -260,11 +260,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Enemies.Clear();
     }
-    private void EnemyDeath(Enemy enemy)
-    {
-
-
-    }
+    
     private void KillEnemy() {
         Destroy(this);
     }
@@ -294,7 +290,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     
     private void StateSwitch()
     {
+        switch (state) {
+            case EnemyAiStates.Idle:
+                break;
+            case EnemyAiStates.Chasing:
+                break;
 
+        }
         if (state != EnemyAiStates.LowHealth)
         {
             if (state != EnemyAiStates.Chasing && !dead)
@@ -431,11 +433,12 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private void ReturnToSpawn()
     {
-        transform.position = Vector3.MoveTowards(transform.position, startLocation, 4 * Time.deltaTime);
-        Vector3 delta = (flip) * transform.position - startLocation;
+        
+        Vector3 delta = (flip) * (transform.position - startLocation);
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
         Walk = true;
+        transform.position = Vector3.MoveTowards(transform.position, startLocation, 4 * Time.deltaTime);
         if (Vector3.Distance(startLocation, transform.position) < 1f)
         {
             State = EnemyAiStates.Idle;

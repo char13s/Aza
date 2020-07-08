@@ -58,9 +58,9 @@ public class Interactable : MonoBehaviour
                 break;
             case InteractableType.Portal:
                 GetComponent<LevelObject>().ActivateLevel();
-                if (saveGame != null) {
-                    saveGame();
-                }
+                //if (saveGame != null) {
+                //    saveGame();
+                //}
                 break;
             case InteractableType.Podium:
                 GetComponent<Podium>().CheckToLite();
