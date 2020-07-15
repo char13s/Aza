@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Events;
 using XInputDotNetPure;
 #pragma warning disable 0649
@@ -51,6 +50,7 @@ public class Player : MonoBehaviour {
     //public bool right;
     #region Cameras
     [SerializeField] private GameObject mainCam;
+    [SerializeField] private GameObject cameraPoint;
     #endregion
     #region Items
     [Space]
@@ -110,6 +110,8 @@ public class Player : MonoBehaviour {
     private bool doubleJump;
     private bool spinAttack;
     private bool withdraw;
+    private bool demonFlame;
+    private bool flying;
 
     private int demonLayer;
     private int angelLayer;   
@@ -185,14 +187,11 @@ public class Player : MonoBehaviour {
     [SerializeField] private SpellTagSlot L1Square;
     [SerializeField] private SpellTagSlot L1X;
     private static Player instance;
-
-
     private Coroutine guardCoroutine;
     private Coroutine hitDefuse;
     private Coroutine dodgeCoroutine;
     private Coroutine mpDrain;
     private Coroutine staminaRec;
-
     private int hitCounter;
     //private Vector3 delta;
     private bool perfectGuard;
@@ -218,8 +217,6 @@ public class Player : MonoBehaviour {
 
 
     internal StatusEffects status = new StatusEffects();
-
-
     //private bool doubleJump;
     private bool boosting;
     private bool teleportTriggered;
@@ -261,6 +258,7 @@ public class Player : MonoBehaviour {
     public static event UnityAction dpadLeft;
     public static event UnityAction<int> playSound;
     public static event UnityAction<int> formChange;
+    public static event UnityAction<bool> flight;
 
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
@@ -391,6 +389,9 @@ public class Player : MonoBehaviour {
     public bool Charging { get => charging; set { charging = value;anim.SetBool("Charging",charging); } }
     public int Bulbs { get => bulbs; set => bulbs = value; }
     public GameObject WoodenSword { get => woodenSword; set => woodenSword = value; }
+    public bool DemonFlame { get => demonFlame; set { demonFlame = value;anim.SetBool("DemonFlame",demonFlame); if (demonFlame) { DemonUp(); } else { Base();RBody.useGravity = true; } } }
+
+    public bool Flying { get => flying; set { flying = value; anim.SetBool("Flying",flying);if (flight != null) { flight(flying); } } }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -408,34 +409,22 @@ public class Player : MonoBehaviour {
         #region Event Subs
         Enemy.onHit += MpRegain;
         Enemy.guardBreak += GuardBreak;
-        PortalManager.backToBase += BackToBase;
         AreaTransition.movePlayer += MovePlayerObject;
         Slam.slam += GroundSlamForce;
-        Objective.rewardPlayer += RewardPlayer;
-
         GameController.onNewGame += SetDefault;
         GameController.respawn += RestoreHealth;
         GameController.respawn += ReturnToSpawn;
-
         onPlayerDeath += OnDead;
-
         Npc.dialogueUp += DialogueUp;
         Npc.dialogueDown += DialogueDown;
-
-        UiManager.bedTime += Sleep;
-        UiManager.outaBed += OutaBed;
         UiManager.sealPlayerInput += SealInput;
         UiManager.sealPlayerInput += StopRunning;
         UiManager.unsealPlayerInput += UnsealInput;
-
         AIKryll.zend += BackToZend;
         GroundChecker.groundStatus += OnGrounded;
         GroundChecker.landed += SoundEffects;
-
         DoubleJump.doubleJump += SoundEffects;
-
         CinematicManager.unfade += SealInput;
-        //CinematicManager.gameStart += UnsealInput;
         GameController.returnToLevelSelect += ReturnToSpawn;
         KillZone.respawn += ReturnToSpawn;
         SpellTag.triggerZaWarudo += ZaWarudo;
@@ -443,31 +432,19 @@ public class Player : MonoBehaviour {
         DrawSword.hideSword += DrawSwordOut;
         Dash.dash += SoundEffects;
         Cast.setWeightBack += SetCastBack;
-
-        FreeFallZend.landed += BackToBase;
         EnemyHitBox.hit += OnHit;
-        //EnemyHitBox.guardHit+=GuardBreak;
-
-        //ReactionRange.dodged += Dodge;
         ReactionRange.dodged += ZaWarudo;
-
         UiManager.disablePlayer += DisableBody;
         UiManager.unsealPlayerInput += EnableBody;
         UiManager.angelSword += AngelSwordChose;
         UiManager.demonSword += DemonSwordChose;
         UiManager.bothSwords += BothSwordsChose;
-
         GroundSound.sendSound += GroundSoundManagement;
-
-        UpperCutBehavior.sendGoingUp += GoingUp;
-
         EventTrigger.chooseSword += ChooseSword;
         WithdrawSword.withdraw += Withdraw;
-
         SceneDialogue.sealPlayerInput += SealInput;
         SceneDialogue.unsealPlayerInput += UnsealInput;
         SceneDialogue.sealPlayerInput += StopRunning;
-
         EventManager.demoRestart += SetDefault;
         Hurt.unseal += UnsealInput;
         //dpadLeft += AngelUp;
@@ -490,7 +467,6 @@ public class Player : MonoBehaviour {
         ClothesSfx = zend.GetComponent<AudioSource>();
         Anim = GetComponent<Animator>();
         rBody = GetComponent<Rigidbody>();
-        
         anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
@@ -537,7 +513,7 @@ public class Player : MonoBehaviour {
                 CantDoubleJump = true;
             }
         }
-        WhileSleep();
+        
         OnPause();
         if (Input.GetKeyDown(KeyCode.I)) { SkillId = 1; }
         if (Input.GetKeyDown(KeyCode.P)) { Weapon = 4; }
@@ -603,9 +579,7 @@ public class Player : MonoBehaviour {
         transform.position = target.transform.position;
         transform.rotation = target.transform.rotation;
     }
-    private void RewardPlayer(int rewardMoney, int rewardExp, Items rewardItem) {
-        StartCoroutine(RewardCoroutine(rewardMoney, rewardExp, rewardItem));
-    }
+    
     private void DialogueUp() => InputSealed = true;
     private void DialogueDown() => InputSealed = false;
     private void Move(float speed) {
@@ -623,9 +597,12 @@ public class Player : MonoBehaviour {
         }
     }
     private void AirMove(float speed) {
-        //transform.position += displacement * speed * Time.deltaTime;
-        RBody.AddForce(displacement/25, ForceMode.VelocityChange);
-        
+        //
+        if(!flying)
+            RBody.AddForce(displacement/25, ForceMode.VelocityChange);
+        else
+            transform.position += displacement * speed *15* Time.deltaTime;
+
         Rotate();
     }
     private void CheckPlayerHealth() {
@@ -646,24 +623,27 @@ public class Player : MonoBehaviour {
 
         }
         CalculateMoveDirection();
-        //if (Input.GetButton("L1")) {
-        //
-        //    Spells();
-        //}
         if (Input.GetButtonDown("L1")) {
 
         }
-        //if (!skillButton) {
         MenuNavi();
-
-        //}
+        if (L2.GetButtonDown()) {
+            DemonFlame = true;
+            Flying = true;
+            rBody.useGravity = false;
+        }
+        if (L2.GetButtonUp()) {
+            DemonFlame = false;
+            Flying = false;
+            rBody.useGravity = true;
+        }
 
         if (Input.GetKey(KeyCode.U)&&style==2) {
             Charging = true;
         }
         if (!InHouse) {
 
-            if (R2.GetButtonDown()) {
+            if (R2.GetButtonDown()&&grounded) {
                 //PullUpTheBow();
                 Withdraw();
                 Debug.Log(bowUp);
@@ -690,7 +670,7 @@ public class Player : MonoBehaviour {
                 StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
                 Debug.Log("false asf");
             }
-            if (!bowUp) {
+            if (!bowUp&&grounded) {
 
                 LockOn();
 
@@ -721,37 +701,20 @@ public class Player : MonoBehaviour {
                 Jump();
             }
             if (!lockedOn && !weak) {
-                Dashu();
+                //Dashu();
 
             }
         }
-        if (jumping||boosting) {
+        if (jumping||demonFlame) {
             RBody.useGravity = false;
         }
         else {
             RBody.useGravity = true;
         }
-        //if (Input.GetKeyDown(KeyCode.U)) {
-        //    SkillId = 10;
-        //}
-
+        
         if (!grounded && cmdInput == 0) {
             //if (Jumping) {
             AirMovementInput();
-
-            //}
-           //if (!jumping && !boosting && !locked) {
-           ////    //RBody.useGravity = false;
-           //    transform.position -= new Vector3(0, 0.1f, 0);
-           //}
-            //else {
-            //    // RBody.useGravity = true; ;
-            //}
-            //if (Input.GetButton("X") && !jumping && !boosting && !SecondJump) {
-            //    //RBody.drag = 25;
-            //    //RBody.useGravity = false;
-            //}
-
         }
         
     }
@@ -831,9 +794,7 @@ public class Player : MonoBehaviour {
         }
         if (!lockedOn) {
             Rotate();
-        }
-
-
+        } 
     }
     private void MovementInput() {
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
@@ -852,53 +813,15 @@ public class Player : MonoBehaviour {
 
 
     }
-    private void AnimationLayerManagement() {
-        ////anim.SetLayerWeight(2, 1);
-        //if (grounded&&!lockedOn) {
-        //    StartCoroutine(SetLayerWait());
-        //}
-        //else {
-        //    anim.SetLayerWeight(3, 0);
-        //}
-        ////if (cmdInput > 0) {
-        ////    anim.SetLayerWeight(3, 0);
-        //}
-    }
+
     private IEnumerator SetLayerWait() {
         YieldInstruction wait = new WaitForSeconds(0.1f);
         yield return wait;
         anim.SetLayerWeight(legsLayer, 1);
 
     }
-    private void WhileSleep() {
-        if (sleep) {
-            if (Input.GetButtonDown("Circle")) {
-                if (notSleeping != null) {
-                    notSleeping();
-                }
-            }
-        }
-    }
-    private void OutaBed() {
-        Debug.Log("no longer sleeppppp");
-        Sleeping = false;
-        InputSealed = false;
-        body.SetActive(true);
-        SetPositionAndRotation(outaBed);
-    }
+    
     private void WeaponSwitch() {
-        //if (Input.GetAxis("DPad Right") > 0 && dPadUp.GetButtonDown()) {
-        //    pressed = true;
-        //    Debug.Log("flicked with no flicker");
-        //    
-        //}
-        //if ((Input.GetAxis("DPad Left") < 0 && !pressed)) {
-        //    pressed = true;
-        //    
-        //}
-        //if (Input.GetAxis("DPad Left") >= 0) {
-        //    pressed = false;
-        //}
         if (Input.GetAxis("DPad Right") > 0 && dPadRight.GetButtonDown()) {
             pressed = true;
             Debug.Log("right");
@@ -957,32 +880,27 @@ public class Player : MonoBehaviour {
                     //nav.enabled = false;
                     //MoveSpeed = 0.2f;
                 }
+
                 //MoveSpeed = 6;
 
+            }
+            else if (flying) {
+                Animations = 2;
             }
             else {
                 Animations = 0;
 
             }
             if (!grounded) {
-               
-                    //MoveSpeed = 13;
                     AirMove(MoveSpeed);
-                
-                
-
             }else {
-                    //MoveSpeed = 3f;
                     Move(MoveSpeed);
-
                 }
-            
         }
         else {
 
             Animations = 0;
-            //nav.enabled = false;
-            //Moving = false;
+
         }
     }
 
@@ -998,14 +916,7 @@ public class Player : MonoBehaviour {
         InputSealed = false;
 
     }
-    private IEnumerator RewardCoroutine(int rewardMoney, int rewardExp, Items rewardItem) {
-        YieldInstruction wait = new WaitForSeconds(0.2f);
-        yield return wait;
-        Money += rewardMoney;
-        items.AddItem(rewardItem.data);
-        stats.AddExp(rewardExp);
-
-    }
+    
     private IEnumerator WaitToFall() {
 
         YieldInstruction wait = new WaitForSeconds(0.3f);
@@ -1056,14 +967,13 @@ public class Player : MonoBehaviour {
     }
     private IEnumerator MpDrain() {
         while (isActiveAndEnabled) {
-            YieldInstruction wait = new WaitForSeconds(3f);
+            YieldInstruction wait = new WaitForSeconds(0.5f);
             yield return wait;
             stats.MPLeft--;
             if (stats.MPLeft == 0) {
                 Deform();
             }
         }
-
     }
 
     #endregion
@@ -1087,49 +997,20 @@ public class Player : MonoBehaviour {
             StartCoroutine(WaitToFall());
             RBody.AddForce(new Vector3(0,333,0),ForceMode.Impulse);
         }
-
     }
-    private void GoingUp() {
-        //umping = true;
-        //nav.enabled = false;
-        //RBody.isKinematic = false;
-
-    }
+    
     private void Dashu() {
 
         if (L2.GetButtonDown() && !SecondJump) {
 
-
             if (!Grounded) {
                 Grounded = false;
-
-                //nav.enabled = false;
-
-
             }
 
             Boosting = true;
             dash = true;
-            //RBody.isKinematic = false;
-
         }
         if (dash && Boosting) {
-
-            //if (Grounded) {
-            //    BurstForce = 15;
-            //}
-            //else {
-            //    BurstForce = 20;
-            //    CmdInput = 0;
-            //    RBody.isKinematic = false;
-            //    //RBody.AddForce(transform.forward * BurstForce, ForceMode.VelocityChange);
-            //    if (RBody.isKinematic) {
-            //        Debug.Log("wtf is good?");
-            //    }
-            //}
-
-
-            //MoveSpeed = 13;
             StartCoroutine(Boost());
         }
     }
@@ -1479,19 +1360,7 @@ public class Player : MonoBehaviour {
                 Pause = false;
                 return;
             }
-            /*
-            if (Input.GetButtonDown("R1"))
-            {
-                UiManager.GetUiManager().Page++;
-
-            }
-            if (Input.GetButtonDown("L1"))
-            {
-                UiManager.GetUiManager().Page--;
-
-            }*/
         }
-
     }
 
     #region Event handlers
@@ -1653,13 +1522,7 @@ public class Player : MonoBehaviour {
     private void MpRegain() {
         stats.MPLeft += 2;
     }
-    private void BackToBase(Vector3 destination, bool houseOrNot) {
-        InHouse = houseOrNot;
-        Attacking = false;
-        MovePlayerObject();
-        transform.position = destination;
-        StartCoroutine(WaitToLand());
-    }
+    
     private IEnumerator WaitToLand() {
         YieldInstruction wait = new WaitForSeconds(3);
         yield return wait;
@@ -1681,16 +1544,7 @@ public class Player : MonoBehaviour {
     }
 
     private void OnDead() {
-        // UiManager.GetUiManager().DefeatedWindow();
-        //GetComponentInChildren<SkinnedMeshRenderer>().material = fader;
-        //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 1);
 
-    }
-    private void Sleep() {
-        Body.SetActive(false);
-        sleep = true;
-        stats.HealthLeft = stats.Health;
-        InputSealed = true;
     }
     private void BackToZend() {
         //main.SetActive(true);
@@ -1737,18 +1591,13 @@ public class Player : MonoBehaviour {
         Dead = false;
         stats.HealthLeft = stats.Health;
     }
-    private void Kryll() {
-        InputSealed = true;
-
-        if (kryll != null) {
-            kryll();
-        }
-    }
+    
     private void Deform() {
         //PostProcessorManager.GetProcessorManager().Default();
         PoweredUp = false;
 
-
+        Flying = false;
+        rBody.useGravity = true;
         Instantiate(swordDSpawn, transform);
         Base();
 
@@ -1805,9 +1654,4 @@ public class Player : MonoBehaviour {
     }
     
 }
-    //private void OnCollisionEnter(Collision collision) {
-    //    if (collision.gameObject.CompareTag("Item")) {
-    //        stats.HealthLeft += 2;
-    //    }
-    //}
 }

@@ -6,12 +6,7 @@ ModelImporter:
   - first:
       74: 4845976836682307729
     second: DemonIdle
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material
-    second: {fileID: 2100000, guid: c729f3ac6f89b214ba874c800ad1a485, type: 2}
+  externalObjects: {}
   materials:
     importMaterials: 1
     materialName: 0

@@ -36,29 +36,30 @@ public class ThreeDCamera : CameraLogic
         instance = this;
         xZOrientation = new GameObject("xZOrienatation").transform;
         xZOrientation.transform.SetParent(transform);
+        xZOrientation.transform.localPosition = new Vector3(0,0,0);
         audio = GetComponent<AudioSource>();
         Retical = new GameObject("retical");
         Retical.transform.SetParent(transform);
     }
     public override void Start()
     {
-        base.Start();
+        //base.Start();
         currentEulerAngles = transform.eulerAngles;
         currentEulerAngles.x = 10;
         transform.eulerAngles = currentEulerAngles;
 		StartCoroutine(WaitABitCoroutine());
     }
-	
-    public override void Update()
-    {
-        base.Update();
+
+    public override void Update() {
+        //base.Update();
+        //xZOrientation.eulerAngles=(new Vector3(currentEulerAngles.x, transform.eulerAngles.y, currentEulerAngles.z));
         GetInput();    
     }
 	private IEnumerator WaitABitCoroutine() {
 
         YieldInstruction wait = new WaitForSeconds(1);
 		yield return wait;
-        target = Body.transform.position;
+        //target = Body.transform.position;
 	}
 	private void Aiming()
     {
@@ -96,8 +97,8 @@ public class ThreeDCamera : CameraLogic
         if (Time.deltaTime == 0)
             return;
 
-        float deltaFromInputX = cameraHortizonal * 55 * Time.deltaTime;
-        float deltaFromInputY = cameraVertical * 55 * Time.deltaTime;
+        float deltaFromInputX = cameraHortizonal * 100 * Time.deltaTime;
+        float deltaFromInputY = cameraVertical * 100 * Time.deltaTime;
 
         target.y = EnsureAngleIs0To360(target.y+deltaFromInputX);
         target.x = target.x + deltaFromInputY;

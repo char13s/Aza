@@ -217,7 +217,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             StateSwitch();
 
         }
-        canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position);
+        //canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position);
     }
     private IEnumerator WaitToState() {
         YieldInstruction wait = new WaitForSeconds(0.5f);
@@ -290,13 +290,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     
     private void StateSwitch()
     {
-        switch (state) {
-            case EnemyAiStates.Idle:
-                break;
-            case EnemyAiStates.Chasing:
-                break;
-
-        }
+        //switch (state) {
+        //    case EnemyAiStates.Idle:
+        //        break;
+        //    case EnemyAiStates.Chasing:
+        //        break;
+        //
+        //}
         if (state != EnemyAiStates.LowHealth)
         {
             if (state != EnemyAiStates.Chasing && !dead)
@@ -323,7 +323,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
                 //Debug.Log("fuk");
                 State = EnemyAiStates.Chasing;
             }
-            if (Distance > 6 && !dead) {
+            if (Distance > 6 && !dead&&state!=EnemyAiStates.Idle) {
                 State = EnemyAiStates.ReturnToSpawn;
             }
             if (Hit) { State = EnemyAiStates.Hit;
@@ -433,13 +433,13 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private void ReturnToSpawn()
     {
-        
+        Debug.Log("Welp back to spawn");
         Vector3 delta = (flip) * (transform.position - startLocation);
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
         Walk = true;
         transform.position = Vector3.MoveTowards(transform.position, startLocation, 4 * Time.deltaTime);
-        if (Vector3.Distance(startLocation, transform.position) < 1f)
+        if (Vector3.Distance(startLocation, transform.position) < 1.5f)
         {
             State = EnemyAiStates.Idle;
         }
@@ -447,11 +447,6 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     public virtual void Chasing()
     {
         Walk = true;
-        //transform.position = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, 1 * Time.deltaTime);
-        //if (pc.Nav.enabled) {
-        //    //nav.SetDestination(Player.GetPlayer().transform.position);
-        //    
-        //}
         Vector3 delta = (flip) * (transform.position - pc.transform.position);
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
@@ -599,14 +594,6 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         Instantiate(deathEffect, transform);
         //deathEffect.transform.position = transform.position;
         Destroy(gameObject, 2.5f);
-        switch (pc.Weapon) {
-            case 0:
-                pc.stats.SwordProficency += 5;
-                break;
-            case 1:
-                break;
-        }
-        //drop.transform.SetParent(null);
     }
     public void CalculateDamage(float addition)
     {
