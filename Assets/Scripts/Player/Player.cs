@@ -119,6 +119,8 @@ public class Player : MonoBehaviour {
     private int guardLayer;
     private int castLayer;
     private int drawSwordLayer;
+
+    private bool longRangeAttack;
     #endregion
     #region Random stuff
     [Space]
@@ -393,6 +395,8 @@ public class Player : MonoBehaviour {
 
     public bool Flying { get => flying; set { flying = value; anim.SetBool("Flying",flying);if (flight != null) { flight(flying); } } }
 
+    public bool LongRangeAttack { get => longRangeAttack; set { longRangeAttack = value;anim.SetBool("Range",longRangeAttack); } }
+
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
@@ -642,38 +646,43 @@ public class Player : MonoBehaviour {
             Charging = true;
         }
         if (!InHouse) {
-
+            if (Input.GetButtonDown("R1")) {
+                LongRangeAttack = true;
+            }
+            if (Input.GetButtonUp("R1")) {
+                LongRangeAttack = false;
+            }
             if (R2.GetButtonDown()&&grounded) {
                 //PullUpTheBow();
-                Withdraw();
-                Debug.Log(bowUp);
-                BowUp = true;
-                AttackBow.SetActive(true);
-                if (archery != null) {
-                    archery(25);
-                }
-                StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
-                if (weak) {
-                    WoodenSword.SetActive(false);
-                }
-
+                //Withdraw();
+                //Debug.Log(bowUp);
+                //BowUp = true;
+                //AttackBow.SetActive(true);
+                //if (archery != null) {
+                //    archery(25);
+                //}
+                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
+                //if (weak) {
+                //    WoodenSword.SetActive(false);
+                //}
+                skillButton = true;
             }
             if (R2.GetButtonUp()) {
-                AttackBow.SetActive(false);
-                if (archery != null) {
-                    archery(0);
-                }
-                if (weak) {
-                    WoodenSword.SetActive(true);
-                }
-                BowUp = false;
-                StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
-                Debug.Log("false asf");
+                //AttackBow.SetActive(false);
+                //if (archery != null) {
+                //    archery(0);
+                //}
+                //if (weak) {
+                //    WoodenSword.SetActive(true);
+                //}
+                //BowUp = false;
+                //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
+                //Debug.Log("false asf");
+                skillButton = false;
             }
             if (!bowUp&&grounded) {
 
                 LockOn();
-
                 Block();
             }
 
@@ -708,7 +717,7 @@ public class Player : MonoBehaviour {
         if (jumping||demonFlame) {
             RBody.useGravity = false;
         }
-        else {
+        else if(!jumping && !demonFlame) {
             RBody.useGravity = true;
         }
         
@@ -967,12 +976,16 @@ public class Player : MonoBehaviour {
     }
     private IEnumerator MpDrain() {
         while (isActiveAndEnabled) {
-            YieldInstruction wait = new WaitForSeconds(0.5f);
+            YieldInstruction wait = new WaitForSeconds(3f);//write variable to alter drain
             yield return wait;
-            stats.MPLeft--;
-            if (stats.MPLeft == 0) {
-                Deform();
+            if (!runInEditMode) {
+                stats.MPLeft--;
+                if (stats.MPLeft == 0) {
+                    Deform();
+                }
+
             }
+            
         }
     }
 
@@ -982,14 +995,9 @@ public class Player : MonoBehaviour {
 
         if (Input.GetButtonDown("X") && grounded) {
             SkillId = 10;
-            //if (AIKryll.disableCollider != null) {
-            //    AIKryll.disableCollider();
-            //}
             Jumping = true;
             anim.SetLayerWeight(demonLayer, 0);
             anim.SetLayerWeight(angelLayer, 0);
-            //nav.enabled = false;
-            //RBody.isKinematic = false;
             Grounded = false;
             StopCoroutine(WaitToFall());
             GroundChecker.groundStatus -= OnGrounded;
@@ -1058,7 +1066,6 @@ public class Player : MonoBehaviour {
                     break;
             }
         }
-
     }
     private void Withdraw() {
         Withdraw1 = false;
@@ -1082,11 +1089,8 @@ public class Player : MonoBehaviour {
             if (battleOn != null) {
                 battleOn();
             }
-
             Attacking = true;
-
             CmdInput = 0;
-
             targeting = false;
             //BowDown();
             return;
@@ -1111,8 +1115,6 @@ public class Player : MonoBehaviour {
             if (Input.GetButtonUp("Square") && !skillIsActive && !boutaSpin) {
                 LightAttack = false;
                 CmdInput = 1;
-                //GamePad.SetVibration(0,0.5f,0.5f);
-                //StartCoroutine(KillVibration());
             }
             if (Input.GetButtonUp("Triangle") && !skillIsActive) {
                 CmdInput = 2;
@@ -1124,13 +1126,9 @@ public class Player : MonoBehaviour {
             Trail.SetActive(false);
             HitBox.SetActive(false);
             SkillId = 0;
-            DemonSword.SetActive(false);
-
-            //demonSwordBack.SetActive(true);
+            
             demonFistLeft.SetActive(false);
             demonFistRight.SetActive(false);
-            //attackBow.SetActive(false);
-
         }
     }
     private void Block() {
@@ -1146,13 +1144,8 @@ public class Player : MonoBehaviour {
             }
             Animations = 0;
             RBody.isKinematic = false;
-
             shield.SetActive(true);
-
-
-
             LockedOn = true;
-
             anim.SetLayerWeight(guardLayer, 1);
 
         }
@@ -1164,11 +1157,6 @@ public class Player : MonoBehaviour {
             Guard = false;
             shieldBack.SetActive(true);
         }
-        //if (Input.GetButton("L1")) {
-        //    if (Input.GetButtonDown("Triangle")) {
-        //        GuardAnimations = 1;
-        //    }
-        //}
         if (Input.GetButtonUp("L1")) {
             LockedOn = false;
         }
@@ -1244,16 +1232,11 @@ public class Player : MonoBehaviour {
     }
     private void Skills() {
         if (skillButton && Input.GetButtonDown("Triangle") && !skillIsActive) {
-
-
             if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired) {
                 stats.MPLeft -= triangle.MpRequired;
                 triangle.UseSkill();
                 skillIsActive = true;
-
-
             }
-
         }
 
         if (skillButton && Input.GetButtonDown("Square") && !skillIsActive) {
@@ -1261,78 +1244,55 @@ public class Player : MonoBehaviour {
                 stats.MPLeft -= square.MpRequired;
                 square.UseSkill();
                 skillIsActive = true;
-
-
             }
-
         }
         if (skillButton && Input.GetButtonDown("Circle") && !skillIsActive) {
-
             if (circle.SkillAssigned != null && stats.MPLeft >= circle.MpRequired) {
                 stats.MPLeft -= circle.MpRequired;
                 circle.UseSkill();
                 skillIsActive = true;
                 Guard = false;
-
-
             }
-
         }
         if (skillButton && Input.GetButtonDown("X") && !skillIsActive) {
             if (x.SkillAssigned != null && stats.MPLeft >= x.MpRequired) {
                 stats.MPLeft -= x.MpRequired;
                 x.UseSkill();
                 skillIsActive = true;
-
-
             }
-
         }
-
     }
     #endregion
     private void LockOn() {
 
         if (Input.GetButton("R1") && !TeleportTriggered && zendSpace) {
-            //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
             Time.timeScale = 0.1f;
-
             locked = true;
             if (Input.GetButtonDown("Triangle")) {
                 TeleportTriggered = true;
                 Cinemations = 51;
                 Debug.Log("tf is good?");
-
             }
         }
         else {
             Time.timeScale = 1;
-
-
-            //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
         }
 
         if (Input.GetButtonDown("L1")) {
             Animations = 0;
             Attacking = true;
-            //if (lockOn != null) {
-            //    lockOn();
-            //}
             if (battleMode.Enemies.Count > 0) {
                 if (findClosestEnemy != null)
                     findClosestEnemy();
             }
         }
-        if (Input.GetButton("L1")) {
+        if (Input.GetButtonDown("L1")) {
             //Guard = true;
 
             LockedOn = true;
             if (playerIsLockedOn != null) {
                 playerIsLockedOn();
             }
-
-            //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
-
         }
 
         if (Input.GetButtonUp("L1")) {
@@ -1484,9 +1444,9 @@ public class Player : MonoBehaviour {
         }
         stats.Attack = 3;
         Blank();
-        demonSwordBack.SetActive(true);
-        demonScabbard.SetActive(true);
-        WoodenSword.SetActive(true);
+        //demonSwordBack.SetActive(true);
+        //demonScabbard.SetActive(true);
+        //WoodenSword.SetActive(true);
     }
     private void ChooseSword() {
 

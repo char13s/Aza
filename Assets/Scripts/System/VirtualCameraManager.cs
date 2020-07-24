@@ -116,6 +116,7 @@ public class VirtualCameraManager : MonoBehaviour
     private void LookingForTarget() {
         
         battleCam.m_Priority = 24;
+        //battleCam
         if (pc.BattleMode.EnemyTarget != null) {
             //ttleCam.m_LookAt = Player.GetPlayer().BattleMode.EnemyTarget.transform;
         }

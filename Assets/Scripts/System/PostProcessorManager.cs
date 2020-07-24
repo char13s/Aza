@@ -62,8 +62,8 @@ using UnityEngine.Rendering.PostProcessing;
     public void Default() {
 		if (!timeStop) { 
         ForestProfile.GetSetting<ColorGrading>().hueShift.value = 0;
-        DarkEndProfile.GetSetting<ColorGrading>().saturation.value = 12.7f;
-			ForestProfile.GetSetting<ColorGrading>().contrast.value = 81;
+       // DarkEndProfile.GetSetting<ColorGrading>().saturation.value = 12.7f;
+			//ForestProfile.GetSetting<ColorGrading>().contrast.value = 81;
 		}
     }
     public void Transformation() {

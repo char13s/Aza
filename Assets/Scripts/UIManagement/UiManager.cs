@@ -494,7 +494,13 @@ public class UiManager : MonoBehaviour {
             Debug.Log(EventSystem.current.currentSelectedGameObject.name);
         }
     }
-    
+    private void MouseControl() {
+        //if(Input.GetJoystickNames().Length>0)
+        if (Input.anyKeyDown) {
+
+        }
+        //if(Input.GetJoystickNames.)
+    }
     #region Soul Shit
     private void UpdateUI() {
         soulsObtained++;

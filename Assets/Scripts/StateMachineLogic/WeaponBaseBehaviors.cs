@@ -24,7 +24,7 @@ public class WeaponBaseBehaviors : StateMachineBehaviour
                 //pc.AngelSword.SetActive(true);
                 break;
             case 2:
-                pc.WoodenSword.SetActive(true);
+                //pc.WoodenSword.SetActive(true);
                 break;
             //case 3:
             //    break;

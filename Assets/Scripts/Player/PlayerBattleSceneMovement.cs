@@ -70,7 +70,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         ClosestEnemy = null;
 
     }
-    private void Update() {
+    private void Update() {//fucking hate update
         Vector3 position = transform.position;
         if (!cutscening) {
             for (int i = 0; i < Enemy.TotalCount; i++) {
