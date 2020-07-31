@@ -32,12 +32,7 @@ public class UiNavigation : MonoBehaviour
     {
         if (state != UIState.GameMode) { 
         Inputs();}
-        if (Input.GetButtonDown("Circle")) {
-            state = prevState;
-        }
-        if (Input.GetButtonDown("X")) {
-            Current.Use();
-        }
+        
     }
     private void PauseState() {
         Debug.Log("Pause Up");
@@ -71,6 +66,12 @@ public class UiNavigation : MonoBehaviour
         }
         if (y == 0 && pressed) {
             pressed = false;
+        }
+        if (Input.GetButtonDown("Circle")) {
+            state = prevState;
+        }
+        if (Input.GetButtonDown("X")) {
+            Current.Use();
         }
     }
     private void MovingDown() {

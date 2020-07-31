@@ -26,6 +26,10 @@ public class FlightControl : MonoBehaviour
                 Debug.Log("Fuck u");
                 transform.position -= new Vector3(0, 3, 0) * Time.deltaTime;
             }
+            if (Input.GetButtonDown("X")) {
+                pc.Flying = false;
+                Debug.Log("fall");
+            }
         }
     }
     

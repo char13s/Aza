@@ -12,7 +12,8 @@ public class Jump : StateMachineBehaviour
     {
         pc = Player.GetPlayer();
         pc.Grounded = false;
-        pc.CantDoubleJump = false;
+        //pc.CantDoubleJump = false;
+        pc.CanFly = true;
         //pc.RBody.velocity = new Vector3(0, 0, 0);
         pc.RBody.AddForce(pc.transform.forward * 120, ForceMode.Impulse);
         

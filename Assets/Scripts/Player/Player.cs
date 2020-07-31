@@ -17,6 +17,7 @@ public class Player : MonoBehaviour {
 
     private float l;
     private bool cantDoubleJump = true;
+    private bool canFly;
     private int money;
     private bool inputSealed;
     #region Attacking
@@ -35,6 +36,7 @@ public class Player : MonoBehaviour {
     private bool boutaSpin;
     private bool skillButton;
     private bool lockedOn;
+    private bool inBattle;
     [SerializeField] private GameObject swordSpawn;
     [SerializeField] private GameObject swordDSpawn;
 
@@ -104,7 +106,7 @@ public class Player : MonoBehaviour {
     private bool jumpSeal;
     private bool jumping;
     private int cinemations;
-    private bool inHouse;
+    
     private int combatAnimations;
     private int guardAnimations;
     private bool doubleJump;
@@ -265,7 +267,7 @@ public class Player : MonoBehaviour {
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
-    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { /*RBody.isKinematic = true; /*nav.enabled = true;*/ SecondJump = false; CantDoubleJump = true; } } }
+    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { /*RBody.isKinematic = true; /*nav.enabled = true;*/ SecondJump = false; CantDoubleJump = true; CanFly = false; } } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
     public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
     public bool Guard { get => guard; set { guard = value; if (value) Moving = false; anim.SetBool("Guard", guard); } }
@@ -340,7 +342,7 @@ public class Player : MonoBehaviour {
 
     public GameObject Trail { get => trail; set => trail = value; }
     public bool SecondJump { get => doubleJump; set { doubleJump = value; anim.SetBool("DoubleJump", doubleJump); } }
-    public bool InHouse { get => inHouse; set { inHouse = value; if (inHouse) { DemonSword.SetActive(false); } } }//demonSwordBack.SetActive(true);
+    
 
     public GameObject BattleCamTarget { get => battleCamTarget; set => battleCamTarget = value; }
     public float BurstForce { get => burstForce; set => burstForce = value; }
@@ -393,9 +395,11 @@ public class Player : MonoBehaviour {
     public GameObject WoodenSword { get => woodenSword; set => woodenSword = value; }
     public bool DemonFlame { get => demonFlame; set { demonFlame = value;anim.SetBool("DemonFlame",demonFlame); if (demonFlame) { DemonUp(); } else { Base();RBody.useGravity = true; } } }
 
-    public bool Flying { get => flying; set { flying = value; anim.SetBool("Flying",flying);if (flight != null) { flight(flying); } } }
+    public bool Flying { get => flying; set { flying = value; anim.SetBool("Flying",flying);Flight(); if (flight != null) { flight(flying); } } }
 
     public bool LongRangeAttack { get => longRangeAttack; set { longRangeAttack = value;anim.SetBool("Range",longRangeAttack); } }
+
+    public bool CanFly { get => canFly; set => canFly = value; }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -501,7 +505,6 @@ public class Player : MonoBehaviour {
     void Update() {
         if (!pause && !InputSealed) {
             GetAllInput();
-
         }
         if ((inputSealed || pause) && Input.GetButtonDown("Circle")) {
 
@@ -513,7 +516,7 @@ public class Player : MonoBehaviour {
 
             if (Input.GetButtonDown("X")) {
 
-                Player.GetPlayer().SecondJump = true;
+                SecondJump = true;
                 CantDoubleJump = true;
             }
         }
@@ -632,20 +635,22 @@ public class Player : MonoBehaviour {
         }
         MenuNavi();
         if (L2.GetButtonDown()) {
-            DemonFlame = true;
-            Flying = true;
-            rBody.useGravity = false;
+            if (!demonFlame) {
+                DemonFlame = true;
+                
+                //rBody.useGravity = false;
+                return;
+            }
+            else {
+                DemonFlame = false;
+                Flying = false;
+                //rBody.useGravity = true;
+            }    
         }
-        if (L2.GetButtonUp()) {
-            DemonFlame = false;
-            Flying = false;
-            rBody.useGravity = true;
-        }
-
         if (Input.GetKey(KeyCode.U)&&style==2) {
             Charging = true;
         }
-        if (!InHouse) {
+        if (!inBattle) {
             if (Input.GetButtonDown("R1")) {
                 LongRangeAttack = true;
             }
@@ -714,20 +719,27 @@ public class Player : MonoBehaviour {
 
             }
         }
-        if (jumping||demonFlame) {
+        if (jumping) {
             RBody.useGravity = false;
         }
-        else if(!jumping && !demonFlame) {
+        else if(!jumping && !demonFlame && !flying) {
             RBody.useGravity = true;
         }
-        
+        if (!grounded && Input.GetButtonDown("X") && canFly) {
+            StartCoroutine(WaitToFly());
+        }
         if (!grounded && cmdInput == 0) {
             //if (Jumping) {
             AirMovementInput();
         }
         
     }
+    private IEnumerator WaitToFly() {
+        yield return null;
+        Flying = true;
+        canFly = false;
 
+    }
     #region Time Stuff
     private void ZaWarudo() {
         Debug.Log("Za BITCH");
@@ -812,15 +824,8 @@ public class Player : MonoBehaviour {
         if (ThreeDCamera.IsActive && !lockedOn) {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
-        if (Input.GetButtonDown("L3")) {
-            //Grounded = true;
-
-            //Kryll();
-        }
 
         MoveIt(x, y);
-
-
     }
 
     private IEnumerator SetLayerWait() {
@@ -1004,6 +1009,7 @@ public class Player : MonoBehaviour {
             StartCoroutine(ResetGroundCheck(0.3f));
             StartCoroutine(WaitToFall());
             RBody.AddForce(new Vector3(0,333,0),ForceMode.Impulse);
+            return;
         }
     }
     
@@ -1030,7 +1036,17 @@ public class Player : MonoBehaviour {
         Boosting = false;
         //oveSpeed = 6;
     }
+    private void Flight() {
+        if (flying) {
 
+            rBody.useGravity = false;
+            rBody.velocity = new Vector3(0,0,0);
+        }
+        else {
+            rBody.useGravity = true;
+        }
+        
+    }
     private void Spells() {
 
         if (Input.GetButtonDown("X")) {
@@ -1265,18 +1281,18 @@ public class Player : MonoBehaviour {
     #endregion
     private void LockOn() {
 
-        if (Input.GetButton("R1") && !TeleportTriggered && zendSpace) {
-            Time.timeScale = 0.1f;
-            locked = true;
-            if (Input.GetButtonDown("Triangle")) {
-                TeleportTriggered = true;
-                Cinemations = 51;
-                Debug.Log("tf is good?");
-            }
-        }
-        else {
-            Time.timeScale = 1;
-        }
+        //if (Input.GetButtonDown("R1") && !TeleportTriggered && zendSpace) {
+        //    Time.timeScale = 0.1f;
+        //    locked = true;
+        //    if (Input.GetButtonDown("Triangle")) {
+        //        TeleportTriggered = true;
+        //        Cinemations = 51;
+        //        Debug.Log("tf is good?");
+        //    }
+        //}
+        //else {
+        //    Time.timeScale = 1;
+        //}
 
         if (Input.GetButtonDown("L1")) {
             Animations = 0;
@@ -1288,21 +1304,22 @@ public class Player : MonoBehaviour {
         }
         if (Input.GetButtonDown("L1")) {
             //Guard = true;
-
-            LockedOn = true;
-            if (playerIsLockedOn != null) {
-                playerIsLockedOn();
+            if (lockedOn) {
+                LockedOn = true;
+                if (playerIsLockedOn != null) {
+                    playerIsLockedOn();
+                }
+                return;
             }
-        }
-
-        if (Input.GetButtonUp("L1")) {
-            LockedOn = false;
+            else {
+                LockedOn = false;
 
             if (notAiming != null) {
                 notAiming();
 
             }
 
+            }
         }
     }
 

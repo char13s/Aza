@@ -21,7 +21,7 @@ public class GroundChecker : MonoBehaviour {
     }
     private IEnumerator Wait() {
         YieldInstruction wait = new WaitForSeconds(1);
-        yield return wait;
+        yield return null;
         pc = Player.GetPlayer();
     }
     // Update is called once per frame
@@ -33,21 +33,10 @@ public class GroundChecker : MonoBehaviour {
         }
 
     }
-    //private void IsGrounded() {
-    //
-    //    if (pc.Nav.isOnNavMesh)
-    //    {
-    //        pc.Grounded = true;
-    //    }
-    //    else
-    //    {
-    //        pc.Grounded = false;
-    //    }
-    //    
-    //}
+    
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != null )
+        if (other.gameObject != null &&!pc.Flying)
         {
 
             ground = true;
@@ -62,8 +51,6 @@ public class GroundChecker : MonoBehaviour {
     {
         if (other.gameObject!=null ){
             ground = true;
-
-
         }
         else {
             ground = false;
