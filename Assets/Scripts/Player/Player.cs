@@ -140,7 +140,7 @@ public class Player : MonoBehaviour {
     [Header("References To Things on Zend")]
     [SerializeField] private GameObject leftPoint;
     [SerializeField] private GameObject arrowPoint;
-
+    [SerializeField] private GameObject trailPoint;
     [SerializeField] private GameObject groundChecker;
     [SerializeField] private GameObject battleCamTarget;
     [SerializeField] private GameObject zend;
@@ -400,6 +400,7 @@ public class Player : MonoBehaviour {
     public bool LongRangeAttack { get => longRangeAttack; set { longRangeAttack = value;anim.SetBool("Range",longRangeAttack); } }
 
     public bool CanFly { get => canFly; set => canFly = value; }
+    public GameObject TrailPoint { get => trailPoint; set => trailPoint = value; }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -423,8 +424,7 @@ public class Player : MonoBehaviour {
         GameController.respawn += RestoreHealth;
         GameController.respawn += ReturnToSpawn;
         onPlayerDeath += OnDead;
-        Npc.dialogueUp += DialogueUp;
-        Npc.dialogueDown += DialogueDown;
+        
         UiManager.sealPlayerInput += SealInput;
         UiManager.sealPlayerInput += StopRunning;
         UiManager.unsealPlayerInput += UnsealInput;
@@ -622,7 +622,7 @@ public class Player : MonoBehaviour {
     private void GetAllInput() {
         //Archery();
 
-        if (!jumping && grounded && !lockedOn&&!boosting) {
+        if (!jumping && grounded && !lockedOn&& cmdInput == 0 && !boosting) {
             MovementInput();
         }
         else if (cmdInput == 0&&!boosting) {
@@ -671,6 +671,10 @@ public class Player : MonoBehaviour {
                 //    WoodenSword.SetActive(false);
                 //}
                 skillButton = true;
+                if (skills != null) {
+                    skills(true);
+                }
+                lightning.SetActive(true);
             }
             if (R2.GetButtonUp()) {
                 //AttackBow.SetActive(false);
@@ -684,6 +688,10 @@ public class Player : MonoBehaviour {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
                 //Debug.Log("false asf");
                 skillButton = false;
+                if (skills != null) {
+                    skills(false);
+                }
+                lightning.SetActive(false);
             }
             if (!bowUp&&grounded) {
 
@@ -726,7 +734,7 @@ public class Player : MonoBehaviour {
             RBody.useGravity = true;
         }
         if (!grounded && Input.GetButtonDown("X") && canFly) {
-            StartCoroutine(WaitToFly());
+            //StartCoroutine(WaitToFly());
         }
         if (!grounded && cmdInput == 0) {
             //if (Jumping) {
@@ -1116,7 +1124,7 @@ public class Player : MonoBehaviour {
 
 
             if (Input.GetButtonDown("R1")) {
-                Debug.Log("attacking is false");
+
                 Withdraw1 = true;
                 //LockedOn = false;
                 return;
@@ -1542,7 +1550,7 @@ public class Player : MonoBehaviour {
         CmdInput = 0;
         //MoveSpeed = 6;
         LockedOn = false;
-        stats.Start();
+        //stats.Start();
         //ReturnToSpawn();
         mask.SetActive(false);
         GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;

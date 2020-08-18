@@ -5,6 +5,7 @@ using UnityEngine;
 public class UiNavigation : MonoBehaviour
 {
     public enum UIState {GameMode,Paused }
+    [SerializeField] private GameObject pauseMenu;
     [SerializeField] private UIMenuElement[] pauseButtons;
     private int index;
     [SerializeField]private UIMenuElement[] currentList;
@@ -36,6 +37,7 @@ public class UiNavigation : MonoBehaviour
     }
     private void PauseState() {
         Debug.Log("Pause Up");
+        pauseMenu.SetActive(true);
         State = UIState.Paused;
         Current = pauseButtons[0];
     }

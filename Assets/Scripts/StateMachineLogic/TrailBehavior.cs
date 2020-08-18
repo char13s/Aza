@@ -4,21 +4,16 @@ using UnityEngine;
 
 public class TrailBehavior : StateMachineBehaviour
 {
-    private GameObject fireTrail;
-    
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        fireTrail = Player.GetPlayer().FireTrail;
-        
-        
-    }
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        if (stateInfo.normalizedTime > 0.3) { fireTrail.SetActive(true); }
+    [SerializeField]private GameObject trail;
 
+    private Player player;
+    private GameObject position;
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
+        player = Player.GetPlayer();
+        position = player.TrailPoint;
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        fireTrail.SetActive(false);
+        Instantiate(trail, position.transform.position, Quaternion.identity);
     }
 }

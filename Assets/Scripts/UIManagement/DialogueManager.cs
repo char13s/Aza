@@ -6,6 +6,7 @@ public class DialogueManager : MonoBehaviour {
     //[SerializeField] private GameObject DialogueScreen;
     [SerializeField] private Text whoseTalking;
     [SerializeField] private GameObject textPanel;
+    [SerializeField] private GameObject dialogueScreen;
     private bool dialogueIsRunning;
     public static event UnityAction requestNextLine;
     public static event UnityAction skipDialogue;
@@ -38,6 +39,7 @@ public class DialogueManager : MonoBehaviour {
     }
     private void DialogueUp(bool val) {
         textPanel.SetActive(val);
+        dialogueScreen.SetActive(val);
         dialogueIsRunning = val;
     }
     private void SetTalker(string name) {

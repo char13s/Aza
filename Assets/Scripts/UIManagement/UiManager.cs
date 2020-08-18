@@ -426,7 +426,7 @@ public class UiManager : MonoBehaviour {
         Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
 
-        Enemy.onAnyEnemyDead += EnemyDeath;
+        
 
         Player.onPlayerDeath += OnPlayerDeath;
 
@@ -630,6 +630,7 @@ public class UiManager : MonoBehaviour {
     }
     private void OnPlayerDeath() {
         SetPlayerUIOff();
+        Debug.Log("Nigga dead");
         int num = SceneManager.GetActiveScene().buildIndex;
         if (nextLevel != null) {
             nextLevel(num);
@@ -1271,14 +1272,13 @@ public class UiManager : MonoBehaviour {
     private void StatsUpdate() {
         health.text = "Hp: " + Player.GetPlayer().stats.HealthLeft + "/" + Player.GetPlayer().stats.Health;
         stamina.text = "Mp: " + Player.GetPlayer().stats.MP;
-        exp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
-        expBar.value = Player.GetPlayer().stats.Exp;
+        
         money.text = "Munn: " + Player.GetPlayer().Money.ToString();
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
         staminaBar.value = Player.GetPlayer().stats.MPLeft;
-        expBar.maxValue = Player.GetPlayer().stats.CalculateExpNeed();
+        exp.text = "BP: "+Player.GetPlayer().stats.BattlePower.ToString();
 
         level.text = "LV. " + Player.GetPlayer().stats.Level;
     }
@@ -1316,31 +1316,10 @@ public class UiManager : MonoBehaviour {
         azaMPBar.maxValue = AzaAi.GetAza().stats.MP;
         azaMPBar.value = AzaAi.GetAza().stats.MPLeft;*/
     }
-    private void EnemyDeath() {
-        exp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
-        expBar.value = Player.GetPlayer().stats.Exp;
-    }
-
-
-    public void SoulsToAbility() {
-        if (Player.GetPlayer().stats.Exp > Player.GetPlayer().stats.RequiredExp) {
-            Player.GetPlayer().stats.Abilitypoints++;
-            Player.GetPlayer().stats.KryllLevel++;
-            Player.GetPlayer().stats.Exp -= Player.GetPlayer().stats.RequiredExp;
-            Player.GetPlayer().stats.RequiredExp = (int)(Player.GetPlayer().stats.RequiredExp * 1.2f);
-            kryllLevel.text = "Lv. " + Player.GetPlayer().stats.KryllLevel;
-            lvMenuExp.text = "Spirits :" + Player.GetPlayer().stats.Exp;
-            abilityPointsCost.text = "Cost :" + Player.GetPlayer().stats.RequiredExp;
-        }
-
-    }
-
     public void AddAttack() {
         if (Player.GetPlayer().stats.Abilitypoints > 0) {
             Player.GetPlayer().stats.AttackBoost++;
             Player.GetPlayer().stats.Abilitypoints--;
-
-
         }
 
     }
@@ -1349,8 +1328,6 @@ public class UiManager : MonoBehaviour {
         if (Player.GetPlayer().stats.Abilitypoints > 0) {
             Player.GetPlayer().stats.DefenseBoost++;
             Player.GetPlayer().stats.Abilitypoints--;
-
-
         }
     }
 
@@ -1358,8 +1335,6 @@ public class UiManager : MonoBehaviour {
         if (Player.GetPlayer().stats.Abilitypoints > 0) {
             Player.GetPlayer().stats.MpBoost++;
             Player.GetPlayer().stats.Abilitypoints--;
-
-
         }
     }
 
@@ -1367,8 +1342,6 @@ public class UiManager : MonoBehaviour {
         if (Player.GetPlayer().stats.Abilitypoints > 0) {
             Player.GetPlayer().stats.HealthBoost++;
             Player.GetPlayer().stats.Abilitypoints--;
-
-
         }
     }
 
@@ -1413,7 +1386,7 @@ public class UiManager : MonoBehaviour {
         baseDefense.text = "Defense = " + Player.GetPlayer().stats.BaseDefense.ToString();
         baseHealth.text = "Health = " + Player.GetPlayer().stats.BaseHealth.ToString();
         baseMp.text = "Mp = " + Player.GetPlayer().stats.BaseMp.ToString();
-        lvMenuExp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
+        
         UpdateBoost();
     }
     public void UpQuantity() {

@@ -287,6 +287,7 @@ public class GameController : MonoBehaviour {
     }
 
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
+        Debug.Log(scene.name);
         if (onoLevelLoaded != null) {
             onoLevelLoaded();
         }
@@ -345,7 +346,7 @@ public class GameController : MonoBehaviour {
     }
     private void OnNewGame() {
 
-        pc.stats.Start();
+        //pc.stats.Start();
    
         pc.transform.position = Spawn.transform.position;
         pc.transform.rotation = Spawn.transform.rotation;
@@ -429,7 +430,7 @@ public class GameController : MonoBehaviour {
 
         }
         pc.Loaded = false;
-        pc.stats.Start();
+        //pc.stats.Start();
 
     }
 

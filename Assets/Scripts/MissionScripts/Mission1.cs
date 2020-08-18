@@ -36,7 +36,7 @@ public class Mission1 : Objective
         {
             switch (Conditions) {
                 case 0:
-                    Condition0();
+                    
                     break;
                 case 1:
                     Condition1();
@@ -50,19 +50,7 @@ public class Mission1 : Objective
         }
 
     }
-    private void Condition0() {
-        Debug.Log("its running");
-        if (Player.GetPlayer().stats.Exp > 1000)
-            {
-            Debug.Log("Step 1 done");
-                CurrentDescription = 1;
-            //UiManager.GetUiManager().ObjectiveDescription(Description[CurrentDescription]);
-            Conditions = 1;
-            }
-
-
-
-    }
+  
     private void Condition1() {
         Debug.Log("um");
         if (mission1Update != null) {
