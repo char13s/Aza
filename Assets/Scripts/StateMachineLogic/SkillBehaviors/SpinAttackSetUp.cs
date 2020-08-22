@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SpinAttackSetUp : StateMachineBehaviour
 {
@@ -16,16 +14,15 @@ public class SpinAttackSetUp : StateMachineBehaviour
         pc.MoveSpeed = 0;
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        if (Input.GetButton("Square")) {
+        if (Input.GetButton("Triangle")) {
             Charge += 0.05f;
         }
 
-        if (Input.GetButtonUp("Square")) {
+        if (Input.GetButtonUp("Triangle")) {
             pc.LightAttack = false;
             pc.BoutaSpin = false;
             if (charge > 0.99) {
                 pc.SpinAttack = true;
-                
             }
             Charge = 0;
         }

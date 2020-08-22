@@ -115,6 +115,7 @@ public class Player : MonoBehaviour {
     private bool demonFlame;
     private bool flying;
 
+    private int element;
     private int demonLayer;
     private int angelLayer;   
     private int legsLayer;
@@ -401,6 +402,7 @@ public class Player : MonoBehaviour {
 
     public bool CanFly { get => canFly; set => canFly = value; }
     public GameObject TrailPoint { get => trailPoint; set => trailPoint = value; }
+    public int Element { get => element; set { element = value;anim.SetInteger("Element",element); } }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -456,8 +458,8 @@ public class Player : MonoBehaviour {
         EventManager.demoRestart += SetDefault;
         Hurt.unseal += UnsealInput;
         //dpadLeft += AngelUp;
-        dpadRight += DemonUp;
-        dpadDown += Base;
+        //dpadRight += DemonUp;
+        //dpadDown += Base;
         Interactable.sealJump += JumpSealer;
         Interactable.skullCollected += SkullMaskAdjuster;
         Interactable.bulbCollected += LightBulbAdjuster;
@@ -468,6 +470,8 @@ public class Player : MonoBehaviour {
         KillOtherLayers.weight += LayerControl;
         BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
+
+        CharacterUI.setElement += SetElement;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
@@ -634,19 +638,19 @@ public class Player : MonoBehaviour {
 
         }
         MenuNavi();
-        if (L2.GetButtonDown()) {
-            if (!demonFlame) {
-                DemonFlame = true;
-                
-                //rBody.useGravity = false;
-                return;
-            }
-            else {
-                DemonFlame = false;
-                Flying = false;
-                //rBody.useGravity = true;
-            }    
-        }
+        //if (L2.GetButtonDown()) {
+        //    if (!demonFlame) {
+        //        DemonFlame = true;
+        //        
+        //        //rBody.useGravity = false;
+        //        return;
+        //    }
+        //    else {
+        //        DemonFlame = false;
+        //        Flying = false;
+        //        //rBody.useGravity = true;
+        //    }    
+        //}
         if (Input.GetKey(KeyCode.U)&&style==2) {
             Charging = true;
         }
@@ -1349,6 +1353,9 @@ public class Player : MonoBehaviour {
     }
 
     #region Event handlers
+    private void SetElement(int element) {
+        Element = element;
+    }
     private void LightBulbAdjuster(int val) {
         Bulbs += val;
     }
