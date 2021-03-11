@@ -4,13 +4,13 @@ using UnityEngine;
 [System.Serializable]
 public class StatsController 
 {
-    private float health;
+    private int health;
     private int attack;
     private int defense;
 
     private int mp;
     private int intellect;
-    private float healthLeft;
+    private int healthLeft;
 
     private int mpLeft;
     private byte level = 1;
@@ -26,8 +26,8 @@ public class StatsController
     //Events
 
     //Properties
-    public float Health { get { return health; } set { health = Mathf.Max(0, value); } }
-    public float HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);  } }
+    public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
+    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health);  } }
     public int MPLeft { get { return mpLeft; } set { mpLeft = Mathf.Clamp(value, 0, mp);  } }
 
     public int Attack { get { return attack; } set { attack = value; } }

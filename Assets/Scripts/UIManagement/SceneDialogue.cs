@@ -35,11 +35,6 @@ public class SceneDialogue : MonoBehaviour
             sealPlayerInput();
         }
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private IEnumerator WaitABit() {
         YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;

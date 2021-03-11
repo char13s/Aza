@@ -8,13 +8,13 @@ public class AimingArchery : StateMachineBehaviour {
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        aimingPoint = ThreeDCamera.Retical;
+        //aimingPoint = ThreeDCamera.Retical;
     }
 
      //OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().MovementBone.LookAt(aimingPoint.transform);
+        //Player.GetPlayer().MovementBone.LookAt(aimingPoint.transform);
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine

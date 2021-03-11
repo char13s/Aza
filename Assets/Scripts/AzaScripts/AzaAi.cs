@@ -42,7 +42,7 @@ public class AzaAi : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        //stats.Start();
+        stats.Start();
         Navi = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
     }

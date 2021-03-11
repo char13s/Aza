@@ -5,12 +5,21 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-//using UnityEngine.Video;
+using UnityEngine.Video;
 #pragma warning disable 0649
 public class UiManager : MonoBehaviour {
-    //[Header("Tutorial Stuff")]
-    //
-    //[Space]
+    [Header("Tutorial Stuff")]
+    [SerializeField] private GameObject movementTutorial;
+    [SerializeField] private GameObject miniMapTutorial;
+    [SerializeField] private GameObject pauseTutorial;
+    [SerializeField] private GameObject combatTutorial;
+    [SerializeField] private GameObject background;
+    [SerializeField] private GameObject tutorMenu;
+    [SerializeField] private GameObject backButton;
+    [SerializeField] private GameObject fireBallTutorial;
+    [SerializeField] private GameObject flameTornadoTutorial;
+    [SerializeField] private GameObject HeavySwingTutorial;
+    [Space]
     #region PlayerUI
     [Header("PlayerUI")]
     [SerializeField] private GameObject playerUi;
@@ -58,12 +67,40 @@ public class UiManager : MonoBehaviour {
     [Space]
     #endregion
 
-    [Header("New Pause Menu")]
-    [SerializeField] private GameObject equipmentPage;
-    [SerializeField] private GameObject map;
-    [SerializeField] private GameObject skills;
-    [SerializeField] private GameObject combos;
 
+    [Space]
+
+    [Header("StoreMenu")]
+    [SerializeField] private GameObject StoreMenuPrefab;
+    private static GameObject storeMenu;
+    [SerializeField] private GameObject storeMenuDefaultButton;
+    [SerializeField] private GameObject quantityWindow;
+    [SerializeField] private Text displayedQuantity;
+    private int quantity;
+    [Space]
+    [Header("UseMenu")]
+    [SerializeField] private GameObject useMenuPrefab;
+    [SerializeField] private Button useButtonPrefab;
+    [SerializeField] private Button itemDescriptionButtonPrefab;
+    [SerializeField] private Button giveButtonPrefab;
+    [SerializeField] private Button dropButtonPrefab;
+    [SerializeField] private GameObject useMenuDefaultButton;
+    private static GameObject useMenu;
+    private static Button useButton;
+    private static Button itemDescriptionButton;
+    private static Button giveButton;
+    private static Button dropButton;
+    [Space]
+
+
+
+    [Space]
+    [Header("Dialogue Management")]
+    private static GameObject dialogueMenu;
+    [SerializeField] private GameObject dialogueMenuPrefab;
+    [SerializeField] private Text dialogueText;
+    [SerializeField] private Text whoseTalking;
+    [Space]
     #region StatBuildMenu
     [Header("Stat Build Menu")]
     [SerializeField] private GameObject MeditationMenu;
@@ -102,6 +139,14 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private GameObject statusWindow;
 
     [Space]
+    [Header("Videos")]
+    [SerializeField] private VideoClip combo1;
+    [SerializeField] private VideoClip combo2;
+    [SerializeField] private VideoClip combo3;
+    [SerializeField] private VideoClip combo4;
+
+
+    [Space]
     [Header("Objective menu")]
     [SerializeField] private Text descriptionBox;
     [SerializeField] private GameObject missionListing;
@@ -111,11 +156,11 @@ public class UiManager : MonoBehaviour {
 
     [Header("Options")]
     [SerializeField] private GameObject optDefaultButton;
-    [SerializeField] private GameObject optionMenu;
-    [SerializeField] private GameObject soundSettings;
-    [SerializeField] private GameObject gameSettings;
-    [SerializeField] private Slider masterVolume;
-    [SerializeField] private Slider sfxVolume;
+	[SerializeField] private GameObject optionMenu;
+	[SerializeField] private GameObject soundSettings;
+	[SerializeField] private GameObject gameSettings;
+	[SerializeField] private Slider masterVolume;
+	[SerializeField] private Slider sfxVolume;
     //[SerializeField] private 
 
     [Header("Pop Up Windows")]
@@ -152,18 +197,22 @@ public class UiManager : MonoBehaviour {
     [Header("Fonts")]
     [SerializeField] private Font luckiestGuy;
 
+    [Header("KryllUI")]
+    [SerializeField] private GameObject kryllUi;
+    [SerializeField] private Text distFromZend;
+
     [Header("Save Menu")]
     [SerializeField] private GameObject saveMenu;
     [SerializeField] private GameObject saveMenuDefault;
 
-    //[Header("Pause Menu")]
-    //[SerializeField] private GameObject menus;
-    //[SerializeField] private GameObject items;
-    //[SerializeField] private GameObject equipment;
-    //[SerializeField] private GameObject skills;
-    //[SerializeField] private GameObject stats;
-    //[SerializeField] private GameObject options;
-    //[SerializeField] private GameObject pauseMenuDefaultButton;
+    [Header("Pause Menu")]
+    [SerializeField] private GameObject menus;
+    [SerializeField] private GameObject items;
+    [SerializeField] private GameObject equipment;
+    [SerializeField] private GameObject skills;
+    [SerializeField] private GameObject stats;
+    [SerializeField] private GameObject options;
+    [SerializeField] private GameObject pauseMenuDefaultButton;
     private static UiManager instance;
 
     [Header("Skill Menu")]
@@ -215,7 +264,11 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continueButton;
     [SerializeField] private GameObject endOfDemoScreen;
-
+    [Header("Dialogues")]
+    [SerializeField] private GameObject dialogueBox;
+    [SerializeField] private GameObject intro;
+    [SerializeField] private GameObject landed;
+    [SerializeField] private GameObject enemyAppeared;
 
     [Header("Level Selection Window")]
     [SerializeField] private GameObject missionDetails;
@@ -231,8 +284,8 @@ public class UiManager : MonoBehaviour {
     [SerializeField] private GameObject choiceDefaultButton;
     [SerializeField] private GameObject choicePanel;
     [SerializeField] private GameObject demoOverScreen;
-    #region Events
-    public static UnityAction missionCleared;
+	#region Events
+	public static UnityAction missionCleared;
     public static event UnityAction sealPlayerInput;
     public static event UnityAction unsealPlayerInput;
     public static UnityAction<string, Sprite> itemAdded;
@@ -248,13 +301,13 @@ public class UiManager : MonoBehaviour {
     public static event UnityAction demonSword;
     public static event UnityAction angelSword;
     public static event UnityAction bothSwords;
-    public static event UnityAction<float> sendMasterVolume;
-    public static event UnityAction<float> sendSfxVolume;
+	public static event UnityAction<float> sendMasterVolume;
+	public static event UnityAction<float> sendSfxVolume;
     public static event UnityAction pause;
     public static event UnityAction<bool> killAll;
-    #endregion
+	#endregion
 
-    [SerializeField] private GameObject defaultObject;
+	[SerializeField] private GameObject defaultObject;
     [SerializeField] private GameObject inventDefaultButton;
     private int menuState;
     private Player pc;
@@ -262,10 +315,17 @@ public class UiManager : MonoBehaviour {
     private bool tutorialUp;
     private bool dialogue;
     #region Getters and Setters
+    public static GameObject UseMenu { get => useMenu; set => useMenu = value; }
+    public static Button UseButton { get => useButton; set => useButton = value; }
+    public static Button ItemDescriptionButton { get => itemDescriptionButton; set => itemDescriptionButton = value; }
+    public static Button GiveButton { get => giveButton; set => giveButton = value; }
+    public static Button DropButton { get => dropButton; set => dropButton = value; }
 
+    public static GameObject StoreMenu { get => storeMenu; set => storeMenu = value; }
 
     public Image Black { get => black; set => black = value; }
-
+    public Text DialogueText { get => dialogueText; set => dialogueText = value; }
+    public static GameObject DialogueMenu { get => dialogueMenu; set => dialogueMenu = value; }
     public GameObject DefaultObject { get => defaultObject; set { defaultObject = value; GetSelected(); } }
 
 
@@ -288,22 +348,39 @@ public class UiManager : MonoBehaviour {
         }
         instance = this;
         black.gameObject.SetActive(true);
+        UseMenu = useMenuPrefab;
+        UseButton = useButtonPrefab;
+        GiveButton = giveButtonPrefab;
+        itemDescriptionButton = itemDescriptionButtonPrefab;
+        dropButton = dropButtonPrefab;
+
+        storeMenu = StoreMenuPrefab;
+
+        dialogueMenu = dialogueMenuPrefab;
         SetButton();
 
         missionCleared += ObjectiveClear;
         itemAdded += ItemPopUp;
         areaChange += AreaChange;
+        bedTime += SaveMenuUp;
+        outaBed += SaveMenuDown;
     }
     void Start() {
         #region outside events
+        AIKryll.sendDist += DistFromKyrllToZend;
+        AIKryll.zend += KryllDown;
 
-        
-
+        Player.kryll += KryllUp;
+        Player.notSleeping += SaveMenuDown;
+        Player.cancelPaused += MenusDown;
+        Player.notSleeping += NotSleep;
         Player.skills += QuickSkillmenu;
         Player.weaponSwitch += WeaponSwitch;
+        StoreManager.itemWasBought += UpdateMoney;
 
         GameController.onGameWasStarted += GameScreen;
         GameController.gameWasSaved += SaveGame;
+        GameController.onQuitGame += OnQuit;
         GameController.continueGame += LevelSelect;
         GameController.continueGame += SelectLevelButton;
         GameController.setCanvas += SetCanvas;
@@ -311,40 +388,60 @@ public class UiManager : MonoBehaviour {
         GameController.returnToLevelSelect += UnFade;
         GameController.onoLevelLoaded += UnFade;
         GameController.respawn += SetPlayerUI;
+        ExpConverter.levelMenuUp += MenuManager;
+
         Stats.onBaseStatsUpdate += UpdateBoost;
+
         Items.onItemClick += UseMenuHandling;
         Inventory.mainItemSet += SetImage;
         Inventory.menuSet += QuickAccessMenu;
         Objective.onObjectiveClick += ObjectiveDescription;
+
+        Bed.bed += Sleep;
+
+        PortalConnector.portalListUp += MenuManager;
         PortalConnector.backToLevelSelect += Portal;
+
         Skill.sendSkill += SetSkillToSlot;
         SkillButton.sendSkillSlot += SetLastSkillSlot;
+
         //CinematicManager.unfade += UnFade;
         CinematicManager.gameStart += GameStart;
+
+        Cauldron.potionMaking += MenuManager;
+
         SpellTagSlot.spellInvent += SpellTagListUp;
         SpellTag.spellListDown += SpellTagListDown;
         SpellTagSlot.sendThisSlot += SetLastSelectedSpellTagSlot;
         SpellTag.sendThisSpell += SetSpell;
+
+        DialogueTrigger.triggered += DialogueManagement;
+        DialogueTrigger.close += CloseDialogue;
+
         LevelObject.selectLevel += SetMissionDetails;
+        EndGameTrigger.end += EndScreen;
+
         Stats.onLevelUp += StatsUpdate;
+        Stats.onShowingStats += ViewStats;
         Stats.onMPLeft += MPChange;
         Stats.onHealthChange += HealthChange;
+
+        Enemy.onAnyEnemyDead += EnemyDeath;
+
         Player.onPlayerDeath += OnPlayerDeath;
+
         EventManager.sceneChanger += LoadLevelHelper;
         EventManager.chooseSword += ChoicePanelUp;
-
+        TutorialTriggers.requestTutorial += TutorialUpProcessor;
         EventManager.demoRestart += ChangeSword;
+
         Souls.soulCount += UpdateUI;
         DialogueTrigger1.dialogueUp += DialogueUp;
         SceneDialogue.turnOffDialogue += DialogueUp;
         Interactable.endDemo += DemoOver;
-        UIMenuElement.map += DisplayMap;
-        UIMenuElement.equipment += DisplayEquipment;
-        UIMenuElement.skills += DisplaySkills;
-        UIMenuElement.combos += DisplayCombos;
-        #endregion
-        masterVolume.onValueChanged.AddListener(OnMasterVolumeChange);
-        sfxVolume.onValueChanged.AddListener(OnSFXVolumeChange);
+		#endregion
+		masterVolume.onValueChanged.AddListener(OnMasterVolumeChange);
+		sfxVolume.onValueChanged.AddListener(OnSFXVolumeChange);
         OnMasterVolumeChange(0.3f);
         OnSFXVolumeChange(0.3f);
         pc = Player.GetPlayer();
@@ -368,29 +465,35 @@ public class UiManager : MonoBehaviour {
         SceneManager.sceneLoaded -= OnLevelFinishedLoading;
     }
 
-    void Update() {
+    /*void Update() {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2) || Input.GetButtonDown("Pause")) {
             //GetSelected();
         }
         if (Player.GetPlayer().Pause) {
-
+            if (MenuState > 0 && Input.GetButtonDown("Circle")) {
+                StartCoroutine(WaitForPauseMenu());
+            }
         }
         if (Input.GetButtonDown("Pause")) {
-
-            //DefaultObject = pauseMenuDefaultButton;
+            PauseMenuControl(0);
+            DefaultObject = pauseMenuDefaultButton;
             if (pause != null) {
                 pause();
             }
             GetSelected();
         }
-
+        if (tutorialUp||pc.Pause) {
+            if (Input.GetButtonDown("Circle")) {
+                ClearTutorials();
+            }
+        }
         if (GameController.GetGameController().GameMode < 1) {
             Inputs();
         }
         if (Input.GetKeyDown(KeyCode.Equals)) {
             Debug.Log(EventSystem.current.currentSelectedGameObject.name);
         }
-    }
+    }*/
     private void MouseControl() {
         //if(Input.GetJoystickNames().Length>0)
         if (Input.anyKeyDown) {
@@ -479,19 +582,19 @@ public class UiManager : MonoBehaviour {
 
     }
 
-    #endregion
-    #region Event Handlers
-    private void OnMasterVolumeChange(float val) {
-        if (sendMasterVolume != null) {
-            sendMasterVolume(val);
-        }
-    }
-    private void OnSFXVolumeChange(float val) {
-        if (sendSfxVolume != null) {
-            sendSfxVolume(val);
-        }
-    }
-    private void SetPlayerUI() {
+	#endregion
+	#region Event Handlers
+	private void OnMasterVolumeChange(float val) {
+		if (sendMasterVolume != null) {
+			sendMasterVolume(val);
+		}
+	}
+	private void OnSFXVolumeChange(float val) {
+		if (sendSfxVolume != null) {
+			sendSfxVolume(val);
+		}
+	}
+	private void SetPlayerUI() {
         playerUi.SetActive(true);
     }
     private void SetPlayerUIOff() {
@@ -527,7 +630,6 @@ public class UiManager : MonoBehaviour {
     }
     private void OnPlayerDeath() {
         SetPlayerUIOff();
-        Debug.Log("Nigga dead");
         int num = SceneManager.GetActiveScene().buildIndex;
         if (nextLevel != null) {
             nextLevel(num);
@@ -545,20 +647,6 @@ public class UiManager : MonoBehaviour {
     //}
     #endregion
     #region Menus
-    private void DisplayMap() {
-
-        //show map
-    }
-    private void DisplayEquipment() {
-        //open equipment window
-    }
-    private void DisplayCombos() {
-        //open combos page
-    }
-    private void DisplaySkills() {
-        //open skills page
-
-    }
     private void Inputs() {
 
         if (levelSelectWindow.activeSelf) {
@@ -587,6 +675,63 @@ public class UiManager : MonoBehaviour {
         }
 
     }
+    private void TutorialUpProcessor(int num) {
+        tutorialUp = true;
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
+        switch (num) {
+            case 0:
+                howToMove.SetActive(true);
+                break;
+            case 1:
+                howToAttack.SetActive(true);
+                break;
+            case 2:
+                howToGuard.SetActive(true);
+                break;
+            case 3:
+                howToUseRelics.SetActive(true);
+                break;
+            case 4:
+                howToUseSkills.SetActive(true);
+                break;
+            case 5:
+                howToUseBow.SetActive(true);
+                break;
+        }
+    }
+    private void ClearTutorials() {
+        tutorialUp = false;
+        if (unsealPlayerInput != null) {
+            unsealPlayerInput();
+        }
+        howToMove.SetActive(false);
+
+        howToAttack.SetActive(false);
+
+        howToGuard.SetActive(false);
+
+        howToUseRelics.SetActive(false);
+
+        howToUseSkills.SetActive(false);
+
+        howToUseBow.SetActive(false);
+    }
+    private IEnumerator WaitForPauseMenu() {
+        yield return null;
+        PauseMenuControl(0);
+
+    }
+    private IEnumerator JustWait(int connector) {
+        YieldInstruction wait = new WaitForSeconds(3);
+        yield return wait;
+        if (portal != null) {
+            portal(connector);
+        }
+        MenusDown();
+        StartCoroutine(WaitToLoad());
+    }
 
     public void Portal() {
 
@@ -600,15 +745,63 @@ public class UiManager : MonoBehaviour {
         yield return wait;
         UnFade();
     }
-
-    public void SoundSettingsUp() {
-        soundSettings.SetActive(true);
+    public void OptionsMenu() {
+        PauseMenuControl(5);
+	}
+	public void SoundSettingsUp() {
+		soundSettings.SetActive(true);
+	}
+    public void StoreUp() {
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
+        storeMenu.SetActive(true);
     }
-
+    //public void OpenSkillTree() {
+    //    skillTree.SetActive(true);
+    //    levelMenuPrefab.SetActive(false);
+    //}
     public void GameSettingsUp() {
         gameSettings.SetActive(true);
     }
+    public void PauseMenuControl(int num) {
+        MenuState = num;
+        menus.SetActive(false);
 
+        switch (MenuState) {
+            case 0:
+                Debug.Log("back to basics");
+
+                menus.SetActive(true);
+                DefaultObject = pauseMenuDefaultButton;
+
+                items.SetActive(false);
+                equipment.SetActive(false);
+                skills.SetActive(false);
+                stats.SetActive(false);
+                soundSettings.SetActive(false);
+                break;
+            case 1:
+                items.SetActive(true);
+                break;
+            case 2:
+                equipment.SetActive(true);
+                break;
+            case 3:
+
+                skills.SetActive(true);
+                DefaultObject = skillDefaultButton;
+                break;
+            case 4:
+                stats.SetActive(true);
+                ViewStats();
+                break;
+            case 5:
+                soundSettings.SetActive(true);
+                break;
+        }
+
+    }
     private void GameStart() {
         StartCoroutine(WaitToShowHowToAttack());
 
@@ -620,7 +813,41 @@ public class UiManager : MonoBehaviour {
         howToAttack.SetActive(true);
 
     }
+    public void MenuManager(int menu) {
+        if (sealPlayerInput != null) {
+            sealPlayerInput();
+        }
+        //PauseGame();
+        switch (menu) {
+            case 0:
 
+                break;
+            case 1:
+                storeMenu.SetActive(true);
+                break;
+            case 2:
+                if (disablePlayer != null) {
+                    disablePlayer();
+                }
+                MeditationMenu.SetActive(true);
+
+                break;
+            case 3:
+                quantityWindow.SetActive(true);
+                displayedQuantity.text = quantity.ToString();
+                break;
+            case 4:
+                portalList.SetActive(true);
+                DefaultObject = portalDefaultObject;
+                break;
+            case 5:
+                skillTree.SetActive(true);
+                break;
+            case 6:
+                LevelUpMenuUp();
+                break;
+        }
+    }
     private void LevelUpMenuUp() {
         if (sealPlayerInput != null) {
             sealPlayerInput();
@@ -630,7 +857,24 @@ public class UiManager : MonoBehaviour {
         DefaultObject = levelMenuDefaultButton;
         //EventSystem.current.SetSelectedGameObject(DefaultObject);
     }
-
+    private void MenusDown() {
+        //levelMenuPrefab.SetActive(false);
+        //storeMenu.SetActive(false);
+        //if (unsealPlayerInput != null) {
+        //    unsealPlayerInput();
+        //}
+        //portalList.SetActive(false);
+        optionMenu.SetActive(false);
+        MeditationMenu.SetActive(false);
+        if (menuState == 0) {
+            Player.GetPlayer().Pause = false;
+            pauseMenu.SetActive(false);
+        }
+    }
+    private void OnQuit() {
+        MenuManager(0);
+        MenusDown();
+    }
 
 
     #endregion
@@ -652,9 +896,9 @@ public class UiManager : MonoBehaviour {
         if (demonSword != null) {
             demonSword();
         }
-
+        
         LoadLevelHelper(4);
-
+        
         choicePanel.SetActive(false);
     }
     private void ChangeSword() {
@@ -665,9 +909,9 @@ public class UiManager : MonoBehaviour {
         if (angelSword != null) {
             angelSword();
         }
-
+       
         LoadLevelHelper(4);
-
+        
         choicePanel.SetActive(false);
     }
     public void BothSwords() {
@@ -681,6 +925,35 @@ public class UiManager : MonoBehaviour {
     private void FirstMission() {
 
     }
+    #endregion
+    #region Sleep Management
+    private void SaveMenuUp() {
+        saveMenu.SetActive(true);
+        playerUi.SetActive(false);
+    }
+    private void SaveMenuDown() {
+        saveMenu.SetActive(false);
+        playerUi.SetActive(true);
+    }
+    private void Sleep() {
+        StartCoroutine(FadeRealQuick(bedTime));
+    }
+    private void NotSleep() {
+        StartCoroutine(FadeRealQuick(outaBed));
+    }
+    private IEnumerator FadeRealQuick(UnityAction action) {
+        YieldInstruction wait = new WaitForSeconds(1);
+        while (isActiveAndEnabled && black.color.a <= 0.99) {
+            yield return null;
+            FadeToBlack();
+        }
+        if (action != null) {
+            action();
+        }
+
+        //UnFade();
+    }
+
     #endregion
 
     #region spellTag Manangement
@@ -702,6 +975,45 @@ public class UiManager : MonoBehaviour {
         //Debug.Log(lastSpellSlotSelected.SpellName.text);
 
         lastSpellSlotSelected.SpellName.text = spell.SpellName;
+    }
+    #endregion
+
+    #region Dialogue Management
+    private void DialogueManagement(int text) {
+        dialogueBox.SetActive(true);
+        switch (text) {
+            case 0:
+                intro.SetActive(true);
+                break;
+            case 1:
+                landed.SetActive(true);
+                break;
+            case 2:
+                enemyAppeared.SetActive(true);
+                break;
+        }
+    }
+    private void CloseDialogue(int text) {
+        dialogueBox.SetActive(false);
+        switch (text) {
+            case 0:
+                intro.SetActive(false);
+                break;
+            case 1:
+                landed.SetActive(false);
+                break;
+            case 2:
+                enemyAppeared.SetActive(false);
+                break;
+        }
+    }
+    private void Dashu() {
+
+    }
+    #endregion
+    #region
+    private void EndScreen() {
+        endScreen.SetActive(true);
     }
     #endregion
 
@@ -739,20 +1051,23 @@ public class UiManager : MonoBehaviour {
 
         StartCoroutine(FadeScreen(action));
     }
-    
+    private IEnumerator WaitTilFaded() {
+        yield return new WaitUntil(() => black.color.a > 1);
+        MenusDown();
+    }
     private IEnumerator FadeScreen(UnityAction action) {
         while (isActiveAndEnabled && black.color.a <= 0.99) {
             yield return null;
             FadeToBlack();
         }
         Debug.Log("Fuck that fade");
-        
+        MenusDown();
         //levelSelectWindow.SetActive(false);
         loadingIcon.SetActive(true);
         if (action != null) {
             action();
         }
-
+        
         if (killAll != null) {
             killAll(true);
         }
@@ -796,7 +1111,7 @@ public class UiManager : MonoBehaviour {
                 unsealPlayerInput();
             }
         }
-
+        
         if (killAll != null) {
             killAll(false);
         }
@@ -841,7 +1156,7 @@ public class UiManager : MonoBehaviour {
     #endregion
     private void PauseGame() {
         Player.GetPlayer().Pause = true;
-    }
+    } 
     private void GameScreen() {
         StartCoroutine(WaitCoroutine());
     }
@@ -850,7 +1165,7 @@ public class UiManager : MonoBehaviour {
     }
     private void UseMenuHandling() {
 
-        //DefaultObject = useButton.gameObject;
+        DefaultObject = useButton.gameObject;
         //GetSelected();
     }
     private void GetSelected() {
@@ -879,22 +1194,119 @@ public class UiManager : MonoBehaviour {
 
     }
 
+    #region Tutorial Logic
+    public void MoveTutor() {
+        Clear();
+        movementTutorial.SetActive(true);
+    }
+    public void MiniMapTutor() {
+        Clear();
+        miniMapTutorial.SetActive(true);
+    }
+    public void PauseTutor() {
+        Clear();
+        pauseTutorial.SetActive(true);
+    }
+    public void CombatTutor() {
+        Clear();
+        combatTutorial.SetActive(true);
+    }
+    public void TutorMenu() {
+        Clear();
+        backButton.SetActive(false);
+        tutorMenu.SetActive(true);
+    }
 
+    public void MainMenu() {
+        Clear();
+        backButton.SetActive(false);
+        background.SetActive(false);
+    }
+    private void Clear() {
+        backButton.SetActive(true);
+        background.SetActive(true);
+        tutorMenu.SetActive(false);
+        movementTutorial.SetActive(false);
+        miniMapTutorial.SetActive(false);
+        pauseTutorial.SetActive(false);
+        combatTutorial.SetActive(false);
+    }
+    public void CloseTheStore() {
+
+        storeMenu.SetActive(false);
+        Player.GetPlayer().MoveSpeed = 6;
+
+    }
+
+    public void ClearSkillTutorials() {
+
+
+        fireBallTutorial.SetActive(false);
+        flameTornadoTutorial.SetActive(false);
+        HeavySwingTutorial.SetActive(false);
+    }
+    public void FireBallTutorialUp() {
+        fireBallTutorial.SetActive(true);
+    }
+    public void FlameTornadoTutorialUp() {
+        flameTornadoTutorial.SetActive(true);
+
+    }
+    public void HeavySwingTutorialUp() {
+        HeavySwingTutorial.SetActive(true);
+
+    }
+    #endregion
     #region UI Updates
+    private void DialogueManagerUp() {
+        if (!dialogueMenu.activeSelf) {
+            dialogueMenu.SetActive(true);
+
+        }
+
+    }
+    private void DialogueManagerDown() {
+        dialogueMenu.SetActive(false);
+    }
     private void StatsUpdate() {
         health.text = "Hp: " + Player.GetPlayer().stats.HealthLeft + "/" + Player.GetPlayer().stats.Health;
         stamina.text = "Mp: " + Player.GetPlayer().stats.MP;
+        exp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
+        expBar.value = Player.GetPlayer().stats.Exp;
+        money.text = "Munn: " + Player.GetPlayer().Money.ToString();
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
         staminaBar.value = Player.GetPlayer().stats.MPLeft;
-        exp.text = "BP: " + Player.GetPlayer().stats.BattlePower.ToString();
+        expBar.maxValue = Player.GetPlayer().stats.CalculateExpNeed();
+
+        level.text = "LV. " + Player.GetPlayer().stats.Level;
+    }
+    private void UpdateMoney() {
+        money.text = "Munn: " + Player.GetPlayer().Money.ToString();
+
 
     }
+    private void ViewStats() {
+        attack.text = "Attack = " + Player.GetPlayer().stats.Attack.ToString();
+        defense.text = "Defense = " + Player.GetPlayer().stats.Defense.ToString();
+        healthAb.text = "Health = " + Player.GetPlayer().stats.Health.ToString();
+        staminaAb.text = "Mp = " + Player.GetPlayer().stats.MPLeft.ToString();
+        //intelligence.text = "Intellect = " + Player.GetPlayer().stats.Intellect.ToString();
+        attackDisplay.text = "Attack = " + Player.GetPlayer().stats.Attack.ToString();
+        defenseDisplay.text = "Defense = " + Player.GetPlayer().stats.Defense.ToString();
+        healthDisplay.text = "Health = " + Player.GetPlayer().stats.Health.ToString();
+        mpDisplay.text = "Mp = " + Player.GetPlayer().stats.MPLeft.ToString();
+        swordLevel.text = "Lv. " + Player.GetPlayer().stats.SwordLevel.ToString();
+        swordProficency.text = Player.GetPlayer().stats.SwordProficency.ToString() + "/1000";
+    }
+
     private void HealthChange() {
         health.text = "Hp: " + Player.GetPlayer().stats.HealthLeft + "/" + Player.GetPlayer().stats.Health;
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
+
+
     }
     private void MPChange() {
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
@@ -904,6 +1316,90 @@ public class UiManager : MonoBehaviour {
         azaMPBar.maxValue = AzaAi.GetAza().stats.MP;
         azaMPBar.value = AzaAi.GetAza().stats.MPLeft;*/
     }
+    private void EnemyDeath() {
+        exp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
+        expBar.value = Player.GetPlayer().stats.Exp;
+    }
+
+
+    public void SoulsToAbility() {
+        if (Player.GetPlayer().stats.Exp > Player.GetPlayer().stats.RequiredExp) {
+            Player.GetPlayer().stats.Abilitypoints++;
+            Player.GetPlayer().stats.KryllLevel++;
+            Player.GetPlayer().stats.Exp -= Player.GetPlayer().stats.RequiredExp;
+            Player.GetPlayer().stats.RequiredExp = (int)(Player.GetPlayer().stats.RequiredExp * 1.2f);
+            kryllLevel.text = "Lv. " + Player.GetPlayer().stats.KryllLevel;
+            lvMenuExp.text = "Spirits :" + Player.GetPlayer().stats.Exp;
+            abilityPointsCost.text = "Cost :" + Player.GetPlayer().stats.RequiredExp;
+        }
+
+    }
+
+    public void AddAttack() {
+        if (Player.GetPlayer().stats.Abilitypoints > 0) {
+            Player.GetPlayer().stats.AttackBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+
+    }
+
+    public void AddDefense() {
+        if (Player.GetPlayer().stats.Abilitypoints > 0) {
+            Player.GetPlayer().stats.DefenseBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+    }
+
+    public void AddMp() {
+        if (Player.GetPlayer().stats.Abilitypoints > 0) {
+            Player.GetPlayer().stats.MpBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+    }
+
+    public void AddHealth() {
+        if (Player.GetPlayer().stats.Abilitypoints > 0) {
+            Player.GetPlayer().stats.HealthBoost++;
+            Player.GetPlayer().stats.Abilitypoints--;
+
+
+        }
+    }
+
+    public void MinusAttack() {
+        if (Player.GetPlayer().stats.AttackBoost > 0) {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.AttackBoost--;
+    }
+
+    public void MinusDefense() {
+        if (Player.GetPlayer().stats.DefenseBoost > 0) {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.DefenseBoost--;
+    }
+
+    public void MinusMp() {
+        if (Player.GetPlayer().stats.MpBoost > 0) {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.MpBoost--;
+    }
+
+    public void MinusHealth() {
+        if (Player.GetPlayer().stats.HealthBoost > 0) {
+            Player.GetPlayer().stats.Abilitypoints++;
+        }
+        Player.GetPlayer().stats.HealthBoost--;
+    }
+
     private void UpdateBoost() {
         attackBoost.text = Player.GetPlayer().stats.AttackBoost.ToString();
         defenseBoost.text = Player.GetPlayer().stats.DefenseBoost.ToString();
@@ -913,15 +1409,40 @@ public class UiManager : MonoBehaviour {
         abilityPointsCost.text = "Cost :" + Player.GetPlayer().stats.RequiredExp;
     }
     private void ViewStatsUpWindow() {
+        baseAttack.text = "Attack = " + Player.GetPlayer().stats.BaseAttack.ToString();
+        baseDefense.text = "Defense = " + Player.GetPlayer().stats.BaseDefense.ToString();
+        baseHealth.text = "Health = " + Player.GetPlayer().stats.BaseHealth.ToString();
         baseMp.text = "Mp = " + Player.GetPlayer().stats.BaseMp.ToString();
-
+        lvMenuExp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
         UpdateBoost();
+    }
+    public void UpQuantity() {
+
+        quantity++;
+        displayedQuantity.text = quantity.ToString();
+    }
+    public void LowerQuantity() {
+        quantity--;
+        displayedQuantity.text = quantity.ToString();
+    }
+    private void KryllUp() {
+        kryllUi.SetActive(true);
+    }
+    private void KryllDown() {
+        kryllUi.SetActive(false);
+
+    }
+    private void DistFromKyrllToZend(string dist) {
+        distFromZend.text = dist;
+
     }
     #endregion
 
     private IEnumerator WaitCoroutine() {
         YieldInstruction wait = new WaitForSeconds(0.4f);
         yield return wait;
+
+
     }
     #region WindowPopUps 
     private IEnumerator WindowFade(GameObject window) {

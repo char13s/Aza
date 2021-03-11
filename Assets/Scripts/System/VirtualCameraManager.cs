@@ -98,16 +98,16 @@ public class VirtualCameraManager : MonoBehaviour
         }
     }
     private void ControlMainCam(int portal) {
-        switch (portal) {
-            case 0:
-                Debug.Log("Cam off");
-                main.GetComponent<ThreeDCamera>().enabled=false;
-                break;
-            default:
-                Debug.Log("Cam on");
-                main.GetComponent<ThreeDCamera>().enabled = true;
-                break;
-        }
+        //switch (portal) {
+        //    case 0:
+        //        Debug.Log("Cam off");
+        //        main.GetComponent<ThreeDCamera>().enabled=false;
+        //        break;
+        //    default:
+        //        Debug.Log("Cam on");
+        //        main.GetComponent<ThreeDCamera>().enabled = true;
+        //        break;
+        //}
         
     }
     private void ArcheryCamUp(int priority) {

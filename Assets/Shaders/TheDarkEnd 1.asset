@@ -60,7 +60,7 @@ MonoBehaviour:
     overrideState: 1
     value: 2.31
   color:
-    overrideState: 1
+    overrideState: 0
     value: {r: 0.75114155, g: 0, b: 1, a: 1}
   ambientOnly:
     overrideState: 1
@@ -250,7 +250,7 @@ MonoBehaviour:
   active: 1
   enabled:
     overrideState: 1
-    value: 1
+    value: 0
   gradingMode:
     overrideState: 0
     value: 1
@@ -259,7 +259,7 @@ MonoBehaviour:
     value: {fileID: 0}
     defaultState: 1
   tonemapper:
-    overrideState: 1
+    overrideState: 0
     value: 1
   toneCurveToeStrength:
     overrideState: 0
@@ -293,13 +293,13 @@ MonoBehaviour:
     overrideState: 0
     value: 71.1
   colorFilter:
-    overrideState: 1
+    overrideState: 0
     value: {r: 0.9339623, g: 0.9339623, b: 0.9339623, a: 1}
   hueShift:
-    overrideState: 1
+    overrideState: 0
     value: -61
   saturation:
-    overrideState: 1
+    overrideState: 0
     value: 12.7
   brightness:
     overrideState: 0
@@ -308,7 +308,7 @@ MonoBehaviour:
     overrideState: 0
     value: -0.39
   contrast:
-    overrideState: 1
+    overrideState: 0
     value: 98.5
   mixerRedOutRedIn:
     overrideState: 0

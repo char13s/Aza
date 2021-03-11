@@ -150,7 +150,7 @@ private void Movement()
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
 
-        displacement = kryllCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
+        //displacement = kryllCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         if (Input.GetButtonDown("L3"))
         {
             SwitchBack();

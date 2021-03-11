@@ -53,9 +53,9 @@ public class Ralux : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal") * 0.05f * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * 0.05f * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
+        //if (ThreeDCamera.IsActive && !lockedOn) {
+        //    displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
+        //}
         MoveIt(x,y);
 
     }

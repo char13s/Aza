@@ -4,15 +4,17 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Button))]
 [RequireComponent(typeof(Text))]
 public class Skill : MonoBehaviour
+
 {
+    
     [SerializeField] private string skillName;
     [SerializeField] private int skillId;
     [SerializeField] private int mpCost;
-    [SerializeField] private int unlockLevel;
-    [SerializeField] private Text skillNameText;
-    [SerializeField] private CharacterData character;
-    private bool unlocked;
     
+    [SerializeField] private Text skillNameText;
+    
+    
+    private bool unlocked;
     private static Skill lastSkillSelected;
 
     public static event UnityAction<Skill> sendSkill;
@@ -26,27 +28,34 @@ public class Skill : MonoBehaviour
     void Start()
     {
         skillNameText.text = SkillName;
+        
         GetComponent<Button>().onClick.AddListener(SetSkill);
-        CharacterData.onLevel+=CheckToUnlock;
+        
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
     public Skill GetSkill(int skill) {
         if (skillId == skill) {
             return this;
+
         }
         return null;
     }
     public void SetSkill()
     {
+        Debug.Log("SetLastSelectedSkill works");
         if (sendSkill != null) {
             sendSkill(this);
         }
+        //lastSkillSelected = this;
+        Debug.Log(lastSkillSelected);
+        
     }
-    private void CheckToUnlock() {
-        if (!unlocked) {
-            if (character.Level == unlockLevel) {
-                unlocked = true;
-            }
-        }
-    }
+    
+
+
 }

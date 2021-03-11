@@ -22,7 +22,7 @@ public class Marker : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player")) {
 
-           
+            pc.stats.AddExp(500);
 
         }
     }

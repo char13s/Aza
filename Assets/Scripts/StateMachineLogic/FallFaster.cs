@@ -11,7 +11,7 @@ public class FallFaster : StateMachineBehaviour
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         if (animatorStateInfo.normalizedTime < 0.9f)
-            pc.RBody.AddForce(pc.transform.up*-2,ForceMode.VelocityChange);
+            pc.Rbody.AddForce(pc.transform.up*-2,ForceMode.VelocityChange);
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         

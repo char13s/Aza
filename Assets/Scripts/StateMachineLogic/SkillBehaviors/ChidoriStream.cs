@@ -6,9 +6,9 @@ public class ChidoriStream : StateMachineBehaviour
 {
     [SerializeField] private GameObject chidoriStream;
     private Player pc;
-    public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
-        Instantiate(chidoriStream,pc.transform.position,Quaternion.identity);
+        Instantiate(chidoriStream,pc.transform);
         pc.CmdInput = 0;
     }
 }

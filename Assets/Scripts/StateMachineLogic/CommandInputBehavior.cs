@@ -41,7 +41,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
         pc.CmdInput = 0;
         pc.MoveSpeed = 0;
         //pc.Nav.enabled = false;
-		pc.RBody.isKinematic = false;
+		pc.Rbody.isKinematic = false;
         //pc().Trail.SetActive(true);
         pc.transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
         if (stab) {
@@ -53,7 +53,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GetInput();
+        //GetInput();
         if (stateInfo.normalizedTime > 0.1f && stateInfo.normalizedTime < 0.6f) {
             if (!hit) {
                 pc.transform.position += pc.transform.forward * move * Time.deltaTime;

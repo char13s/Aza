@@ -15,7 +15,6 @@ public class Enemy : MonoBehaviour {
 
 
     public enum EnemyAiStates { Null, Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
-    private enum Tiers {Lowest, Low,Mid,High,Boss }
     internal StatusEffects status = new StatusEffects();
     [SerializeField]
     internal StatsController stats = new StatsController();
@@ -30,12 +29,10 @@ public class Enemy : MonoBehaviour {
     #endregion
     [Space]
     [Header("Enemy Parameters")]
-    [SerializeField] private Tiers tier;
     [SerializeField] private int level;
     [SerializeField] private int attackDelay;
     [SerializeField] private int baseExpYield;
     [SerializeField] private int baseHealth;
-    [SerializeField] private float battlePower;
     [SerializeField] private float attackDistance;
     [Space]
     [Header("Object Refs")]
@@ -98,10 +95,9 @@ public class Enemy : MonoBehaviour {
 	public static event UnityAction onHit;
     public static event UnityAction guardBreak;
     public static event UnityAction<AudioClip> sendsfx;
-    public static event UnityAction<float> sendBP;
     #region Getters and Setters
-public float Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
-    public float HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !dead) { Dead = true; } } }
+public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
+    public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !dead) { Dead = true; } } }
 
     public bool Attack { get => attack; set { attack = value; Anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; Anim.SetBool("Walking", walk); } }
@@ -246,7 +242,7 @@ public float Health { get { return stats.Health; } set { stats.Health = Mathf.Ma
     }
     private void StatCalculation()
     {
-        Health = 2*battlePower;
+        Health = stats.BaseHealth;
         stats.Attack = stats.BaseAttack;
         stats.Defense = stats.BaseDefense;
     }
@@ -592,25 +588,17 @@ public float Health { get { return stats.Health; } set { stats.Health = Mathf.Ma
     }
     public void OnDefeat()
     {
-        Debug.Log("Defeatedfdddddd");
-        if (dead==true) {
-            if (sendBP != null) {
-                sendBP(BPRanges());
-            }
-        }
         //onAnyDefeated(this);
-        EnemyHasDied();
+        SlimeHasDied();
         Enemies.Remove(this);
         Instantiate(deathEffect, transform);
-        //An event that sends battle power increase to player
-        //A stream of smoke that the mesh can dissolve in
         //deathEffect.transform.position = transform.position;
-        Destroy(gameObject, 1.5f);
+        Destroy(gameObject, 2.5f);
     }
     public void CalculateDamage(float addition)
     {
         if (!dead) {
-            HealthLeft -= Mathf.Clamp((pc.stats.BattlePower/battlePower),0,999);  
+            HealthLeft -= Mathf.Clamp((pc.stats.Attack - stats.Defense),0,999);  
             Hit = true;
         if (HealthLeft <= Health / 4 && !lowHealth)
         {
@@ -623,7 +611,7 @@ public float Health { get { return stats.Health; } set { stats.Health = Mathf.Ma
     }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
     public void CalculateAttack() {
         if (!weak) {
-            pc.stats.HealthLeft -= Mathf.Max(1, battlePower /pc.stats.BattlePower);
+            pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
         }
     }
     public void HitGuard() {
@@ -640,10 +628,10 @@ public float Health { get { return stats.Health; } set { stats.Health = Mathf.Ma
             }
         } 
     }
-    public void EnemyHasDied()
+    public void SlimeHasDied()
     {
         int exp = baseHealth * baseExpYield;
-        
+        pc.stats.AddExp(exp);
         if (drop != null&&!weak) { 
         Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
         drop.transform.position = transform.position;
@@ -653,28 +641,7 @@ public float Health { get { return stats.Health; } set { stats.Health = Mathf.Ma
             Instantiate(soul, transform.position + new Vector3(0, 0.18f, 0), Quaternion.identity);
             soul.transform.position = transform.position;
         }
-        
-        
-    }
-    private float BPRanges() {
-        
-        switch (tier) {
-            case Tiers.Lowest:
-
-                return Mathf.Clamp((pc.stats.BattlePower * 0.15f),1,9999999) + pc.stats.BattlePower;
-            case Tiers.Low:
-                return Mathf.Clamp((pc.stats.BattlePower * 0.20f), 1, 9999999) + pc.stats.BattlePower;
-
-            case Tiers.Mid:
-                return Mathf.Clamp((pc.stats.BattlePower * 0.35f), 1, 9999999) + pc.stats.BattlePower;
-
-            case Tiers.High:
-                return Mathf.Clamp((pc.stats.BattlePower * 0.5f), 1, 9999999) + pc.stats.BattlePower;
-
-            case Tiers.Boss:
-                Debug.Log(pc.stats.BattlePower * 0.75f);
-                return Mathf.Clamp((pc.stats.BattlePower * 0.75f), 1, 9999999);
-        } return 0;
 
     }
+
 }

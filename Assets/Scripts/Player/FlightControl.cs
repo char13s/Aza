@@ -20,20 +20,12 @@ public class FlightControl : MonoBehaviour
     {
         if (pc.Flying) {
             if (Input.GetButton("R1")) {
-                transform.position += new Vector3(0,20,0)*Time.deltaTime;
+                transform.position += new Vector3(0,3,0)*Time.deltaTime;
             }
             if (Input.GetAxis("R2")>0.5f) {
                 Debug.Log("Fuck u");
-                transform.position -= new Vector3(0, 20, 0) * Time.deltaTime;
+                transform.position -= new Vector3(0, 3, 0) * Time.deltaTime;
             }
-            if (Input.GetButtonDown("X")) {
-                pc.Flying = false;
-
-            }
-            //Apply Boost effect here
-            //if (Input.GetAxis("R2") > 0.5f) {
-            //    pc.
-            //}
         }
     }
     

@@ -9,7 +9,7 @@ public class Dodge : StateMachineBehaviour
     {
         Player.GetPlayer().MoveSpeed = 0;
         //Player.GetPlayer().Nav.enabled = false;
-        Player.GetPlayer().RBody.isKinematic = false;
+        //Player.GetPlayer().RBody.isKinematic = false;
         Player.GetPlayer().CombatAnimations = 0;
         //if (stopMove != null) {
         //    stopMove();

@@ -4,17 +4,17 @@ using UnityEngine.Serialization;
 [System.Serializable]
 public class Stats {
     //Variables
-    private float health;
+    private int health;
     private int attack;
     private int defense;
 
     private int mp;
     private int intellect;
-    private float healthLeft;
+    private int healthLeft;
 
     private int mpLeft;
     private byte level = 1;
-    private float battlePower;
+    private int exp = 0;
     private int requiredExp;
 
     private int baseAttack;
@@ -42,8 +42,8 @@ public class Stats {
     public static event UnityAction onBaseStatsUpdate;
     public static event UnityAction onObjectiveComplete;
     //Properties
-    public float Health { get { return health; } set { health = Mathf.Max(0, value); } }
-    public float HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health); if (onHealthChange != null) { onHealthChange(); } } }
+    public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
+    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health); if (onHealthChange != null) { onHealthChange(); } } }
     public int MPLeft { get { return mpLeft; } set { mpLeft = Mathf.Clamp(value, 0, mp); if (onMPLeft != null) { onMPLeft(); } } }
 
     public int Attack { get { return attack; } set { attack = value; } }
@@ -52,7 +52,7 @@ public class Stats {
     public int Intellect { get { return intellect; } set { intellect = value; } }
 
     public byte Level { get => level; set => level = value; }
-    public float BattlePower { get => battlePower; set { battlePower = value; UpdateUi(); } }
+    public int Exp { get => exp; set { exp = value; UpdateUi(); } }
     public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
     public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
     public int BaseMp { get => baseMp; set { baseMp = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
@@ -70,14 +70,19 @@ public class Stats {
     public int SwordLevel { get => swordLevel; set => swordLevel = value; }
     public byte KryllLevel { get => kryllLevel; set => kryllLevel = value; }
 
+    public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return Mathf.Abs(Exp - expNeeded); }
+    public int ExpCurrent() { return Exp - (4 * ((Level - 1) * (Level - 1) * (Level - 1))); }
+    public void AddExp(int points) {
+        exp += points;
+
+    }
     public void DisplayAbilities() {
         if (onShowingStats != null) {
             onShowingStats();
         }
     }
     public void Start() {
-        BattlePower = 10;
-        baseHealth = (int)battlePower*2;
+        baseHealth = 12;
         healthLeft = baseHealth;
         baseMp = 15;
         mpLeft = baseMp;
@@ -85,12 +90,11 @@ public class Stats {
         baseDefense = 11;
         intellect = 6;
         level = 1;
-        
+        exp = 0;
         SwordLevel = 1;
         demonFistLevel = 1;
         requiredExp = 50;
         SetStats();
-        Enemy.sendBP += AddBP;
         Player.weaponSwitch += SetStats;
         GameController.onGameWasStarted += UpdateUi;
         if (onHealthChange != null) {
@@ -116,10 +120,6 @@ public class Stats {
         MP = baseMp + mpBoost;
         Health = baseHealth + healthBoost;
     }
-    private void AddBP(float powah) {
-        BattlePower += powah;
-        Debug.Log(powah);
-    }
     private int WeaponBoost() {
 
         switch (Player.GetPlayer().Weapon) {
@@ -132,4 +132,5 @@ public class Stats {
         }
         
     }
+
 }

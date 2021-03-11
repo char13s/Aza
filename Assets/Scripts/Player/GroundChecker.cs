@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 public class GroundChecker : MonoBehaviour {
-    private Player pc;
-    private bool ground;
+    private Player player;
     private AudioClip landing;
+    private float distanceGround;
     public static event UnityAction<bool> groundStatus;
     public static event UnityAction<AudioClip> landed;
     // Start is called before the first frame update
@@ -14,29 +14,40 @@ public class GroundChecker : MonoBehaviour {
        
     }
     private void Start()
-    {landing = AudioManager.GetAudio().LandingSound;
-
-        StartCoroutine(Wait());
-        
-    }
-    private IEnumerator Wait() {
-        YieldInstruction wait = new WaitForSeconds(1);
-        yield return null;
-        pc = Player.GetPlayer();
-    }
-    // Update is called once per frame
-    private void Update()
     {
+        
+        landing = AudioManager.GetAudio().LandingSound;
+
+       
+        distanceGround = GetComponent<Collider>().bounds.extents.y;
+        player = Player.GetPlayer();
+    }
+    
+    // Update is called once per frame
+    /*private void Update()
+    {private bool ground;
+    
         if (groundStatus != null)
         {
             groundStatus(ground);
         }
 
     }
-    
+    //private void IsGrounded() {
+    //
+    //    if (pc.Nav.isOnNavMesh)
+    //    {
+    //        pc.Grounded = true;
+    //    }
+    //    else
+    //    {
+    //        pc.Grounded = false;
+    //    }
+    //    
+    //}
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != null &&!pc.Flying)
+        if (other.gameObject != null )
         {
 
             ground = true;
@@ -51,6 +62,8 @@ public class GroundChecker : MonoBehaviour {
     {
         if (other.gameObject!=null ){
             ground = true;
+
+
         }
         else {
             ground = false;
@@ -61,6 +74,15 @@ public class GroundChecker : MonoBehaviour {
 
         ground = false;
     }
+    */
+    private void FixedUpdate() {
+        if (!Physics.Raycast(transform.position, -Vector2.up, distanceGround + 0.2f)) {
+            player.Grounded = false;
 
+        }
+        else {
+            player.Grounded = true;
 
+        }
+    }
 }

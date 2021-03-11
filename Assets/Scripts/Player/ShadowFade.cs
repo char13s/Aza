@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.VFX;
+using UnityEngine.VFX;
 public class ShadowFade : MonoBehaviour
 {
     [SerializeField] private VisualEffect shadow;
@@ -12,11 +12,11 @@ public class ShadowFade : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetButtonDown("Square")) {
-            shadow.SendEvent("Cast");
-        }
-    }
+    //void Update()
+    //{
+    //    if (Input.GetButtonDown("Square")) {
+    //        shadow.SendEvent("Cast");
+    //    }
+    //}
     
 }

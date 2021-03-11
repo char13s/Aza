@@ -1,31 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-public class DialogueManager : MonoBehaviour {
+public class DialogueManager : MonoBehaviour
+{
     [SerializeField] private Text dialogue;
     //[SerializeField] private GameObject DialogueScreen;
     [SerializeField] private Text whoseTalking;
     [SerializeField] private GameObject textPanel;
-    [SerializeField] private GameObject dialogueScreen;
     private bool dialogueIsRunning;
     public static event UnityAction requestNextLine;
     public static event UnityAction skipDialogue;
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         SceneDialogue.pullUpDialogue += DialogueUp;
         SceneDialogue.turnOffDialogue += DialogueUp;
         SceneDialogue.sendName += SetTalker;
         SceneDialogue.sendLine += SetDialogue;
+        Player.onCircle+=OnCircle;
     }
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
-        if (Input.GetButtonDown("Circle")&&dialogueIsRunning) {
-            if (requestNextLine != null) {
-                requestNextLine();
-            }
+        if (Input.GetButtonDown("Circle")&&) {
+            
 
         }
         //if (Input.GetButtonDown("Square")) {
@@ -36,10 +34,17 @@ public class DialogueManager : MonoBehaviour {
         //        requestNextLine();
         //    }
         //}
+    }*/
+    private void OnCircle() {
+        if (dialogueIsRunning) {
+
+            if (requestNextLine != null) {
+                requestNextLine();
+            }
+        }
     }
     private void DialogueUp(bool val) {
         textPanel.SetActive(val);
-        dialogueScreen.SetActive(val);
         dialogueIsRunning = val;
     }
     private void SetTalker(string name) {
@@ -48,5 +53,5 @@ public class DialogueManager : MonoBehaviour {
     private void SetDialogue(string text) {
         dialogue.text = text;
     }
-    
+
 }

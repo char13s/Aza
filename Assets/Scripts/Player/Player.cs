@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using XInputDotNetPure;
 #pragma warning disable 0649
 public class Player : MonoBehaviour {
     //private bool usingController;
     [Header("Movement")]
+    private Vector3 direction, moveDirection;
+    private Vector2 displacement;
     private bool moving;
+    private Quaternion qTo;
+    [SerializeField] private float rotationSpeed;
     private bool weak;
     private int style;
     private bool hasBoth;
@@ -17,7 +22,6 @@ public class Player : MonoBehaviour {
 
     private float l;
     private bool cantDoubleJump = true;
-    private bool canFly;
     private int money;
     private bool inputSealed;
     #region Attacking
@@ -36,7 +40,6 @@ public class Player : MonoBehaviour {
     private bool boutaSpin;
     private bool skillButton;
     private bool lockedOn;
-    private bool inBattle;
     [SerializeField] private GameObject swordSpawn;
     [SerializeField] private GameObject swordDSpawn;
 
@@ -92,7 +95,7 @@ public class Player : MonoBehaviour {
     private bool guard;
     private bool hit;
     private bool dead;
-    private int direction;
+    private int motionDirection;
 
     private bool charging;
     
@@ -106,7 +109,7 @@ public class Player : MonoBehaviour {
     private bool jumpSeal;
     private bool jumping;
     private int cinemations;
-    
+    private bool inHouse;
     private int combatAnimations;
     private int guardAnimations;
     private bool doubleJump;
@@ -115,7 +118,6 @@ public class Player : MonoBehaviour {
     private bool demonFlame;
     private bool flying;
 
-    private int element;
     private int demonLayer;
     private int angelLayer;   
     private int legsLayer;
@@ -141,7 +143,7 @@ public class Player : MonoBehaviour {
     [Header("References To Things on Zend")]
     [SerializeField] private GameObject leftPoint;
     [SerializeField] private GameObject arrowPoint;
-    [SerializeField] private GameObject trailPoint;
+
     [SerializeField] private GameObject groundChecker;
     [SerializeField] private GameObject battleCamTarget;
     [SerializeField] private GameObject zend;
@@ -203,7 +205,7 @@ public class Player : MonoBehaviour {
     //private NavMeshAgent nav;
     private PlayerBattleSceneMovement battleMode;
     private Animator anim;
-    private Vector3 displacement;//world space 
+    //private Vector3 displacement;//world space 
     private int skullMask;
     private int bulbs;
 
@@ -264,11 +266,11 @@ public class Player : MonoBehaviour {
     public static event UnityAction<int> playSound;
     public static event UnityAction<int> formChange;
     public static event UnityAction<bool> flight;
-
+    public static event UnityAction onCircle;
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
-    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { /*RBody.isKinematic = true; /*nav.enabled = true;*/ SecondJump = false; CantDoubleJump = true; CanFly = false; } } }
+    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { /*RBody.isKinematic = true; /*nav.enabled = true;*/ SecondJump = false; CantDoubleJump = true; } } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
     public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
     public bool Guard { get => guard; set { guard = value; if (value) Moving = false; anim.SetBool("Guard", guard); } }
@@ -277,7 +279,7 @@ public class Player : MonoBehaviour {
     public GameObject Body { get => body; set => body = value; }
     public bool Hit { get => hit; set { hit = value; anim.SetBool("Hurt", hit); } }
     public bool Dead { get => dead; set { dead = value; anim.SetBool("Dead", dead); if (dead) { OnDeath(); } else { } } }
-    public int Direction { get => direction; set { direction = value; anim.SetInteger("Direction", direction); } }
+    public int MotionDirection { get => motionDirection; set { motionDirection = value; anim.SetInteger("Direction", motionDirection); } }
     public bool Pause { get => pause; set { pause = value; if (pause) { Time.timeScale = 0; } else { Time.timeScale = 1; } } }
     public bool Loaded { get => loaded; set { loaded = value;/*Nav.enabled=true*/  } }
     public PlayerBattleSceneMovement BattleMode { get => battleMode; set => battleMode = value; }
@@ -285,7 +287,7 @@ public class Player : MonoBehaviour {
     public GameObject HitBox { get => hitBox; set { hitBox = value; } }
 
     public int SkillId { get => skillId; set { skillId = value; anim.SetInteger("Skill ID", skillId); if (skillId == 0) { SkillIsActive = false; } } }
-    public Rigidbody RBody { get => rBody; set => rBody = value; }
+    public Rigidbody Rbody { get => rBody; set => rBody = value; }
     
     public Animator Anim { get => anim; set => anim = value; }
     
@@ -295,7 +297,7 @@ public class Player : MonoBehaviour {
     public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
     public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); LegControl(); } }
 
-    public bool LockedOn { get => lockedOn; set { lockedOn = value; anim.SetBool("Lock", lockedOn); if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }
+    public bool LockedOn { get => lockedOn; set { lockedOn = value; anim.SetBool("Lock", lockedOn); if (!LockedOn) { if (unlocked != null) unlocked(); MotionDirection = 0; } } }
 
     public bool SkillIsActive { get => skillIsActive; set { skillIsActive = value; if (skillIsActive) { Guard = false; } } }
     public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }
@@ -328,6 +330,7 @@ public class Player : MonoBehaviour {
     private bool strongAttack;
     private bool lightAttack;
     private bool endure;
+    
 
     public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
@@ -343,7 +346,7 @@ public class Player : MonoBehaviour {
 
     public GameObject Trail { get => trail; set => trail = value; }
     public bool SecondJump { get => doubleJump; set { doubleJump = value; anim.SetBool("DoubleJump", doubleJump); } }
-    
+    public bool InHouse { get => inHouse; set { inHouse = value; if (inHouse) { DemonSword.SetActive(false); } } }//demonSwordBack.SetActive(true);
 
     public GameObject BattleCamTarget { get => battleCamTarget; set => battleCamTarget = value; }
     public float BurstForce { get => burstForce; set => burstForce = value; }
@@ -394,15 +397,15 @@ public class Player : MonoBehaviour {
     public bool Charging { get => charging; set { charging = value;anim.SetBool("Charging",charging); } }
     public int Bulbs { get => bulbs; set => bulbs = value; }
     public GameObject WoodenSword { get => woodenSword; set => woodenSword = value; }
-    public bool DemonFlame { get => demonFlame; set { demonFlame = value;anim.SetBool("DemonFlame",demonFlame); if (demonFlame) { DemonUp(); } else { Base();RBody.useGravity = true; } } }
+    public bool DemonFlame { get => demonFlame; set { demonFlame = value;anim.SetBool("DemonFlame",demonFlame); if (demonFlame) { DemonUp(); } else { Base();Rbody.useGravity = true; } } }
 
-    public bool Flying { get => flying; set { flying = value; anim.SetBool("Flying",flying);Flight(); if (flight != null) { flight(flying); } } }
+    public bool Flying { get => flying; set { flying = value; anim.SetBool("Flying",flying);if (flight != null) { flight(flying); } } }
 
     public bool LongRangeAttack { get => longRangeAttack; set { longRangeAttack = value;anim.SetBool("Range",longRangeAttack); } }
 
-    public bool CanFly { get => canFly; set => canFly = value; }
-    public GameObject TrailPoint { get => trailPoint; set => trailPoint = value; }
-    public int Element { get => element; set { element = value;anim.SetInteger("Element",element); } }
+    public Vector3 Direction { get => direction; set => direction = value; }
+    public Vector2 Displacement { get => displacement; set => displacement = value; }
+    public Vector3 MoveDirection { get => moveDirection; set => moveDirection = value; }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -426,7 +429,8 @@ public class Player : MonoBehaviour {
         GameController.respawn += RestoreHealth;
         GameController.respawn += ReturnToSpawn;
         onPlayerDeath += OnDead;
-        
+        Npc.dialogueUp += DialogueUp;
+        Npc.dialogueDown += DialogueDown;
         UiManager.sealPlayerInput += SealInput;
         UiManager.sealPlayerInput += StopRunning;
         UiManager.unsealPlayerInput += UnsealInput;
@@ -458,8 +462,8 @@ public class Player : MonoBehaviour {
         EventManager.demoRestart += SetDefault;
         Hurt.unseal += UnsealInput;
         //dpadLeft += AngelUp;
-        //dpadRight += DemonUp;
-        //dpadDown += Base;
+        dpadRight += DemonUp;
+        dpadDown += Base;
         Interactable.sealJump += JumpSealer;
         Interactable.skullCollected += SkullMaskAdjuster;
         Interactable.bulbCollected += LightBulbAdjuster;
@@ -470,8 +474,6 @@ public class Player : MonoBehaviour {
         KillOtherLayers.weight += LayerControl;
         BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
-
-        CharacterUI.setElement += SetElement;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
@@ -497,18 +499,20 @@ public class Player : MonoBehaviour {
         drawSwordLayer = anim.GetLayerIndex("DrawSwordLayer");
 
         grounded = anim.GetBool("Grounded");
-        InputSealed = true;
+        //InputSealed = true;
     }
     private void OnEnable() {
         if (onPlayerEnabled != null) {
             onPlayerEnabled();
         }
     }
-    
+
     // Update is called once per frame
-    void Update() {
-        if (!pause && !InputSealed) {
+    private void Update() {
+        Move();
+        /*if (!pause && !InputSealed) {
             GetAllInput();
+
         }
         if ((inputSealed || pause) && Input.GetButtonDown("Circle")) {
 
@@ -520,7 +524,7 @@ public class Player : MonoBehaviour {
 
             if (Input.GetButtonDown("X")) {
 
-                SecondJump = true;
+                Player.GetPlayer().SecondJump = true;
                 CantDoubleJump = true;
             }
         }
@@ -528,8 +532,33 @@ public class Player : MonoBehaviour {
         OnPause();
         if (Input.GetKeyDown(KeyCode.I)) { SkillId = 1; }
         if (Input.GetKeyDown(KeyCode.P)) { Weapon = 4; }
-        GetLStickPoistion();
+        GetLStickPoistion();*/
     }
+    #region Action Mapping
+    private void OnCircle() {
+        onCircle.Invoke();
+    }
+    private void OnJump() {
+        if (grounded) {
+            //SkillId = 10;
+            anim.SetTrigger("Jump");
+            //anim.SetLayerWeight(demonLayer, 0);
+            //anim.SetLayerWeight(angelLayer, 0);
+            Grounded = false;
+            //StopCoroutine(WaitToFall());
+            //GroundChecker.groundStatus -= OnGrounded;
+            //StartCoroutine(ResetGroundCheck(0.3f));
+            //StartCoroutine(WaitToFall());
+            Rbody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
+        }
+    }
+    private void OnSquare() { 
+        
+    }
+    private void OnTriangle() { 
+    
+    }
+    #endregion
     #region Helper Methods
 
     private void LegControl() {
@@ -544,7 +573,6 @@ public class Player : MonoBehaviour {
                 playSound(0);
             }
         }
-
     }
     private void SealInput() => InputSealed = true;
     private void UnsealInput() => InputSealed = false;
@@ -557,16 +585,15 @@ public class Player : MonoBehaviour {
                 anim.SetLayerWeight(angelLayer, val);
                 break;
         }
-        
     }
     private void MovePlayerObject() {
         Attacking = false;
         //Nav.enabled = false;
         InputSealed = true;
-        RBody.isKinematic = false;
+        //RBody.isKinematic = false;
         Grounded = false;
     }
-    private void CalculateMoveDirection() {
+    /*private void CalculateMoveDirection() {
         Vector3 right;
         if (MovementBone != null) {
 
@@ -585,7 +612,7 @@ public class Player : MonoBehaviour {
         if (ThreeDCamera.IsActive && !lockedOn) {
             displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         }
-    }
+    }*/
     private void SetPositionAndRotation(GameObject target) {
         transform.position = target.transform.position;
         transform.rotation = target.transform.rotation;
@@ -594,7 +621,7 @@ public class Player : MonoBehaviour {
     private void DialogueUp() => InputSealed = true;
     private void DialogueDown() => InputSealed = false;
     private void Move(float speed) {
-        transform.position += displacement *speed* Time.deltaTime;
+        //transform.position += displacement *speed* Time.deltaTime;
         //rBody.AddForce(displacement*100);
         
         //rBody.velocity= displacement * speed;
@@ -603,30 +630,53 @@ public class Player : MonoBehaviour {
     }
 
     private void Rotate() {
-        if (Vector3.SqrMagnitude(displacement) > 0.01f&&!boosting) {
-            transform.forward = displacement;
-        }
+        //if (Vector3.SqrMagnitude(displacement) > 0.01f&&!boosting) {
+        //    transform.forward = displacement;
+        //}
     }
     private void AirMove(float speed) {
         //
-        if(!flying)
+        /*if(!flying)
             RBody.AddForce(displacement/25, ForceMode.VelocityChange);
         else
             transform.position += displacement * speed *15* Time.deltaTime;
-
+        */
         Rotate();
     }
     private void CheckPlayerHealth() {
         if (stats.HealthLeft <= 0 && !dead) { Dead = true; }
     }
-    
+
     #endregion
 
+    #region Movement 
+    private void Move() {
+        Direction = mainCam.transform.TransformDirection(new Vector3(displacement.x, 0, displacement.y).normalized);
+        if (displacement.magnitude >= 0.1f) {
+            
+            Moving = true;
+            
+            direction.y = 0;
+            Vector3 rot = Vector3.Normalize(Direction);
+            rot.y = 0;
+            qTo = Quaternion.LookRotation(direction);
+            //MoveDirection = Quaternion.Euler(rot) * Camera.main.transform.forward;
+            //transform.rotation = Quaternion.LookRotation(rot);
+            transform.rotation = Quaternion.Slerp(transform.rotation, qTo, Time.deltaTime * rotationSpeed);
+        }
+        else {
+            Moving = false;
+        }
+    }
+    private void OnMovement(InputValue value) {
+        Displacement = value.Get<Vector2>();
 
+    }
+    #endregion
     private void GetAllInput() {
         //Archery();
-
-        if (!jumping && grounded && !lockedOn&& cmdInput == 0 && !boosting) {
+        /*
+        if (!jumping && grounded && !lockedOn&&!boosting) {
             MovementInput();
         }
         else if (cmdInput == 0&&!boosting) {
@@ -636,25 +686,23 @@ public class Player : MonoBehaviour {
         CalculateMoveDirection();
         if (Input.GetButtonDown("L1")) {
 
-        }
+        }*/
         MenuNavi();
-        //if (L2.GetButtonDown()) {
-        //    if (!demonFlame) {
-        //        DemonFlame = true;
-        //        
-        //        //rBody.useGravity = false;
-        //        return;
-        //    }
-        //    else {
-        //        DemonFlame = false;
-        //        Flying = false;
-        //        //rBody.useGravity = true;
-        //    }    
-        //}
+        if (L2.GetButtonDown()) {
+            DemonFlame = true;
+            Flying = true;
+            rBody.useGravity = false;
+        }
+        if (L2.GetButtonUp()) {
+            DemonFlame = false;
+            Flying = false;
+            rBody.useGravity = true;
+        }
+
         if (Input.GetKey(KeyCode.U)&&style==2) {
             Charging = true;
         }
-        if (!inBattle) {
+        if (!InHouse) {
             if (Input.GetButtonDown("R1")) {
                 LongRangeAttack = true;
             }
@@ -675,10 +723,6 @@ public class Player : MonoBehaviour {
                 //    WoodenSword.SetActive(false);
                 //}
                 skillButton = true;
-                if (skills != null) {
-                    skills(true);
-                }
-                lightning.SetActive(true);
             }
             if (R2.GetButtonUp()) {
                 //AttackBow.SetActive(false);
@@ -692,10 +736,6 @@ public class Player : MonoBehaviour {
                 //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
                 //Debug.Log("false asf");
                 skillButton = false;
-                if (skills != null) {
-                    skills(false);
-                }
-                lightning.SetActive(false);
             }
             if (!bowUp&&grounded) {
 
@@ -731,27 +771,20 @@ public class Player : MonoBehaviour {
 
             }
         }
-        if (jumping) {
-            RBody.useGravity = false;
+        if (jumping||demonFlame) {
+            Rbody.useGravity = false;
         }
-        else if(!jumping && !demonFlame && !flying) {
-            RBody.useGravity = true;
+        else if(!jumping && !demonFlame) {
+            Rbody.useGravity = true;
         }
-        if (!grounded && Input.GetButtonDown("X") && canFly) {
-            //StartCoroutine(WaitToFly());
-        }
+        
         if (!grounded && cmdInput == 0) {
             //if (Jumping) {
-            AirMovementInput();
+            
         }
         
     }
-    private IEnumerator WaitToFly() {
-        yield return null;
-        Flying = true;
-        canFly = false;
 
-    }
     #region Time Stuff
     private void ZaWarudo() {
         Debug.Log("Za BITCH");
@@ -797,15 +830,6 @@ public class Player : MonoBehaviour {
         InputSealed = true;
         Withdraw();
     }
-    private void AirMovementInput() {
-        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
-        MoveIt(x, y);
-    }
     private IEnumerator ResetTimeStop() {
         YieldInstruction wait = new WaitForSeconds(2);
         yield return wait;
@@ -816,29 +840,7 @@ public class Player : MonoBehaviour {
         float y = Input.GetAxis("Vertical");
         L = y;
     }
-    private void CalculateRotation() {
-
-
-        float x = Input.GetAxis("Horizontal") * Time.deltaTime;
-        float y = Input.GetAxis("Vertical") * Time.deltaTime;
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
-        if (!lockedOn) {
-            Rotate();
-        } 
-    }
-    private void MovementInput() {
-        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
-
-        MoveIt(x, y);
-    }
+    
 
     private IEnumerator SetLayerWait() {
         YieldInstruction wait = new WaitForSeconds(0.1f);
@@ -1020,8 +1022,7 @@ public class Player : MonoBehaviour {
             GroundChecker.groundStatus -= OnGrounded;
             StartCoroutine(ResetGroundCheck(0.3f));
             StartCoroutine(WaitToFall());
-            RBody.AddForce(new Vector3(0,333,0),ForceMode.Impulse);
-            return;
+            Rbody.AddForce(new Vector3(0,333,0),ForceMode.Impulse);
         }
     }
     
@@ -1048,17 +1049,7 @@ public class Player : MonoBehaviour {
         Boosting = false;
         //oveSpeed = 6;
     }
-    private void Flight() {
-        if (flying) {
 
-            rBody.useGravity = false;
-            rBody.velocity = new Vector3(0,0,0);
-        }
-        else {
-            rBody.useGravity = true;
-        }
-        
-    }
     private void Spells() {
 
         if (Input.GetButtonDown("X")) {
@@ -1128,7 +1119,7 @@ public class Player : MonoBehaviour {
 
 
             if (Input.GetButtonDown("R1")) {
-
+                Debug.Log("attacking is false");
                 Withdraw1 = true;
                 //LockedOn = false;
                 return;
@@ -1171,7 +1162,7 @@ public class Player : MonoBehaviour {
                 Guard = true;
             }
             Animations = 0;
-            RBody.isKinematic = false;
+            //RBody.isKinematic = false;
             shield.SetActive(true);
             LockedOn = true;
             anim.SetLayerWeight(guardLayer, 1);
@@ -1293,18 +1284,18 @@ public class Player : MonoBehaviour {
     #endregion
     private void LockOn() {
 
-        //if (Input.GetButtonDown("R1") && !TeleportTriggered && zendSpace) {
-        //    Time.timeScale = 0.1f;
-        //    locked = true;
-        //    if (Input.GetButtonDown("Triangle")) {
-        //        TeleportTriggered = true;
-        //        Cinemations = 51;
-        //        Debug.Log("tf is good?");
-        //    }
-        //}
-        //else {
-        //    Time.timeScale = 1;
-        //}
+        if (Input.GetButton("R1") && !TeleportTriggered && zendSpace) {
+            Time.timeScale = 0.1f;
+            locked = true;
+            if (Input.GetButtonDown("Triangle")) {
+                TeleportTriggered = true;
+                Cinemations = 51;
+                Debug.Log("tf is good?");
+            }
+        }
+        else {
+            Time.timeScale = 1;
+        }
 
         if (Input.GetButtonDown("L1")) {
             Animations = 0;
@@ -1316,22 +1307,21 @@ public class Player : MonoBehaviour {
         }
         if (Input.GetButtonDown("L1")) {
             //Guard = true;
-            if (lockedOn) {
-                LockedOn = true;
-                if (playerIsLockedOn != null) {
-                    playerIsLockedOn();
-                }
-                return;
+
+            LockedOn = true;
+            if (playerIsLockedOn != null) {
+                playerIsLockedOn();
             }
-            else {
-                LockedOn = false;
+        }
+
+        if (Input.GetButtonUp("L1")) {
+            LockedOn = false;
 
             if (notAiming != null) {
                 notAiming();
 
             }
 
-            }
         }
     }
 
@@ -1353,9 +1343,6 @@ public class Player : MonoBehaviour {
     }
 
     #region Event handlers
-    private void SetElement(int element) {
-        Element = element;
-    }
     private void LightBulbAdjuster(int val) {
         Bulbs += val;
     }
@@ -1528,7 +1515,7 @@ public class Player : MonoBehaviour {
         //StartCoroutine(WaitToLand());
     }
     private void GroundSlamForce(float force) {
-        RBody.mass = force;
+        Rbody.mass = force;
     }
     private void OnGrounded(bool val) {
         Grounded = val;
@@ -1557,7 +1544,7 @@ public class Player : MonoBehaviour {
         CmdInput = 0;
         //MoveSpeed = 6;
         LockedOn = false;
-        //stats.Start();
+        stats.Start();
         //ReturnToSpawn();
         mask.SetActive(false);
         GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;

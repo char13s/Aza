@@ -39,7 +39,20 @@ public class Items : MonoBehaviour
 
             onItemClick();
         }
-        
+        if (!UiManager.UseMenu.activeSelf)
+        {
+            UiManager.UseMenu.SetActive(true);
+            Debug.Log("bang!!");
+
+
+            UiManager.UseButton.onClick.AddListener(data.UseItem);
+
+            UiManager.ItemDescriptionButton.onClick.AddListener(data.DisplayDescription);
+        }
+        else
+        {
+            UiManager.UseMenu.SetActive(false);
+        }
 
 
     }

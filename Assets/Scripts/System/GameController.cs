@@ -113,13 +113,13 @@ public class GameController : MonoBehaviour {
         if (update != null)
             update();
         //SceneManagement();
-        if (!Player.GetPlayer().Pause) { 
-        if (Input.GetKey(KeyCode.F9)) {
-            Time.timeScale = 4;
-        }
-        else {
-            Time.timeScale = 1;
-        }}
+        //if (!Player.GetPlayer().Pause) { 
+        //if (Input.GetKey(KeyCode.F9)) {
+        //    Time.timeScale = 4;
+        //}
+        //else {
+        //    Time.timeScale = 1;
+        //}}
         //Debug.Log(SceneManager.);
     }
     private void SetSpawner(GameObject newSpawn) {
@@ -287,7 +287,6 @@ public class GameController : MonoBehaviour {
     }
 
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
-        Debug.Log(scene.name);
         if (onoLevelLoaded != null) {
             onoLevelLoaded();
         }
@@ -346,7 +345,7 @@ public class GameController : MonoBehaviour {
     }
     private void OnNewGame() {
 
-        //pc.stats.Start();
+        pc.stats.Start();
    
         pc.transform.position = Spawn.transform.position;
         pc.transform.rotation = Spawn.transform.rotation;
@@ -430,7 +429,7 @@ public class GameController : MonoBehaviour {
 
         }
         pc.Loaded = false;
-        //pc.stats.Start();
+        pc.stats.Start();
 
     }
 

@@ -30,7 +30,7 @@ public class Store : MonoBehaviour
     }
     private void StoreUp() {
 
-        
+        UiManager.StoreMenu.SetActive(true);
         Player.GetPlayer().InputSealed=true;
         if (storeIsUp != null)
             storeIsUp(); 

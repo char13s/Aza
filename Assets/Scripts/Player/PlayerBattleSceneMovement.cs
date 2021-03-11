@@ -275,26 +275,26 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         if (x == 0) {
             if (y > 0)//forward
             {
-                pc.Direction = 0;
+                pc.MotionDirection = 0;
 
             }
 
             if (y < 0)//back
             {
 
-                pc.Direction = 2;
+                pc.MotionDirection = 2;
             }
         }
 
         if (x > 0.3)//right
         {
-            pc.Direction = 3;
+            pc.MotionDirection = 3;
             Debug.Log("right");
         }
 
         if (x < -0.3)//left
         {
-            pc.Direction = 1;
+            pc.MotionDirection = 1;
 
         }
         if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) {

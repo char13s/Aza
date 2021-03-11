@@ -11,7 +11,7 @@ public class AirSpin : StateMachineBehaviour
     {
         pc = Player.GetPlayer();
         pc.HitBox.SetActive(true);
-        pc.RBody.useGravity = true;
+        pc.Rbody.useGravity = true;
     }
 
      //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -34,4 +34,16 @@ public class AirSpin : StateMachineBehaviour
         }
         pc.HitBox.SetActive(false);
     }
+    
+    // OnStateMove is called right after Animator.OnAnimatorMove()
+    //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    //{
+    //    // Implement code that processes and affects root motion
+    //}
+
+    // OnStateIK is called right after Animator.OnAnimatorIK()
+    //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    //{
+    //    // Implement code that sets up animation IK (inverse kinematics)
+    //}
 }

@@ -57,9 +57,9 @@ public class WeakZend : MonoBehaviour {
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
+        //if (ThreeDCamera.IsActive && !lockedOn) {
+        //    displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
+        //}
         if (x != 0 || y != 0) {
             Moving = true;
         }
