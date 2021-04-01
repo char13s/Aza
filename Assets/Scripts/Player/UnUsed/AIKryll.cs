@@ -50,7 +50,7 @@ public class AIKryll : MonoBehaviour
     private void Awake()
     {
         anim=GetComponent<Animator>();
-        Player.kryll += SwitchStyle;
+        
         Player.onPlayerEnabled += Spawn;
         Player.battleOn += BattleOn;
         AreaTransition.transition += Spawn;

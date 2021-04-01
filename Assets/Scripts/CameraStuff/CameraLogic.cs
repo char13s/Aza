@@ -36,7 +36,7 @@ public class CameraLogic : MonoBehaviour
         //Body = Player.GetPlayer();
         
         Player.onPlayerEnabled += CalculateDelta;
-        Player.onCharacterSwitch += SwitchTarget;
+        
         //InvokeRepeating("", 1f, 1f);
     }
     void CalculateDelta()

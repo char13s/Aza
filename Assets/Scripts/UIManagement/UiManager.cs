@@ -370,7 +370,7 @@ public class UiManager : MonoBehaviour {
         AIKryll.sendDist += DistFromKyrllToZend;
         AIKryll.zend += KryllDown;
 
-        Player.kryll += KryllUp;
+        
         Player.notSleeping += SaveMenuDown;
         Player.cancelPaused += MenusDown;
         Player.notSleeping += NotSleep;
@@ -1039,6 +1039,7 @@ public class UiManager : MonoBehaviour {
         ClearScreen();
         SetMissionDetails(null, null, 6);
         StartFade(onNewGame);
+        print("New Game");
         //LoadLevel();
 
     }

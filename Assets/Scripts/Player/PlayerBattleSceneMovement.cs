@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 #pragma warning disable 0649
 public class PlayerBattleSceneMovement : MonoBehaviour {
     private List<Enemy> enemies = new List<Enemy>(16);
@@ -17,7 +18,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private float rotateSpeed;
     private GameObject aimPoint;
     private GameObject leftPoint;
-
+    private Vector2 displacement;
     private AxisButton dPadLeft = new AxisButton("DPad Left");
     private AxisButton dPadRight = new AxisButton("DPad Right");
     private AxisButton L2 = new AxisButton("L2");
@@ -93,14 +94,15 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             }
         }
         if (pc.LockedOn) {
-            SwitchLockOn();
+            //SwitchLockOn();
             //pc.MoveSpeed = 3;
+            GetInput();
 
             if (enemies.Count == 0 && pc.CmdInput == 0) {
                 BasicMovement();
             }
             else {
-                GetInput();
+                
             }
 
         }
@@ -134,9 +136,12 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
 
     private void Locked() { locked = true; }
     private void Unlocked() { locked = false; }
+    private void OnMovement(InputValue value) {
+        displacement = value.Get<Vector2>();
+    }
     private void GetInput() {
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
+        float x = displacement.x;
+        float y = displacement.y;
 
         if (enemies.Count != 0 && t < enemies.Count) {
 
@@ -221,21 +226,16 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     }
     private void BasicMovement() {
 
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
+        float x = displacement.x;
+        float y = displacement.y;
         RotateSpeed = 18 - EnDist(aimPoint);
         Vector3 delta = aimPoint.transform.position - pc.transform.position;
         delta.y = 0;
-        if (!rotLock) {
-            transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
-
-        }
-
-        transform.position = Vector3.MoveTowards(transform.position, leftPoint.transform.position, pc.MoveSpeed * x * Time.deltaTime);
-
-        transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, pc.MoveSpeed * y * Time.deltaTime);
-        MovementInputs(x, y);
-
+        //transform.rotation = Quaternion.LookRotation(delta, Vector3.up* Time.deltaTime);
+        transform.RotateAround(aimPoint.transform.position, Vector3.up,pc.MoveSpeed * x);
+        //pc.Rbody.velocity=Vector3.MoveTowards(transform.position, leftPoint.transform.position,  );
+        pc.Rbody.velocity = Vector3.MoveTowards(transform.position, aimPoint.transform.position, pc.MoveSpeed * y );
+        //MovementInputs(x, y);
     }
 
     private void LockOn(float x, float y, Enemy target) {
@@ -262,8 +262,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             }
 
             //transform.LookAt(Enemies[T].transform.position,Vector3.up);
-            transform.RotateAround(target.transform.position, target.transform.up, -x * rotateSpeed * pc.MoveSpeed * Time.deltaTime);
-            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, pc.MoveSpeed * y * Time.deltaTime);
+           // transform.RotateAround(target.transform.position, target.transform.up, -x * rotateSpeed * pc.MoveSpeed * Time.deltaTime);
+           // transform.position = Vector3.MoveTowards(transform.position, target.transform.position, pc.MoveSpeed * y * Time.deltaTime);
 
         }
         if (Enemies[T].Dead) {

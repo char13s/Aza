@@ -433,10 +433,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     }
     private void ReturnToSpawn()
     {
-        Debug.Log("Welp back to spawn");
+
         Vector3 delta = (flip) * (transform.position - startLocation);
         delta.y = 0;
-        transform.rotation = Quaternion.LookRotation(delta);
+        //transform.rotation = Quaternion.LookRotation(delta);
         Walk = true;
         transform.position = Vector3.MoveTowards(transform.position, startLocation, 4 * Time.deltaTime);
         if (Vector3.Distance(startLocation, transform.position) < 1.5f)

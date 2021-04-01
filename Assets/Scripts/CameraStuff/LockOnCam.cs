@@ -7,7 +7,7 @@ public class LockOnCam : MonoBehaviour
 
     private void Awake()
     {
-        Player.lockOn += ChangeTarget;
+        //Player.lockOn += ChangeTarget;
         Player.notAiming += BackToPlayer;
     }
     // Start is called before the first frame update

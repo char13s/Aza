@@ -45,7 +45,7 @@ public class Interactable : MonoBehaviour
         }
     }
     private void Interact() {
-        switch (type) {
+        /*switch (type) {
             case InteractableType.Person:
                 GetComponent<SceneDialogue>().enabled=true;
                 break;
@@ -92,7 +92,7 @@ public class Interactable : MonoBehaviour
         }
         if (collectible) {
             Destroy(gameObject);
-        }
+        }*/
     }
     private IEnumerator Untouch() {
         YieldInstruction wait = new WaitForSeconds(1);

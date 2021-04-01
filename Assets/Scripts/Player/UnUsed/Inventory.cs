@@ -37,9 +37,7 @@ public class Inventory {
     public void Start() {
         ItemData.ItemDataUpdate += UpdateInvent;
         GameController.onGameWasStarted += UpdateInvent;
-        Player.dpadRight += RightSlide;
-        Player.dpadLeft += LeftSlide;
-        Player.dpadUp += SwitchSelected;
+        
         //Player.dpadDown += SwitchSelected;
         Player.skills += SwitchDpadControl;
         Debug.Log(Items.Count);

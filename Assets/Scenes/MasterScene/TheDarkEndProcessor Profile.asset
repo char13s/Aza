@@ -37,7 +37,7 @@ MonoBehaviour:
     m_Value: 1
   gaussianStart:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 9.1
     min: 0
   gaussianEnd:
     m_OverrideState: 1
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   mode:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 2
 --- !u!114 &3336828700354058314
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -151,18 +151,18 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
   contrast:
-    m_OverrideState: 1
-    m_Value: 76.6
+    m_OverrideState: 0
+    m_Value: 0
     min: -100
     max: 100
   colorFilter:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {r: 0.754717, g: 0, b: 0, a: 1}
     hdr: 1
     showAlpha: 0
     showEyeDropper: 1
   hueShift:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: -75
     min: -180
     max: 180

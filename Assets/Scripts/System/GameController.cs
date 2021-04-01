@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
-using UnityEngine.AI;
+
 #pragma warning disable 0649
 public class GameController : MonoBehaviour {
     //private Player pc;
@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour {
     private Coroutine loadCoroutine;
     private Coroutine deadCoroutine;
     private int gameMode;
+    private bool paused;
     List<Scene> openScenes = new List<Scene>();
 
     public static event UnityAction onNewGame;
@@ -121,6 +122,16 @@ public class GameController : MonoBehaviour {
         //    Time.timeScale = 1;
         //}}
         //Debug.Log(SceneManager.);
+    }
+    private void PauseGame(bool val) {
+        if (paused) {
+            Time.timeScale = 1;
+            paused = false;
+        }
+        else {
+            Time.timeScale = 0;
+            paused = true;
+        }
     }
     private void SetSpawner(GameObject newSpawn) {
         Spawn = newSpawn;

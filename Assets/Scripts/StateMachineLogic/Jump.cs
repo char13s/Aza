@@ -1,48 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class Jump : StateMachineBehaviour
 {
+    private Player player;
+    [SerializeField] private float jumpForce;
     [SerializeField] private float move;
-    [SerializeField] private GameObject burst;
-    private Player pc;
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        pc = Player.GetPlayer();
-        pc.Grounded = false;
-        pc.CantDoubleJump = false;
-        //pc.RBody.velocity = new Vector3(0, 0, 0);
-        pc.Rbody.AddForce(pc.transform.forward * 120, ForceMode.Impulse);
-        
+    private Vector3 speed;
+    private float jumpForceMax;
+
+    public static event UnityAction<float> jumped;
+    public float JumpForceMax { get => jumpForceMax; set => jumpForceMax = value; }
+
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
+        player = Player.GetPlayer();
+        //if (jumped != null) {
+        //    jumped(jumpForce);
+        //}
+        player.Rbody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
     }
-
-    // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-       //pc.transform.position = Vector3.MoveTowards(pc.transform.position,pc.HitPoint.transform.position,move*Time.deltaTime); 
-       //pc.transform.position = Vector3.MoveTowards(pc.transform.position, pc.JumpPoint.transform.position, move * Time.deltaTime);
-        pc.Grounded = false;
-        //pc.RBody.AddForce();
-        //Player.GetPlayer().GroundChecker.SetActive(false);
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        if (player.Moving) {
+            speed = move * player.transform.forward;
+            speed.y = player.Rbody.velocity.y;
+            player.Rbody.velocity = speed;
+        }
     }
-
-    // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        //Player.GetPlayer().GroundChecker.SetActive(true);
+    public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
+        player.Jumping = false;
     }
-
-    // OnStateMove is called right after Animator.OnAnimatorMove()
-    //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that processes and affects root motion
-    //}
-
-    // OnStateIK is called right after Animator.OnAnimatorIK()
-    //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that sets up animation IK (inverse kinematics)
-    //}
 }
