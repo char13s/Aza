@@ -41,4 +41,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DemonLevel1.unity
     guid: 4ae674e4109187149becdbb6f79e4986
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 7a267eaeb53a0e446be242d1abfa4ff2,
+      type: 2}

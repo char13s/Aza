@@ -9,6 +9,7 @@ public class DialogueManager : MonoBehaviour {
     private bool dialogueIsRunning;
     public static event UnityAction requestNextLine;
     public static event UnityAction skipDialogue;
+    public static event UnityAction<int> switchControls;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,29 +17,27 @@ public class DialogueManager : MonoBehaviour {
         SceneDialogue.turnOffDialogue += DialogueUp;
         SceneDialogue.sendName += SetTalker;
         SceneDialogue.sendLine += SetDialogue;
+        PlayerInputs.nextLine += NextLine;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetButtonDown("Circle")&&dialogueIsRunning) {
-            if (requestNextLine != null) {
-                requestNextLine();
-            }
 
+    private void NextLine() { 
+        if (requestNextLine != null) {
+                requestNextLine();
         }
-        //if (Input.GetButtonDown("Square")) {
-        //    if (skipDialogue != null) {
-        //        skipDialogue();
-        //    }
-        //    if (requestNextLine != null) {
-        //        requestNextLine();
-        //    }
-        //}
     }
     private void DialogueUp(bool val) {
         textPanel.SetActive(val);
         dialogueIsRunning = val;
+        if (val) {
+            switchControls.Invoke(4);
+        }
+        else {
+            print("fuck u controls");
+            switchControls.Invoke(0);
+        }
+        
     }
     private void SetTalker(string name) {
         whoseTalking.text = name;

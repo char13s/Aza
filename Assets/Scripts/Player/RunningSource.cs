@@ -19,12 +19,6 @@ public class RunningSource : MonoBehaviour
         UiManager.sendSfxVolume += SetSfxVolume;
         SfxVolume = 0.3f;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void SetSfxVolume(float val) {
         SfxVolume = val;
     }

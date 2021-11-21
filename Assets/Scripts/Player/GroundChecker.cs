@@ -3,77 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 public class GroundChecker : MonoBehaviour {
-    private Player pc;
-    private bool ground;
     private AudioClip landing;
     public static event UnityAction<bool> groundStatus;
     public static event UnityAction<AudioClip> landed;
+
+    private float distanceGround;
+    private Player player;
     // Start is called before the first frame update
-    private void Awake() {
-        
-       
+    void Start() {
+        distanceGround = GetComponent<Collider>().bounds.extents.y;
+        player = Player.GetPlayer();
     }
-    private void Start()
-    {landing = AudioManager.GetAudio().LandingSound;
-
-        StartCoroutine(Wait());
-        
-    }
-    private IEnumerator Wait() {
-        YieldInstruction wait = new WaitForSeconds(1);
-        yield return wait;
-        pc = Player.GetPlayer();
-    }
-    // Update is called once per frame
-    private void Update()
-    {
-        if (groundStatus != null)
-        {
-            groundStatus(ground);
-        }
-
-    }
-    //private void IsGrounded() {
-    //
-    //    if (pc.Nav.isOnNavMesh)
-    //    {
-    //        pc.Grounded = true;
-    //    }
-    //    else
-    //    {
-    //        pc.Grounded = false;
-    //    }
-    //    
-    //}
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject != null )
-        {
-
-            ground = true;
-            if (landed!=null) {
-                landed(landing);
-            }
-        }
-        
-
-    }
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject!=null ){
-            ground = true;
-
-
+    private void FixedUpdate() {
+        if (!Physics.Raycast(transform.position, -Vector2.up, distanceGround + 0.1f)) {
+            player.Grounded = false;
+            Debug.Log("floating");
         }
         else {
-            ground = false;
+            player.Grounded = true;
         }
-
     }
-    private void OnTriggerExit(Collider other) {
-
-        ground = false;
-    }
-
+    
 
 }

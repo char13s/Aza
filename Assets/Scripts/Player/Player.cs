@@ -15,7 +15,10 @@ public class Player : MonoBehaviour {
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float burstForce;
-
+    [SerializeField] private float rotationSpeed;
+    Vector3 directionV;
+    Vector2 displacementV;
+    Quaternion qTo;
     private float l;
     private bool cantDoubleJump = true;
     private int money;
@@ -134,6 +137,7 @@ public class Player : MonoBehaviour {
     [Header("References To Things on Zend")]
     [SerializeField] private GameObject leftPoint;
     [SerializeField] private GameObject arrowPoint;
+    [SerializeField] private GameObject farHitPoint;
 
     [SerializeField] private GameObject groundChecker;
     [SerializeField] private GameObject battleCamTarget;
@@ -268,7 +272,7 @@ public class Player : MonoBehaviour {
     public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { /*RBody.isKinematic = true; /*nav.enabled = true;*/ SecondJump = false; CantDoubleJump = true; } } }
     public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
     public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
-    public bool Guard { get => guard; set { guard = value; if (value) Moving = false; anim.SetBool("Guard", guard); } }
+    public bool Guard { get => guard; set { guard = value;  anim.SetBool("Guard", guard); } }
     public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking); WeaponManagement(); if (attackModeUp != null) { attackModeUp(); } } }
     public bool Moving { get => moving; set { moving = value; anim.SetBool("Moving", moving); } }
     public GameObject Body { get => body; set => body = value; }
@@ -391,6 +395,9 @@ public class Player : MonoBehaviour {
     public bool Charging { get => charging; set { charging = value;anim.SetBool("Charging",charging); } }
     public int Bulbs { get => bulbs; set => bulbs = value; }
     public GameObject WoodenSword { get => woodenSword; set => woodenSword = value; }
+    public Vector3 DirectionV { get => directionV; set => directionV = value; }
+    public Vector2 DisplacementV { get => displacementV; set => displacementV = value; }
+    public GameObject FarHitPoint { get => farHitPoint; set => farHitPoint = value; }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -479,7 +486,7 @@ public class Player : MonoBehaviour {
         LightBulbHolder.removeBulb += LightBulbAdjuster;
         Podium.skullUsed += SkullMaskAdjuster;
         FormSwitch.inviciblity += Endure;
-        MovingStates.returnSpeed += ReturnSpeed;
+        MovingStates.returnSpeed += MoveBro;
         KillOtherLayers.weight += LayerControl;
         BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
@@ -488,10 +495,10 @@ public class Player : MonoBehaviour {
         #endregion
         #endregion
         ClothesSfx = zend.GetComponent<AudioSource>();
-        Anim = GetComponent<Animator>();
+        Anim = zend.GetComponent<Animator>();
         rBody = GetComponent<Rigidbody>();
         
-        anim = GetComponent<Animator>();
+        //anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
     }
@@ -504,7 +511,7 @@ public class Player : MonoBehaviour {
         demonLayer = anim.GetLayerIndex("DemonSwordLayer");
         angelLayer = anim.GetLayerIndex("AngelSwordLayer");
         guardLayer = anim.GetLayerIndex("GuardLayer");
-        LegsLayer = anim.GetLayerIndex("RunningLayer");
+        //LegsLayer = anim.GetLayerIndex("RunningLayer");
         castLayer = anim.GetLayerIndex("MagicLayer");
         drawSwordLayer = anim.GetLayerIndex("DrawSwordLayer");
 
@@ -518,8 +525,9 @@ public class Player : MonoBehaviour {
     }
     
     // Update is called once per frame
-    void Update() {
-        if (!pause && !InputSealed) {
+    void FixedUpdate() {
+        Move();
+        /*if (!pause && !InputSealed) {
             GetAllInput();
 
         }
@@ -541,7 +549,7 @@ public class Player : MonoBehaviour {
         OnPause();
         if (Input.GetKeyDown(KeyCode.I)) { SkillId = 1; }
         if (Input.GetKeyDown(KeyCode.P)) { Weapon = 4; }
-        GetLStickPoistion();
+        GetLStickPoistion();*/
     }
     #region Helper Methods
 
@@ -631,20 +639,40 @@ public class Player : MonoBehaviour {
     private void CheckPlayerHealth() {
         if (stats.HealthLeft <= 0 && !dead) { Dead = true; }
     }
-    
+
     #endregion
 
-
+    #region new code
+    private void Move() {
+        DirectionV = mainCam.transform.TransformDirection(new Vector3(DisplacementV.x, 0, DisplacementV.y).normalized);  
+        if (DisplacementV.magnitude >= 0.1f) {
+            Moving = true;
+            if (!lockedOn) {
+                directionV.y = 0;
+                Vector3 rot = Vector3.Normalize(DirectionV);
+                rot.y = 0;
+                qTo = Quaternion.LookRotation(DirectionV);
+                transform.rotation = Quaternion.Slerp(transform.rotation, qTo, Time.deltaTime * rotationSpeed);
+            }
+        }
+        else {
+            Moving = false;
+        }
+    }
+    private void MoveBro(float move) {
+        if (!lockedOn) {
+            Vector3 speed;
+            speed = move * DirectionV.normalized;
+            speed.y = RBody.velocity.y;
+            RBody.velocity = speed;
+            // RBody.MovePosition(RBody.position+(speed*Time.deltaTime));
+        }
+        //rBody.MovePosition(rBody.position+speed);
+        //charaCon.SimpleMove(speed);
+    }
+    #endregion
     private void GetAllInput() {
         //Archery();
-
-        if (!jumping && grounded && !lockedOn&&!boosting) {
-            MovementInput();
-        }
-        else if (cmdInput == 0&&!boosting) {
-            CalculateRotation();
-
-        }
         CalculateMoveDirection();
         //if (Input.GetButton("L1")) {
         //
@@ -736,8 +764,7 @@ public class Player : MonoBehaviour {
         //}
 
         if (!grounded && cmdInput == 0) {
-            //if (Jumping) {
-            AirMovementInput();
+            //if (Jumping) 
 
             //}
            //if (!jumping && !boosting && !locked) {
@@ -801,15 +828,6 @@ public class Player : MonoBehaviour {
         InputSealed = true;
         Withdraw();
     }
-    private void AirMovementInput() {
-        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
-        MoveIt(x, y);
-    }
     private IEnumerator ResetTimeStop() {
         YieldInstruction wait = new WaitForSeconds(2);
         yield return wait;
@@ -819,38 +837,6 @@ public class Player : MonoBehaviour {
 
         float y = Input.GetAxis("Vertical");
         L = y;
-    }
-    private void CalculateRotation() {
-
-
-        float x = Input.GetAxis("Horizontal") * Time.deltaTime;
-        float y = Input.GetAxis("Vertical") * Time.deltaTime;
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
-        if (!lockedOn) {
-            Rotate();
-        }
-
-
-    }
-    private void MovementInput() {
-        float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
-        if (Input.GetButtonDown("L3")) {
-            //Grounded = true;
-
-            //Kryll();
-        }
-
-        MoveIt(x, y);
-
-
     }
     private void AnimationLayerManagement() {
         ////anim.SetLayerWeight(2, 1);
@@ -946,45 +932,7 @@ public class Player : MonoBehaviour {
     #endregion
 
 
-    private void MoveIt(float x, float y) {
-        Vector3 offset = new Vector3(0, 0, 0);
-        if (x != 0 || y != 0) {
-            if (!Jumping && grounded) {
-                //nav.enabled = true;
-                Animations = 1;
-                //anim.SetLayerWeight(6,0);
-                if (Input.GetButtonDown("X")) {
-                    //nav.enabled = false;
-                    //MoveSpeed = 0.2f;
-                }
-                //MoveSpeed = 6;
-
-            }
-            else {
-                Animations = 0;
-
-            }
-            if (!grounded) {
-               
-                    //MoveSpeed = 13;
-                    AirMove(MoveSpeed);
-                
-                
-
-            }else {
-                    //MoveSpeed = 3f;
-                    Move(MoveSpeed);
-
-                }
-            
-        }
-        else {
-
-            Animations = 0;
-            //nav.enabled = false;
-            //Moving = false;
-        }
-    }
+    
 
     #region Coroutines
     private IEnumerator ResetGroundCheck(float reset) {
@@ -1068,25 +1016,25 @@ public class Player : MonoBehaviour {
 
     #endregion
     #region Inputs
-    private void Jump() {
+    public void Jump() {
 
-        if (Input.GetButtonDown("X") && grounded) {
+        //.if (Input.GetButtonDown("X") && grounded) {
             SkillId = 10;
             //if (AIKryll.disableCollider != null) {
             //    AIKryll.disableCollider();
             //}
             Jumping = true;
-            anim.SetLayerWeight(demonLayer, 0);
-            anim.SetLayerWeight(angelLayer, 0);
+            //anim.SetLayerWeight(demonLayer, 0);
+            //anim.SetLayerWeight(angelLayer, 0);
             //nav.enabled = false;
             //RBody.isKinematic = false;
-            Grounded = false;
-            StopCoroutine(WaitToFall());
-            GroundChecker.groundStatus -= OnGrounded;
-            StartCoroutine(ResetGroundCheck(0.3f));
-            StartCoroutine(WaitToFall());
+            //Grounded = false;
+            //StopCoroutine(WaitToFall());
+            //GroundChecker.groundStatus -= OnGrounded;
+            //StartCoroutine(ResetGroundCheck(0.3f));
+            //StartCoroutine(WaitToFall());
             RBody.AddForce(new Vector3(0,333,0),ForceMode.Impulse);
-        }
+       // }
 
     }
     private void GoingUp() {
@@ -1445,17 +1393,14 @@ public class Player : MonoBehaviour {
         if (Input.GetButton("L1")) {
             //Guard = true;
 
-            LockedOn = true;
-            if (playerIsLockedOn != null) {
-                playerIsLockedOn();
-            }
+            
 
             //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
 
         }
 
         if (Input.GetButtonUp("L1")) {
-            LockedOn = false;
+            
 
             if (notAiming != null) {
                 notAiming();
@@ -1464,7 +1409,20 @@ public class Player : MonoBehaviour {
 
         }
     }
-
+    public void TargetingLogic(bool val) {
+        if (val) {
+            LockedOn = true;
+            if (playerIsLockedOn != null) {
+                playerIsLockedOn();
+            }
+            findClosestEnemy.Invoke();
+            Attacking = true;
+        }
+        else {
+            Attacking = false;
+            LockedOn = false;
+        }
+    }
     private void OnPause() {
         if (Input.GetButtonDown("Pause") && !Pause) {
             pauseMenu.SetActive(true);

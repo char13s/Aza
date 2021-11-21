@@ -214,10 +214,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
 		if (status.Status != StatusEffects.Statuses.stunned&&state!=EnemyAiStates.Null)
         {
-            StateSwitch();
+            //StateSwitch();
 
         }
-        canvas.transform.rotation = Quaternion.LookRotation(transform.position - CameraLogic.PrespCam.transform.position);
+        //canvas.transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
     private IEnumerator WaitToState() {
         YieldInstruction wait = new WaitForSeconds(0.5f);

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 #pragma warning disable 0649
 public class PlayerBattleSceneMovement : MonoBehaviour {
     private List<Enemy> enemies = new List<Enemy>(16);
-    private Player pc;
+    private Player player;
     private int t;//targeted enemy in the array of enemies
     private Enemy enemyTarget;
     public static event UnityAction onLockOn;
@@ -24,8 +24,9 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private bool rotLock;
     private bool cutscening;
     private bool playing;
-    private bool casual;
-
+    private bool casual; 
+    private float rotationSpeed;
+    public float RotationSpeed { get => rotationSpeed; set { rotationSpeed = value; Mathf.Clamp(value, 5, 8); } }
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
     public int T { get => t; set { t = value; Mathf.Clamp(t, 0, Enemies.Count); } }
     public Enemy EnemyTarget { get => enemyTarget; set { enemyTarget = value; } }
@@ -55,8 +56,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     }
     private void Start() {
 
-        pc = Player.GetPlayer();
-        aimPoint = pc.AimmingPoint;
+        player = Player.GetPlayer();
+        aimPoint = player.AimmingPoint;
         leftPoint = Player.GetPlayer().LeftPoint;
     }
     private void RemoveTheDead(Enemy enemy) {
@@ -92,11 +93,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
                 }
             }
         }
-        if (pc.LockedOn) {
+        if (player.LockedOn) {
             SwitchLockOn();
             //pc.MoveSpeed = 3;
 
-            if (enemies.Count == 0 && pc.CmdInput == 0) {
+            if (enemies.Count == 0 && player.CmdInput == 0) {
                 BasicMovement();
             }
             else {
@@ -135,22 +136,19 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private void Locked() { locked = true; }
     private void Unlocked() { locked = false; }
     private void GetInput() {
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
+        if (Enemies.Count != 0 && T < Enemies.Count) {
 
-        if (enemies.Count != 0 && t < enemies.Count) {
-
-            LockOn(x, y, Enemies[T]);
+            LockOn(Enemies[T], player.DisplacementV.x, player.DisplacementV.y);
         }
         //
-        if (L2.GetButton()) {
-            GetCombatMovement(x, y);
-
-        }
-        else {
-            MovementInputs(x, y);
-
-        }
+        //if (L2.GetButton()) {
+        //    GetCombatMovement(x, y);
+        //
+        //}
+        //else {
+            
+        //
+        //}
 
     }
 
@@ -163,11 +161,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     }
     private void TeleportAttacking(Vector3 location, int t) {
         transform.position = location;
-        pc.CmdInput = 101;
+        player.CmdInput = 101;
     }
     private void EnemyLockedTo() {
         EnemyTarget = enemies[T]; //Enemy.GetEnemy(enemies.IndexOf(enemies[T])); stupid code -_-
-        pc.BattleCamTarget.transform.position = EnemyTarget.transform.position;
+        player.BattleCamTarget.transform.position = EnemyTarget.transform.position;
 
     }
     private void GetClosestEnemy() {
@@ -192,27 +190,27 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             Debug.Log("Combat Jump");
             if (y <= -0.3f) {
                 Debug.Log("Combat BackJump");
-                pc.CombatAnimations = 1;
+                player.CombatAnimations = 1;
 
             }
             if (y >= 0.3f) {
                 Debug.Log("Combat BackJump");
-                pc.CombatAnimations = 5;
+                player.CombatAnimations = 5;
 
             }
         }
         if (y == 0) {
             if (x <= -0.5f) {
-                pc.CombatAnimations = 2;
+                player.CombatAnimations = 2;
             }
             if (x >= 0.5f) {
-                pc.CombatAnimations = 3;
+                player.CombatAnimations = 3;
             }
         }
 
 
     }
-    private float EnDist(GameObject target) => Vector3.Distance(target.transform.position, pc.transform.position);
+    private float EnDist(GameObject target) => Vector3.Distance(target.transform.position, player.transform.position);
     private void SetLock() {
         rotLock = true;
     }
@@ -224,28 +222,28 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         RotateSpeed = 18 - EnDist(aimPoint);
-        Vector3 delta = aimPoint.transform.position - pc.transform.position;
+        Vector3 delta = aimPoint.transform.position - player.transform.position;
         delta.y = 0;
         if (!rotLock) {
             transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
 
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, leftPoint.transform.position, pc.MoveSpeed * x * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, leftPoint.transform.position, player.MoveSpeed * x * Time.deltaTime);
 
-        transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, pc.MoveSpeed * y * Time.deltaTime);
-        MovementInputs(x, y);
+        transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, player.MoveSpeed * y * Time.deltaTime);
+        
 
     }
 
-    private void LockOn(float x, float y, Enemy target) {
-
+    private void LockOn(Enemy target, float x, float y) {
+        int moveSpeed = 5;
         //SwitchLockOn();
         LockOff();
         enemies[T].LockedOn = true;
         EnemyLockedTo();
         //if (!slide) { 
-
+        MovementInputs(x, y);
 
         if (Enemies[T] != null && !slide) {
 
@@ -253,8 +251,14 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
                 onLockOn();
             }
             RotateSpeed = 18 - EnDist(target.gameObject);
+            //RotationSpeed = 18 - EnDist(target.gameObject);
+            Vector3 delta = target.transform.position - player.transform.position;
+            delta.y = 0;
+            if (!rotLock) {
+                transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
+            }
             //Player.GetPlayer().Nav.enabled = true;
-            Vector3 delta = target.transform.position - pc.transform.position;
+            /*Vector3 delta = target.transform.position - player.transform.position;
             delta.y = 0;
             if (!rotLock) {
                 transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
@@ -262,12 +266,26 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             }
 
             //transform.LookAt(Enemies[T].transform.position,Vector3.up);
-            transform.RotateAround(target.transform.position, target.transform.up, -x * rotateSpeed * pc.MoveSpeed * Time.deltaTime);
-            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, pc.MoveSpeed * y * Time.deltaTime);
+            transform.RotateAround(target.transform.position, target.transform.up, -x * rotateSpeed * player.MoveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, player.MoveSpeed * y * Time.deltaTime);
 
-        }
-        if (Enemies[T].Dead) {
-            GetClosestEnemy();
+        }*/
+            player.FarHitPoint.transform.position = (Enemies[T].transform.position - transform.position) / 2;
+            //transform.LookAt(Enemies[T].transform.position,Vector3.up);
+            //if (player.CmdInput==0) {
+            transform.RotateAround(target.transform.position, player.FarHitPoint.transform.up, -x * RotateSpeed * moveSpeed * Time.deltaTime);
+
+            if (y != 0) {
+                Vector3 speed;
+                speed = transform.forward * moveSpeed * y;
+                speed.y = player.RBody.velocity.y;
+                player.RBody.velocity = speed;
+                //Vector3.MoveTowards(transform.position, target.transform.position, moveSpeed * y * Time.deltaTime);
+                //}
+            }
+            if (Enemies[T].Dead) {
+                GetClosestEnemy();
+            }
         }
     }
 
@@ -275,35 +293,35 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         if (x == 0) {
             if (y > 0)//forward
             {
-                pc.Direction = 0;
+                player.Direction = 0;
 
             }
 
             if (y < 0)//back
             {
 
-                pc.Direction = 2;
+                player.Direction = 2;
             }
         }
 
         if (x > 0.3)//right
         {
-            pc.Direction = 3;
+            player.Direction = 3;
             Debug.Log("right");
         }
 
         if (x < -0.3)//left
         {
-            pc.Direction = 1;
+            player.Direction = 1;
 
         }
         if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) {
 
-            pc.Animations = 1;
+            player.Animations = 1;
         }
         else {
 
-            pc.Animations = 0;
+            player.Animations = 0;
         }
     }
 

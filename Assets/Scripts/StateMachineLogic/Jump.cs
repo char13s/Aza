@@ -11,6 +11,7 @@ public class Jump : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         pc = Player.GetPlayer();
+        pc.Jumping = false;
         pc.Grounded = false;
         pc.CantDoubleJump = false;
         //pc.RBody.velocity = new Vector3(0, 0, 0);
