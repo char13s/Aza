@@ -198,7 +198,7 @@ public class GameController : MonoBehaviour {
 
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
             Debug.Log("Scene 1 up");
-            pc.gameObject.SetActive(false);
+            //pc.gameObject.SetActive(false);
             
             //eventSystem.gameObject.SetActive(false);
         }
@@ -336,7 +336,7 @@ public class GameController : MonoBehaviour {
         }
     }
     private IEnumerator ResetActiveScene() {
-        YieldInstruction wait = new WaitForSeconds(2);
+        YieldInstruction wait = new WaitForSeconds(0.2f);
         yield return wait;
         if (SceneManager.GetSceneByBuildIndex(nextLevel).isLoaded) {
             //CameraLogic.Switchable = true;

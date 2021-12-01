@@ -1016,14 +1016,17 @@ public class Player : MonoBehaviour {
 
     #endregion
     #region Inputs
-    public void Jump() {
+    private void Dodge(float move) {
+        RBody.velocity = transform.right*move;
+    }
+    private void Jump() {
 
         //.if (Input.GetButtonDown("X") && grounded) {
             SkillId = 10;
             //if (AIKryll.disableCollider != null) {
             //    AIKryll.disableCollider();
             //}
-            Jumping = true;
+           // Jumping = true;
             //anim.SetLayerWeight(demonLayer, 0);
             //anim.SetLayerWeight(angelLayer, 0);
             //nav.enabled = false;

@@ -8,26 +8,25 @@ public class PlayerInputs : MonoBehaviour
     private Player player;
     private PlayerInput map;
 
+    #region Events
     public static event UnityAction nextLine;
+    public static event UnityAction pause;
+    public static event UnityAction close;
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponent<Player>();
         map = GetComponent<PlayerInput>();
         DialogueManager.switchControls += SwitchMaps;
+        GameManager.switchMap += SwitchMaps;
     }
 
     #region Base Controls
-    #endregion
     private void OnMovement(InputValue value) {
         player.DisplacementV = value.Get<Vector2>();
     }
-    #region Dialogue Controls
-    private void OnNextLine() {
-        nextLine.Invoke();
-    }
-
-    #endregion
     private void OnAttack() {
         print("Square");
         player.Anim.SetTrigger("Attack");
@@ -36,7 +35,8 @@ public class PlayerInputs : MonoBehaviour
         print("Triangle");
     }
     private void OnJump() {
-        player.Jump();
+        //player.Jump();
+        player.Anim.SetTrigger("Jump");
     }
     private void OnAbility() {
         print("Circle");
@@ -49,6 +49,21 @@ public class PlayerInputs : MonoBehaviour
         else {
             player.TargetingLogic(false);
         }
+    }
+    #endregion
+    
+    #region Dialogue Controls
+    private void OnNextLine() {
+        nextLine.Invoke();
+    }
+    #endregion
+    private void OnPause() {
+        pause.Invoke();
+        print("pause");
+    }
+    private void OnClose() {
+        //close.Invoke();
+        
     }
     private void SwitchMaps(int val) {
         switch (val) {
