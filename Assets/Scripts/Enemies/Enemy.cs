@@ -48,7 +48,8 @@ public class Enemy : MonoBehaviour {
     
     private Player pc;
     private PlayerBattleSceneMovement pb;
-    private Animator anim;
+    [SerializeField] private Animator anim;
+    private EnemyTimelines timelines;
     //private AudioSource sound;
     private Rigidbody rbody;
     #endregion
@@ -162,7 +163,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
 
     public virtual void Awake()
     {
-        Anim = GetComponent<Animator>();
+        //Anim = GetComponent<Animator>();
         
         //sound = GetComponent<AudioSource>();
         rbody = GetComponent<Rigidbody>();
@@ -196,6 +197,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         //EnemyHitBox.guardHit += HitGuard;
         Enemies.Add(this);
         pb = pc.GetComponent<PlayerBattleSceneMovement>();
+        timelines = GetComponent<EnemyTimelines>();
         //InvokeRepeating("Attacking", 2f, 2f);
        // level += Player.GetPlayer().stats.Level;
         //Health = level * baseHealth;
@@ -260,7 +262,12 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
     {
         Enemies.Clear();
     }
-    
+    public void Knocked() {
+        Vector3 delta = (flip) * (transform.position - pc.transform.position);
+        delta.y = 0;
+        transform.rotation = Quaternion.LookRotation(delta);
+        timelines.KnockedBack();
+    }
     private void KillEnemy() {
         Destroy(this);
     }

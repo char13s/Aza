@@ -7,7 +7,7 @@ public class PlayerInputs : MonoBehaviour
 {
     private Player player;
     private PlayerInput map;
-
+    [SerializeField] private DarkPowerSet DarkForcePush;
     #region Events
     public static event UnityAction nextLine;
     public static event UnityAction pause;
@@ -33,6 +33,7 @@ public class PlayerInputs : MonoBehaviour
     }
     private void OnEnergy() {
         print("Triangle");
+        DarkForcePush.Triangle();
     }
     private void OnJump() {
         //player.Jump();
