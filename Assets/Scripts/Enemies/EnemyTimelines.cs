@@ -5,6 +5,7 @@ using UnityEngine.Playables;
 public class EnemyTimelines : MonoBehaviour
 {
     [SerializeField] private PlayableDirector knocked;
+    [SerializeField] private PlayableDirector knockedUp;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,5 +14,8 @@ public class EnemyTimelines : MonoBehaviour
 
     public void KnockedBack() {
         knocked.Play();
+    }
+    public void KnockUp() {
+        knockedUp.Play();
     }
 }

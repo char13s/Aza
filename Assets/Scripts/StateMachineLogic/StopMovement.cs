@@ -12,6 +12,6 @@ public class StopMovement : StateMachineBehaviour
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
-        Player.GetPlayer().MoveSpeed = firstSpeed;
+        //Player.GetPlayer().MoveSpeed = firstSpeed;
     }
 }

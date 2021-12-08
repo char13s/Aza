@@ -11,10 +11,10 @@ public class DarkPowerSet : MonoBehaviour
     public virtual void Triangle() { 
         
     }
-    //public void TriangleUp() { 
-    //
-    //}
-    //public void TriangleDown() { 
-    //
-    //}
+    public virtual void TriangleUp() { 
+    
+    }
+    public virtual void TriangleDown() { 
+    
+    }
 }

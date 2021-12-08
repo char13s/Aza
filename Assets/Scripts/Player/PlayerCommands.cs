@@ -25,6 +25,7 @@ public class PlayerCommands : MonoBehaviour
 	private Animator anim;
 	private Player player;
 	private PlayerTimelineControl timelines;
+	private PlayerInputs playerInputs;
 	#endregion
 	#region Anim parameters
 	private int chain;
@@ -51,6 +52,7 @@ public class PlayerCommands : MonoBehaviour
 		player = GetComponent<Player>();
 		anim = player.Anim;
 		timelines = GetComponent<PlayerTimelineControl>();
+		playerInputs = GetComponent<PlayerInputs>();
 		BaseBehavoirs.baseB += ResetMoveChain;
 		ChainInput.resetChain += emptyChain;
 		//ChainInput.endChain += emptyChain;
@@ -226,8 +228,8 @@ public class PlayerCommands : MonoBehaviour
 			}
 			ResetChain();
 			//Chain = 3;
-			timelines.PlayUpAttack();
-			//anim.SetTrigger("UpAttack");
+			//timelines.PlayUpAttack();
+			anim.SetTrigger("UpAttack");
 		}
 		if (inputs == Inputs.Square && direction == Inputs.Down) {
 			Debug.Log("Down Attack!");
@@ -237,7 +239,9 @@ public class PlayerCommands : MonoBehaviour
 			//Chain = 4;
 			ResetChain();
 			//timelines.PlayDownAttack();
+			anim.ResetTrigger("Attack");
 			anim.SetTrigger("DownAttack");
+			
 			//Insert Chain Here.
 		}
 		if (inputs == Inputs.Triangle && direction == Inputs.Down) {
@@ -245,12 +249,12 @@ public class PlayerCommands : MonoBehaviour
 			if (sendInput != null) {
 				sendInput("Down + Triangle");
 			}
-			Chain = 6;
+			//playerInputs.DarkPowers.TriangleDown();
 			ResetChain();
 			if (downTriangle != null) {
 				downTriangle();
 			}
-			timelines.PlayDownEnergy();
+			//timelines.PlayDownEnergy();
 			//Insert Chain Here.
 		}
 		if (inputs == Inputs.Triangle && direction == Inputs.Up) {
@@ -258,9 +262,9 @@ public class PlayerCommands : MonoBehaviour
 			if (sendInput != null) {
 				sendInput("Up + Triangle");
 			}
-			Chain = 7;
+			//playerInputs.DarkPowers.TriangleUp();
 			ResetChain();
-			anim.SetTrigger("Slash");
+			//anim.SetTrigger("Slash");
 			if (upTriangle != null) {
 				upTriangle();
 			}
@@ -275,7 +279,7 @@ public class PlayerCommands : MonoBehaviour
 			if (upCircle != null) {
 				upCircle();
 			}
-			Chain = 13;
+			playerInputs.Relic.UpCircle();
 			ResetChain();
 		}
 		if (inputs == Inputs.Circle && direction == Inputs.Down) {
@@ -286,7 +290,7 @@ public class PlayerCommands : MonoBehaviour
 			if (downCircle != null) {
 				downCircle();
 			}
-			Chain = 6;
+			//playerInputs.Relic.DownCircle();
 			ResetChain();
 		}
 		/*if (inputs.Contains(Inputs.Up) && inputs.Contains(Inputs.Down)&&inputs.Contains(Inputs.Square)) {

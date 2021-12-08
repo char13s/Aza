@@ -268,6 +268,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         transform.rotation = Quaternion.LookRotation(delta);
         timelines.KnockedBack();
     }
+    public void KnockedUp() {
+        print("Knocked up");
+        timelines.KnockUp();
+    }
     private void KillEnemy() {
         Destroy(this);
     }
@@ -484,7 +488,7 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
             hitCoroutine = StartCoroutine(HitCoroutine());
 
         }
-        transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
+        //transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
         Instantiate(cut,transform);
         //StopCoroutine(attackCoroutine);
     }

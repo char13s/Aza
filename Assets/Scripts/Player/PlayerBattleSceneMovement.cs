@@ -273,11 +273,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             player.FarHitPoint.transform.position = (Enemies[T].transform.position - transform.position) / 2;
             //transform.LookAt(Enemies[T].transform.position,Vector3.up);
             //if (player.CmdInput==0) {
-            transform.RotateAround(target.transform.position, player.FarHitPoint.transform.up, -x * RotateSpeed * moveSpeed * Time.deltaTime);
+            transform.RotateAround(target.transform.position, player.FarHitPoint.transform.up, -x * RotateSpeed * player.MoveSpeed * Time.deltaTime);
 
             if (y != 0) {
                 Vector3 speed;
-                speed = transform.forward * moveSpeed * y;
+                speed = transform.forward * player.MoveSpeed * y;
                 speed.y = player.RBody.velocity.y;
                 player.RBody.velocity = speed;
                 //Vector3.MoveTowards(transform.position, target.transform.position, moveSpeed * y * Time.deltaTime);

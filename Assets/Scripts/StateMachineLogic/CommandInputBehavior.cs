@@ -49,7 +49,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
                 stopMove();
             }
         }
-        GamePad.SetVibration(0,0.02f,0.02f);
+        //GamePad.SetVibration(0,0.02f,0.02f);
         
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

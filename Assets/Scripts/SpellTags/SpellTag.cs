@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 [RequireComponent(typeof(Text))]
 [RequireComponent(typeof(Button))]
-public class SpellTag : MonoBehaviour
+public class SpellTag : EquipmentObj
 {
     [SerializeField] private int spellId;
     [SerializeField] private string spellName;
@@ -34,9 +34,12 @@ public class SpellTag : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
+    public override void Circle() {
+        base.Circle();
+        if (triggerZaWarudo != null) {
+            triggerZaWarudo();
+        }
+        Debug.Log("ZA WARUDO");
     }
     public void Activate() {
         if (cooldown == 0) {

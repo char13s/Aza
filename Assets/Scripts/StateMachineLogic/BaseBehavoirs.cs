@@ -26,7 +26,7 @@ public class BaseBehavoirs : StateMachineBehaviour {
     private void Defaults() {
         pc.SkillId = 0;
         pc.CmdInput = 0;
-        pc.MoveSpeed = 6;
+        //pc.MoveSpeed = 6;
         pc.SpinAttack = false;
     }
 
