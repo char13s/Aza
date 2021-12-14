@@ -105,7 +105,6 @@ public class Player : MonoBehaviour
     private int animations;
     private bool bowUp;
     private bool poweredUp;
-    private bool jumpSeal;
     private bool jumping;
     private int cinemations;
     private bool inHouse;
@@ -113,7 +112,7 @@ public class Player : MonoBehaviour
     private int guardAnimations;
     private bool doubleJump;
     private bool spinAttack;
-    private bool withdraw;
+    private float speedInc;
 
     private int demonLayer;
     private int angelLayer;
@@ -121,6 +120,7 @@ public class Player : MonoBehaviour
     private int guardLayer;
     private int castLayer;
     private int drawSwordLayer;
+    private int airCombo;
     #endregion
     #region Random stuff
     [Space]
@@ -318,7 +318,6 @@ public class Player : MonoBehaviour
     public bool InputSealed { get => inputSealed; set => inputSealed = value; }
     public bool Sleeping { get => sleep; set { sleep = value; anim.SetBool("Sleep", value); } }
 
-    public bool JumpSeal { get => jumpSeal; set => jumpSeal = value; }
     public bool Jumping { get => jumping; set { jumping = value; anim.SetBool("Jumping", value); } }
 
     public bool Boosting { get => boosting; set { boosting = value; anim.SetBool("Dashing", boosting); } }
@@ -384,7 +383,6 @@ public class Player : MonoBehaviour
 
     public GameObject WoodenSwordHitBox { get => woodenSwordHitBox; set => woodenSwordHitBox = value; }
     public int LegsLayer { get => legsLayer; set => legsLayer = value; }
-    public bool Withdraw1 { get => withdraw; set { withdraw = value; anim.SetBool("Withdraw", withdraw); } }
 
     public bool LightAttack { get => lightAttack; set { lightAttack = value; anim.SetBool("LightAttack", lightAttack); } }
     public bool StrongAttack { get => strongAttack; set { strongAttack = value; anim.SetBool("StrongAttack", strongAttack); } }
@@ -400,6 +398,8 @@ public class Player : MonoBehaviour
     public Vector2 DisplacementV { get => displacementV; set => displacementV = value; }
     public GameObject FarHitPoint { get => farHitPoint; set => farHitPoint = value; }
     public bool SkillButton { get => skillButton; set => skillButton = value; }
+    public float SpeedInc { get => speedInc; set => speedInc = value; }
+    public int AirCombo { get => airCombo; set { airCombo = value;anim.SetInteger( "AirCombo",airCombo); } }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -482,7 +482,6 @@ public class Player : MonoBehaviour
         //dpadLeft += AngelUp;
         dpadRight += DemonUp;
         dpadDown += Base;
-        Interactable.sealJump += JumpSealer;
         Interactable.skullCollected += SkullMaskAdjuster;
         Interactable.bulbCollected += LightBulbAdjuster;
         LightBulbHolder.removeBulb += LightBulbAdjuster;
@@ -680,9 +679,9 @@ public class Player : MonoBehaviour
     #region Ability Functions
     private void Teleportto() {
         if (battleMode.EnemyTarget.Grounded)
-            transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 4, 0);
+            transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 4, -0.5f);
         else
-            transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 0.5f, 0);
+            transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 0.5f, -0.5f);
     }
     #endregion
     private void GetAllInput() {
@@ -754,14 +753,9 @@ public class Player : MonoBehaviour
             }
             if (Input.GetButtonDown("Circle") && items.SelectedList == 0) {
                 Attacking = false;
-                Withdraw1 = true;
             }
 
             Sword();
-
-            if (!jumpSeal && !lockedOn) {
-                Jump();
-            }
             if (!lockedOn && !weak) {
                 Dashu();
 
@@ -1145,7 +1139,6 @@ public class Player : MonoBehaviour
 
     }
     private void Withdraw() {
-        Withdraw1 = false;
         Attacking = false;
         DemonSword.SetActive(false);
         if (style == 0) {
@@ -1181,7 +1174,6 @@ public class Player : MonoBehaviour
 
             if (Input.GetButtonDown("R1")) {
                 Debug.Log("attacking is false");
-                Withdraw1 = true;
                 //LockedOn = false;
                 return;
             }
@@ -1467,9 +1459,7 @@ public class Player : MonoBehaviour
         SkullMask += val;
         Debug.Log("number of skulls should go up");
     }
-    private void JumpSealer(bool val) {
-        JumpSeal = val;
-    }
+
     private void Blank() {
 
         Attacking = false;

@@ -15,6 +15,9 @@ public class EnemyTimelines : MonoBehaviour
     public void KnockedBack() {
         knocked.Play();
     }
+    public void CancelKnockUp() {
+        knockedUp.Stop();
+    }
     public void KnockUp() {
         knockedUp.Play();
     }

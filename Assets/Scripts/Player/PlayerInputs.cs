@@ -35,11 +35,17 @@ public class PlayerInputs : MonoBehaviour
             print("Square");
             player.Anim.SetTrigger("Attack");
         }
+        else {
+            player.SkillSquare();
+        }
     }
     private void OnEnergy() {
         if (!player.SkillButton) {
             print("Triangle");
             darkPowers.Triangle();
+        }
+        else {
+            player.SkillTriangle();
         }
     }
     private void OnJump() {
@@ -47,11 +53,17 @@ public class PlayerInputs : MonoBehaviour
             //player.Jump();
             player.Anim.SetTrigger("Jump");
         }
+        else {
+            player.SkillX();
+        }
     }
     private void OnAbility() {
         if (!player.SkillButton) {
             print("Circle");
             Relic.Circle();
+        }
+        else {
+            player.SkillCircle();
         }
     }
     private void OnLockOn(InputValue value) {

@@ -63,7 +63,7 @@ public class UiManager : MonoBehaviour {
     #region EventSystems
     [Header("EventSystems")]
     [SerializeField] private GameObject mainEventSystem;
-    [SerializeField] private GameObject mainMenuEventSystem;
+    
     [Space]
     #endregion
 
@@ -1175,14 +1175,14 @@ public class UiManager : MonoBehaviour {
     private void SetCanvas() {
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
             mainMenuCanvas.SetActive(true);
-            mainMenuEventSystem.SetActive(true);
+
             mainEventSystem.SetActive(false);
             mainCanvas.SetActive(false);
         }
         else {
             mainCanvas.SetActive(true);
             mainMenuCanvas.SetActive(false);
-            mainMenuEventSystem.SetActive(false);
+
             mainEventSystem.SetActive(true);
         }
 

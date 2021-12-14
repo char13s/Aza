@@ -102,7 +102,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Skillup",
+                    "name": "SkillUp",
                     "type": "Button",
                     "id": "d5c14f57-f772-4dba-8320-bc8c2b83ed42",
                     "expectedControlType": "Button",
@@ -115,6 +115,17 @@
                     "name": "",
                     "id": "53e25225-353f-431a-aed1-220229e4a4c2",
                     "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1b7bc770-8d69-4e75-a2dc-f4c4b0e6a547",
+                    "path": "<Keyboard>/z",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -203,6 +214,61 @@
                     "name": "right",
                     "id": "95dbdb9b-4c79-44e9-a1e8-629a2cbc4fa3",
                     "path": "<Gamepad>/leftStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "63c00d16-880b-48c5-87d4-2f2c27ed52dc",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "e1489870-16bb-4eae-9990-66cf74360c19",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "24e41ef8-d521-4bc4-b863-47588ec512c3",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "17d4797d-5cbe-4812-a92c-6ba6c25ff19b",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "76816e9c-078f-4c7e-bc7b-c7380cdb4a28",
+                    "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -338,7 +404,7 @@
                     "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "",
-                    "action": "Skillup",
+                    "action": "SkillUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

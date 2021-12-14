@@ -268,6 +268,10 @@ public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(
         transform.rotation = Quaternion.LookRotation(delta);
         timelines.KnockedBack();
     }
+    public void CancelKnocked() {
+        timelines.CancelKnockUp();
+        rbody.AddForce(new Vector3(0,-150,0),ForceMode.VelocityChange);
+    }
     public void KnockedUp() {
         print("Knocked up");
         timelines.KnockUp();

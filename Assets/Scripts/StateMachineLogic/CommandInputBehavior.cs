@@ -6,7 +6,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
     private AudioSource sound;
     private Player pc;
     private WeakZend wz;
-    [SerializeField] private bool jump;
+    [SerializeField] private bool combo;
     private bool hit;
     private bool weakZend;
     [SerializeField]private bool stab;
@@ -27,17 +27,23 @@ public class CommandInputBehavior : StateMachineBehaviour {
         pc = Player.GetPlayer();
         //sound=pc.Sfx;
         swing = AudioManager.GetAudio().Swing;
-        if (jump) {
+        /*if (jump) {
             swing = AudioManager.GetAudio().Jump;
         }
         else {
             swing = AudioManager.GetAudio().Swing;
-        }
+        }*/
         //sound.PlayOneShot(swing);
         if (sendsfx != null) {
             sendsfx(swing);
         }
         pc.Guard = false;
+        if (!combo) {
+            pc.CmdInput = 0;
+        }
+        else {
+            pc.CmdInput = 1;
+        }
         pc.CmdInput = 0;
         pc.MoveSpeed = 0;
         //pc.Nav.enabled = false;
@@ -54,7 +60,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GetInput();
+
         if (stateInfo.normalizedTime > 0.1f && stateInfo.normalizedTime < 0.6f) {
             if (!hit) {
                 pc.transform.position += pc.transform.forward * move * Time.deltaTime;
@@ -91,18 +97,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
           // hit = true;
         }
     }
-    private void GetInput() {
-        if (Input.GetButtonDown("Square"))
-        {
-            pc.CmdInput = 1;
-        }
 
-        if (Input.GetButtonDown("Triangle"))
-        {
-            pc.CmdInput = 2;
-        }
-
-    }
     
 
 }
