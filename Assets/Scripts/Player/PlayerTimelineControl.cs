@@ -71,7 +71,13 @@ public class PlayerTimelineControl : MonoBehaviour
     public void PlayCircle() {
         circle.PlaySkill();
     }*/
-    public void PlayUpAttack() {
+    public void PlayUpAttack(bool val) {
+        if (val) {
+            upAttack.Play();
+        }
+        else {
+            upAttack.Stop();
+        }
         upAttack.Play();
     }
     public void PlayDownAttack() {
@@ -90,6 +96,9 @@ public class PlayerTimelineControl : MonoBehaviour
     public void PlayDownEnergy() {
         if (downEnergy != null)
             downEnergy.Play();
+    }
+    public void StopTimelines() { 
+    
     }
     ///if a timeline is triggered have a bool that denies another timeline from playing and then a certain amount of time passes that unsets the bool.
 }

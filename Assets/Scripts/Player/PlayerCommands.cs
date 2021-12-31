@@ -268,8 +268,9 @@ public class PlayerCommands : MonoBehaviour
             }
             ResetChain();
             //Chain = 3;
-            //timelines.PlayUpAttack();
-            anim.SetTrigger("UpAttack");
+            timelines.PlayUpAttack(true);
+            anim.ResetTrigger("Attack");
+            //anim.SetTrigger("UpAttack");
         }
         if (inputs == Inputs.Square && direction == Inputs.Down) {
             Debug.Log("Down Attack!");

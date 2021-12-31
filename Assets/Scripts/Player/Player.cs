@@ -119,6 +119,7 @@ public class Player : MonoBehaviour
     private int legsLayer;
     private int guardLayer;
     private int castLayer;
+    private int shootLayer;
     private int drawSwordLayer;
     private int airCombo;
     #endregion
@@ -128,6 +129,7 @@ public class Player : MonoBehaviour
     private Rigidbody rBody;
     private AudioSource sfx;
     private AudioSource clothesSfx;
+    private PlayerEffects effects;
     private bool pause;
     private bool targeting;
 
@@ -493,6 +495,8 @@ public class Player : MonoBehaviour
         PoisonLake.poisoned += TakeDamage;
 
         AngelicRelic.lightSpeed += Teleportto;
+        ShadowShot.shoot += ShootShadow;
+        ShootBehavior.shoot += ShootLayer;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
@@ -504,6 +508,7 @@ public class Player : MonoBehaviour
         //anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
+        effects = GetComponent<PlayerEffects>();
     }
 
     void Start() {
@@ -517,7 +522,7 @@ public class Player : MonoBehaviour
         //LegsLayer = anim.GetLayerIndex("RunningLayer");
         castLayer = anim.GetLayerIndex("MagicLayer");
         drawSwordLayer = anim.GetLayerIndex("DrawSwordLayer");
-
+        shootLayer = anim.GetLayerIndex("Shooting Layer");
         grounded = anim.GetBool("Grounded");
         InputSealed = true;
     }
@@ -682,6 +687,12 @@ public class Player : MonoBehaviour
             transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 4, -0.5f);
         else
             transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 0.5f, -0.5f);
+    }
+    private void ShootShadow() {
+        Instantiate(effects.ShadowShot, leftHand.transform.position, Quaternion.identity);
+    }
+    private void ShootLayer(int val) {
+        anim.SetLayerWeight(shootLayer,val);
     }
     #endregion
     private void GetAllInput() {
