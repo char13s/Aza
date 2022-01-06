@@ -108,6 +108,38 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "DUp",
+                    "type": "Button",
+                    "id": "7a794816-2a69-4e89-9116-452f9ba4f7cd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "DDown",
+                    "type": "Button",
+                    "id": "bbd8f1ac-729f-4c1b-95e5-c9435ad144c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "DRight",
+                    "type": "Button",
+                    "id": "da86ece4-6bf5-4d11-9106-7c937a5dfd51",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "DLeft",
+                    "type": "Button",
+                    "id": "1aaca235-8395-4bf1-a215-6c3442edb223",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -405,6 +437,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "SkillUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "19f68922-0920-4ce6-966d-5c442b7a7c3e",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99f84842-4653-472d-b03e-348fd97b84b3",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bc2bd006-58ad-4ce1-ad3c-e0175201dfc0",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "17538117-8ef3-490c-9326-312ce00bbc2c",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

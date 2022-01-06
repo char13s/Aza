@@ -87,6 +87,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector3 moveBoneRight = new Vector3(1, 0, 0);
 
     private bool grounded;
+    private bool blocking;
     private bool transforming;
 
     private bool leftDash;
@@ -403,6 +404,8 @@ public class Player : MonoBehaviour
     public float SpeedInc { get => speedInc; set => speedInc = value; }
     public int AirCombo { get => airCombo; set { airCombo = value;anim.SetInteger( "AirCombo",airCombo); } }
 
+    public bool Blocking { get => blocking; set => blocking = value; }
+
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
@@ -494,12 +497,17 @@ public class Player : MonoBehaviour
         BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
 
-        AngelicRelic.lightSpeed += Teleportto;
+        
+
         ShadowShot.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
+        #endregion
+        #region Power HookUps
+        AngelicRelic.lightSpeed += Teleportto;
+        DefensePowers.defense += Block;
         #endregion
         ClothesSfx = zend.GetComponent<AudioSource>();
         Anim = zend.GetComponent<Animator>();
@@ -694,6 +702,9 @@ public class Player : MonoBehaviour
     private void ShootLayer(int val) {
         anim.SetLayerWeight(shootLayer,val);
     }
+    private void Block() { 
+    
+    }
     #endregion
     private void GetAllInput() {
         //Archery();
@@ -746,7 +757,7 @@ public class Player : MonoBehaviour
 
                 LockOn();
 
-                Block();
+
             }
 
             else {
@@ -1220,7 +1231,7 @@ public class Player : MonoBehaviour
 
         }
     }
-    private void Block() {
+    private void OldBlock() {
         if (Input.GetButtonDown("L1") && !skillIsActive) {
             PerfectGuard = true;
             guardCoroutine = StartCoroutine(GuardCoroutine());

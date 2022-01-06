@@ -9,8 +9,12 @@ public class PlayerInputs : MonoBehaviour
     private PlayerInput map;
     [SerializeField] private DarkPowerSet darkPowers;
     [SerializeField] private EquipmentObj relic;
+    [SerializeField] private AbilityUIHolder relicUp;
+    [SerializeField] private AbilityUIHolder relicDown;
+    [SerializeField] private AbilityUIHolder relicRight;
+    [SerializeField] private AbilityUIHolder relicLeft;
     public DarkPowerSet DarkPowers { get => darkPowers; set => darkPowers = value; }
-    public EquipmentObj Relic { get => relic; set => relic = value; }
+    public EquipmentObj Relic { get => relic; set => relic = value; }// Need code to create relic on player in specific spot so it can be used or just carry them all will they really take up alot of data?
     #region Events
     public static event UnityAction nextLine;
     public static event UnityAction pause;
@@ -83,6 +87,22 @@ public class PlayerInputs : MonoBehaviour
         else {
             player.SkillButton=false;
         }
+    }
+    private void OnDUp() {
+        Relic = relicUp.Relic;
+        Debug.Log(Relic); ;
+    }
+    private void OnDDown() {
+        Relic = relicDown.Relic;
+        Debug.Log(Relic); ;
+    }
+    private void OnDLeft() {
+        Relic = relicLeft.Relic;
+        Debug.Log(Relic); ;
+    }
+    private void OnDRight() {
+        Relic = relicRight.Relic;
+        Debug.Log(Relic); ;
     }
     #endregion
 
