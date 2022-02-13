@@ -23,7 +23,7 @@ public class CombatZone : MonoBehaviour {
     }
     private void ActivateTheEnemies() {
         foreach(EnemySpawnPoint point in enemies){
-            point.Spawn = true;
+           // point.Spawn = true;
         }
     }
 }

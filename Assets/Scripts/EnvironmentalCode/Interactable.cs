@@ -18,7 +18,6 @@ public class Interactable : MonoBehaviour
     public static event UnityAction<GameObject> checkForBulb;
     public static event UnityAction soundOff;
     public static event UnityAction endDemo;
-    public static event UnityAction saveGame;
     private void OnTriggerEnter(Collider other) {
         if (sealJump != null) {
             sealJump(true);

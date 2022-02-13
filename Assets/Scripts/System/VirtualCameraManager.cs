@@ -39,23 +39,20 @@ public class VirtualCameraManager : MonoBehaviour
 
     public bool Freelook { get => freelook; set { freelook = value; if (freelook) { freeCam.m_Priority = 12; } else { freeCam.m_Priority = 1; } } }
 
-    public static event UnityAction grey;
-    public static event UnityAction ungrey;
-    public static event UnityAction weakZend;
     public static event UnityAction spawnDemon;
     // Start is called before the first frame update
     private void Awake()
     {
         Player.playerIsLockedOn += LookingForTarget;
         Player.notAiming += NotAiming;
-        Player.archery += ArcheryCamUp;
+
         //Player.onPlayerDeath += TurnTitleCamOn;
         UiManager.portal += ControlMainCam;
 
 
 
         ExpConverter.levelMenuUp += MeditationCam;
-
+        LevelManager.off += TurnOffTitleScreenCam;
         GameController.onNewGame += TurnOffTitleScreenCam;
         GameController.respawn += TurnOffTitleScreenCam;
         GameController.returnToLevelSelect+=TurnTitleCamOn;
@@ -116,14 +113,7 @@ public class VirtualCameraManager : MonoBehaviour
     private void LookingForTarget() {
         
         battleCam.m_Priority = 24;
-        if (pc.BattleMode.EnemyTarget != null) {
-            //ttleCam.m_LookAt = Player.GetPlayer().BattleMode.EnemyTarget.transform;
-        }
-        else {
-            battleCam.m_LookAt = aimingPoint.transform;
-        }
-        main.transform.position = battleCam.transform.position;
-
+        
     }
     private void NotAiming() {
         battleCam.m_Priority = 1;

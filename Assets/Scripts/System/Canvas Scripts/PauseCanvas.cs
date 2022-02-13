@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 public class PauseCanvas : CanvasManager
 {
-	public static event UnityAction pause;
 	// Start is called before the first frame update
 	private void Awake() {
 

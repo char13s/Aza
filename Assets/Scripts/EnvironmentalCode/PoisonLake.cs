@@ -5,7 +5,6 @@ using UnityEngine.Events;
 public class PoisonLake : MonoBehaviour {
     [SerializeField] private GameObject splash;
     public static event UnityAction<int> poisoned;
-    public static event UnityAction unpoisoned;
     private Coroutine poison;
     
     private void OnTriggerEnter(Collider other) {

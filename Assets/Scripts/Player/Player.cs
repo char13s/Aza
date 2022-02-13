@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using XInputDotNetPure;
+
 #pragma warning disable 0649
 public class Player : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     private bool moving;
     private bool weak;
     private int style;
-    private bool hasBoth;
+
     //public float speed;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
     #region Animation States
     [Space]
     [Header("Animation States")]
-    [SerializeField] private int archeryLayerIndex = 1;
+
     [SerializeField] private Transform movementBone;
     [SerializeField] private Transform headBone;
     //[SerializeField] private Vector3 moveBoneForward = new Vector3(0, 0, 1);
@@ -233,40 +233,25 @@ public class Player : MonoBehaviour
     private bool teleportTriggered;
     private bool timeStopped;
     private bool stopTime;
-    private bool pressed;
-    private float weaponAmount = 1;
     private bool locked;
     private float attackCharge;
     private bool drawn;
 
     #endregion
     #region Events
-    public static event UnityAction aiming;
     public static event UnityAction onPlayerDeath;
     public static event UnityAction onPlayerEnabled;
     public static event UnityAction playerIsLockedOn;
-    public static event UnityAction onCharacterSwitch;
     public static event UnityAction notAiming;
-    public static event UnityAction lockOn;
-    public static event UnityAction kintoun;
-    public static event UnityAction kryll;
-    public static event UnityAction battleOn;
-    public static event UnityAction notSleeping;
-    public static event UnityAction cancelPaused;
+
     public static event UnityAction zaWarudo;
     public static event UnityAction timeHasBegunToMove;
     public static event UnityAction weaponSwitch;
     public static event UnityAction attackModeUp;
     public static event UnityAction findClosestEnemy;
     public static event UnityAction unlocked;
-    public static event UnityAction<bool> skills;
 
     public static event UnityAction<AudioClip> sendSfx;
-    public static event UnityAction<int> archery;
-    public static event UnityAction dpadUp;
-    public static event UnityAction dpadDown;
-    public static event UnityAction dpadRight;
-    public static event UnityAction dpadLeft;
     public static event UnityAction<int> playSound;
     public static event UnityAction<int> formChange;
 
@@ -405,6 +390,7 @@ public class Player : MonoBehaviour
     public int AirCombo { get => airCombo; set { airCombo = value;anim.SetInteger( "AirCombo",airCombo); } }
 
     public bool Blocking { get => blocking; set => blocking = value; }
+    public GameObject MainCam { get => mainCam; set => mainCam = value; }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -422,47 +408,22 @@ public class Player : MonoBehaviour
         #region Event Subs
         Enemy.onHit += MpRegain;
         Enemy.guardBreak += GuardBreak;
-        PortalManager.backToBase += BackToBase;
         AreaTransition.movePlayer += MovePlayerObject;
-        Slam.slam += GroundSlamForce;
-        Objective.rewardPlayer += RewardPlayer;
 
-        GameController.onNewGame += SetDefault;
         GameController.respawn += RestoreHealth;
-        GameController.respawn += ReturnToSpawn;
-
-        onPlayerDeath += OnDead;
-
-        Npc.dialogueUp += DialogueUp;
-        Npc.dialogueDown += DialogueDown;
 
         UiManager.bedTime += Sleep;
-        UiManager.outaBed += OutaBed;
-        UiManager.sealPlayerInput += SealInput;
-        UiManager.sealPlayerInput += StopRunning;
-        UiManager.unsealPlayerInput += UnsealInput;
 
-        AIKryll.zend += BackToZend;
-        GroundChecker.groundStatus += OnGrounded;
+        UiManager.sealPlayerInput += StopRunning;
         GroundChecker.landed += SoundEffects;
 
         DoubleJump.doubleJump += SoundEffects;
-
-        CinematicManager.unfade += SealInput;
-        //CinematicManager.gameStart += UnsealInput;
-        GameController.returnToLevelSelect += ReturnToSpawn;
-        KillZone.respawn += ReturnToSpawn;
         SpellTag.triggerZaWarudo += ZaWarudo;
         JudgementCut.stop += ZaWarudo;
         DrawSword.hideSword += DrawSwordOut;
         Dash.dash += SoundEffects;
         Cast.setWeightBack += SetCastBack;
-
-        FreeFallZend.landed += BackToBase;
         EnemyHitBox.hit += OnHit;
-        //EnemyHitBox.guardHit+=GuardBreak;
-
-        //ReactionRange.dodged += Dodge;
         ReactionRange.dodged += ZaWarudo;
 
         UiManager.disablePlayer += DisableBody;
@@ -472,32 +433,12 @@ public class Player : MonoBehaviour
         UiManager.bothSwords += BothSwordsChose;
 
         GroundSound.sendSound += GroundSoundManagement;
-
-        UpperCutBehavior.sendGoingUp += GoingUp;
-
-        EventTrigger.chooseSword += ChooseSword;
-        WithdrawSword.withdraw += Withdraw;
-
-        SceneDialogue.sealPlayerInput += SealInput;
-        SceneDialogue.unsealPlayerInput += UnsealInput;
         SceneDialogue.sealPlayerInput += StopRunning;
-
-        EventManager.demoRestart += SetDefault;
-        Hurt.unseal += UnsealInput;
-        //dpadLeft += AngelUp;
-        dpadRight += DemonUp;
-        dpadDown += Base;
-        Interactable.skullCollected += SkullMaskAdjuster;
-        Interactable.bulbCollected += LightBulbAdjuster;
-        LightBulbHolder.removeBulb += LightBulbAdjuster;
-        Podium.skullUsed += SkullMaskAdjuster;
         FormSwitch.inviciblity += Endure;
         MovingStates.returnSpeed += MoveBro;
         KillOtherLayers.weight += LayerControl;
         BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
-
-        
 
         ShadowShot.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
@@ -524,15 +465,8 @@ public class Player : MonoBehaviour
         stats.Start();
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
-        demonLayer = anim.GetLayerIndex("DemonSwordLayer");
-        angelLayer = anim.GetLayerIndex("AngelSwordLayer");
         guardLayer = anim.GetLayerIndex("GuardLayer");
-        //LegsLayer = anim.GetLayerIndex("RunningLayer");
-        castLayer = anim.GetLayerIndex("MagicLayer");
-        drawSwordLayer = anim.GetLayerIndex("DrawSwordLayer");
         shootLayer = anim.GetLayerIndex("Shooting Layer");
-        grounded = anim.GetBool("Grounded");
-        InputSealed = true;
     }
     private void OnEnable() {
         if (onPlayerEnabled != null) {
@@ -543,29 +477,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate() {
         Move();
-        /*if (!pause && !InputSealed) {
-            GetAllInput();
-
-        }
-        if ((inputSealed || pause) && Input.GetButtonDown("Circle")) {
-
-            if (cancelPaused != null) {
-                cancelPaused();
-            }
-        }
-        if (!grounded && !CantDoubleJump) {
-
-            if (Input.GetButtonDown("X")) {
-
-                Player.GetPlayer().SecondJump = true;
-                CantDoubleJump = true;
-            }
-        }
-        WhileSleep();
-        OnPause();
-        if (Input.GetKeyDown(KeyCode.I)) { SkillId = 1; }
-        if (Input.GetKeyDown(KeyCode.P)) { Weapon = 4; }
-        GetLStickPoistion();*/
     }
     #region Helper Methods
 
@@ -583,8 +494,6 @@ public class Player : MonoBehaviour
         }
 
     }
-    private void SealInput() => InputSealed = true;
-    private void UnsealInput() => InputSealed = false;
     private void LayerControl(int val) {
         switch (style) {
             case 1:
@@ -615,43 +524,6 @@ public class Player : MonoBehaviour
         float dot = Vector3.Dot(right, displacement);
         anim.SetFloat("MoveDirectionX", dot);
     }
-    private void DisplacementControl() {
-        float x = Input.GetAxisRaw("Horizontal") * 0.05f * Time.deltaTime;
-        float y = Input.GetAxisRaw("Vertical") * 0.05f * Time.deltaTime;
-        displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
-    }
-    private void SetPositionAndRotation(GameObject target) {
-        transform.position = target.transform.position;
-        transform.rotation = target.transform.rotation;
-    }
-    private void RewardPlayer(int rewardMoney, int rewardExp, Items rewardItem) {
-        StartCoroutine(RewardCoroutine(rewardMoney, rewardExp, rewardItem));
-    }
-    private void DialogueUp() => InputSealed = true;
-    private void DialogueDown() => InputSealed = false;
-    private void Move(float speed) {
-        transform.position += displacement * speed * Time.deltaTime;
-        //rBody.AddForce(displacement*100);
-
-        //rBody.velocity= displacement * speed;
-        //Debug.Log(displacement);
-        Rotate();
-    }
-
-    private void Rotate() {
-        if (Vector3.SqrMagnitude(displacement) > 0.01f && !boosting) {
-            transform.forward = displacement;
-        }
-    }
-    private void AirMove(float speed) {
-        //transform.position += displacement * speed * Time.deltaTime;
-        RBody.AddForce(displacement / 25, ForceMode.VelocityChange);
-
-        Rotate();
-    }
     private void CheckPlayerHealth() {
         if (stats.HealthLeft <= 0 && !dead) { Dead = true; }
     }
@@ -660,7 +532,7 @@ public class Player : MonoBehaviour
 
     #region new code
     private void Move() {
-        DirectionV = mainCam.transform.TransformDirection(new Vector3(DisplacementV.x, 0, DisplacementV.y).normalized);
+        DirectionV = MainCam.transform.TransformDirection(new Vector3(DisplacementV.x, 0, DisplacementV.y).normalized);
         if (DisplacementV.magnitude >= 0.1f) {
             Moving = true;
             if (!lockedOn) {
@@ -702,116 +574,8 @@ public class Player : MonoBehaviour
     private void ShootLayer(int val) {
         anim.SetLayerWeight(shootLayer,val);
     }
-    private void Block() { 
-    
-    }
+    private void Block(bool val) => Guard = val;
     #endregion
-    private void GetAllInput() {
-        //Archery();
-        CalculateMoveDirection();
-        //if (Input.GetButton("L1")) {
-        //
-        //    Spells();
-        //}
-        if (Input.GetButtonDown("L1")) {
-
-        }
-        //if (!skillButton) {
-        MenuNavi();
-
-        //}
-
-        if (Input.GetKey(KeyCode.U) && style == 2) {
-            Charging = true;
-        }
-        if (!InHouse) {
-
-            if (R2.GetButtonDown()) {
-                //PullUpTheBow();
-                Withdraw();
-                Debug.Log(bowUp);
-                BowUp = true;
-                AttackBow.SetActive(true);
-                if (archery != null) {
-                    archery(25);
-                }
-                StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
-                if (weak) {
-                    WoodenSword.SetActive(false);
-                }
-
-            }
-            if (R2.GetButtonUp()) {
-                AttackBow.SetActive(false);
-                if (archery != null) {
-                    archery(0);
-                }
-                if (weak) {
-                    WoodenSword.SetActive(true);
-                }
-                BowUp = false;
-                StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
-                Debug.Log("false asf");
-            }
-            if (!bowUp) {
-
-                LockOn();
-
-
-            }
-
-            else {
-                if (Input.GetButtonDown("L1")) {
-                    CmdInput = 1;
-                }
-            }
-
-            if (Input.GetButtonDown("Circle") && items.Items.Count > 0 && items.SelectedList == 1 && items.MainItem.Quantity > 0) {
-                items.UseItem();
-
-                anim.SetLayerWeight(castLayer, 1);
-                CastItem = true;
-                Debug.Log("Item used");
-            }
-            if (Input.GetButtonDown("Circle") && items.SelectedList == 0) {
-                Attacking = false;
-            }
-
-            Sword();
-            if (!lockedOn && !weak) {
-                Dashu();
-
-            }
-        }
-        if (jumping || boosting) {
-            RBody.useGravity = false;
-        }
-        else {
-            RBody.useGravity = true;
-        }
-        //if (Input.GetKeyDown(KeyCode.U)) {
-        //    SkillId = 10;
-        //}
-
-        if (!grounded && cmdInput == 0) {
-            //if (Jumping) 
-
-            //}
-            //if (!jumping && !boosting && !locked) {
-            ////    //RBody.useGravity = false;
-            //    transform.position -= new Vector3(0, 0.1f, 0);
-            //}
-            //else {
-            //    // RBody.useGravity = true; ;
-            //}
-            //if (Input.GetButton("X") && !jumping && !boosting && !SecondJump) {
-            //    //RBody.drag = 25;
-            //    //RBody.useGravity = false;
-            //}
-
-        }
-
-    }
 
     #region Time Stuff
     private void ZaWarudo() {
@@ -827,11 +591,8 @@ public class Player : MonoBehaviour
             }
             StartCoroutine(ResetTimeStop());
             StartCoroutine(UndoZaWarudo());
-
         }
-
     }
-
     private IEnumerator UndoZaWarudo() {
         YieldInstruction wait = new WaitForSeconds(1f);
         yield return wait;
@@ -841,32 +602,15 @@ public class Player : MonoBehaviour
         }
     }
     #endregion
-    private void WeaponControl() {
-        switch (weapon) {
-            case 0:
-                break;
-            case 1:
-
-                break;
-        }
-    }
     private void OnDeath() {
         if (onPlayerDeath != null) {
             onPlayerDeath();
         }
-        GamePad.SetVibration(0, 0, 0);
-        InputSealed = true;
-        Withdraw();
     }
     private IEnumerator ResetTimeStop() {
         YieldInstruction wait = new WaitForSeconds(2);
         yield return wait;
         timeStopped = false;
-    }
-    private void GetLStickPoistion() {
-
-        float y = Input.GetAxis("Vertical");
-        L = y;
     }
     private void AnimationLayerManagement() {
         ////anim.SetLayerWeight(2, 1);
@@ -886,72 +630,6 @@ public class Player : MonoBehaviour
         anim.SetLayerWeight(legsLayer, 1);
 
     }
-    private void WhileSleep() {
-        if (sleep) {
-            if (Input.GetButtonDown("Circle")) {
-                if (notSleeping != null) {
-                    notSleeping();
-                }
-            }
-        }
-    }
-    private void OutaBed() {
-        Debug.Log("no longer sleeppppp");
-        Sleeping = false;
-        InputSealed = false;
-        body.SetActive(true);
-        SetPositionAndRotation(outaBed);
-    }
-    private void WeaponSwitch() {
-        //if (Input.GetAxis("DPad Right") > 0 && dPadUp.GetButtonDown()) {
-        //    pressed = true;
-        //    Debug.Log("flicked with no flicker");
-        //    
-        //}
-        //if ((Input.GetAxis("DPad Left") < 0 && !pressed)) {
-        //    pressed = true;
-        //    
-        //}
-        //if (Input.GetAxis("DPad Left") >= 0) {
-        //    pressed = false;
-        //}
-        if (Input.GetAxis("DPad Right") > 0 && dPadRight.GetButtonDown()) {
-            pressed = true;
-            Debug.Log("right");
-            if (style != 1) {
-                if (dpadRight != null) {
-                    dpadRight();
-                }
-            }
-
-            if (weapon == weaponMax) {
-                Weapon = 0;
-            }
-            else {
-                Weapon++;
-            }
-        }
-        if (Input.GetAxis("DPad Left") < 0 && !leftPressed) {
-            leftPressed = true;
-            Debug.Log("left");
-            if (style != 2) {
-                if (dpadLeft != null) {
-                    dpadLeft();
-                }
-            }
-            if (weapon == 0) {
-                Weapon = weaponMax;
-            }
-            else {
-                Weapon--;
-            }
-        }
-
-        if (Input.GetAxis("DPad Left") >= 0) {
-            leftPressed = false;
-        }
-
-    }
     private void GuardBreak() {
         GuardAnimations = 3;
     }
@@ -965,31 +643,10 @@ public class Player : MonoBehaviour
 
 
     #region Coroutines
-    private IEnumerator ResetGroundCheck(float reset) {
-        YieldInstruction wait = new WaitForSeconds(reset);
-        yield return wait;
-        GroundChecker.groundStatus += OnGrounded;
-    }
-    private IEnumerator BackToZendWait() {
-
-        yield return null;
-        InputSealed = false;
-
-    }
-    private IEnumerator RewardCoroutine(int rewardMoney, int rewardExp, Items rewardItem) {
-        YieldInstruction wait = new WaitForSeconds(0.2f);
-        yield return wait;
-        Money += rewardMoney;
-        items.AddItem(rewardItem.data);
-        stats.AddExp(rewardExp);
-
-    }
     private IEnumerator WaitToFall() {
-
         YieldInstruction wait = new WaitForSeconds(0.3f);
         yield return wait;
         Jumping = false;
-
     }
     private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration, UnityAction<float> onFade) {
         float localTime = 0;
@@ -1011,15 +668,6 @@ public class Player : MonoBehaviour
             onFade(weight);
         }
     }
-    private IEnumerator GuardCoroutine() {
-
-        YieldInstruction wait = new WaitForSeconds(1f);
-        yield return
-        PerfectGuard = false;
-        StopCoroutine(guardCoroutine);
-
-    }
-
     private IEnumerator StaminaRec() {
 
         while (isActiveAndEnabled) {
@@ -1038,7 +686,7 @@ public class Player : MonoBehaviour
             yield return wait;
             stats.MPLeft--;
             if (stats.MPLeft == 0) {
-                Deform();
+                //Deform();
             }
         }
 
@@ -1050,93 +698,15 @@ public class Player : MonoBehaviour
         RBody.velocity = transform.right * move;
     }
     private void Jump() {
-
-        //.if (Input.GetButtonDown("X") && grounded) {
         SkillId = 10;
-        //if (AIKryll.disableCollider != null) {
-        //    AIKryll.disableCollider();
-        //}
-        // Jumping = true;
-        //anim.SetLayerWeight(demonLayer, 0);
-        //anim.SetLayerWeight(angelLayer, 0);
-        //nav.enabled = false;
-        //RBody.isKinematic = false;
-        //Grounded = false;
-        //StopCoroutine(WaitToFall());
-        //GroundChecker.groundStatus -= OnGrounded;
-        //StartCoroutine(ResetGroundCheck(0.3f));
-        //StartCoroutine(WaitToFall());
         RBody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
-        // }
-
     }
-    private void GoingUp() {
-        //umping = true;
-        //nav.enabled = false;
-        //RBody.isKinematic = false;
-
-    }
-    private void Dashu() {
-
-        if (L2.GetButtonDown() && !SecondJump) {
-
-
-            if (!Grounded) {
-                Grounded = false;
-
-                //nav.enabled = false;
-
-
-            }
-
-            Boosting = true;
-            dash = true;
-            //RBody.isKinematic = false;
-
-        }
-        if (dash && Boosting) {
-
-            //if (Grounded) {
-            //    BurstForce = 15;
-            //}
-            //else {
-            //    BurstForce = 20;
-            //    CmdInput = 0;
-            //    RBody.isKinematic = false;
-            //    //RBody.AddForce(transform.forward * BurstForce, ForceMode.VelocityChange);
-            //    if (RBody.isKinematic) {
-            //        Debug.Log("wtf is good?");
-            //    }
-            //}
-
-
-            //MoveSpeed = 13;
-            StartCoroutine(Boost());
-        }
-    }
-
     private IEnumerator Boost() {
         YieldInstruction wait = new WaitForSeconds(0.5f);
         yield return wait;
         //RBody.useGravity = true;
         Boosting = false;
         //oveSpeed = 6;
-    }
-
-    private void Spells() {
-
-        if (Input.GetButtonDown("X")) {
-            L1X.Activate();
-        }
-        if (Input.GetButtonDown("Square")) {
-            L1Square.Activate();
-        }
-        if (Input.GetButtonDown("Triangle")) {
-            L1Triangle.Activate();
-        }
-        if (Input.GetButtonDown("Circle")) {
-            L1Circle.Activate();
-        }
     }
     private void WeaponManagement() {
         //DemonSword.SetActive(false);
@@ -1160,276 +730,7 @@ public class Player : MonoBehaviour
         }
 
     }
-    private void Withdraw() {
-        Attacking = false;
-        DemonSword.SetActive(false);
-        if (style == 0) {
-            demonSwordBack.SetActive(true);
-        }
-
-        demonFistLeft.SetActive(false);
-        demonFistRight.SetActive(false);
-        //attackBow.SetActive(false);
-        angelSword.SetActive(false);
-        anim.SetLayerWeight(demonLayer, 0);
-        anim.SetLayerWeight(angelLayer, 0);
-        //BowUp = false;
-    }
-    private void Sword() {
-
-        if (Input.GetButtonDown("Square") && !Attacking && !bowUp) {
-            if (battleOn != null) {
-                battleOn();
-            }
-
-            Attacking = true;
-
-            CmdInput = 0;
-
-            targeting = false;
-            //BowDown();
-            return;
-        }
-        if (attacking) {
-            //WeaponManagement();
-
-
-            if (Input.GetButtonDown("R1")) {
-                Debug.Log("attacking is false");
-                //LockedOn = false;
-                return;
-            }
-
-            if (Input.GetButtonDown("Square")) {
-                LightAttack = true;
-            }
-            if (Input.GetButtonDown("Triangle")) {
-                StrongAttack = true;
-            }
-            if (Input.GetButtonUp("Square") && !skillIsActive && !boutaSpin) {
-                LightAttack = false;
-                CmdInput = 1;
-                //GamePad.SetVibration(0,0.5f,0.5f);
-                //StartCoroutine(KillVibration());
-            }
-            if (Input.GetButtonUp("Triangle") && !skillIsActive) {
-                CmdInput = 2;
-                StrongAttack = false;
-            }
-        }
-        else {
-            Withdraw();
-            Trail.SetActive(false);
-            HitBox.SetActive(false);
-            SkillId = 0;
-            DemonSword.SetActive(false);
-
-            //demonSwordBack.SetActive(true);
-            demonFistLeft.SetActive(false);
-            demonFistRight.SetActive(false);
-            //attackBow.SetActive(false);
-
-        }
-    }
-    private void OldBlock() {
-        if (Input.GetButtonDown("L1") && !skillIsActive) {
-            PerfectGuard = true;
-            guardCoroutine = StartCoroutine(GuardCoroutine());
-        }
-        if (Input.GetButton("L1") && !skillIsActive) {
-
-            shieldBack.SetActive(false);
-            if (cmdInput == 0) {
-                Guard = true;
-            }
-            Animations = 0;
-            RBody.isKinematic = false;
-
-            shield.SetActive(true);
-
-
-
-            LockedOn = true;
-
-            anim.SetLayerWeight(guardLayer, 1);
-
-        }
-
-        else {
-            shield.SetActive(false);
-            //Attacking = true;
-            anim.SetLayerWeight(guardLayer, 0);
-            Guard = false;
-            shieldBack.SetActive(true);
-        }
-        //if (Input.GetButton("L1")) {
-        //    if (Input.GetButtonDown("Triangle")) {
-        //        GuardAnimations = 1;
-        //    }
-        //}
-        if (Input.GetButtonUp("L1")) {
-            LockedOn = false;
-        }
-
-    }
-    private void Dodge() {
-        GuardAnimations = 2;
-    }
-    private void MenuNavi() {
-        if (Input.GetKeyDown(KeyCode.Alpha8)) {
-            if (dpadUp != null) {
-                dpadUp();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4)) {
-            if (style != 1) {
-                if (dpadUp != null) {
-                    dpadRight();
-                }
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha6)) {
-            if (style != 2) {
-                if (dpadUp != null) {
-                    dpadLeft();
-                }
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            if (style != 0) {
-                if (dpadUp != null) {
-                    dpadDown();
-                }
-            }
-
-        }
-        if (Input.GetAxis("DPad Up") > 0 && dPadUp.GetButtonDown()) {
-            pressed = true;
-            Debug.Log("Up");
-            if (dpadUp != null) {
-                dpadUp();
-            }
-        }
-        if ((Input.GetAxis("DPad Down") < 0 && !pressed)) {
-            pressed = true;
-            Debug.Log("down");
-            if (dpadDown != null) {
-                dpadDown();
-            }
-        }
-        if (Input.GetAxis("DPad Down") >= 0) {
-            pressed = false;
-        }
-        if (Input.GetAxis("DPad Right") > 0 && dPadRight.GetButtonDown()) {
-            pressed = true;
-            // Debug.Log("right");
-            if (dpadRight != null) {
-                dpadRight();
-            }
-
-        }
-        if (Input.GetAxis("DPad Left") < 0 && !leftPressed) {
-            leftPressed = true;
-            //Debug.Log("left");
-            if (dpadLeft != null) {
-                dpadLeft();
-            }
-        }
-
-        if (Input.GetAxis("DPad Left") >= 0) {
-            leftPressed = false;
-        }
-    }
-
-    public void SkillX() {
-        if (x.SkillAssigned != null && stats.MPLeft >= x.MpRequired) {
-            stats.MPLeft -= x.MpRequired;
-            x.UseSkill();
-            skillIsActive = true;
-
-
-        }
-    }
-    public void SkillTriangle() {
-        if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired) {
-            stats.MPLeft -= triangle.MpRequired;
-            triangle.UseSkill();
-            skillIsActive = true;
-
-
-        }
-    }
-    public void SkillSquare() {
-        if (square.SkillAssigned != null && stats.MPLeft >= square.MpRequired) {
-            stats.MPLeft -= square.MpRequired;
-            square.UseSkill();
-            skillIsActive = true;
-
-
-        }
-    }
-    public void SkillCircle() {
-        if (circle.SkillAssigned != null && stats.MPLeft >= circle.MpRequired) {
-            stats.MPLeft -= circle.MpRequired;
-            circle.UseSkill();
-            skillIsActive = true;
-            Guard = false;
-
-
-        }
-    }
     #endregion
-    private void LockOn() {
-
-        if (Input.GetButton("R1") && !TeleportTriggered && zendSpace) {
-            //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
-            Time.timeScale = 0.1f;
-
-            locked = true;
-            if (Input.GetButtonDown("Triangle")) {
-                TeleportTriggered = true;
-                Cinemations = 51;
-                Debug.Log("tf is good?");
-
-            }
-        }
-        else {
-            Time.timeScale = 1;
-
-
-            //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 0, 0.2f, SetHeadWeight));
-        }
-
-        if (Input.GetButtonDown("L1")) {
-            Animations = 0;
-            Attacking = true;
-            //if (lockOn != null) {
-            //    lockOn();
-            //}
-            if (battleMode.Enemies.Count > 0) {
-                if (findClosestEnemy != null)
-                    findClosestEnemy();
-            }
-        }
-        if (Input.GetButton("L1")) {
-            //Guard = true;
-
-
-
-            //StartCoroutine(SetLayerWeightCoroutine(archeryLayerIndex, 1, 0.2f, SetHeadWeight));
-
-        }
-
-        if (Input.GetButtonUp("L1")) {
-
-
-            if (notAiming != null) {
-                notAiming();
-
-            }
-
-        }
-    }
     public void TargetingLogic(bool val) {
         if (val) {
             LockedOn = true;
@@ -1440,48 +741,12 @@ public class Player : MonoBehaviour
             Attacking = true;
         }
         else {
+            notAiming.Invoke();
             Attacking = false;
             LockedOn = false;
         }
     }
-    private void OnPause() {
-        if (Input.GetButtonDown("Pause") && !Pause) {
-            pauseMenu.SetActive(true);
-            Pause = true;
-            //UiManager.GetUiManager().Page = 0;
-            return;
-        }
-
-        if (Pause) {
-            if (Input.GetButtonDown("Pause")) {
-                pauseMenu.SetActive(false);
-                Pause = false;
-                return;
-            }
-            /*
-            if (Input.GetButtonDown("R1"))
-            {
-                UiManager.GetUiManager().Page++;
-
-            }
-            if (Input.GetButtonDown("L1"))
-            {
-                UiManager.GetUiManager().Page--;
-
-            }*/
-        }
-
-    }
-
     #region Event handlers
-    private void LightBulbAdjuster(int val) {
-        Bulbs += val;
-    }
-    private void SkullMaskAdjuster(int val) {
-        SkullMask += val;
-        Debug.Log("number of skulls should go up");
-    }
-
     private void Blank() {
 
         Attacking = false;
@@ -1497,33 +762,6 @@ public class Player : MonoBehaviour
         demonScabbard.SetActive(false);
         WoodenSword.SetActive(false);
         Style = 0;
-    }
-    private void StyleSwitch() {
-
-        if (!weak && hasBoth) {
-            PowerUp = true;
-            halo.SetActive(false);
-            lightning.SetActive(false);
-            angelScabbard.SetActive(false);
-            zendsLHorn.SetActive(false);
-            zendsRHorn.SetActive(false);
-            fireTrailR.SetActive(false);
-            fireTrailL.SetActive(false);
-            demonSwordBack.SetActive(false);
-            demonScabbard.SetActive(false);
-            switch (style) {
-                case 0:
-                    Debug.Log("Base");
-                    break;
-                case 1:
-                    AngelUp();
-                    break;
-                case 2:
-                    DemonUp();
-                    break;
-
-            }
-        }
     }
     private void StopRunning() {
         Animations = 0;
@@ -1548,8 +786,6 @@ public class Player : MonoBehaviour
         Weak = false;
         weaponMax = 2;
         Style = 0;
-
-        hasBoth = true;
     }
     private void AngelUp() {
         Blank();
@@ -1596,11 +832,6 @@ public class Player : MonoBehaviour
         demonScabbard.SetActive(true);
         WoodenSword.SetActive(true);
     }
-    private void ChooseSword() {
-
-        WoodenSword.SetActive(false);
-
-    }
     private void SetCastBack() {
         anim.SetLayerWeight(castLayer, 0);
     }
@@ -1617,9 +848,7 @@ public class Player : MonoBehaviour
     private void OnHit() {
         if (!hit && !endure) {
             Hit = true;
-            SealInput();
         }
-
     }
     private void EnableBody() {
         Body.SetActive(true);
@@ -1630,24 +859,10 @@ public class Player : MonoBehaviour
     private void MpRegain() {
         stats.MPLeft += 2;
     }
-    private void BackToBase(Vector3 destination, bool houseOrNot) {
-        InHouse = houseOrNot;
-        Attacking = false;
-        MovePlayerObject();
-        transform.position = destination;
-        StartCoroutine(WaitToLand());
-    }
     private IEnumerator WaitToLand() {
         YieldInstruction wait = new WaitForSeconds(3);
         yield return wait;
         InputSealed = false;
-    }
-    private void ReturnToSpawn() {
-
-        MovePlayerObject();
-        transform.position = GameController.GetGameController().Spawn.transform.position;
-        UnsealInput();
-        //StartCoroutine(WaitToLand());
     }
     private void GroundSlamForce(float force) {
         RBody.mass = force;
@@ -1656,91 +871,27 @@ public class Player : MonoBehaviour
         Grounded = val;
         //RBody.isKinematic = val;
     }
-
-    private void OnDead() {
-        // UiManager.GetUiManager().DefeatedWindow();
-        //GetComponentInChildren<SkinnedMeshRenderer>().material = fader;
-        //GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("Boolean_B8FD8DD", 1);
-
-    }
     private void Sleep() {
         Body.SetActive(false);
         sleep = true;
         stats.HealthLeft = stats.Health;
         InputSealed = true;
     }
-    private void BackToZend() {
-        //main.SetActive(true);
-        StartCoroutine(BackToZendWait());
-
-    }
     private void Respawn() {
         transform.position = GameController.GetGameController().Spawn.transform.position;
     }
     private void TakeDamage(int damage) {
         stats.HealthLeft -= damage;
-        GamePad.SetVibration(0, 0.2f, 0.2f);
-    }
-    private void SetDefault() {
-
-        PostProcessorManager.GetProcessorManager().Default();
-        Attacking = false;
-        CmdInput = 0;
-        //MoveSpeed = 6;
-        LockedOn = false;
-        stats.Start();
-        //ReturnToSpawn();
-        mask.SetActive(false);
-        GameObject aura = transform.GetChild(transform.childCount - 1).gameObject;
-        Destroy(aura);
-        //GetComponentInChildren<SkinnedMeshRenderer>().material = normal;
-        battleMode.Enemies.Clear();
-        Dead = false;
-        Money = 1000;
-        //eak = true;
-        zendsLHorn.SetActive(false);
-        zendsRHorn.SetActive(false);
-        fireTrailR.SetActive(false);
-        fireTrailL.SetActive(false);
-        //demonSwordBack.SetActive(false);
-        //demonScabbard.SetActive(false);
-        halo.SetActive(false);
-        lightning.SetActive(false);
-        angelScabbard.SetActive(false);
-        Style = 0;
-        //woodenSword.SetActive(false);
     }
     private void RestoreHealth() {
         Dead = false;
         stats.HealthLeft = stats.Health;
     }
-    private void Kryll() {
-        InputSealed = true;
-
-        if (kryll != null) {
-            kryll();
-        }
-    }
-    private void Deform() {
-        //PostProcessorManager.GetProcessorManager().Default();
-        PoweredUp = false;
-
-
-        Instantiate(swordDSpawn, transform);
-        Base();
-
-
-        StopCoroutine(mpDrain);
-
-    }
     private void PowerUpp() {
         mpDrain = StartCoroutine(MpDrain());
-        //StopCoroutine(staminaRec);
-        //FireTrail.SetActive(true);
         mask.SetActive(true);
         PoweredUp = true;
         PowerUp = true;
-
     }
     private void ZeroVelocity() {
         rBody.velocity = new Vector3(0, 0, 0);
@@ -1771,20 +922,4 @@ public class Player : MonoBehaviour
         }
     }
     #endregion
-
-    private void OnTriggerEnter(Collider other) {
-
-        if (other.CompareTag("Item")) {
-
-            stats.HealthLeft += 2;
-            Destroy(other.gameObject);
-
-        }
-
-    }
-    //private void OnCollisionEnter(Collision collision) {
-    //    if (collision.gameObject.CompareTag("Item")) {
-    //        stats.HealthLeft += 2;
-    //    }
-    //}
 }

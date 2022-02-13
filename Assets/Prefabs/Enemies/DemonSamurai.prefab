@@ -727,6 +727,7 @@ MonoBehaviour:
   soul: {fileID: 0}
   cut: {fileID: 5754920302586766889, guid: b43b1190931a6db4d8a418505c6f522b, type: 3}
   EnemyHp: {fileID: 2184158785702344487}
+  anim: {fileID: 2189038829172289170}
   farHitPoint: {fileID: 8722477913208685387}
   slimeTree: {fileID: 254266463050560927, guid: a41171153c4bb7944916e09b787b2452,
     type: 3}

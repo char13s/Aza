@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 public class LevelManager : MonoBehaviour
 {
+    public static event UnityAction off;
     private int currentLevel;
     // Start is called before the first frame update
     void OnEnable() {
@@ -19,14 +21,17 @@ public class LevelManager : MonoBehaviour
         currentLevel = 1;
     }
     public void LevelTransition(int lvl) {
+        Debug.Log("next lvl shit");
         if (currentLevel != 0) {
             SceneManager.UnloadSceneAsync(currentLevel);
         }
+        off.Invoke();
         currentLevel = lvl;
         SceneManager.LoadSceneAsync(lvl, LoadSceneMode.Additive);
     }
     private void OnLevelFinishedLoading(Scene arg0, LoadSceneMode arg1) {
         StartCoroutine(ResetActiveScene());
+        
     }
     private IEnumerator ResetActiveScene() {
         YieldInstruction wait = new WaitForSeconds(0.2f);

@@ -94,7 +94,6 @@ public class GameController : MonoBehaviour {
     void Start() {
         
         Player.onPlayerDeath += OnPlayerDead;
-        Interactable.saveGame += SaveGame;
         SpawnSetters.saveGame += SaveGame;
         EventManager.sceneChanger += SetNextLevel;
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) {

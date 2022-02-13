@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 public class Npc : MonoBehaviour
 {
-    [SerializeField] private string name;
+    //[SerializeField] private string name;
     [SerializeField] private GameObject interactIcon;
     private byte currentBlock;
     [SerializeField] private DialogueBlock[] blocks;

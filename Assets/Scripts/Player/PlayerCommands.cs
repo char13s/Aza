@@ -36,7 +36,7 @@ public class PlayerCommands : MonoBehaviour
     [SerializeField] private Inputs direction;
     public int Chain { get => chain; set { chain = value; anim.SetInteger("ChainInput", chain); } }
 
-    public int MovementChain { get => movementChain; set { movementChain = value; anim.SetInteger("MoveInput", movementChain); } }
+    public int MovementChain { get => movementChain; set { movementChain = value; /*anim.SetInteger("MoveInput", movementChain); */} }
 
     private void Awake() {
         //inputs = new List<Inputs>(52);

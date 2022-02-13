@@ -367,14 +367,6 @@ public class UiManager : MonoBehaviour {
     }
     void Start() {
         #region outside events
-        AIKryll.sendDist += DistFromKyrllToZend;
-        AIKryll.zend += KryllDown;
-
-        Player.kryll += KryllUp;
-        Player.notSleeping += SaveMenuDown;
-        Player.cancelPaused += MenusDown;
-        Player.notSleeping += NotSleep;
-        Player.skills += QuickSkillmenu;
         Player.weaponSwitch += WeaponSwitch;
         StoreManager.itemWasBought += UpdateMoney;
 

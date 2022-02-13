@@ -13,15 +13,16 @@ public class StatsController
     private int healthLeft;
 
     private int mpLeft;
-    private byte level = 1;
+    //private byte level = 1;
     private int exp = 0;
 
     #region Base Stats
+    [SerializeField] private int level;
     [SerializeField] private int baseHealth;
     [SerializeField] private int baseAttack;
     [SerializeField] private int baseDefense;
     [SerializeField] private int baseMp;
-    
+    [SerializeField] private int expYield;
     #endregion
     //Events
 
@@ -35,10 +36,11 @@ public class StatsController
     public int MP { get { return mp; } set { mp = value; } }
     public int Intellect { get { return intellect; } set { intellect = value; } }
 
-    public byte Level { get => level; set => level = value; }
+    public int Level { get => level; set => level = value; }
     public int Exp { get => exp; set => exp = value; }
     public int BaseHealth { get => baseHealth; set => baseHealth = value; }
     public int BaseAttack { get => baseAttack; set => baseAttack = value; }
     public int BaseDefense { get => baseDefense; set => baseDefense = value; }
     public int BaseMp { get => baseMp; set => baseMp = value; }
+    public int ExpYield { get => expYield; set => expYield = value; }
 }

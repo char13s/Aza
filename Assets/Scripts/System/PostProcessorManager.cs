@@ -32,8 +32,6 @@ using UnityEngine.Rendering.PostProcessing;
         {
             instance = this;
         }
-        VirtualCameraManager.grey += TimeSlow;
-        VirtualCameraManager.ungrey += Default;
 		Player.zaWarudo += ZaWarudo;
         //Player.timeHasBegunToMove += Default;
     }

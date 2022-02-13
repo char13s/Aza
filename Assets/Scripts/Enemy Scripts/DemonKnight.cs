@@ -69,26 +69,8 @@ public class DemonKnight : Enemy
 
 
     }
-    public override void Attacking() {
-        Debug.Log("Attacking");
-        //transform.rotation = Quaternion.LookRotation((transform.position - Player.GetPlayer().transform.position));
-        Animations = 2;
-        StartCoroutine(AttackWaitCoroutine());
-    }
-    public override void Flee() {
-
-    }
-    public override void Chasing() {
-        Animations = 1;
-
-    }
-    public override void SpawnAFriend() {
-
-    }
-    public override void Canniblize(Enemy target) {
-
-    }
-    public override void PlantATree() {
-
-    }
+    //public override void Chasing() {
+    //    Animations = 1;
+    //
+    //}
 }

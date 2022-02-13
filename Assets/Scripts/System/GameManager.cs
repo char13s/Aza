@@ -6,7 +6,6 @@ public class GameManager : MonoBehaviour
 {
     private bool pause;
     public static event UnityAction<bool> pauseScreen;
-    public static event UnityAction close;
     public static event UnityAction<int> switchMap;
     // Start is called before the first frame update
     void Start() {

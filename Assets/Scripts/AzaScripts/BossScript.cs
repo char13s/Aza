@@ -17,8 +17,4 @@ public class BossScript : Enemy
     {
         
     }
-    public override void Attacking() {
-
-
-    }
 }

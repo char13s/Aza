@@ -4,45 +4,5 @@ using UnityEngine;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
-    [SerializeField] private bool isQuestTriggered;
 
-    private bool spawn;
-    private bool spawned;
-    private bool canSpawn;
-    [SerializeField] private Enemy enemy;
-    [SerializeField] private GameObject spawnIn;
-
-    public bool Spawn { get => spawn; set { spawn = value;if (spawn) { SpawnEnemy(); } } }
-
-    private void Awake()
-    {
-        CinematicManager.cutsceneIsPlaying += CantSpawn;
-        CinematicManager.cutsceneIsOver +=CanSpawn;
-        FreeFallZend.landed += SequenceSpawning;
-        UiManager.portal += ResetSpwan;
-    }
-    private void ResetSpwan(int c) {
-        
-        canSpawn = true;
-        spawned = false;
-        spawn = false;
-    }
-    private void SequenceSpawning(Vector3 loc,bool val) {
-        CanSpawn();
-    }
-    private void CanSpawn() => canSpawn = true;
-    private void CantSpawn() => canSpawn = false;
-
-    
-    private IEnumerator WaitToSpawn() {
-        YieldInstruction wait = new WaitForSeconds(1.2f);
-        yield return wait;
-        canSpawn = true;
-    }
-    private void SpawnEnemy()
-    {
-        spawned = true;
-        Instantiate(spawnIn, transform);
-        Instantiate(enemy, transform);
-    }
 }

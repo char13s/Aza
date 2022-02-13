@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 public class GroundChecker : MonoBehaviour {
     private AudioClip landing;
-    public static event UnityAction<bool> groundStatus;
     public static event UnityAction<AudioClip> landed;
 
     private float distanceGround;
@@ -17,12 +16,9 @@ public class GroundChecker : MonoBehaviour {
     private void FixedUpdate() {
         if (!Physics.Raycast(transform.position, -Vector2.up, distanceGround + 0.1f)) {
             player.Grounded = false;
-            Debug.Log("floating");
         }
         else {
             player.Grounded = true;
         }
     }
-    
-
 }

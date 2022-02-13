@@ -50,9 +50,9 @@ public class AIKryll : MonoBehaviour
     private void Awake()
     {
         anim=GetComponent<Animator>();
-        Player.kryll += SwitchStyle;
+
         Player.onPlayerEnabled += Spawn;
-        Player.battleOn += BattleOn;
+
         AreaTransition.transition += Spawn;
         UiManager.bedTime += Sleep;
         PortalManager.backToBase += TeleportWithZend;
@@ -150,7 +150,6 @@ private void Movement()
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
 
-        displacement = kryllCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
         if (Input.GetButtonDown("L3"))
         {
             SwitchBack();

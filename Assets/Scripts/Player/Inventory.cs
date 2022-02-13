@@ -18,8 +18,6 @@ public class Inventory {
     //private List<string> itemNames = new List<string>();
     private List<GameObject> buttons = new List<GameObject>();
     public static event UnityAction<Sprite,string,string> mainItemSet;
-    public static event UnityAction<Sprite> leftItemSet;
-    public static event UnityAction<Sprite> rightItemSet;
     public static event UnityAction<int> menuSet;
     public static event UnityAction set;
     public List<GameObject> Buttons { get => buttons; set => buttons = value; }
@@ -37,11 +35,7 @@ public class Inventory {
     public void Start() {
         ItemData.ItemDataUpdate += UpdateInvent;
         GameController.onGameWasStarted += UpdateInvent;
-        Player.dpadRight += RightSlide;
-        Player.dpadLeft += LeftSlide;
-        Player.dpadUp += SwitchSelected;
-        //Player.dpadDown += SwitchSelected;
-        Player.skills += SwitchDpadControl;
+
         Debug.Log(Items.Count);
     }
 

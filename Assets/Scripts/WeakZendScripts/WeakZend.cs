@@ -17,7 +17,7 @@ public class WeakZend : MonoBehaviour {
     #region Animation shit
     private bool moving;
     private int cmdInput;
-    private bool lockedOn;
+
     private bool attacking;
 
     #endregion
@@ -46,7 +46,7 @@ public class WeakZend : MonoBehaviour {
     }
     // Start is called before the first frame update
     private void Start() {
-        VirtualCameraManager.weakZend += ConnectNavMesh;
+
     }
 
     // Update is called once per frame
@@ -57,9 +57,7 @@ public class WeakZend : MonoBehaviour {
         float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
         float y = Input.GetAxisRaw("Vertical") * Time.deltaTime;
         displacement = Vector3.Normalize(new Vector3(x, 0, y));
-        if (ThreeDCamera.IsActive && !lockedOn) {
-            displacement = mainCam.GetComponent<ThreeDCamera>().XZOrientation.TransformDirection(displacement);
-        }
+
         if (x != 0 || y != 0) {
             Moving = true;
         }

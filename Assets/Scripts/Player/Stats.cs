@@ -74,7 +74,6 @@ public class Stats {
     public int ExpCurrent() { return Exp - (4 * ((Level - 1) * (Level - 1) * (Level - 1))); }
     public void AddExp(int points) {
         exp += points;
-
     }
     public void DisplayAbilities() {
         if (onShowingStats != null) {
@@ -87,7 +86,7 @@ public class Stats {
         baseMp = 15;
         mpLeft = baseMp;
         baseAttack = 3;
-        baseDefense = 11;
+        baseDefense = 3;
         intellect = 6;
         level = 1;
         exp = 0;
@@ -97,6 +96,7 @@ public class Stats {
         SetStats();
         Player.weaponSwitch += SetStats;
         GameController.onGameWasStarted += UpdateUi;
+        PerfectGuardBox.sendAmt += ChangeMpLeft;
         if (onHealthChange != null) {
             onHealthChange();
         }
@@ -115,12 +115,13 @@ public class Stats {
         if (onLevelUp != null) { onLevelUp(); }
     }
     private void SetStats() {
-        Attack = baseAttack + attackBoost+WeaponBoost();
-        Defense = baseDefense + defenseBoost;
-        MP = baseMp + mpBoost;
-        Health = baseHealth + healthBoost;
+        Attack = baseAttack;// + attackBoost+WeaponBoost()
+        Defense = baseDefense;// + defenseBoost
+        MP = baseMp;// + mpBoost
+        Health = baseHealth;// + healthBoost
     }
-    private int WeaponBoost() {
+    private void ChangeMpLeft(int amt) => MPLeft += amt;
+    /*private int WeaponBoost() {
 
         switch (Player.GetPlayer().Weapon) {
             case 0:
@@ -132,5 +133,5 @@ public class Stats {
         }
         
     }
-
+    */
 }

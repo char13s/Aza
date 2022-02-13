@@ -11,7 +11,7 @@ public class WeakZendCmdInputs : StateMachineBehaviour {
     
     
     [SerializeField] private float move;
-    public static event UnityAction stopMove;
+
     public static event UnityAction<AudioClip> sendSound;
     private void Awake() {
         HitBox.onEnemyHit += MoveControl;

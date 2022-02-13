@@ -7,7 +7,6 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] protected GameObject canvas;
     // Start is called before the first frame update
     private void Start() {
-        GameManager.close += CancelCanvas;
     }
     public virtual void CanvasControl(bool val) {
         canvas.SetActive(val);

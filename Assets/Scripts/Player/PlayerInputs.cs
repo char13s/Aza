@@ -40,7 +40,7 @@ public class PlayerInputs : MonoBehaviour
             player.Anim.SetTrigger("Attack");
         }
         else {
-            player.SkillSquare();
+            //player.SkillSquare();
         }
     }
     private void OnEnergy() {
@@ -49,7 +49,7 @@ public class PlayerInputs : MonoBehaviour
             darkPowers.Triangle();
         }
         else {
-            player.SkillTriangle();
+            //player.SkillTriangle();
         }
     }
     private void OnJump() {
@@ -58,16 +58,25 @@ public class PlayerInputs : MonoBehaviour
             player.Anim.SetTrigger("Jump");
         }
         else {
-            player.SkillX();
+            //player.SkillX();
         }
     }
-    private void OnAbility() {
+    private void OnAbility(InputValue value) {
         if (!player.SkillButton) {
             print("Circle");
-            Relic.Circle();
+            if (value.isPressed) {
+                print("Circle has been pressed");
+                if (relic != null) {
+                    Relic.Circle();
+                }
+            }
+            else {
+                print("Circle has been released");
+                Relic.CircleReleased();
+            }
         }
         else {
-            player.SkillCircle();
+            //player.SkillCircle();
         }
     }
     private void OnLockOn(InputValue value) {
@@ -81,27 +90,27 @@ public class PlayerInputs : MonoBehaviour
     }
     private void OnSkillUp(InputValue value) {
         if (value.isPressed) {
-            player.SkillButton=true;
+            player.SkillButton = true;
             print("Locked or should be anyway");
         }
         else {
-            player.SkillButton=false;
+            player.SkillButton = false;
         }
     }
     private void OnDUp() {
-        Relic = relicUp.Relic;
+        //Relic = relicUp.Relic;
         Debug.Log(Relic); ;
     }
     private void OnDDown() {
-        Relic = relicDown.Relic;
+        //Relic = relicDown.Relic;
         Debug.Log(Relic); ;
     }
     private void OnDLeft() {
-        Relic = relicLeft.Relic;
+        //Relic = relicLeft.Relic;
         Debug.Log(Relic); ;
     }
     private void OnDRight() {
-        Relic = relicRight.Relic;
+        //Relic = relicRight.Relic;
         Debug.Log(Relic); ;
     }
     #endregion
@@ -111,6 +120,8 @@ public class PlayerInputs : MonoBehaviour
         nextLine.Invoke();
     }
     #endregion
+    #region Pause Controls
+
     private void OnPause() {
         pause.Invoke();
         print("pause");
@@ -126,6 +137,7 @@ public class PlayerInputs : MonoBehaviour
         //close.Invoke();
 
     }
+    #endregion
     private void SwitchMaps(int val) {
         switch (val) {
             case 0:

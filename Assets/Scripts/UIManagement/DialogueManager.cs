@@ -8,7 +8,7 @@ public class DialogueManager : MonoBehaviour {
     [SerializeField] private GameObject textPanel;
     private bool dialogueIsRunning;
     public static event UnityAction requestNextLine;
-    public static event UnityAction skipDialogue;
+    //public static event UnityAction skipDialogue;
     public static event UnityAction<int> switchControls;
     // Start is called before the first frame update
     void Start()

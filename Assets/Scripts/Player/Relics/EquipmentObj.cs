@@ -14,7 +14,7 @@ public class EquipmentObj : MonoBehaviour
         PlayerCommands.downCircle += DownCircle;
         PlayerCommands.upCircle += UpCircle;
         PlayerCommands.holdCircle += HoldCircle;
-       // PlayerCommands.triangle += Triangle;
+        // PlayerCommands.triangle += Triangle;
     }
     public virtual void UnAssignCircle() {
         PlayerCommands.circle -= Circle;
@@ -25,6 +25,9 @@ public class EquipmentObj : MonoBehaviour
     }
     public virtual void Circle() {
 
+    }
+    public virtual void CircleReleased(){
+    
     }
     public virtual void UpCircle() {
 

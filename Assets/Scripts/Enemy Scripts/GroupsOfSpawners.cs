@@ -12,7 +12,7 @@ public class GroupsOfSpawners : MonoBehaviour
     private void SpawnEnemies() {
         Debug.Log("fuck you");
         foreach (EnemySpawnPoint esp in spawnGroup) {
-            esp.Spawn = true;
+            //esp.Spawn = true;
         }
     }
 }
