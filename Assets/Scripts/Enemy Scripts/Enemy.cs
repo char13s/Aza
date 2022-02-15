@@ -48,7 +48,6 @@ public class Enemy : MonoBehaviour
     #region Script References
 
     private Player pc;
-    private PlayerBattleSceneMovement pb;
     private Animator anim;
     private EnemyTimelines timelines;
     //private AudioSource sound;
@@ -63,15 +62,6 @@ public class Enemy : MonoBehaviour
     private Coroutine guardCoroutine;
     #endregion
     //private byte eaten;
-
-
-    [SerializeField] private GameObject farHitPoint;
-    [SerializeField] private GameObject slimeTree;
-    [SerializeField] private GameObject slime;
-
-    [SerializeField] private GameObject ouch;
-
-
     private bool attacking;
     private bool attack;
     private bool walk;
@@ -79,7 +69,7 @@ public class Enemy : MonoBehaviour
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
-    [SerializeField] private bool weak;
+   // [SerializeField] private bool weak;
 
     private bool striking;
     [SerializeField] private int flip;
@@ -155,8 +145,7 @@ public class Enemy : MonoBehaviour
     public static int TotalCount => Enemies.Count;
 
     public virtual void Awake() {
-        Anim = GetComponent<Animator>();
-
+        Anim = GetComponentInChildren<Animator>();
         //sound = GetComponent<AudioSource>();
         Rbody = GetComponent<Rigidbody>();
         //StatusEffects.onStatusUpdate += StatusControl;
@@ -189,7 +178,6 @@ public class Enemy : MonoBehaviour
         PortalConnector.backToLevelSelect += OnPlayerDeath;
         ReactionRange.dodged += SlowEnemy;
         Enemies.Add(this);
-        pb = pc.GetComponent<PlayerBattleSceneMovement>();
         timelines = GetComponent<EnemyTimelines>();
         HealthLeft = stats.Health;
     }
@@ -457,9 +445,9 @@ public class Enemy : MonoBehaviour
     #endregion
     private void UIMaintence() {
 
-        //levelText.GetComponent<Text>().text = "Lv. " + stats.Level;
-        //EnemyHp.maxValue = stats.Health;
-        //EnemyHp.value = stats.HealthLeft;
+        levelText.GetComponent<Text>().text = "Lv. " + stats.Level;
+        EnemyHp.maxValue = stats.Health;
+        EnemyHp.value = stats.HealthLeft;
     }
     /*private void OnHit() {
         //sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
@@ -522,9 +510,7 @@ public class Enemy : MonoBehaviour
 
     }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
     public void CalculateAttack() {
-        if (!weak) {
             pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
-        }
     }
     public void HitGuard() {
         if (pc.stats.MPLeft > 0) {
@@ -543,7 +529,7 @@ public class Enemy : MonoBehaviour
     public void SlimeHasDied() {
         int exp = stats.BaseHealth * stats.ExpYield;
         pc.stats.AddExp(exp);
-        if (drop != null && !weak) {
+        if (drop != null) {
             Instantiate(drop, transform.position + new Vector3(0, 0.14f, 0), Quaternion.identity);
             drop.transform.position = transform.position;
 

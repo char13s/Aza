@@ -27,8 +27,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: "Avatar creation failed:\n\tTransform 'Hip' is not an ancestor
-      of 'Spine'\n"
+    rigImportErrors: "Avatar creation failed:\n\tParent for 'Spine' differs from one
+      found in HumanDescription. 'skeleton' was found instead of 'Hip'.\n"
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
@@ -202,7 +202,7 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human:
-    - boneName: Hip
+    - boneName: skeleton
       humanName: Hips
       limit:
         min: {x: 0, y: 0, z: 0}
