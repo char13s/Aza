@@ -332,7 +332,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.6048036, y: 1}
+    m_SensorSize: {x: 2.449692, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2868,12 +2868,7 @@ MonoBehaviour:
   m_AnimatedTarget: {fileID: 1355095169}
   m_LayerIndex: 0
   m_ShowDebugText: 0
-  m_ChildCameras:
-  - {fileID: 1783442932}
-  - {fileID: 541697831}
-  - {fileID: 1141010889}
-  - {fileID: 8846264}
-  - {fileID: 497395196}
+  m_ChildCameras: []
   m_Instructions:
   - m_FullHash: 1270784554
     m_VirtualCamera: {fileID: 1141010889}
@@ -9128,7 +9123,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.6048036, y: 1}
+    m_SensorSize: {x: 2.449692, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -9526,7 +9521,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.6048036, y: 1}
+    m_SensorSize: {x: 2.449692, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -10034,7 +10029,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.6048036, y: 1}
+    m_SensorSize: {x: 2.449692, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -21554,7 +21549,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.6048036, y: 1}
+    m_SensorSize: {x: 2.449692, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -32625,7 +32620,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.6048036, y: 1}
+    m_SensorSize: {x: 2.449692, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 1

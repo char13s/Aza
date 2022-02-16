@@ -35,10 +35,11 @@ public class Enemy : MonoBehaviour
     //[SerializeField] private int baseExpYield;
     //[SerializeField] private int baseHealth;
     [SerializeField] private float attackDistance;
+    [SerializeField] private bool standby;
     [Space]
     [Header("Object Refs")]
     [SerializeField] private GameObject hitBox;
-
+    [SerializeField] private GameObject hitSplat;
     [SerializeField] private GameObject drop;
     [SerializeField] private GameObject soul;
     [SerializeField] private GameObject cut;
@@ -69,7 +70,7 @@ public class Enemy : MonoBehaviour
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
-   // [SerializeField] private bool weak;
+    // [SerializeField] private bool weak;
 
     private bool striking;
     [SerializeField] private int flip;
@@ -156,7 +157,7 @@ public class Enemy : MonoBehaviour
     }
     // Start is called before the first frame update
     public void OnEnable() {
-        
+
     }
     public virtual void Start() {
         #region Grabbing Behaviors here
@@ -180,6 +181,7 @@ public class Enemy : MonoBehaviour
         Enemies.Add(this);
         timelines = GetComponent<EnemyTimelines>();
         HealthLeft = stats.Health;
+        StandbyState();
     }
 
 
@@ -340,7 +342,7 @@ public class Enemy : MonoBehaviour
                 Idle();
                 break;
             case EnemyAiStates.Attacking:
-                Rbody.velocity = new Vector3(0,0,0);
+                Rbody.velocity = new Vector3(0, 0, 0);
                 Anim.SetTrigger("Attack 0");
                 break;
             case EnemyAiStates.LowHealth:
@@ -352,7 +354,7 @@ public class Enemy : MonoBehaviour
             default:
                 break;
         }
-    }public virtual void Idle() {
+    } public virtual void Idle() {
         Walk = false;
         Debug.Log("Idle asf");
     }
@@ -430,17 +432,22 @@ public class Enemy : MonoBehaviour
         }
     }*/
     public void Chasing() {
-        
+
         Walk = true;
         Vector3 delta = pc.transform.position - transform.position;
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
         Rbody.velocity = transform.forward * speed;
-        Debug.Log(state+" a bitch");
+        Debug.Log(state + " a bitch");
         Debug.Log("Chasing");
         //transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
         //transform.position = Vector3.MoveTowards(transform.position, pc.transform.position, 4 * Time.deltaTime);
         //Debug.Log(Vector3.MoveTowards(transform.position, pc.transform.position, 4 * Time.deltaTime));
+    }
+    private void StandbyState() {
+        if (standby) {
+            State = EnemyAiStates.Null;
+        }
     }
     #endregion
     private void UIMaintence() {
@@ -465,7 +472,7 @@ public class Enemy : MonoBehaviour
         yield return wait;
         Hit = false;
         State = EnemyAiStates.Idle;
-    }*/ 
+    }*/
     #region Coroutines
     #endregion
 
@@ -473,6 +480,7 @@ public class Enemy : MonoBehaviour
 
     public int AttackDelay { get => attackDelay; set => attackDelay = value; }
     public Rigidbody Rbody { get => rbody; set => rbody = value; }
+    public bool Standby { get => standby; set { standby = value; StandbyState(); } } 
 
     private void OnTriggerStay(Collider other) {
         if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack")) {
@@ -498,10 +506,15 @@ public class Enemy : MonoBehaviour
     }
     public void CalculateDamage(float addition) {
         if (!dead) {
-            HealthLeft -= Mathf.Clamp((pc.stats.Attack - stats.Defense), 0, 999);
+            int dmg = Mathf.Clamp((pc.stats.Attack - stats.Defense), 1, 999);
+            HealthLeft -= dmg;
+            /*hitSplat.GetComponent<HitText>().Text = dmg.ToString();
+            //HitText hitSplat= new HitText();
+            //Debug.Log(hitSplat.Text.ToString());
+
+            Instantiate(hitSplat, transform.position, Quaternion.identity);*/
             Hit = true;
             if (HealthLeft <= Health / 4 && !lowHealth) {
-
                 //StartCoroutine(StateControlCoroutine());
                 lowHealth = true;
             }

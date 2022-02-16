@@ -88,6 +88,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 299716907225192722}
+  - {fileID: 5613601515702726124}
   m_Father: {fileID: 4706958970916400867}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -184,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    level: 4
+    level: 1
     baseHealth: 34
     baseAttack: 2
     baseDefense: 2
@@ -196,7 +197,10 @@ MonoBehaviour:
   deathEffect: {fileID: 0}
   attackDelay: 0
   attackDistance: 0
+  standby: 0
   hitBox: {fileID: 299716907225192721}
+  hitSplat: {fileID: 3403200122732432855, guid: 4aa6fb711ab6cc6468b28b91f4931e7b,
+    type: 3}
   drop: {fileID: 0}
   soul: {fileID: 0}
   cut: {fileID: 0}
@@ -204,6 +208,64 @@ MonoBehaviour:
   speed: 5.18
   flip: 0
   boss: 0
+--- !u!1 &849489659431098879
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5613601515702726124}
+  - component: {fileID: 4611811656748484762}
+  - component: {fileID: 3820505312969046621}
+  m_Layer: 17
+  m_Name: EnemyBody
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &5613601515702726124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849489659431098879}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 299716907477706353}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4611811656748484762
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849489659431098879}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3820505312969046621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849489659431098879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90f436d3869fceb42ac11443adc97a30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 9181738492646816672}
 --- !u!1001 &299716905691662171
 PrefabInstance:
   m_ObjectHideFlags: 0

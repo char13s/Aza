@@ -85,8 +85,8 @@ public class Stats {
         healthLeft = baseHealth;
         baseMp = 15;
         mpLeft = baseMp;
-        baseAttack = 3;
-        baseDefense = 3;
+        baseAttack = 5;
+        baseDefense = 5;
         intellect = 6;
         level = 1;
         exp = 0;

@@ -387,7 +387,7 @@ public class Player : MonoBehaviour
     public GameObject FarHitPoint { get => farHitPoint; set => farHitPoint = value; }
     public bool SkillButton { get => skillButton; set => skillButton = value; }
     public float SpeedInc { get => speedInc; set => speedInc = value; }
-    public int AirCombo { get => airCombo; set { airCombo = value;anim.SetInteger( "AirCombo",airCombo); } }
+    public int AirCombo { get => airCombo; set { airCombo = value; anim.SetInteger("AirCombo", airCombo); } }
 
     public bool Blocking { get => blocking; set => blocking = value; }
     public GameObject MainCam { get => mainCam; set => mainCam = value; }
@@ -572,7 +572,7 @@ public class Player : MonoBehaviour
         Instantiate(effects.ShadowShot, leftHand.transform.position, Quaternion.identity);
     }
     private void ShootLayer(int val) {
-        anim.SetLayerWeight(shootLayer,val);
+        anim.SetLayerWeight(shootLayer, val);
     }
     private void Block(bool val) => Guard = val;
     #endregion
@@ -694,6 +694,36 @@ public class Player : MonoBehaviour
 
     #endregion
     #region Inputs
+    public void SkillSquare() {
+        if (square.SkillAssigned != null && stats.MPLeft >= square.MpRequired) {
+            stats.MPLeft -= square.MpRequired;
+            square.UseSkill();
+            skillIsActive = true;
+        }
+    }
+    public void SkillX() {
+        if (x.SkillAssigned != null && stats.MPLeft >= x.MpRequired) {
+            stats.MPLeft -= x.MpRequired;
+            x.UseSkill();
+            skillIsActive = true;
+        }
+    }
+    public void SkillTriangle() {
+        if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired) {
+            stats.MPLeft -= triangle.MpRequired;
+            triangle.UseSkill();
+            skillIsActive = true;
+        }
+    }
+    public void SkillCircle() {
+        if (circle.SkillAssigned != null && stats.MPLeft >= circle.MpRequired) {
+            stats.MPLeft -= circle.MpRequired;
+            circle.UseSkill();
+            skillIsActive = true;
+            //Guard = false;
+        }
+    }
+
     private void Dodge(float move) {
         RBody.velocity = transform.right * move;
     }

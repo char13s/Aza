@@ -40,7 +40,7 @@ public class PlayerInputs : MonoBehaviour
             player.Anim.SetTrigger("Attack");
         }
         else {
-            //player.SkillSquare();
+           player.SkillSquare();
         }
     }
     private void OnEnergy() {
@@ -49,16 +49,18 @@ public class PlayerInputs : MonoBehaviour
             darkPowers.Triangle();
         }
         else {
-            //player.SkillTriangle();
+            player.SkillTriangle();
         }
     }
     private void OnJump() {
         if (!player.SkillButton) {
             //player.Jump();
-            player.Anim.SetTrigger("Jump");
+            if (player.Grounded) {
+                //player.Anim.SetTrigger("Jump");
+            }
         }
         else {
-            //player.SkillX();
+            player.SkillX();
         }
     }
     private void OnAbility(InputValue value) {
@@ -76,7 +78,7 @@ public class PlayerInputs : MonoBehaviour
             }
         }
         else {
-            //player.SkillCircle();
+            player.SkillCircle();
         }
     }
     private void OnLockOn(InputValue value) {

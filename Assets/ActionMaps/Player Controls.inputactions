@@ -387,6 +387,17 @@
                 },
                 {
                     "name": "",
+                    "id": "a17f7f3d-2cf5-477e-a478-45cfce02dbd0",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "93a359f1-4cb8-4f64-8599-ea77b4cd68a2",
                     "path": "<Gamepad>/leftStick/left",
                     "interactions": "Press(behavior=2)",
@@ -564,6 +575,17 @@
                     "id": "d838cad7-4ac2-4036-b71d-02d534352b79",
                     "path": "<Gamepad>/start",
                     "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "100fe2e9-f589-4da9-9c6e-e64b62483ef0",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Pause",

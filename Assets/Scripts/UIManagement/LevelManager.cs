@@ -6,6 +6,8 @@ using UnityEngine.Events;
 public class LevelManager : MonoBehaviour
 {
     public static event UnityAction off;
+    public static event UnityAction sendToMain;
+    
     private int currentLevel;
     // Start is called before the first frame update
     void OnEnable() {
@@ -22,6 +24,9 @@ public class LevelManager : MonoBehaviour
     }
     public void LevelTransition(int lvl) {
         Debug.Log("next lvl shit");
+        if (lvl == 1) {
+            sendToMain.Invoke();
+        }
         if (currentLevel != 0) {
             SceneManager.UnloadSceneAsync(currentLevel);
         }

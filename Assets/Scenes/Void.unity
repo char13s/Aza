@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 112000004, guid: 14f3045bf3d5e8f4b8812417a0b57dea,
     type: 2}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -404,7 +404,12 @@ PrefabInstance:
     - target: {fileID: 3497023281948082005, guid: 65b3304b3b0389b4ba3e24e2d661cf52,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3497023282036302987, guid: 65b3304b3b0389b4ba3e24e2d661cf52,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3618947245903302598, guid: 65b3304b3b0389b4ba3e24e2d661cf52,
         type: 3}
@@ -465,6 +470,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Demon Knight (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6037732446699988102, guid: 65b3304b3b0389b4ba3e24e2d661cf52,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 65b3304b3b0389b4ba3e24e2d661cf52, type: 3}
@@ -622,6 +632,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9181738492646816672, guid: 0ecd81dedc64e254b896811f7bf88527,
+        type: 3}
+      propertyPath: standby
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ecd81dedc64e254b896811f7bf88527, type: 3}
