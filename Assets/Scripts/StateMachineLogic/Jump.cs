@@ -16,7 +16,7 @@ public class Jump : StateMachineBehaviour
         pc.CantDoubleJump = false;
         //pc.RBody.velocity = new Vector3(0, 0, 0);
         //pc.RBody.AddForce(pc.transform.forward * 120, ForceMode.Impulse);
-        pc.RBody.velocity = new Vector3(0,move,0);
+        pc.RBody.AddForce(new Vector3(0, move, 0), ForceMode.Impulse);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
