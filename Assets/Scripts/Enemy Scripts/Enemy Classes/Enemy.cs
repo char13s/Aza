@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject cut;
     [SerializeField] private Slider EnemyHp;
     [SerializeField] private float speed;
-
+    [SerializeField] private GameObject body;
     #region Script References
 
     private Player pc;
@@ -70,6 +70,7 @@ public class Enemy : MonoBehaviour
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
+    
     // [SerializeField] private bool weak;
 
     private bool striking;
@@ -98,10 +99,11 @@ public class Enemy : MonoBehaviour
             Anim.SetBool("Hurt", hit); if (onHit != null) {
                 onHit();
             }
+            if (hit) { OnHit(); }
         }
     }
     public EnemyAiStates State { get => state; set { state = value; States(); } }
-    public bool Grounded { get => grounded; set => grounded = value; }
+    public bool Grounded { get => grounded; set { grounded = value; Anim.SetBool("Grounded",grounded); } }
     public bool LockedOn {
         get => lockedOn; set {
             lockedOn = value; if (lockedOn) {
@@ -146,7 +148,7 @@ public class Enemy : MonoBehaviour
     public static int TotalCount => Enemies.Count;
 
     public virtual void Awake() {
-        Anim = GetComponentInChildren<Animator>();
+        Anim = body.GetComponent<Animator>();
         //sound = GetComponent<AudioSource>();
         Rbody = GetComponent<Rigidbody>();
         //StatusEffects.onStatusUpdate += StatusControl;
@@ -231,7 +233,7 @@ public class Enemy : MonoBehaviour
         Enemies.Clear();
     }
     public void Knocked() {
-        Vector3 delta = (flip) * (transform.position - pc.transform.position);
+        Vector3 delta = (pc.transform.position-transform.position);
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
         timelines.KnockedBack();
@@ -456,8 +458,8 @@ public class Enemy : MonoBehaviour
         EnemyHp.maxValue = stats.Health;
         EnemyHp.value = stats.HealthLeft;
     }
-    /*private void OnHit() {
-        //sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
+    private void OnHit() {
+       /* //sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
         if (sendsfx != null) {
             sendsfx(AudioManager.GetAudio().SlimeHit);
         }
@@ -465,14 +467,16 @@ public class Enemy : MonoBehaviour
             hitCoroutine = StartCoroutine(HitCoroutine());
         }
         Instantiate(cut, transform);
-    }
-  
-    private IEnumerator HitCoroutine() {
+       private IEnumerator HitCoroutine() {
         YieldInstruction wait = new WaitForSeconds(3.5f);
         yield return wait;
         Hit = false;
         State = EnemyAiStates.Idle;
     }*/
+
+    }
+  
+    
     #region Coroutines
     #endregion
 
@@ -482,11 +486,11 @@ public class Enemy : MonoBehaviour
     public Rigidbody Rbody { get => rbody; set => rbody = value; }
     public bool Standby { get => standby; set { standby = value; StandbyState(); } } 
 
-    private void OnTriggerStay(Collider other) {
-        if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack")) {
-            Grounded = true;
-        }
-    }
+    //private void OnTriggerStay(Collider other) {
+    //    if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack")) {
+    //        Grounded = true;
+    //    }
+    //}
     private void SlowEnemy() {
         if (striking) {
             FreezeEnemy();
@@ -502,6 +506,8 @@ public class Enemy : MonoBehaviour
         //drop.transform.SetParent(null);
     }
     public void UnsetHit() {
+        print("Unset Hit");
+        hit = false;
         State=EnemyAiStates.Idle;
     }
     public void CalculateDamage(float addition) {

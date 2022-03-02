@@ -154,7 +154,7 @@ public class PlayerCommands : MonoBehaviour
         StartCoroutine(EmptyChain());
     }
     private void OnAttack(InputValue value) {
-
+        player.AttackState = true;
         if (sendInput != null) {
             sendInput("Square");
         }

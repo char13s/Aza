@@ -6,13 +6,6 @@ public class KnockBack : MonoBehaviour
 {
     //This script knocks and other object this object his hitting back
     public float knockBackStrength;
-
-    private void Start() {
-        //AttackStates.sendKnockPower += RecieveKnockPower;
-    }
-    private void RecieveKnockPower(float power) {
-        knockBackStrength = power;
-    }
     private void OnTriggerEnter(Collider other) {
 
         Enemy enemy = other.gameObject.GetComponent<Enemy>();

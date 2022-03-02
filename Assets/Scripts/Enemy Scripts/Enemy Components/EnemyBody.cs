@@ -14,5 +14,6 @@ public class EnemyBody : MonoBehaviour
         if (force != null) {
             force(50);
         }
+        //body.KnockedUp();
     }
 }

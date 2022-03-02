@@ -30,7 +30,7 @@ public class Dash : StateMachineBehaviour {
         pc.RBody.velocity = new Vector3(0,0,0);
         pc.RBody.useGravity = false;
         GamePad.SetVibration(0, 0.2f, 0.1f);
-        pc.RBody.AddForce(pc.transform.forward * 8f, ForceMode.VelocityChange);
+        //pc.RBody.AddForce(pc.transform.forward * 8f, ForceMode.VelocityChange);
         pc.RBody.AddForce(pc.transform.forward * 150f, ForceMode.Impulse);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {

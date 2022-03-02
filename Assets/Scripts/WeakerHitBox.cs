@@ -34,7 +34,7 @@ public class WeakerHitBox : MonoBehaviour
                 enemies.Add(other.GetComponent<Enemy>());
                 other.GetComponent<Enemy>().CalculateDamage(0);
                 //other.GetComponent<Enemy>().KnockBack(HitKnockback());
-                other.GetComponent<Enemy>().Grounded = false;
+                //other.GetComponent<Enemy>().Grounded = false;
                 GamePad.SetVibration(0, 0.2f, 0.2f);
                 StartCoroutine(StopRumble());
             }

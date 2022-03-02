@@ -7,6 +7,7 @@ public class GroundChecker : MonoBehaviour {
     public static event UnityAction<AudioClip> landed;
 
     private float distanceGround;
+    [SerializeField] private float reachGround;
     private Player player;
     // Start is called before the first frame update
     void Start() {
@@ -14,7 +15,8 @@ public class GroundChecker : MonoBehaviour {
         player = Player.GetPlayer();
     }
     private void FixedUpdate() {
-        if (!Physics.Raycast(transform.position, -Vector2.up, distanceGround + 0.1f)) {
+        Debug.DrawRay(transform.position, -Vector2.up, Color.red, distanceGround + reachGround);
+        if (!Physics.Raycast(transform.position, -Vector2.up, distanceGround + reachGround)) {
             player.Grounded = false;
         }
         else {

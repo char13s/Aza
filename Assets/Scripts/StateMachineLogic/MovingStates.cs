@@ -14,8 +14,8 @@ public class MovingStates : StateMachineBehaviour
         returnSpeed.Invoke(speedOfState);
         //pc.MoveSpeed = speedOfState;
     }
-    //public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-    //    
-    //}
+    public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
+        returnSpeed.Invoke(0);
+    }
     
 }

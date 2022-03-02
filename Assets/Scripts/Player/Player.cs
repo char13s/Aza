@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
 
 
     private bool attacking;
+    private bool attackState;
     private bool boutaSpin;
     private bool skillButton;
     private bool lockedOn;
@@ -271,7 +272,7 @@ public class Player : MonoBehaviour
     public bool Pause { get => pause; set { pause = value; if (pause) { Time.timeScale = 0; } else { Time.timeScale = 1; } } }
     public bool Loaded { get => loaded; set { loaded = value;/*Nav.enabled=true*/  } }
     public PlayerBattleSceneMovement BattleMode { get => battleMode; set => battleMode = value; }
-    public GameObject DemonSword { get => demonSword; set { demonSword = value; if (!demonSword.activeSelf) { drawn = false; } } }
+    public GameObject DemonSword { get => demonSword; set { demonSword = value; } }
     public GameObject HitBox { get => hitBox; set { hitBox = value; } }
 
     public int SkillId { get => skillId; set { skillId = value; anim.SetInteger("Skill ID", skillId); if (skillId == 0) { SkillIsActive = false; } } }
@@ -332,8 +333,6 @@ public class Player : MonoBehaviour
 
     public GameObject Trail { get => trail; set => trail = value; }
     public bool SecondJump { get => doubleJump; set { doubleJump = value; anim.SetBool("DoubleJump", doubleJump); } }
-    public bool InHouse { get => inHouse; set { inHouse = value; if (inHouse) { DemonSword.SetActive(false); } } }//demonSwordBack.SetActive(true);
-
     public GameObject BattleCamTarget { get => battleCamTarget; set => battleCamTarget = value; }
     public float BurstForce { get => burstForce; set => burstForce = value; }
     public GameObject CenterPoint { get => centerPoint; set => centerPoint = value; }
@@ -391,6 +390,7 @@ public class Player : MonoBehaviour
 
     public bool Blocking { get => blocking; set => blocking = value; }
     public GameObject MainCam { get => mainCam; set => mainCam = value; }
+    public bool AttackState { get => attackState; set { attackState = value; anim.SetBool("Attacking",attackState); } }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -442,6 +442,7 @@ public class Player : MonoBehaviour
 
         ShadowShot.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
+        AttackStates.sendAttack+=RecieveAttack;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
@@ -477,6 +478,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate() {
         Move();
+    }
+    private void LateUpdate() {
+        
     }
     #region Helper Methods
 
@@ -558,6 +562,9 @@ public class Player : MonoBehaviour
         }
         //rBody.MovePosition(rBody.position+speed);
         //charaCon.SimpleMove(speed);
+    }
+    private void RecieveAttack() {
+        AttackState = false;
     }
     #endregion
 

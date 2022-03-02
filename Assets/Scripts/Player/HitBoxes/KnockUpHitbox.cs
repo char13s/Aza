@@ -9,11 +9,14 @@ public class KnockUpHitbox : MonoBehaviour
 
     }
     private void OnTriggerEnter(Collider other) {
-
+       
         Enemy enemy = other.gameObject.GetComponent<Enemy>();
         if (enemy != null) {
             print("YEAAAAA");
             enemy.KnockedUp();
+        }
+        else {
+            print("empty asf");
         }
     }
 }
