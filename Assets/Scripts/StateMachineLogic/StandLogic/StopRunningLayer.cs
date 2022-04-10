@@ -8,7 +8,7 @@ public class StopRunningLayer : StateMachineBehaviour
     private int legLayerIndex;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
-        legLayerIndex = pc.LegsLayer;
+        //legLayerIndex = pc.LegsLayer;
         pc.Anim.SetLayerWeight(legLayerIndex, 0);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {

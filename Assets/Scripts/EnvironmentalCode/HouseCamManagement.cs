@@ -17,14 +17,14 @@ public class HouseCamManagement : MonoBehaviour {
             cam.Priority = priority;
             if (cam.gameObject.GetComponent<SceneDialogue>() != null) {
                 cam.gameObject.GetComponent<SceneDialogue>().enabled = true;
-                pc.InputSealed = true;
-                pc.Animations = 0;
+               // pc.InputSealed = true;
+               // pc.Animations = 0;
             }
         }
     }
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("Player")) {
-            pc.InputSealed = false ;
+           // pc.InputSealed = false ;
             cam.Priority = 0;
             done = true;
         }

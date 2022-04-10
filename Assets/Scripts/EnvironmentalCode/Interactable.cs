@@ -62,7 +62,7 @@ public class Interactable : MonoBehaviour
                 //}
                 break;
             case InteractableType.Podium:
-                GetComponent<Podium>().CheckToLite();
+                //GetComponent<Podium>().CheckToLite();
                 break;
             case InteractableType.Skull:
                 if (skullCollected != null) {

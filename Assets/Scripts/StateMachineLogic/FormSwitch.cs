@@ -13,7 +13,7 @@ public class FormSwitch : StateMachineBehaviour
     private Player pc;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
-        gatherEffect = PickEffect();
+        //gatherEffect = PickEffect();
         if (inviciblity != null) {
             inviciblity(true);
         }
@@ -29,14 +29,5 @@ public class FormSwitch : StateMachineBehaviour
             inviciblity(false);
         }
     }
-    private GameObject PickEffect() {
-        switch (pc.Style) {
-            case 1:
-                return fireGather;
-                
-            case 2:
-                return lightningChannel;
-            default:return fireGather;
-        }
-    }
+
 }

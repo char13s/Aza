@@ -9,5 +9,7 @@ public class Trail : StateMachineBehaviour
             Instantiate(reminant, Player.GetPlayer().transform.position, Player.GetPlayer().transform.rotation);
         }
     }
-
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        Player.GetPlayer().CombatAnimations = 0;
+    }
 }

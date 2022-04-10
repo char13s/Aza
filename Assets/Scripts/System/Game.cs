@@ -22,8 +22,8 @@ public class Game {
         Position[0] = GameController.GetGameController().Spawn.transform.position.x;
         Position[1] = GameController.GetGameController().Spawn.transform.position.y;
         Position[2] = GameController.GetGameController().Spawn.transform.position.z;
-        skullCount = Player.GetPlayer().SkullMask;
-        lighBulbCount = Player.GetPlayer().Bulbs;
+
+
         Items = player.items.Items;
         stats = player.stats;
         Debug.Log("Game was saved");

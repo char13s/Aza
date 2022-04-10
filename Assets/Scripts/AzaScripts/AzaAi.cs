@@ -169,9 +169,9 @@ public class AzaAi : MonoBehaviour
         {
             Navi.SetDestination(transform.position);
         }
-        if (State != AzaAiStates.Casting && Player.GetPlayer().BattleMode.EnemyTarget!=null &&Player.GetPlayer().Attacking) {
+        /*if (State != AzaAiStates.Casting && Player.GetPlayer().BattleMode.EnemyTarget!=null &&Player.GetPlayer().Attacking) {
             State = AzaAiStates.Attacking;
-        }
+        }*/
         if (State != AzaAiStates.Casting && Vector3.Distance(Player.GetPlayer().transform.position, transform.position) > 3)
         {
             State = AzaAiStates.FindZend;

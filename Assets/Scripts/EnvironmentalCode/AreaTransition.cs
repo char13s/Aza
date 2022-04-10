@@ -39,7 +39,7 @@ public class AreaTransition : MonoBehaviour
             if (movePlayer != null) {
                 movePlayer();
             }
-            Player.GetPlayer().Animations = 0;
+            //Player.GetPlayer().Animations = 0;
             StartCoroutine(FadeOutCoroutine());
             StartCoroutine(FadeCoroutine());
 
@@ -129,7 +129,6 @@ public class AreaTransition : MonoBehaviour
         }
         //Player.GetPlayer().Nav.enabled = true;
         Player.GetPlayer().Grounded = false;
-        Player.GetPlayer().InputSealed = false;
         
     }
 }

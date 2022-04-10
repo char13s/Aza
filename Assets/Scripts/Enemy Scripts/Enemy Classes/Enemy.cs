@@ -500,14 +500,16 @@ public class Enemy : MonoBehaviour
         //onAnyDefeated(this);
         SlimeHasDied();
         Enemies.Remove(this);
+        if (deathEffect != null) { 
         Instantiate(deathEffect, transform);
+        }
         //deathEffect.transform.position = transform.position;
         Destroy(gameObject, 2.5f);
         //drop.transform.SetParent(null);
     }
     public void UnsetHit() {
         print("Unset Hit");
-        hit = false;
+        Hit = false;
         State=EnemyAiStates.Idle;
     }
     public void CalculateDamage(float addition) {

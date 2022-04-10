@@ -196,7 +196,7 @@ public class GameController : MonoBehaviour {
     private void SceneManagement(Scene scene, LoadSceneMode mode) {
 
         if (SceneManager.GetSceneByBuildIndex(1).isLoaded) {
-            Debug.Log("Scene 1 up");
+
             //pc.gameObject.SetActive(false);
             
             //eventSystem.gameObject.SetActive(false);

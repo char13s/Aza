@@ -23,7 +23,7 @@ public class LevelManager : MonoBehaviour
         currentLevel = 1;
     }
     public void LevelTransition(int lvl) {
-        Debug.Log("next lvl shit");
+
         if (lvl == 1) {
             sendToMain.Invoke();
         }

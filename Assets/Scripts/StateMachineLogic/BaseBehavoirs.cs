@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class BaseBehavoirs : StateMachineBehaviour {
+public class BaseBehavoirs : StateMachineBehaviour
+{
 
     [SerializeField] private int type;
     private Player pc;
@@ -14,14 +15,7 @@ public class BaseBehavoirs : StateMachineBehaviour {
         }
         baseB.Invoke();
         pc = Player.GetPlayer();
-        if (type == 0) {
-            if (pc.Style == 0) {
-                Defaults();
-            }
-        }
-        else {
-            Defaults();
-        }
+        Defaults();
     }
     private void Defaults() {
         pc.SkillId = 0;

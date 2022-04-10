@@ -22,7 +22,6 @@ public class Player : MonoBehaviour
     Quaternion qTo;
     private float l;
     private bool cantDoubleJump = true;
-    private int money;
     private bool inputSealed;
     #region Attacking
     [Space]
@@ -102,7 +101,7 @@ public class Player : MonoBehaviour
 
     private int skillId;
     private bool powerUp;
-    private bool sleep;
+
     private int cmdInput;
     private int animations;
     private bool bowUp;
@@ -116,13 +115,8 @@ public class Player : MonoBehaviour
     private bool spinAttack;
     private float speedInc;
 
-    private int demonLayer;
-    private int angelLayer;
-    private int legsLayer;
-    private int guardLayer;
-    private int castLayer;
     private int shootLayer;
-    private int drawSwordLayer;
+    private int guardLayer;
     private int airCombo;
     #endregion
     #region Random stuff
@@ -219,13 +213,6 @@ public class Player : MonoBehaviour
     internal Inventory shieldInvent = new Inventory();
     internal Inventory maskInvent = new Inventory();
     internal Stats stats = new Stats();
-    private AxisButton dPadUp = new AxisButton("DPad Up");
-    private AxisButton dPadRight = new AxisButton("DPad Right");
-    private AxisButton R2 = new AxisButton("R2");
-
-    private AxisButton L2 = new AxisButton("L2");
-
-
     internal StatusEffects status = new StatusEffects();
 
 
@@ -259,18 +246,15 @@ public class Player : MonoBehaviour
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
-    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); WeaponManagement(); if (grounded) { /*RBody.isKinematic = true; /*nav.enabled = true;*/ SecondJump = false; CantDoubleJump = true; } } }
-    public bool LeftDash { get => leftDash; set { leftDash = value; anim.SetBool("LeftDash", leftDash); } }
-    public bool RightDash { get => rightDash; set { rightDash = value; anim.SetBool("RightDash", rightDash); } }
+    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); } }
     public bool Guard { get => guard; set { guard = value; anim.SetBool("Guard", guard); } }
-    public bool Attacking { get => attacking; set { attacking = value; anim.SetBool("AttackStance", attacking); WeaponManagement(); if (attackModeUp != null) { attackModeUp(); } } }
     public bool Moving { get => moving; set { moving = value; anim.SetBool("Moving", moving); } }
     public GameObject Body { get => body; set => body = value; }
     public bool Hit { get => hit; set { hit = value; anim.SetBool("Hurt", hit); } }
     public bool Dead { get => dead; set { dead = value; anim.SetBool("Dead", dead); if (dead) { OnDeath(); } else { } } }
-    public int Direction { get => direction; set { direction = value; anim.SetInteger("Direction", direction); } }
+    public int Direction { get => direction; set { direction = value; anim.SetInteger("Direction", direction); } }//used for determining base lock on directions with no target in player battle scene mov.
     public bool Pause { get => pause; set { pause = value; if (pause) { Time.timeScale = 0; } else { Time.timeScale = 1; } } }
-    public bool Loaded { get => loaded; set { loaded = value;/*Nav.enabled=true*/  } }
+    public bool Loaded { get => loaded; set { loaded = value;/*Nav.enabled=true*/  } }//determines wheter scene has been loaded
     public PlayerBattleSceneMovement BattleMode { get => battleMode; set => battleMode = value; }
     public GameObject DemonSword { get => demonSword; set { demonSword = value; } }
     public GameObject HitBox { get => hitBox; set { hitBox = value; } }
@@ -282,59 +266,36 @@ public class Player : MonoBehaviour
 
     public bool PerfectGuard { get => perfectGuard; set => perfectGuard = value; }
     public GameObject ForwardHitbox { get => forwardHitbox; set => forwardHitbox = value; }
-    public GameObject FireTrail { get => fireTrail; set => fireTrail = value; }
+    public GameObject FireTrail { get => fireTrail; set => fireTrail = value; }//might have to get rid of
     public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
-    public int Animations { get => animations; set { animations = value; anim.SetInteger("Animations", animations); LegControl(); } }
 
-    public bool LockedOn { get => lockedOn; set { lockedOn = value; anim.SetBool("Lock", lockedOn); if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }
+    public bool LockedOn { get => lockedOn; set { lockedOn = value; anim.SetBool("Lock", lockedOn); anim.SetBool("AttackStance", lockedOn); if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }//actual player locked on
 
     public bool SkillIsActive { get => skillIsActive; set { skillIsActive = value; if (skillIsActive) { Guard = false; } } }
-    public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }
+    public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }//see if you can get rid of this
 
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public bool PowerUp { get => powerUp; set { powerUp = value; anim.SetBool("PowerUp", powerUp); } }
 
-    public GameObject ZendHair { get => zendHair; set => zendHair = value; }
+    public GameObject ZendHair { get => zendHair; set => zendHair = value; }//move this to another script 
     public AudioSource Sfx { get => sfx; set => sfx = value; }
-    public int Money { get => money; set => money = value; }
     public bool PoweredUp { get => poweredUp; set { poweredUp = value; } }
-
-    public bool BowUp { get => bowUp; set { bowUp = value; anim.SetBool("BowUp", bowUp); } }
-
     public bool Transforming { get => transforming; set => transforming = value; }
-    public GameObject AttackBow { get => attackBow; set => attackBow = value; }
     public GameObject AimmingPoint { get => aimmingPoint; set => aimmingPoint = value; }
-    public bool InputSealed { get => inputSealed; set => inputSealed = value; }
-    public bool Sleeping { get => sleep; set { sleep = value; anim.SetBool("Sleep", value); } }
-
     public bool Jumping { get => jumping; set { jumping = value; anim.SetBool("Jumping", value); } }
 
-    public bool Boosting { get => boosting; set { boosting = value; anim.SetBool("Dashing", boosting); } }
-
-    private bool dash;
-    private bool zendSpace;
-    private bool leftPressed;
     private bool castItem;
-    private bool strongAttack;
-    private bool lightAttack;
     private bool endure;
 
-    public GameObject DevilFoot { get => devilFoot; set => devilFoot = value; }
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
     public GameObject RightHand { get => rightHand; set => rightHand = value; }
     public int Cinemations { get => cinemations; set { cinemations = value; anim.SetInteger("Cinemaitions", cinemations); } }
 
     public bool TeleportTriggered { get => teleportTriggered; set => teleportTriggered = value; }
 
-    public int Weapon { get => weapon; set { weapon = Mathf.Clamp(value, weaponMin, weaponMax); WeaponManagement(); anim.SetInteger("Weapon", weapon); if (weaponSwitch != null) { weaponSwitch(); } } }
-
     public GameObject FistHitBox { get => fistHitBox; set => fistHitBox = value; }
     public bool StopTime { get => stopTime; set { stopTime = value; anim.SetBool("TimeStop", stopTime); } }
-
-    public GameObject Trail { get => trail; set => trail = value; }
-    public bool SecondJump { get => doubleJump; set { doubleJump = value; anim.SetBool("DoubleJump", doubleJump); } }
     public GameObject BattleCamTarget { get => battleCamTarget; set => battleCamTarget = value; }
-    public float BurstForce { get => burstForce; set => burstForce = value; }
     public GameObject CenterPoint { get => centerPoint; set => centerPoint = value; }
     public GameObject HitPoint { get => hitPoint; set => hitPoint = value; }
     public GameObject StabHitBox { get => stabHitBox; set => stabHitBox = value; }
@@ -346,7 +307,6 @@ public class Player : MonoBehaviour
 
     public float JumpForce { get => jumpForce; set => jumpForce = value; }
     public GameObject JumpPoint { get => jumpPoint; set => jumpPoint = value; }
-    public bool CantDoubleJump { get => cantDoubleJump; set => cantDoubleJump = value; }
     public GameObject ShieldHitBox { get => shieldHitBox; set => shieldHitBox = value; }
     public AudioSource ClothesSfx { get => clothesSfx; set => clothesSfx = value; }
     public bool Drawn { get => drawn; set { drawn = value; anim.SetBool("Drawn", drawn); } }
@@ -369,18 +329,7 @@ public class Player : MonoBehaviour
     public bool Weak { get => weak; set { weak = value; anim.SetBool("Weak", weak); } }
 
     public GameObject WoodenSwordHitBox { get => woodenSwordHitBox; set => woodenSwordHitBox = value; }
-    public int LegsLayer { get => legsLayer; set => legsLayer = value; }
-
-    public bool LightAttack { get => lightAttack; set { lightAttack = value; anim.SetBool("LightAttack", lightAttack); } }
-    public bool StrongAttack { get => strongAttack; set { strongAttack = value; anim.SetBool("StrongAttack", strongAttack); } }
-
-    public GameObject FakeAngelSword { get => fakeAngelSword; set => fakeAngelSword = value; }
-    public int Style { get => style; set { style = value; anim.SetInteger("Style", style); } }
-
-    public int SkullMask { get => skullMask; set => skullMask = value; }
     public bool Charging { get => charging; set { charging = value; anim.SetBool("Charging", charging); } }
-    public int Bulbs { get => bulbs; set => bulbs = value; }
-    public GameObject WoodenSword { get => woodenSword; set => woodenSword = value; }
     public Vector3 DirectionV { get => directionV; set => directionV = value; }
     public Vector2 DisplacementV { get => displacementV; set => displacementV = value; }
     public GameObject FarHitPoint { get => farHitPoint; set => farHitPoint = value; }
@@ -390,7 +339,7 @@ public class Player : MonoBehaviour
 
     public bool Blocking { get => blocking; set => blocking = value; }
     public GameObject MainCam { get => mainCam; set => mainCam = value; }
-    public bool AttackState { get => attackState; set { attackState = value; anim.SetBool("Attacking",attackState); } }
+    public bool AttackState { get => attackState; set { attackState = value; anim.SetBool("Attacking", attackState); } }
 
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
@@ -408,13 +357,9 @@ public class Player : MonoBehaviour
         #region Event Subs
         Enemy.onHit += MpRegain;
         Enemy.guardBreak += GuardBreak;
-        AreaTransition.movePlayer += MovePlayerObject;
+
 
         GameController.respawn += RestoreHealth;
-
-        UiManager.bedTime += Sleep;
-
-        UiManager.sealPlayerInput += StopRunning;
         GroundChecker.landed += SoundEffects;
 
         DoubleJump.doubleJump += SoundEffects;
@@ -422,27 +367,20 @@ public class Player : MonoBehaviour
         JudgementCut.stop += ZaWarudo;
         DrawSword.hideSword += DrawSwordOut;
         Dash.dash += SoundEffects;
-        Cast.setWeightBack += SetCastBack;
         EnemyHitBox.hit += OnHit;
         ReactionRange.dodged += ZaWarudo;
 
         UiManager.disablePlayer += DisableBody;
         UiManager.unsealPlayerInput += EnableBody;
-        UiManager.angelSword += AngelSwordChose;
-        UiManager.demonSword += DemonSwordChose;
-        UiManager.bothSwords += BothSwordsChose;
 
         GroundSound.sendSound += GroundSoundManagement;
-        SceneDialogue.sealPlayerInput += StopRunning;
         FormSwitch.inviciblity += Endure;
         MovingStates.returnSpeed += MoveBro;
-        KillOtherLayers.weight += LayerControl;
         BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
-
         ShadowShot.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
-        AttackStates.sendAttack+=RecieveAttack;
+        AttackStates.sendAttack += RecieveAttack;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
@@ -450,6 +388,9 @@ public class Player : MonoBehaviour
         #region Power HookUps
         AngelicRelic.lightSpeed += Teleportto;
         DefensePowers.defense += Block;
+        #endregion
+        #region 
+        PlayerAnimationEvents.kickback += AddForceToPlayer;
         #endregion
         ClothesSfx = zend.GetComponent<AudioSource>();
         Anim = zend.GetComponent<Animator>();
@@ -479,55 +420,7 @@ public class Player : MonoBehaviour
     void FixedUpdate() {
         Move();
     }
-    private void LateUpdate() {
-        
-    }
     #region Helper Methods
-
-    private void LegControl() {
-
-        if (cmdInput == 0 && animations == 1 && !boosting) {
-            if (playSound != null) {
-                playSound(1);
-            }
-        }
-        else {
-            if (playSound != null) {
-                playSound(0);
-            }
-        }
-
-    }
-    private void LayerControl(int val) {
-        switch (style) {
-            case 1:
-                anim.SetLayerWeight(demonLayer, val);
-                break;
-            case 2:
-                anim.SetLayerWeight(angelLayer, val);
-                break;
-        }
-
-    }
-    private void MovePlayerObject() {
-        Attacking = false;
-        //Nav.enabled = false;
-        InputSealed = true;
-        RBody.isKinematic = false;
-        Grounded = false;
-    }
-    private void CalculateMoveDirection() {
-        Vector3 right;
-        if (MovementBone != null) {
-
-            right = MovementBone.TransformDirection(moveBoneRight);
-        }
-        else {
-            right = transform.forward;
-        }
-        float dot = Vector3.Dot(right, displacement);
-        anim.SetFloat("MoveDirectionX", dot);
-    }
     private void CheckPlayerHealth() {
         if (stats.HealthLeft <= 0 && !dead) { Dead = true; }
     }
@@ -584,6 +477,13 @@ public class Player : MonoBehaviour
     private void Block(bool val) => Guard = val;
     #endregion
 
+    #region Physics added thru animation events
+    private void AddForceToPlayer(float move) {//For Dodge movement
+        RBody.AddForce(transform.forward * -move, ForceMode.Impulse);
+        CombatAnimations = 0;
+    }
+    #endregion
+
     #region Time Stuff
     private void ZaWarudo() {
         Debug.Log("Za BITCH");
@@ -614,29 +514,7 @@ public class Player : MonoBehaviour
             onPlayerDeath();
         }
     }
-    private IEnumerator ResetTimeStop() {
-        YieldInstruction wait = new WaitForSeconds(2);
-        yield return wait;
-        timeStopped = false;
-    }
-    private void AnimationLayerManagement() {
-        ////anim.SetLayerWeight(2, 1);
-        //if (grounded&&!lockedOn) {
-        //    StartCoroutine(SetLayerWait());
-        //}
-        //else {
-        //    anim.SetLayerWeight(3, 0);
-        //}
-        ////if (cmdInput > 0) {
-        ////    anim.SetLayerWeight(3, 0);
-        //}
-    }
-    private IEnumerator SetLayerWait() {
-        YieldInstruction wait = new WaitForSeconds(0.1f);
-        yield return wait;
-        anim.SetLayerWeight(legsLayer, 1);
 
-    }
     private void GuardBreak() {
         GuardAnimations = 3;
     }
@@ -650,11 +528,7 @@ public class Player : MonoBehaviour
 
 
     #region Coroutines
-    private IEnumerator WaitToFall() {
-        YieldInstruction wait = new WaitForSeconds(0.3f);
-        yield return wait;
-        Jumping = false;
-    }
+
     private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration, UnityAction<float> onFade) {
         float localTime = 0;
         float start = anim.GetLayerWeight(layerIndex);
@@ -698,7 +572,17 @@ public class Player : MonoBehaviour
         }
 
     }
+    private IEnumerator ResetTimeStop() {
+        YieldInstruction wait = new WaitForSeconds(2);
+        yield return wait;
+        timeStopped = false;
+    }
+    private IEnumerator SetLayerWait() {
+        YieldInstruction wait = new WaitForSeconds(0.1f);
+        yield return wait;
+        //anim.SetLayerWeight(legsLayer, 1);
 
+    }
     #endregion
     #region Inputs
     public void SkillSquare() {
@@ -738,36 +622,6 @@ public class Player : MonoBehaviour
         SkillId = 10;
         RBody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
     }
-    private IEnumerator Boost() {
-        YieldInstruction wait = new WaitForSeconds(0.5f);
-        yield return wait;
-        //RBody.useGravity = true;
-        Boosting = false;
-        //oveSpeed = 6;
-    }
-    private void WeaponManagement() {
-        //DemonSword.SetActive(false);
-        //demonFistLeft.SetActive(false);
-        //demonFistRight.SetActive(false);
-        //demonSwordBack.SetActive(true);
-        //attackBow.SetActive(false);
-        ////demonSwordBack.SetActive(true);
-        if (!weak && attacking && grounded && !bowUp) {
-            switch (style) {
-                case 0:
-                    //anim.SetLayerWeight(demonLayer, 1);
-                    break;
-                case 1:
-                    anim.SetLayerWeight(demonLayer, 1);
-                    break;
-                case 2:
-                    anim.SetLayerWeight(angelLayer, 1);
-                    break;
-            }
-        }
-
-    }
-    #endregion
     public void TargetingLogic(bool val) {
         if (val) {
             LockedOn = true;
@@ -775,103 +629,18 @@ public class Player : MonoBehaviour
                 playerIsLockedOn();
             }
             findClosestEnemy.Invoke();
-            Attacking = true;
         }
         else {
             notAiming.Invoke();
-            Attacking = false;
             LockedOn = false;
         }
     }
+
+    #endregion
+
     #region Event handlers
-    private void Blank() {
 
-        Attacking = false;
 
-        halo.SetActive(false);
-        lightning.SetActive(false);
-        angelScabbard.SetActive(false);
-        zendsLHorn.SetActive(false);
-        zendsRHorn.SetActive(false);
-        fireTrailR.SetActive(false);
-        fireTrailL.SetActive(false);
-        demonSwordBack.SetActive(false);
-        demonScabbard.SetActive(false);
-        WoodenSword.SetActive(false);
-        Style = 0;
-    }
-    private void StopRunning() {
-        Animations = 0;
-    }
-    private void DemonSwordChose() {
-
-        Attacking = false;
-        Weak = false;
-        weaponMin = 0;
-        weaponMax = 1;
-        DemonUp();
-    }
-    private void AngelSwordChose() {
-        Attacking = false;
-        Weak = false;
-        weaponMin = 1;
-        weaponMax = 2;
-        AngelUp();
-    }
-    private void BothSwordsChose() {
-        Attacking = false;
-        Weak = false;
-        weaponMax = 2;
-        Style = 0;
-    }
-    private void AngelUp() {
-        Blank();
-        PowerUp = true;
-        if (formChange != null) {
-            formChange(1);
-        }
-        mpDrain = StartCoroutine(MpDrain());
-        stats.Attack = 4;
-        //Attacking = false;
-        Weapon = 2;
-        Style = 2;
-        halo.SetActive(true);
-        lightning.SetActive(true);
-        angelScabbard.SetActive(true);
-    }
-    private void DemonUp() {
-        Blank();
-        PowerUp = true;
-        if (formChange != null) {
-            formChange(1);
-        }
-        mpDrain = StartCoroutine(MpDrain());
-        //Attacking = false;
-        stats.Attack = 5;
-        Weapon = 0;
-        Style = 1;
-        zendsLHorn.SetActive(true);
-        zendsRHorn.SetActive(true);
-        fireTrailR.SetActive(true);
-        fireTrailL.SetActive(true);
-        //demonSwordBack.SetActive(true);
-        //demonScabbard.SetActive(true);
-    }
-    private void Base() {
-        //wod
-        StopCoroutine(mpDrain);
-        if (formChange != null) {
-            formChange(0);
-        }
-        stats.Attack = 3;
-        Blank();
-        demonSwordBack.SetActive(true);
-        demonScabbard.SetActive(true);
-        WoodenSword.SetActive(true);
-    }
-    private void SetCastBack() {
-        anim.SetLayerWeight(castLayer, 0);
-    }
     private void DrawSwordOut(AudioClip sound) {
 
         demonSwordBack.SetActive(false);
@@ -896,23 +665,8 @@ public class Player : MonoBehaviour
     private void MpRegain() {
         stats.MPLeft += 2;
     }
-    private IEnumerator WaitToLand() {
-        YieldInstruction wait = new WaitForSeconds(3);
-        yield return wait;
-        InputSealed = false;
-    }
     private void GroundSlamForce(float force) {
         RBody.mass = force;
-    }
-    private void OnGrounded(bool val) {
-        Grounded = val;
-        //RBody.isKinematic = val;
-    }
-    private void Sleep() {
-        Body.SetActive(false);
-        sleep = true;
-        stats.HealthLeft = stats.Health;
-        InputSealed = true;
     }
     private void Respawn() {
         transform.position = GameController.GetGameController().Spawn.transform.position;
@@ -930,16 +684,10 @@ public class Player : MonoBehaviour
         PoweredUp = true;
         PowerUp = true;
     }
+
+
     private void ZeroVelocity() {
         rBody.velocity = new Vector3(0, 0, 0);
-    }
-    private void ReturnSpeed(float val) {
-        StartCoroutine(Lowkey(val));
-    }
-    private IEnumerator Lowkey(float val) {
-        YieldInstruction wait = new WaitForSeconds(0.3f);
-        yield return wait;
-        MoveSpeed = val;
     }
     #endregion
 

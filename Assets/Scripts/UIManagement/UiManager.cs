@@ -367,9 +367,6 @@ public class UiManager : MonoBehaviour {
     }
     void Start() {
         #region outside events
-        Player.weaponSwitch += WeaponSwitch;
-        StoreManager.itemWasBought += UpdateMoney;
-
         GameController.onGameWasStarted += GameScreen;
         GameController.gameWasSaved += SaveGame;
         GameController.onQuitGame += OnQuit;
@@ -438,7 +435,6 @@ public class UiManager : MonoBehaviour {
         OnSFXVolumeChange(0.3f);
         pc = Player.GetPlayer();
         sprites = SpriteAssign.GetSprite();
-        WeaponSwitch();
         //GameController.returnToLevelSelect += SetPlayerUIOff;
         //playerUi.SetActive(false);
         //UnFade();
@@ -554,18 +550,6 @@ public class UiManager : MonoBehaviour {
         skillslot2.text = circle.SkillName.text;
         skillslot3.text = square.SkillName.text;
         skillslot4.text = x.SkillName.text;
-    }
-    private void WeaponSwitch() {
-
-        switch (pc.Weapon) {
-            case 0:
-                currentWeapon.sprite = sprites.Sword;
-                break;
-            case 1:
-                currentWeapon.sprite = sprites.Bow;
-                break;
-        }
-
     }
 
 	#endregion
@@ -1107,7 +1091,6 @@ public class UiManager : MonoBehaviour {
 
         yield return wait;
         //Player.GetPlayer().Nav.enabled = true;
-        Player.GetPlayer().InputSealed = false;
     }
     #region shit I dont use
     public void FuckU() {
@@ -1259,7 +1242,6 @@ public class UiManager : MonoBehaviour {
         stamina.text = "Mp: " + Player.GetPlayer().stats.MP;
         exp.text = "Spirits: " + Player.GetPlayer().stats.Exp;
         expBar.value = Player.GetPlayer().stats.Exp;
-        money.text = "Munn: " + Player.GetPlayer().Money.ToString();
         healthBar.value = Player.GetPlayer().stats.HealthLeft;
         healthBar.maxValue = Player.GetPlayer().stats.Health;
         staminaBar.maxValue = Player.GetPlayer().stats.MP;
@@ -1267,11 +1249,6 @@ public class UiManager : MonoBehaviour {
         expBar.maxValue = Player.GetPlayer().stats.CalculateExpNeed();
 
         level.text = "LV. " + Player.GetPlayer().stats.Level;
-    }
-    private void UpdateMoney() {
-        money.text = "Munn: " + Player.GetPlayer().Money.ToString();
-
-
     }
     private void ViewStats() {
         attack.text = "Attack = " + Player.GetPlayer().stats.Attack.ToString();

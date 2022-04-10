@@ -21,7 +21,6 @@ public class SpinAttackSetUp : StateMachineBehaviour
         }
 
         if (Input.GetButtonUp("Square")) {
-            pc.LightAttack = false;
             pc.BoutaSpin = false;
             if (charge > 0.99) {
                 pc.SpinAttack = true;

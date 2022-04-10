@@ -237,7 +237,6 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     }
 
     private void LockOn(Enemy target, float x, float y) {
-        int moveSpeed = 5;
         //SwitchLockOn();
         LockOff();
         enemies[T].LockedOn = true;
@@ -294,20 +293,16 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             if (y > 0)//forward
             {
                 player.Direction = 0;
-
             }
 
             if (y < 0)//back
             {
-
                 player.Direction = 2;
             }
         }
-
         if (x > 0.3)//right
         {
             player.Direction = 3;
-            Debug.Log("right");
         }
 
         if (x < -0.3)//left
@@ -315,14 +310,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             player.Direction = 1;
 
         }
-        if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) {
+        if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) { }
 
-            player.Animations = 1;
-        }
-        else {
-
-            player.Animations = 0;
-        }
     }
 
     private void SwitchLockOn() {

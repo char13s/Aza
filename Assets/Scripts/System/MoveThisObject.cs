@@ -30,6 +30,6 @@ public class MoveThisObject : MonoBehaviour
         //if (arg0.buildIndex == 1) {
         //    SendToMainScene();
         //}
-        print("Ran");
+
     }
 }

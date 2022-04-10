@@ -20,7 +20,7 @@ public class LightBulbHolder : MonoBehaviour
     }
     private void ChechkForBulb(GameObject powerReciever) {
         Debug.Log("light bulb checked");
-        if (powerReciever == gameObject && player.Bulbs > 0&&!bulbObtained) {
+        if (powerReciever == gameObject && !bulbObtained) {
             bulbObtained = true;
             Debug.Log("light bulb active");
             bulb.gameObject.SetActive(true);

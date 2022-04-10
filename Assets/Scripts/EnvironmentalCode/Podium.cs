@@ -14,7 +14,7 @@ public class Podium : MonoBehaviour
         pc = Player.GetPlayer();
     }
 
-    public void CheckToLite() {
+    /*public void CheckToLite() {
         if (!lit && pc.SkullMask > 0) {
             lit = true;
             if (lite != null) {
@@ -25,5 +25,5 @@ public class Podium : MonoBehaviour
             }
             skull.SetActive(true);
         }
-    }
+    }*/
 }
