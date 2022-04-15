@@ -273,8 +273,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8846261}
-  m_LocalRotation: {x: 0.6174955, y: -0.337461, z: 0.33162203, w: 0.62836796}
-  m_LocalPosition: {x: -80.84747, y: 7.0360317, z: 29.8087}
+  m_LocalRotation: {x: 0.61749554, y: -0.33746085, z: 0.33162186, w: 0.6283681}
+  m_LocalPosition: {x: -80.94, y: 0.67700016, z: 29.870003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1208703781}
@@ -2960,7 +2960,12 @@ MonoBehaviour:
   m_AnimatedTarget: {fileID: 1355095169}
   m_LayerIndex: 0
   m_ShowDebugText: 0
-  m_ChildCameras: []
+  m_ChildCameras:
+  - {fileID: 1783442932}
+  - {fileID: 541697831}
+  - {fileID: 1141010889}
+  - {fileID: 8846264}
+  - {fileID: 497395196}
   m_Instructions:
   - m_FullHash: 1270784554
     m_VirtualCamera: {fileID: 1141010889}
