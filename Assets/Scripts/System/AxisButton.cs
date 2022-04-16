@@ -31,11 +31,11 @@ public class AxisButton {
 	}
 
 	public void OnUpdate() {
-		float prevAxisValue = axisValue;
-		axisValue = Input.GetAxis(axisName);
-
-		getButtonDown = (axisValue >= threshold && prevAxisValue < threshold);
-		getButtonUp = (axisValue < threshold && prevAxisValue >= threshold);
+		//float prevAxisValue = axisValue;
+		//axisValue = Input.GetAxis(axisName);
+		//
+		//getButtonDown = (axisValue >= threshold && prevAxisValue < threshold);
+		//getButtonUp = (axisValue < threshold && prevAxisValue >= threshold);
 	}
 
 	public bool GetButton() => axisValue >= threshold;

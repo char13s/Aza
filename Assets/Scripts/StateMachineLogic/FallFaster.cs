@@ -8,7 +8,7 @@ public class FallFaster : StateMachineBehaviour
     [SerializeField] private float fallRate;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
-        pc.RBody.AddForce(pc.transform.up*-fallRate,ForceMode.Impulse);
+        //pc.RBody.AddForce(pc.transform.up*-fallRate,ForceMode.Impulse);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
             

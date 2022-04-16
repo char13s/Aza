@@ -13,7 +13,7 @@ public class Slam : StateMachineBehaviour {
         //    slam(10375);
         //}
         player = Player.GetPlayer();
-        player.RBody.AddForce(new Vector3(0,-4.5f,0),ForceMode.VelocityChange);
+       // player.RBody.AddForce(new Vector3(0,-4.5f,0),ForceMode.VelocityChange);
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

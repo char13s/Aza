@@ -202,10 +202,11 @@ public class Player : MonoBehaviour
     //private NavMeshAgent nav;
     private PlayerBattleSceneMovement battleMode;
     private Animator anim;
+    private CharacterController charCon;
     private Vector3 displacement;//world space 
     private int skullMask;
     private int bulbs;
-
+    private Rigidbody rbody;
     private BasicHeadController headController;
     #region Constructors
     internal Inventory items = new Inventory();
@@ -260,7 +261,7 @@ public class Player : MonoBehaviour
     public GameObject HitBox { get => hitBox; set { hitBox = value; } }
 
     public int SkillId { get => skillId; set { skillId = value; anim.SetInteger("Skill ID", skillId); if (skillId == 0) { SkillIsActive = false; } } }
-    public Rigidbody RBody { get => rBody; set => rBody = value; }
+
 
     public Animator Anim { get => anim; set => anim = value; }
 
@@ -341,6 +342,10 @@ public class Player : MonoBehaviour
     public GameObject MainCam { get => mainCam; set => mainCam = value; }
     public bool AttackState { get => attackState; set { attackState = value; anim.SetBool("Attacking", attackState); } }
 
+    public CharacterController CharCon { get => charCon; set => charCon = value; }
+
+    //public Rigidbody Rbody { get => rbody; set => rbody = value; }
+
     //public GameObject GroundChecker { get => groundChecker; set => groundChecker = value; }
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
@@ -394,8 +399,8 @@ public class Player : MonoBehaviour
         #endregion
         ClothesSfx = zend.GetComponent<AudioSource>();
         Anim = zend.GetComponent<Animator>();
-        rBody = GetComponent<Rigidbody>();
-
+        //rbody = GetComponent<Rigidbody>();
+        charCon = GetComponent<CharacterController>();
         //anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
@@ -418,7 +423,7 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate() {
-        Move();
+       // Move();
     }
     #region Helper Methods
     private void CheckPlayerHealth() {
@@ -449,8 +454,8 @@ public class Player : MonoBehaviour
         if (!lockedOn) {
             Vector3 speed;
             speed = move * DirectionV.normalized;
-            speed.y = RBody.velocity.y;
-            RBody.velocity = speed;
+            //speed.y = RBody.velocity.y;
+            //RBody.velocity = speed;
             // RBody.MovePosition(RBody.position+(speed*Time.deltaTime));
         }
         //rBody.MovePosition(rBody.position+speed);
@@ -479,7 +484,8 @@ public class Player : MonoBehaviour
 
     #region Physics added thru animation events
     private void AddForceToPlayer(float move) {//For Dodge movement
-        RBody.AddForce(transform.forward * -move, ForceMode.Impulse);
+        //rBody.AddForce(transform.forward * -move, ForceMode.Impulse);
+
         CombatAnimations = 0;
     }
     #endregion
@@ -616,11 +622,11 @@ public class Player : MonoBehaviour
     }
 
     private void Dodge(float move) {
-        RBody.velocity = transform.right * move;
+        //RBody.velocity = transform.right * move;
     }
     private void Jump() {
         SkillId = 10;
-        RBody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
+        //RBody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
     }
     public void TargetingLogic(bool val) {
         if (val) {
@@ -666,7 +672,7 @@ public class Player : MonoBehaviour
         stats.MPLeft += 2;
     }
     private void GroundSlamForce(float force) {
-        RBody.mass = force;
+       /// RBody.mass = force;
     }
     private void Respawn() {
         transform.position = GameController.GetGameController().Spawn.transform.position;
@@ -687,7 +693,7 @@ public class Player : MonoBehaviour
 
 
     private void ZeroVelocity() {
-        rBody.velocity = new Vector3(0, 0, 0);
+       //rBody.velocity = new Vector3(0, 0, 0);
     }
     #endregion
 

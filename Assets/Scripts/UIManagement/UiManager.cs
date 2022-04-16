@@ -453,7 +453,7 @@ public class UiManager : MonoBehaviour {
         SceneManager.sceneLoaded -= OnLevelFinishedLoading;
     }
 
-    void Update() {
+    /*void Update() {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2) || Input.GetButtonDown("Pause")) {
             //GetSelected();
         }
@@ -481,7 +481,7 @@ public class UiManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Equals)) {
             Debug.Log(EventSystem.current.currentSelectedGameObject.name);
         }
-    }
+    }*/
     
     #region Soul Shit
     private void UpdateUI() {

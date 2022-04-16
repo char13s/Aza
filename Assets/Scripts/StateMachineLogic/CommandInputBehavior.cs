@@ -47,7 +47,7 @@ public class CommandInputBehavior : StateMachineBehaviour {
         pc.CmdInput = 0;
         pc.MoveSpeed = 0;
         //pc.Nav.enabled = false;
-		pc.RBody.isKinematic = false;
+		//pc.RBody.isKinematic = false;
         //pc().Trail.SetActive(true);
         pc.transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
         if (stab) {

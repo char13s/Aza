@@ -27,11 +27,11 @@ public class Dash : StateMachineBehaviour {
         if (dash != null) {
             dash(sound);
         }
-        pc.RBody.velocity = new Vector3(0,0,0);
-        pc.RBody.useGravity = false;
+        //pc.RBody.velocity = new Vector3(0,0,0);
+        //pc.RBody.useGravity = false;
         GamePad.SetVibration(0, 0.2f, 0.1f);
         //pc.RBody.AddForce(pc.transform.forward * 8f, ForceMode.VelocityChange);
-        pc.RBody.AddForce(pc.transform.forward * 150f, ForceMode.Impulse);
+        //pc.RBody.AddForce(pc.transform.forward * 150f, ForceMode.Impulse);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         //pc.RBody.drag = 0;
@@ -43,11 +43,11 @@ public class Dash : StateMachineBehaviour {
         
             Instantiate(reminant, pc.transform.position, pc.transform.rotation);
         
-        pc.RBody.isKinematic = false;
+        //pc.RBody.isKinematic = false;
        //pc.RBody.AddForce(pc.transform.forward*900, ForceMode.Impulse);
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        pc.RBody.useGravity = true;
+        //pc.RBody.useGravity = true;
        
        
         GamePad.SetVibration(0, 0, 0);

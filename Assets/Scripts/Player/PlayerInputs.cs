@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class PlayerInputs : MonoBehaviour
 {
     private Player player;
+    private PlayerMovement playerMovement;
     private PlayerInput map;
     [SerializeField] private DarkPowerSet darkPowers;
     [SerializeField] private EquipmentObj relic;
@@ -25,6 +26,7 @@ public class PlayerInputs : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         player = GetComponent<Player>();
+        playerMovement = GetComponent<PlayerMovement>();
         map = GetComponent<PlayerInput>();
         DialogueManager.switchControls += SwitchMaps;
         GameManager.switchMap += SwitchMaps;
@@ -32,7 +34,7 @@ public class PlayerInputs : MonoBehaviour
 
     #region Base Controls
     private void OnMovement(InputValue value) {
-        player.DisplacementV = value.Get<Vector2>();
+        playerMovement.Displacement = value.Get<Vector2>();
     }
     private void OnAttack() {
         if (!player.SkillButton) {
@@ -46,7 +48,7 @@ public class PlayerInputs : MonoBehaviour
     private void OnEnergy() {
         if (!player.SkillButton) {
             print("Triangle");
-            darkPowers.Triangle();
+            //darkPowers.Triangle();
         }
         else {
             player.SkillTriangle();

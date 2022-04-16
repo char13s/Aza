@@ -12,7 +12,7 @@ public class AttackingBehavior : StateMachineBehaviour
         pressed = false;
         Player.GetPlayer().HitBox.SetActive(true);
         //current = ;
-        Player.GetPlayer().RBody.isKinematic = false;
+        //Player.GetPlayer().RBody.isKinematic = false;
 
         //Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * 105, ForceMode.VelocityChange);
 

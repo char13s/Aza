@@ -94,11 +94,11 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             }
         }
         if (player.LockedOn) {
-            SwitchLockOn();
+            //SwitchLockOn();
             //pc.MoveSpeed = 3;
 
             if (enemies.Count == 0 && player.CmdInput == 0) {
-                BasicMovement();
+                //BasicMovement();
             }
             else {
                 GetInput();
@@ -277,8 +277,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             if (y != 0) {
                 Vector3 speed;
                 speed = transform.forward * player.MoveSpeed * y;
-                speed.y = player.RBody.velocity.y;
-                player.RBody.velocity = speed;
+                //speed.y = player.RBody.velocity.y;
+                //player.RBody.velocity = speed;
                 //Vector3.MoveTowards(transform.position, target.transform.position, moveSpeed * y * Time.deltaTime);
                 //}
             }

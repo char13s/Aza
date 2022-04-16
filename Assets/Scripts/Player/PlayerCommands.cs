@@ -23,6 +23,7 @@ public class PlayerCommands : MonoBehaviour
     private bool lockon;
     #region Outside Scripts
     private Animator anim;
+    private Animator animObject;
     private Player player;
     private PlayerTimelineControl timelines;
     private PlayerInputs playerInputs;
@@ -40,6 +41,12 @@ public class PlayerCommands : MonoBehaviour
 
     private void Awake() {
         //inputs = new List<Inputs>(52);
+        player = GetComponent<Player>();
+        animObject = GetComponent<Animator>();
+        timelines = GetComponent<PlayerTimelineControl>();
+        playerInputs = GetComponent<PlayerInputs>();
+        BaseBehavoirs.baseB += ResetMoveChain;
+        ChainInput.resetChain += emptyChain;
 
     }
     private void OnEnable() {
@@ -49,14 +56,11 @@ public class PlayerCommands : MonoBehaviour
         //StopCoroutine(SlowUpdate());
     }
     void Start() {
-        player = GetComponent<Player>();
+        
         anim = player.Anim;
-        timelines = GetComponent<PlayerTimelineControl>();
-        playerInputs = GetComponent<PlayerInputs>();
-        BaseBehavoirs.baseB += ResetMoveChain;
-        ChainInput.resetChain += emptyChain;
         //ChainInput.endChain += emptyChain;
         //Player.lockOn += LockControl;
+        
     }
     private void Update() {
         //if (!player.SkillButton) {
@@ -151,6 +155,7 @@ public class PlayerCommands : MonoBehaviour
         if (triangle != null) {
             triangle();
         }
+        anim.Play("SwordUppercut");
         StartCoroutine(EmptyChain());
     }
     private void OnAttack(InputValue value) {
@@ -245,6 +250,7 @@ public class PlayerCommands : MonoBehaviour
             //timelines.PlayUpAttack();
             anim.ResetTrigger("Attack");
             anim.SetTrigger("AirUpAttack");
+            
         }
         if (inputs == Inputs.Square && direction == Inputs.Down) {
             Debug.Log("Down Attack!");
@@ -281,8 +287,9 @@ public class PlayerCommands : MonoBehaviour
             ResetChain();
             //timelines.PlayDownAttack();
             anim.ResetTrigger("Attack");
-            anim.SetTrigger("DownAttack");
-
+            //anim.SetTrigger("DownAttack");
+            anim.Play("SwordUppercut");
+            player.MoveSpeed = 0;
             //Insert Chain Here.
         }
         if (inputs == Inputs.Triangle && direction == Inputs.Down) {
@@ -351,7 +358,9 @@ public class PlayerCommands : MonoBehaviour
         }
         if (inputs == Inputs.X && direction == Inputs.Down) {
             ResetChain();
-            player.CombatAnimations = 1;
+            //player.CombatAnimations = 1;
+            anim.Play("KickUp");
+            animObject.Play("GetBack");
             anim.ResetTrigger("Jump");
         }
         if (inputs == Inputs.X && direction == Inputs.Right) {

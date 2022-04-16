@@ -25,7 +25,7 @@ public class UpperCutBehavior : StateMachineBehaviour
             GoingUp = false;
         if (stateInfo.normalizedTime > 0.99f&&GoingUp) {
             pc.transform.position = Vector3.MoveTowards(pc.transform.position, pc.HighPoint.transform.position, move * Time.deltaTime);
-            pc.RBody.useGravity = false;
+            //pc.RBody.useGravity = false;
         }
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

@@ -113,12 +113,12 @@ public class GameController : MonoBehaviour {
             update();
         //SceneManagement();
         if (!Player.GetPlayer().Pause) { 
-        if (Input.GetKey(KeyCode.F9)) {
-            Time.timeScale = 4;
+        //if (Input.GetKey(KeyCode.F9)) {
+        //    Time.timeScale = 4;
         }
         else {
             Time.timeScale = 1;
-        }}
+        }
         //Debug.Log(SceneManager.);
     }
     private void SetSpawner(GameObject newSpawn) {

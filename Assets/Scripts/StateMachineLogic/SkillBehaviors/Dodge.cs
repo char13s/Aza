@@ -19,7 +19,7 @@ public class Dodge : StateMachineBehaviour
         //Player.GetPlayer().MoveSpeed = 10;
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        Player.GetPlayer().RBody.velocity = Player.GetPlayer().transform.right * move;
+        Player.GetPlayer().CharCon.SimpleMove(Player.GetPlayer().transform.right * move);
         //MoveSpeed = 13;  
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

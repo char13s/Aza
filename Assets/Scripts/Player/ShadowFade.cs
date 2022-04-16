@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Experimental.VFX;
 public class ShadowFade : MonoBehaviour
 {
-    [SerializeField] private VisualEffect shadow;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +15,7 @@ public class ShadowFade : MonoBehaviour
     void Update()
     {
         if (Input.GetButtonDown("Square")) {
-            shadow.SendEvent("Cast");
+            //shadow.SendEvent("Cast");
         }
     }
     

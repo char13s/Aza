@@ -11,7 +11,7 @@ public class AirSpin : StateMachineBehaviour
     {
         pc = Player.GetPlayer();
         pc.HitBox.SetActive(true);
-        pc.RBody.useGravity = true;
+        //pc.RBody.useGravity = true;
     }
 
      //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
