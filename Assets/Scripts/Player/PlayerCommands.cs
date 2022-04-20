@@ -27,6 +27,7 @@ public class PlayerCommands : MonoBehaviour
     private Player player;
     private PlayerTimelineControl timelines;
     private PlayerInputs playerInputs;
+    private PlayerMovement playerMove;
     #endregion
     #region Anim parameters
     private int chain;
@@ -42,6 +43,7 @@ public class PlayerCommands : MonoBehaviour
     private void Awake() {
         //inputs = new List<Inputs>(52);
         player = GetComponent<Player>();
+        playerMove = GetComponent<PlayerMovement>();
         animObject = GetComponent<Animator>();
         timelines = GetComponent<PlayerTimelineControl>();
         playerInputs = GetComponent<PlayerInputs>();
@@ -56,11 +58,7 @@ public class PlayerCommands : MonoBehaviour
         //StopCoroutine(SlowUpdate());
     }
     void Start() {
-        
         anim = player.Anim;
-        //ChainInput.endChain += emptyChain;
-        //Player.lockOn += LockControl;
-        
     }
     private void Update() {
         //if (!player.SkillButton) {
@@ -68,12 +66,11 @@ public class PlayerCommands : MonoBehaviour
         if (stick.sqrMagnitude == 0) {
             ResetDirection();
         }
-        //}
     }
     private void GetInputs() {
         InputChains();
         if (player.LockedOn) {
-            if (player.Grounded) {
+            if (player.CharCon.isGrounded) {
                 InputCombinations();
             }
             else {
@@ -102,12 +99,8 @@ public class PlayerCommands : MonoBehaviour
 
     private void OnMovement(InputValue value) {
 
-        //AddInput(Inputs.Direction);
         stick = value.Get<Vector2>();
         Vector2 min = new Vector2(0.01f, 0.01f);
-        /*if (stick.SqrMagnitude() < min.SqrMagnitude()) {
-            ResetDirection();
-        }*/
     }
     private void OnDash(InputValue value) {
         //Chain = 7;
@@ -136,16 +129,17 @@ public class PlayerCommands : MonoBehaviour
             //ResetDirection();
         }
     }
-    private void OnJump() {
-
-        if (sendInput != null) {
-            sendInput("X");
+    private void OnJump(InputValue value) {
+        if (value.isPressed) {
+            if (sendInput != null) {
+                sendInput("X");
+            }
+            if (player.CombatAnimations == 0 && player.Grounded) {
+                anim.SetTrigger("Jump");
+            }
+            StartCoroutine(EmptyChain());
+            AddInput(Inputs.X);
         }
-        if (player.CombatAnimations == 0&&player.Grounded) {
-            anim.SetTrigger("Jump");
-        }
-        StartCoroutine(EmptyChain());
-        AddInput(Inputs.X);
     }
     private void OnEnergy() {
         if (sendInput != null) {
@@ -155,7 +149,6 @@ public class PlayerCommands : MonoBehaviour
         if (triangle != null) {
             triangle();
         }
-        anim.Play("SwordUppercut");
         StartCoroutine(EmptyChain());
     }
     private void OnAttack(InputValue value) {
@@ -188,18 +181,12 @@ public class PlayerCommands : MonoBehaviour
         Chain = 16;
     }
     private void OnHoldAttack() {
-        timelines.PlayHoldAttack();
+        //timelines.PlayHoldAttack();
     }
     private void OnHoldEnergy() {
         Chain = 17;
     }
     private void OnHoldTriangle(InputValue value) {
-        //if (value.isPressed) {
-        //    //charge fire ball 
-        //}
-        //else {
-        //    //SHOOT FIRE
-        //}
         Chain = 5;
         if (holdTriangle != null) {
             holdTriangle();
@@ -223,21 +210,6 @@ public class PlayerCommands : MonoBehaviour
             //anim.SetTrigger("Jump");
             //ResetChain();
         }
-        /*if (inputs.Contains(Inputs.Square)) {
-            Chain = 2;
-            
-        }
-        if (inputs.Contains(Inputs.Triangle)) {
-            Chain = 3;
-
-        }
-        if (inputs.Contains(Inputs.Circle)) {
-            Chain = 4;
-        }
-        if (inputs.Contains(Inputs.Circle) && inputs.Contains(Inputs.Direction)) {
-
-            Chain = 7;
-        }*/
     }
     private void AirCombinations() {
         if (inputs == Inputs.Square && direction == Inputs.Up) {
@@ -246,24 +218,18 @@ public class PlayerCommands : MonoBehaviour
                 sendInput("Up + Square");
             }
             ResetChain();
-            //Chain = 3;
-            //timelines.PlayUpAttack();
             anim.ResetTrigger("Attack");
-            anim.SetTrigger("AirUpAttack");
-            
+            anim.Play("AirDive");
+
         }
         if (inputs == Inputs.Square && direction == Inputs.Down) {
             Debug.Log("Down Attack!");
             if (sendInput != null) {
                 sendInput("Down + Square");
             }
-            //Chain = 4;
             ResetChain();
-            //timelines.PlayDownAttack();
             anim.ResetTrigger("Attack");
             anim.SetTrigger("AirDownAttack");
-
-            //Insert Chain Here.
         }
     }
     private void InputCombinations() {
@@ -273,24 +239,18 @@ public class PlayerCommands : MonoBehaviour
                 sendInput("Up + Square");
             }
             ResetChain();
-            //Chain = 3;
-            timelines.PlayUpAttack(true);
+            anim.Play("Stab");
             anim.ResetTrigger("Attack");
-            //anim.SetTrigger("UpAttack");
         }
         if (inputs == Inputs.Square && direction == Inputs.Down) {
             Debug.Log("Down Attack!");
             if (sendInput != null) {
                 sendInput("Down + Square");
             }
-            //Chain = 4;
             ResetChain();
-            //timelines.PlayDownAttack();
             anim.ResetTrigger("Attack");
-            //anim.SetTrigger("DownAttack");
             anim.Play("SwordUppercut");
             player.MoveSpeed = 0;
-            //Insert Chain Here.
         }
         if (inputs == Inputs.Triangle && direction == Inputs.Down) {
             Debug.Log("Down Element!");
@@ -302,8 +262,6 @@ public class PlayerCommands : MonoBehaviour
             if (downTriangle != null) {
                 downTriangle();
             }
-            //timelines.PlayDownEnergy();
-            //Insert Chain Here.
         }
         if (inputs == Inputs.Triangle && direction == Inputs.Up) {
             Debug.Log("Up Element");
@@ -312,12 +270,9 @@ public class PlayerCommands : MonoBehaviour
             }
             //playerInputs.DarkPowers.TriangleUp();
             ResetChain();
-            //anim.SetTrigger("Slash");
             if (upTriangle != null) {
                 upTriangle();
             }
-            //timelines.PlayDownEnergy();
-            //Insert Chain Here.
         }
         if (inputs == Inputs.Circle && direction == Inputs.Up) {
 
@@ -338,41 +293,39 @@ public class PlayerCommands : MonoBehaviour
             if (downCircle != null) {
                 downCircle();
             }
-            //playerInputs.Relic.DownCircle();
             ResetChain();
         }
-        /*if (inputs.Contains(Inputs.Up) && inputs.Contains(Inputs.Down)&&inputs.Contains(Inputs.Square)) {
-            Debug.Log("Up + Down Attack!");
-            if (sendInput != null) {
-                sendInput("Up + Square");
-            }
-            ResetChain();
-            //Chain = 3;
-        }*/
     }
     private void AdvancedMovement() {
+        
         if (inputs == Inputs.X && direction == Inputs.Up) {
             ResetChain();
             player.CombatAnimations = 5;
+            playerMove.IsJumpPressed = false;
             anim.ResetTrigger("Jump");
+            anim.Play("ForwardDodge");
         }
         if (inputs == Inputs.X && direction == Inputs.Down) {
             ResetChain();
-            //player.CombatAnimations = 1;
+            player.CombatAnimations = 1;
+            playerMove.IsJumpPressed = false;
             anim.Play("KickUp");
-            animObject.Play("GetBack");
             anim.ResetTrigger("Jump");
         }
         if (inputs == Inputs.X && direction == Inputs.Right) {
             ResetChain();
             player.CombatAnimations = 3;
+            playerMove.IsJumpPressed = false;
             print("Right dodge");
+            anim.Play("RightDodge");
             anim.ResetTrigger("Jump");
         }
         if (inputs == Inputs.X && direction == Inputs.Left) {
             ResetChain();
             player.CombatAnimations = 2;
+            playerMove.IsJumpPressed = false;
             print("Left dodge");
+            anim.Play("LeftDodge");
             anim.ResetTrigger("Jump");
         }
     }

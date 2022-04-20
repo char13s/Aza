@@ -16,8 +16,8 @@ public class Arrow : MonoBehaviour {
     void Start()
     {
         pc = Player.GetPlayer();
-        direction = pc.ArrowPoint.transform.forward;
-        transform.rotation = pc.ArrowPoint.transform.rotation;
+        //direction = pc.ArrowPoint.transform.forward;
+        //transform.rotation = pc.ArrowPoint.transform.rotation;
         LayerMask.GetMask("Ground");
         Destroy(gameObject,5);
     }

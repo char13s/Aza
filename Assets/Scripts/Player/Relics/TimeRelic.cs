@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class TimeRelic : EquipmentObj
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
     public override void Circle() {
         base.Circle();
         //stop time

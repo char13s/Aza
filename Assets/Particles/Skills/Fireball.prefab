@@ -4705,6 +4705,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4806,6 +4807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boom: {fileID: 2425362128049503189, guid: 6dae887dcd869434f800a328e6c69a9c, type: 3}
+  speed: 35
 --- !u!65 &3058134660697915901
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4849,8 +4851,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992054, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key0.r
-      value: 0.012635995
+      propertyPath: ColorModule.gradient.maxGradient.key0.b
+      value: 0.13333334
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992054, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
@@ -4859,13 +4861,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992054, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key0.b
-      value: 0.13333334
+      propertyPath: ColorModule.gradient.maxGradient.key0.r
+      value: 0.012635995
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992054, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key1.r
-      value: 0.20222214
+      propertyPath: ColorModule.gradient.maxGradient.key1.b
+      value: 0.21568628
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992054, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
@@ -4874,8 +4876,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992054, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
-      propertyPath: ColorModule.gradient.maxGradient.key1.b
-      value: 0.21568628
+      propertyPath: ColorModule.gradient.maxGradient.key1.r
+      value: 0.20222214
+      objectReference: {fileID: 0}
+    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
@@ -4894,6 +4916,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.7071068
       objectReference: {fileID: 0}
@@ -4909,16 +4936,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
         type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
-        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -90
       objectReference: {fileID: 0}
@@ -4931,21 +4948,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.07
-      objectReference: {fileID: 0}
-    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.07
-      objectReference: {fileID: 0}
-    - target: {fileID: 4282856648474992055, guid: 44b26e8695877744eb47026044291e13,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.07
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44b26e8695877744eb47026044291e13, type: 3}

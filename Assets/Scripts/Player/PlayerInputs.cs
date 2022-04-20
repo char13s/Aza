@@ -8,6 +8,11 @@ public class PlayerInputs : MonoBehaviour
     private Player player;
     private PlayerMovement playerMovement;
     private PlayerInput map;
+    private Animator anim;
+    #region Extra attack logic
+    bool holdAttack;
+    #endregion
+
     [SerializeField] private DarkPowerSet darkPowers;
     [SerializeField] private EquipmentObj relic;
     [SerializeField] private AbilityUIHolder relicUp;
@@ -28,6 +33,7 @@ public class PlayerInputs : MonoBehaviour
         player = GetComponent<Player>();
         playerMovement = GetComponent<PlayerMovement>();
         map = GetComponent<PlayerInput>();
+        anim = GetComponent<Animator>();
         DialogueManager.switchControls += SwitchMaps;
         GameManager.switchMap += SwitchMaps;
     }
@@ -36,33 +42,52 @@ public class PlayerInputs : MonoBehaviour
     private void OnMovement(InputValue value) {
         playerMovement.Displacement = value.Get<Vector2>();
     }
-    private void OnAttack() {
-        if (!player.SkillButton) {
-            print("Square");
-            player.Anim.SetTrigger("Attack");
+    private void OnAttack(InputValue value) {
+        if (value.isPressed) {
+            if (!player.SkillButton) {
+                print("Square");
+                player.Anim.SetTrigger("Attack");
+                player.Attack = true;
+            }
+            else {
+                player.SkillSquare();
+            }
         }
-        else {
-           player.SkillSquare();
+        else if (holdAttack) {
+            print("rELEASE");
+            player.Anim.SetTrigger("Attack");
+            holdAttack = false;
+        }
+    }
+    private void OnHoldAttack(InputValue value) {
+        if (value.isPressed) {
+            holdAttack = true;
+            print("hOLD");
+            player.Anim.SetTrigger("HoldAttack");
         }
     }
     private void OnEnergy() {
         if (!player.SkillButton) {
             print("Triangle");
-            //darkPowers.Triangle();
+            if (!player.Attack) {
+                darkPowers.Triangle();
+            }
         }
         else {
             player.SkillTriangle();
         }
     }
-    private void OnJump() {
+    private void OnJump(InputValue value) {
         if (!player.SkillButton) {
-            //player.Jump();
-            if (player.Grounded) {
-                //player.Anim.SetTrigger("Jump");
+            if (player.CombatAnimations == 0) {
+                playerMovement.IsJumpPressed = true;
             }
         }
         else {
             player.SkillX();
+        }
+        if (!value.isPressed) {
+            playerMovement.IsJumpPressed = false;
         }
     }
     private void OnAbility(InputValue value) {

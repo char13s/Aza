@@ -16,12 +16,12 @@ public class ShootBehavior : StateMachineBehaviour
     {
         //castingFlame = Player.GetPlayer().FireCaster;
         //castingFlame.SetActive(true);
-        shoot.Invoke(1);
+        //shoot.Invoke(1);
     }
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        shoot.Invoke(0);
+        //shoot.Invoke(0);
         //castingFlame.SetActive(false);
         /* switch (Player.GetPlayer().SkillId)
          {

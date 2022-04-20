@@ -9,7 +9,8 @@ public class EnemyBody : MonoBehaviour
 
     public static event UnityAction<float> force;
     private void OnTriggerEnter(Collider other) {
-        body.CalculateDamage(0);
+        body.CalculateDamage(1);
+        print("Hit");
         body.Hit = true;
         if (force != null) {
             force(50);

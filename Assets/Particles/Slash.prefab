@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4622795133419717705}
   - component: {fileID: 8857481938260380467}
   - component: {fileID: 3284052480453694691}
+  - component: {fileID: 7557544035493559369}
   m_Layer: 0
   m_Name: Slash
   m_TagString: Untagged
@@ -4706,11 +4707,11 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 649c93fc2dc760249ac4ab8c358686ca, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4754,6 +4755,19 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &7557544035493559369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492080908735204964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b7d90f61be522c4e93e7a960ed7b7d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boom: {fileID: 1222543820466738093, guid: 77f33307b8cf83645afae434f3c53aba, type: 3}
 --- !u!1001 &6157223541695093852
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4765,6 +4779,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LightningEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222543820466738098, guid: f745d118a7963684a9053aa83a6919ae,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1222543820466738098, guid: f745d118a7963684a9053aa83a6919ae,
         type: 3}
@@ -4783,6 +4802,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1222543820466738098, guid: f745d118a7963684a9053aa83a6919ae,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222543820466738098, guid: f745d118a7963684a9053aa83a6919ae,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
@@ -4795,16 +4819,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 2.0879681e-23
-      objectReference: {fileID: 0}
-    - target: {fileID: 1222543820466738098, guid: f745d118a7963684a9053aa83a6919ae,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1222543820466738098, guid: f745d118a7963684a9053aa83a6919ae,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1222543820466738098, guid: f745d118a7963684a9053aa83a6919ae,
         type: 3}

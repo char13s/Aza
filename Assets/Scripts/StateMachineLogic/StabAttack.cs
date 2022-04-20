@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class StabAttack : StateMachineBehaviour
 {
+    [SerializeField] private float moveSpeed;
     [SerializeField] private float hitOn;
     [SerializeField] private float hitOff;
-
+    Player player;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-         Player.GetPlayer().StabHitBox.SetActive(true);
-
+        player = Player.GetPlayer();
+        player.StabHitBox.SetActive(true);
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         if (stateInfo.normalizedTime >= hitOn && stateInfo.normalizedTime <= hitOff) {
-           
+            player.CharCon.Move(player.transform.forward * moveSpeed*Time.deltaTime);
             
         }
         else {
-            Player.GetPlayer().StabHitBox.SetActive(false);
+           player.StabHitBox.SetActive(false);
         }
     }
 }

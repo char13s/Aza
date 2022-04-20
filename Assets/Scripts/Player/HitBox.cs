@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using XInputDotNetPure;
+//using XInputDotNetPure;
 #pragma warning disable 0649
 public class HitBox : MonoBehaviour {
     private Player pc;
@@ -62,10 +62,10 @@ public class HitBox : MonoBehaviour {
 
 
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.CompareTag("Enemy") && !enemies.Contains(other.gameObject)) {
+        if (!enemies.Contains(other.gameObject)) {
             Instantiate(effects, other.gameObject.transform);
 
-            if (other != null && other.GetComponent<Enemy>() && !enemies.Contains(other.gameObject)) {
+            if (other != null && other.GetComponent<EnemyBody>() && !enemies.Contains(other.gameObject)) {
                 if (enemies.Contains(other.gameObject)) {
                     
                 }
@@ -74,11 +74,11 @@ public class HitBox : MonoBehaviour {
                     onEnemyHit();
                 }
                 enemies.Add(other.gameObject);
-                other.GetComponent<Enemy>().CalculateDamage(0);
+                //other.GetComponent<Enemy>().CalculateDamage(0);
                 //other.GetComponent<Enemy>().KnockBack(HitKnockback());
                 Knockback(other.gameObject);
                 //other.GetComponent<Enemy>().Grounded = false;
-                GamePad.SetVibration(0, 0.2f, 0.2f);
+                //GamePad.SetVibration(0, 0.2f, 0.2f);
                 StartCoroutine(StopRumble());
             }
         }
@@ -96,7 +96,7 @@ public class HitBox : MonoBehaviour {
     private IEnumerator StopRumble() {
         YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
-        GamePad.SetVibration(0, 0, 0);
+        //GamePad.SetVibration(0, 0, 0);
     }
     private void OnTriggerExit(Collider other) {
         //EnemyImAttacking = null;

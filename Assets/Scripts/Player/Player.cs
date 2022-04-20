@@ -62,20 +62,20 @@ public class Player : MonoBehaviour
     //public List<Items> inventory;
     [SerializeField] private GameObject demonSword;
     [SerializeField] private GameObject demonSwordBack;
-    [SerializeField] private GameObject demonFistLeft;
-    [SerializeField] private GameObject demonFistRight;
-    [SerializeField] private GameObject scythe;
-    [SerializeField] private GameObject angelSword;
-    [SerializeField] private GameObject fakeAngelSword;
-    [SerializeField] private GameObject guitar;
-    [SerializeField] private GameObject bow;
-    [SerializeField] private GameObject attackBow;
-    [SerializeField] private GameObject mask;
-    [SerializeField] private GameObject trail;
-    [SerializeField] private GameObject shield;
-    [SerializeField] private GameObject shieldBack;
-    [SerializeField] private GameObject axe;
-    [SerializeField] private GameObject outaBed;
+    //[SerializeField] private GameObject demonFistLeft;
+    //[SerializeField] private GameObject demonFistRight;
+    //[SerializeField] private GameObject scythe;
+    //[SerializeField] private GameObject angelSword;
+    //[SerializeField] private GameObject fakeAngelSword;
+    //[SerializeField] private GameObject guitar;
+    //[SerializeField] private GameObject bow;
+    //[SerializeField] private GameObject attackBow;
+    //[SerializeField] private GameObject mask;
+    //[SerializeField] private GameObject trail;
+    //[SerializeField] private GameObject shield;
+    //[SerializeField] private GameObject shieldBack;
+    //[SerializeField] private GameObject axe;
+    //[SerializeField] private GameObject outaBed;
     #endregion
     #region Animation States
     [Space]
@@ -85,6 +85,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform headBone;
     //[SerializeField] private Vector3 moveBoneForward = new Vector3(0, 0, 1);
     [SerializeField] private Vector3 moveBoneRight = new Vector3(1, 0, 0);
+    private bool attack;
+    private bool airAttack;
 
     private bool grounded;
     private bool blocking;
@@ -135,27 +137,27 @@ public class Player : MonoBehaviour
     [Space]
     [Header("References To Things on Zend")]
     [SerializeField] private GameObject leftPoint;
-    [SerializeField] private GameObject arrowPoint;
+    //[SerializeField] private GameObject arrowPoint;
     [SerializeField] private GameObject farHitPoint;
 
-    [SerializeField] private GameObject groundChecker;
+    //[SerializeField] private GameObject groundChecker;
     [SerializeField] private GameObject battleCamTarget;
     [SerializeField] private GameObject zend;
     [SerializeField] private GameObject zendHair;
     [SerializeField] private GameObject zendHead;
-    [SerializeField] private GameObject fireTrail;
-    [SerializeField] private GameObject fireCaster;
+    //[SerializeField] private GameObject fireTrail;
+    //[SerializeField] private GameObject fireCaster;
     [SerializeField] private GameObject devilFoot;
     [SerializeField] private GameObject leftHand;
     [SerializeField] private GameObject rightHand;
     [SerializeField] private GameObject zaWarudosRange;
-    [SerializeField] private GameObject pauseMenu;
+    //[SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject centerPoint;
     [SerializeField] private GameObject centerBodyPoint;
     [SerializeField] private GameObject highPoint;
     [SerializeField] private GameObject hitPoint;
     [SerializeField] private GameObject jumpPoint;
-    [SerializeField] private GameObject woodenSword;
+    //[SerializeField] private GameObject woodenSword;
 
     [Space]
     [Header("OtherWorldyFeatures")]
@@ -173,9 +175,9 @@ public class Player : MonoBehaviour
     //[SerializeField] private GameObject reactionRange;
     [Space]
     [Header("HitBoxes")]
-    [SerializeField] private GameObject AoeHitbox;
-    [SerializeField] private GameObject forwardHitbox;
-    [SerializeField] private GameObject shieldHitBox;
+    [SerializeField] private GameObject aoeHitbox;
+    //[SerializeField] private GameObject forwardHitbox;
+    //[SerializeField] private GameObject shieldHitBox;
     #endregion
     [Space]
     [Header("Buttons")]
@@ -183,10 +185,10 @@ public class Player : MonoBehaviour
     [SerializeField] private SkillButton circle;
     [SerializeField] private SkillButton square;
     [SerializeField] private SkillButton x;
-    [SerializeField] private SpellTagSlot L1Triangle;
-    [SerializeField] private SpellTagSlot L1Circle;
-    [SerializeField] private SpellTagSlot L1Square;
-    [SerializeField] private SpellTagSlot L1X;
+    //[SerializeField] private SpellTagSlot L1Triangle;
+    //[SerializeField] private SpellTagSlot L1Circle;
+    //[SerializeField] private SpellTagSlot L1Square;
+    //[SerializeField] private SpellTagSlot L1X;
     private static Player instance;
 
 
@@ -208,6 +210,7 @@ public class Player : MonoBehaviour
     private int bulbs;
     private Rigidbody rbody;
     private BasicHeadController headController;
+    private PlayerMovement playerMove;
     #region Constructors
     internal Inventory items = new Inventory();
     internal Inventory weaponInvent = new Inventory();
@@ -266,9 +269,9 @@ public class Player : MonoBehaviour
     public Animator Anim { get => anim; set => anim = value; }
 
     public bool PerfectGuard { get => perfectGuard; set => perfectGuard = value; }
-    public GameObject ForwardHitbox { get => forwardHitbox; set => forwardHitbox = value; }
-    public GameObject FireTrail { get => fireTrail; set => fireTrail = value; }//might have to get rid of
-    public GameObject AoeHitbox1 { get => AoeHitbox; set => AoeHitbox = value; }
+    //public GameObject ForwardHitbox { get => forwardHitbox; set => forwardHitbox = value; }
+    //public GameObject FireTrail { get => fireTrail; set => fireTrail = value; }//might have to get rid of
+    public GameObject AoeHitbox { get => aoeHitbox; set => aoeHitbox = value; }
 
     public bool LockedOn { get => lockedOn; set { lockedOn = value; anim.SetBool("Lock", lockedOn); anim.SetBool("AttackStance", lockedOn); if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }//actual player locked on
 
@@ -308,7 +311,7 @@ public class Player : MonoBehaviour
 
     public float JumpForce { get => jumpForce; set => jumpForce = value; }
     public GameObject JumpPoint { get => jumpPoint; set => jumpPoint = value; }
-    public GameObject ShieldHitBox { get => shieldHitBox; set => shieldHitBox = value; }
+    //public GameObject ShieldHitBox { get => shieldHitBox; set => shieldHitBox = value; }
     public AudioSource ClothesSfx { get => clothesSfx; set => clothesSfx = value; }
     public bool Drawn { get => drawn; set { drawn = value; anim.SetBool("Drawn", drawn); } }
 
@@ -316,10 +319,10 @@ public class Player : MonoBehaviour
     public Transform MovementBone { get => movementBone; set => movementBone = value; }
     public GameObject LeftPoint { get => leftPoint; set => leftPoint = value; }
     public int ArrowType { get => arrowType; set => arrowType = value; }
-    public GameObject ArrowPoint { get => arrowPoint; set => arrowPoint = value; }
+    //public GameObject ArrowPoint { get => arrowPoint; set => arrowPoint = value; }
     public GameObject KatanaHitbox { get => katanaHitbox; set => katanaHitbox = value; }
-    public GameObject Scythe { get => scythe; set => scythe = value; }
-    public GameObject AngelSword { get => angelSword; set => angelSword = value; }
+    //public GameObject Scythe { get => scythe; set => scythe = value; }
+    //public GameObject AngelSword { get => angelSword; set => angelSword = value; }
     public GameObject ScytheHitBox { get => scytheHitBox; set => scytheHitBox = value; }
     public float L { get => l; set { l = value; anim.SetFloat("LStick", l); } }
 
@@ -340,9 +343,12 @@ public class Player : MonoBehaviour
 
     public bool Blocking { get => blocking; set => blocking = value; }
     public GameObject MainCam { get => mainCam; set => mainCam = value; }
-    public bool AttackState { get => attackState; set { attackState = value; anim.SetBool("Attacking", attackState); } }
+    public bool AttackState { get => attackState; set { attackState = value;  } }
 
     public CharacterController CharCon { get => charCon; set => charCon = value; }
+    public bool Attack { get => attack; set { attack = value;anim.SetBool("Attacking", attack); } }
+    public PlayerMovement PlayerMove { get => playerMove; set => playerMove = value; }
+    public bool AirAttack { get => airAttack; set => airAttack = value; }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 
@@ -380,8 +386,8 @@ public class Player : MonoBehaviour
 
         GroundSound.sendSound += GroundSoundManagement;
         FormSwitch.inviciblity += Endure;
-        MovingStates.returnSpeed += MoveBro;
-        BaseBehavoirs.grounded += ZeroVelocity;
+        //MovingStates.returnSpeed += MoveBro;
+        //BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
         ShadowShot.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
@@ -397,6 +403,7 @@ public class Player : MonoBehaviour
         #region 
         PlayerAnimationEvents.kickback += AddForceToPlayer;
         #endregion
+        PlayerMove = GetComponent<PlayerMovement>();
         ClothesSfx = zend.GetComponent<AudioSource>();
         Anim = zend.GetComponent<Animator>();
         //rbody = GetComponent<Rigidbody>();
@@ -433,7 +440,7 @@ public class Player : MonoBehaviour
     #endregion
 
     #region new code
-    private void Move() {
+    /*private void Move() {
         DirectionV = MainCam.transform.TransformDirection(new Vector3(DisplacementV.x, 0, DisplacementV.y).normalized);
         if (DisplacementV.magnitude >= 0.1f) {
             Moving = true;
@@ -460,9 +467,9 @@ public class Player : MonoBehaviour
         }
         //rBody.MovePosition(rBody.position+speed);
         //charaCon.SimpleMove(speed);
-    }
+    }*/
     private void RecieveAttack() {
-        AttackState = false;
+        Attack = false;
     }
     #endregion
 
@@ -621,13 +628,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Dodge(float move) {
-        //RBody.velocity = transform.right * move;
-    }
-    private void Jump() {
-        SkillId = 10;
-        //RBody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
-    }
+    //private void Dodge(float move) {
+    //    //RBody.velocity = transform.right * move;
+    //}
+    //private void Jump() {
+    //    SkillId = 10;
+    //    //RBody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
+    //}
     public void TargetingLogic(bool val) {
         if (val) {
             LockedOn = true;
@@ -686,15 +693,15 @@ public class Player : MonoBehaviour
     }
     private void PowerUpp() {
         mpDrain = StartCoroutine(MpDrain());
-        mask.SetActive(true);
+        //mask.SetActive(true);
         PoweredUp = true;
         PowerUp = true;
     }
 
 
-    private void ZeroVelocity() {
-       //rBody.velocity = new Vector3(0, 0, 0);
-    }
+    //private void ZeroVelocity() {
+    //   //rBody.velocity = new Vector3(0, 0, 0);
+    //}
     #endregion
 
     #region Sounds

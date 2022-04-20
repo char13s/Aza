@@ -4,62 +4,45 @@ using UnityEngine;
 #pragma warning disable 0649
 public class AttackingBehavior : StateMachineBehaviour
 {
-    private GameObject castingFlame;
+    [SerializeField]private bool hasNext;
+    [SerializeField]private string nextAttack;
+    private Player player;
     //[SerializeField] private GameObject slash;
     private bool pressed;
+    private bool shoot;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        player = Player.GetPlayer();
+        player.Attack=false;
         pressed = false;
-        Player.GetPlayer().HitBox.SetActive(true);
-        //current = ;
-        //Player.GetPlayer().RBody.isKinematic = false;
-
-        //Player.GetPlayer().RBody.AddForce(Player.GetPlayer().transform.forward * 105, ForceMode.VelocityChange);
-
+        shoot = false;
+        Debug.Log("STate Entered");
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
-        //if (stateInfo.normalizedTime > 0.9) { Player.GetPlayer().RBody.isKinematic = true; }
-        //float time = 0;
-        /*if (Input.GetButtonDown("Square") && !pressed)
-        {
+        if (player.Attack) {
             pressed = true;
-            Player.GetPlayer().HitCounter++;
         }
-        switch (Player.GetPlayer().HitCounter)
-        {
-            case 0:
-                time = 0.8f;
-                break;
-            case 1:
-                time = 0.9f;
-                break;
-            case 2:
-                time = 0.9f;
-                break;
-            case 3:
-                time = 0.5f;
-                break;
+
+        if (stateInfo.normalizedTime >= 0.9f) {
+  
+            if (pressed && hasNext) {
+                animator.Play(nextAttack);
+            }
+            else if (shoot) {
+                animator.Play("ShadowShot");
+            }
         }
-        if (stateInfo.normalizedTime > time) {  }*/
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Player.GetPlayer().HitBox.SetActive(false);
-        //Debug.Log("Pressed: "+pressed);
-        /*if (!pressed)
-        {
-            Player.GetPlayer().HitCounter = 0;
-
+        if (pressed && hasNext) {
+            animator.Play(nextAttack);
         }
-        if (Player.GetPlayer().HitCounter >= 3)
-        {
-            Player.GetPlayer().HitCounter = 0;
+        else if (shoot) {
+            animator.Play("ShadowShot");
+        }
 
-
-        }*/
-        pressed = false;
 
     }
 

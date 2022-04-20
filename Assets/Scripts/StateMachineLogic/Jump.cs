@@ -13,6 +13,7 @@ public class Jump : StateMachineBehaviour
         pc = Player.GetPlayer();
         pc.Jumping = false;
         pc.Grounded = false;
+        
         //pc.RBody.velocity = new Vector3(0, 0, 0);
         //pc.RBody.AddForce(pc.transform.forward * 120, ForceMode.Impulse);
         //pc.RBody.AddForce(new Vector3(0, move, 0), ForceMode.Impulse);
@@ -31,6 +32,7 @@ public class Jump : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        animator.ResetTrigger("Jump");
         //Player.GetPlayer().GroundChecker.SetActive(true);
     }
 

@@ -37,57 +37,48 @@ public class CommandInputBehavior : StateMachineBehaviour {
         if (sendsfx != null) {
             sendsfx(swing);
         }
-        pc.Guard = false;
-        if (!combo) {
-            pc.CmdInput = 0;
-        }
-        else {
-            pc.CmdInput = 1;
-        }
-        pc.CmdInput = 0;
-        pc.MoveSpeed = 0;
         //pc.Nav.enabled = false;
 		//pc.RBody.isKinematic = false;
         //pc().Trail.SetActive(true);
-        pc.transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
-        if (stab) {
-            if (stopMove != null) {
-                stopMove();
-            }
-        }
+        //pc.transform.position+= Player.GetPlayer().transform.forward * move*Time.deltaTime;
+        //if (stab) {
+        //    if (stopMove != null) {
+        //        stopMove();
+        //    }
+        //}
         //GamePad.SetVibration(0,0.02f,0.02f);
         
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (stateInfo.normalizedTime > 0.1f && stateInfo.normalizedTime < 0.6f) {
-            if (!hit) {
-                pc.transform.position += pc.transform.forward * move * Time.deltaTime;
-            }
-            
-            if (reminant != null) { 
-            Instantiate(reminant, pc.transform.position, pc.transform.rotation);
-            }
-        }
-		if (stateInfo.normalizedTime > 0.4&&slash!=null && stateInfo.normalizedTime < 0.6f&&!fired) {
-			Instantiate(slash,pc.CenterPoint.transform.position, pc.transform.rotation);
-            fired = true;
-		}
+        //if (stateInfo.normalizedTime > 0.1f && stateInfo.normalizedTime < 0.6f) {
+        //    if (!hit) {
+        //        pc.transform.position += pc.transform.forward * move * Time.deltaTime;
+        //    }
+        //    
+        //    if (reminant != null) { 
+        //    Instantiate(reminant, pc.transform.position, pc.transform.rotation);
+        //    }
+        //}
+		//if (stateInfo.normalizedTime > 0.4&&slash!=null && stateInfo.normalizedTime < 0.6f&&!fired) {
+		//	Instantiate(slash,pc.CenterPoint.transform.position, pc.transform.rotation);
+        //    fired = true;
+		//}
         //Player.GetPlayer().transform.position = Vector3.MoveTowards();
     }
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (standoPowah != null) { 
-        Instantiate(standoPowah, pc.transform.position , pc.transform.rotation);
-        }
-        hit = false;
-        fired = false;
-        GamePad.SetVibration(0, 0, 0);
-        if (resetMove != null) {
-            resetMove();
-        }
+        //if (standoPowah != null) { 
+        //Instantiate(standoPowah, pc.transform.position , pc.transform.rotation);
+        //}
+        //hit = false;
+        //fired = false;
+        //GamePad.SetVibration(0, 0, 0);
+        //if (resetMove != null) {
+        //    resetMove();
+        //}
         //pc.MoveSpeed = 6;
         //Player.GetPlayer().Trail.SetActive(false); 
         //Player.GetPlayer().Nav.enabled = true;

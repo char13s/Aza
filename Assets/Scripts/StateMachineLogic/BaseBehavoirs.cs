@@ -16,6 +16,9 @@ public class BaseBehavoirs : StateMachineBehaviour
         baseB.Invoke();
         pc = Player.GetPlayer();
         Defaults();
+        animator.ResetTrigger("HoldAttack");
+        animator.ResetTrigger("Attack");
+
     }
     private void Defaults() {
         pc.SkillId = 0;
@@ -23,6 +26,7 @@ public class BaseBehavoirs : StateMachineBehaviour
         //pc.MoveSpeed = 6;
         pc.SpinAttack = false;
         pc.AirCombo = 0;
+       
     }
 
 }

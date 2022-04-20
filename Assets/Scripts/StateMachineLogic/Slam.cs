@@ -8,7 +8,7 @@ public class Slam : StateMachineBehaviour {
     [SerializeField] private bool spin;
     private Player player;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        AoeHitbox = Player.GetPlayer().AoeHitbox1;
+        AoeHitbox = Player.GetPlayer().AoeHitbox;
         //if (slam != null) {
         //    slam(10375);
         //}

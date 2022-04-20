@@ -8,7 +8,7 @@ public class TrailBehavior : StateMachineBehaviour
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        fireTrail = Player.GetPlayer().FireTrail;
+        //fireTrail = Player.GetPlayer().FireTrail;
         
         
     }

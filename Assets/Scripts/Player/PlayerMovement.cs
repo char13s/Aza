@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 speed;
 
     // gravity variables
-    float gravity = -9.8f;
+    float gravity = -4.9f;
     float groundedGravity = -0.5f;
     // jump pamrs
     #region Jump parms
@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
             print("fuck that anim");
         }
         SetUpJump();
-        MovingStates.returnSpeed += MoveBro;
+        MovingStates.returnSpeed += Move;
         //PlayerAnimationEvents.setjump += Jumping;
         //DashBehavior.dash += Dash;
     }
@@ -75,9 +75,17 @@ public class PlayerMovement : MonoBehaviour
         Rotate();
         //print(speed);
         //print(charCon.isGrounded);
-        charCon.Move(speed * Time.deltaTime);
+        
+        
         Anim.SetBool("Grounded", charCon.isGrounded);
-        Gravity();
+        if (!player.AirAttack) {
+            charCon.Move(speed * Time.deltaTime);
+            Gravity();
+        }
+        else {
+            charCon.Move(new Vector3(0,-0.5f,0) * Time.deltaTime);
+        }
+            
         HandleJump();
     }
     private void Gravity() {
@@ -109,9 +117,16 @@ public class PlayerMovement : MonoBehaviour
             rot.y = 0;
             qTo = Quaternion.LookRotation(Direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, qTo, Time.deltaTime * rotationSpeed);
+            Vector3 vector = Direction.normalized;
+            speed.x = moveSpeed * vector.x;
+            speed.z = moveSpeed * vector.z;
+
         }
         else {
             Moving = false;
+            MoveSpeed = 0;
+            speed.x  =0;
+            speed.z = 0;
         }
 
     }
@@ -126,20 +141,7 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false;
         }
     }
-    private void MoveBro(float move) {
-
-        Vector3 vector = Direction.normalized;
-        speed.x = move * vector.x;
-        speed.z = move * vector.z;
-        print("Moving bro");
-        //speed = move * Direction.normalized;
-        //speed.y = RBody.velocity.y;
-        //RBody.velocity = speed;
-        // RBody.MovePosition(RBody.position+(speed*Time.deltaTime));
-
-        //rBody.MovePosition(rBody.position+speed);
-
-    }
+    private void Move(float move) => MoveSpeed = move;
     void SetUpJump() {
         float timeToApex = maxJumpTime / 2;
         gravity = (-2 * maxJumpHeight) / Mathf.Pow(timeToApex, 2);

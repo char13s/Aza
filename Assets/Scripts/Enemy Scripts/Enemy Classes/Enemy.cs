@@ -514,7 +514,11 @@ public class Enemy : MonoBehaviour
     }
     public void CalculateDamage(float addition) {
         if (!dead) {
-            int dmg = Mathf.Clamp((pc.stats.Attack - stats.Defense), 1, 999);
+            Debug.Log((addition));
+            Debug.Log((pc.stats.Attack));
+            int dmg = (int)Mathf.Clamp(((pc.stats.Attack*addition) - stats.Defense), 1, 999);
+            Debug.Log((pc.stats.Attack * addition));
+            Debug.Log(stats.Defense);
             HealthLeft -= dmg;
             /*hitSplat.GetComponent<HitText>().Text = dmg.ToString();
             //HitText hitSplat= new HitText();

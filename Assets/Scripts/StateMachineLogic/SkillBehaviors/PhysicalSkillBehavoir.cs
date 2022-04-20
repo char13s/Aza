@@ -4,50 +4,23 @@ using UnityEngine;
 
 public class PhysicalSkillBehavoir : StateMachineBehaviour
 {
-    private GameObject forwardHitbox;
-    private GameObject hitbox;
+    [SerializeField] private Vector3 direction;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float hitOn;
+    [SerializeField] private float hitOff;
+    Player player;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        switch (Player.GetPlayer().SkillId)
-        {
-            case 6:
-                forwardHitbox = Player.GetPlayer().ForwardHitbox;
-                forwardHitbox.SetActive(true);
-
-                break;
-            case 7:
-                Debug.Log("Hit box should be on");
-                hitbox = Player.GetPlayer().HitBox;
-                hitbox.SetActive(true);
-                break;
-            case 9:
-                hitbox = Player.GetPlayer().HitBox;
-                hitbox.SetActive(true);
-
-                break;
-        }
+        player = Player.GetPlayer();
 
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        float time = 0.9f;
-        if (stateInfo.normalizedTime > time)
-        {
-            switch (Player.GetPlayer().SkillId)
-            {
-                case 6:
-                    forwardHitbox.SetActive(false);
-                    break;
-                case 7:
-                    Debug.Log("Hit box should be off");
-                    hitbox.SetActive(false);
-                    break;
-                case 9:
-                    hitbox.SetActive(false);
-                    break;
-            }
-        }
+        
+        if (stateInfo.normalizedTime >= hitOn && stateInfo.normalizedTime <= hitOff) {
+            player.CharCon.Move(moveSpeed * Time.deltaTime * direction);
 
+        }
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

@@ -11,5 +11,6 @@ public class AirComboReset : StateMachineBehaviour
     }
     private void Defaults() {
         pc.AirCombo = 0;
+        pc.AirAttack = false;
     }
 }

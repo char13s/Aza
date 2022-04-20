@@ -48,7 +48,7 @@ PlayableDirector:
   m_InitialTime: 0
   m_SceneBindings:
   - key: {fileID: -1228836134887873514, guid: cec988c3b37bb0449a142e3d4e0e97cb, type: 2}
-    value: {fileID: 1490771814}
+    value: {fileID: 0}
   - key: {fileID: -9074089796290494045, guid: cec988c3b37bb0449a142e3d4e0e97cb, type: 2}
     value: {fileID: 3705034525436363580}
   m_ExposedReferences:
@@ -39255,7 +39255,6 @@ GameObject:
   - component: {fileID: 3705034525570433232}
   - component: {fileID: 3705034525570433235}
   - component: {fileID: 3705034525570433234}
-  - component: {fileID: 1490771814}
   - component: {fileID: 1490771826}
   - component: {fileID: 1490771827}
   m_Layer: 0
@@ -39671,44 +39670,24 @@ MonoBehaviour:
   mainCam: {fileID: 0}
   demonSword: {fileID: 3705034525004636197}
   demonSwordBack: {fileID: 3705034525550965093}
-  demonFistLeft: {fileID: 3705034525824732812}
-  demonFistRight: {fileID: 3705034524392970086}
-  scythe: {fileID: 3705034525986671432}
-  angelSword: {fileID: 3705034524568778401}
-  fakeAngelSword: {fileID: 3705034524817022554}
-  guitar: {fileID: 3705034525221710481}
-  bow: {fileID: 0}
-  attackBow: {fileID: 3705034526203301442}
-  mask: {fileID: 3705034524940351760}
-  trail: {fileID: 3705034525850297962}
-  shield: {fileID: 3705034525788993851}
-  shieldBack: {fileID: 3705034526126341060}
-  axe: {fileID: 3705034524226559222}
-  outaBed: {fileID: 0}
   movementBone: {fileID: 3705034525325476307}
   headBone: {fileID: 3705034526204834621}
   moveBoneRight: {x: -1, y: 0, z: 0}
   leftPoint: {fileID: 3705034525993987540}
-  arrowPoint: {fileID: 0}
   farHitPoint: {fileID: 3705034525532358334}
-  groundChecker: {fileID: 3705034524203933576}
   battleCamTarget: {fileID: 3705034524189776819}
   zend: {fileID: 3705034525436363712}
   zendHair: {fileID: 3705034524455994569}
   zendHead: {fileID: 3705034526182187611}
-  fireTrail: {fileID: 0}
-  fireCaster: {fileID: 3705034526131376400}
   devilFoot: {fileID: 0}
   leftHand: {fileID: 3705034526037193700}
   rightHand: {fileID: 3705034524856267927}
   zaWarudosRange: {fileID: 3705034524572765007}
-  pauseMenu: {fileID: 0}
   centerPoint: {fileID: 3705034524674759198}
   centerBodyPoint: {fileID: 3705034525922654097}
   highPoint: {fileID: 3705034525648051709}
   hitPoint: {fileID: 3705034526081219814}
   jumpPoint: {fileID: 3705034524132514513}
-  woodenSword: {fileID: 3705034525170995043}
   zendsRHorn: {fileID: 3705034524247286986}
   zendsLHorn: {fileID: 3705034525068220543}
   lightning: {fileID: 3705034525098680008}
@@ -39719,36 +39698,11 @@ MonoBehaviour:
   demonScabbard: {fileID: 3705034526135619474}
   angelScabbard: {fileID: 3705034525703465839}
   angelSwordSide: {fileID: 3705034524817022554}
-  AoeHitbox: {fileID: 3705034525413788355}
-  forwardHitbox: {fileID: 3705034525447559073}
-  shieldHitBox: {fileID: 3705034524777522086}
+  aoeHitbox: {fileID: 0}
   triangle: {fileID: 0}
   circle: {fileID: 0}
   square: {fileID: 0}
   x: {fileID: 0}
-  L1Triangle: {fileID: 0}
-  L1Circle: {fileID: 0}
-  L1Square: {fileID: 0}
-  L1X: {fileID: 0}
---- !u!95 &1490771814
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3705034525570433240}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7210c3e3353b1214c8d9569e4af6196c, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &1490771826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66999,6 +66953,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34cd3236d2d09374e88fc09f065b5f00, type: 3}
+--- !u!4 &3705034525340318550 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5460835980516621029, guid: 34cd3236d2d09374e88fc09f065b5f00,
+    type: 3}
+  m_PrefabInstance: {fileID: 8692549956812849587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3705034525340318551 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5460835980516621028, guid: 34cd3236d2d09374e88fc09f065b5f00,
@@ -67011,9 +66971,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4687e6f1775b24798aa9a324bf76b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &3705034525340318550 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5460835980516621029, guid: 34cd3236d2d09374e88fc09f065b5f00,
-    type: 3}
-  m_PrefabInstance: {fileID: 8692549956812849587}
-  m_PrefabAsset: {fileID: 0}

@@ -9,10 +9,24 @@ public class PlayerAnimationEvents : MonoBehaviour
     [SerializeField] private float kickBack;
     [SerializeField] private float forwardStep;
     // Start is called before the first frame update
+    #region MOvement
     public void KickBack() {//code for quick back up
         kickback.Invoke(kickBack);
     }
     public void RollForward() {
         kickback.Invoke(-forwardStep);
     }
+    #endregion
+
+    #region Attack related
+    public void SetAttackDelay() { 
+        
+    }
+    public void CanSwitchToShoot() { 
+    
+    }
+    public void SetNextAttack() { 
+    
+    }
+    #endregion
 }

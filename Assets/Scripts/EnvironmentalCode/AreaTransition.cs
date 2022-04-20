@@ -128,7 +128,7 @@ public class AreaTransition : MonoBehaviour
             transition();
         }
         //Player.GetPlayer().Nav.enabled = true;
-        Player.GetPlayer().Grounded = false;
+        //Player.GetPlayer().Grounded = false;
         
     }
 }
