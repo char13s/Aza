@@ -4806,7 +4806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b7d90f61be522c4e93e7a960ed7b7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boom: {fileID: 2425362128049503189, guid: 6dae887dcd869434f800a328e6c69a9c, type: 3}
+  boom: {fileID: 1013982790697369725, guid: 62b58099f714fca4fb48c079a5852e48, type: 3}
   speed: 35
 --- !u!65 &3058134660697915901
 BoxCollider:

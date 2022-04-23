@@ -71,23 +71,25 @@ public class PlayerMovement : MonoBehaviour
         //PlayerAnimationEvents.setjump += Jumping;
         //DashBehavior.dash += Dash;
     }
-    private void Update() {
+    private void FixedUpdate() {
         Rotate();
         //print(speed);
         //print(charCon.isGrounded);
         
         
         Anim.SetBool("Grounded", charCon.isGrounded);
+        if (!player.InTeleport) { 
         if (!player.AirAttack) {
             charCon.Move(speed * Time.deltaTime);
             Gravity();
         }
         else {
             charCon.Move(new Vector3(0,-0.5f,0) * Time.deltaTime);
-        }
+        }}
             
         HandleJump();
     }
+
     private void Gravity() {
         IsFalling = speed.y <= 0.0f;
         //float fallMultipler =0.5f;

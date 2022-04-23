@@ -76,8 +76,8 @@ public class PlayerCommands : MonoBehaviour
             else {
                 AirCombinations();
             }
-
             AdvancedMovement();
+            RelicCombinations();
             if (player.CombatAnimations == 0) {
                 MovementInputs();
             }
@@ -232,6 +232,29 @@ public class PlayerCommands : MonoBehaviour
             anim.SetTrigger("AirDownAttack");
         }
     }
+    private void RelicCombinations() {
+        if (inputs == Inputs.Circle && direction == Inputs.Up) {
+
+            if (sendInput != null) {
+                sendInput("Up + Circle");
+            }
+            if (upCircle != null) {
+                upCircle();
+            }
+            playerInputs.Relic.UpCircle();
+            ResetChain();
+        }
+        if (inputs == Inputs.Circle && direction == Inputs.Down) {
+
+            if (sendInput != null) {
+                sendInput("Down + Circle");
+            }
+            if (downCircle != null) {
+                downCircle();
+            }
+            ResetChain();
+        }
+    }
     private void InputCombinations() {
         if (inputs == Inputs.Square && direction == Inputs.Up) {
             Debug.Log("Up Attack!");
@@ -274,27 +297,7 @@ public class PlayerCommands : MonoBehaviour
                 upTriangle();
             }
         }
-        if (inputs == Inputs.Circle && direction == Inputs.Up) {
-
-            if (sendInput != null) {
-                sendInput("Up + Circle");
-            }
-            if (upCircle != null) {
-                upCircle();
-            }
-            playerInputs.Relic.UpCircle();
-            ResetChain();
-        }
-        if (inputs == Inputs.Circle && direction == Inputs.Down) {
-
-            if (sendInput != null) {
-                sendInput("Down + Circle");
-            }
-            if (downCircle != null) {
-                downCircle();
-            }
-            ResetChain();
-        }
+        
     }
     private void AdvancedMovement() {
         

@@ -459,25 +459,31 @@ public class Enemy : MonoBehaviour
         EnemyHp.value = stats.HealthLeft;
     }
     private void OnHit() {
-       /* //sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
-        if (sendsfx != null) {
-            sendsfx(AudioManager.GetAudio().SlimeHit);
-        }
-        if (state != EnemyAiStates.Null) {
-            hitCoroutine = StartCoroutine(HitCoroutine());
-        }
-        Instantiate(cut, transform);
-       private IEnumerator HitCoroutine() {
-        YieldInstruction wait = new WaitForSeconds(3.5f);
-        yield return wait;
-        Hit = false;
-        State = EnemyAiStates.Idle;
-    }*/
-
+        /* //sound.PlayOneShot(AudioManager.GetAudio().SlimeHit);
+         if (sendsfx != null) {
+             sendsfx(AudioManager.GetAudio().SlimeHit);
+         }
+         if (state != EnemyAiStates.Null) {
+             hitCoroutine = StartCoroutine(HitCoroutine());
+         }
+         Instantiate(cut, transform);
+        private IEnumerator HitCoroutine() {
+         YieldInstruction wait = new WaitForSeconds(3.5f);
+         yield return wait;
+         Hit = false;
+         State = EnemyAiStates.Idle;
+     }*/
+        rbody.useGravity = false;
+        StartCoroutine(waitToFall());
     }
-  
-    
+
+
     #region Coroutines
+    IEnumerator waitToFall() { 
+        YieldInstruction wait =new WaitForSeconds(1);
+        yield return wait;
+        rbody.useGravity = true;
+    }
     #endregion
 
     private float Distance => Vector3.Distance(pc.transform.position, transform.position);

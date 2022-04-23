@@ -7,7 +7,7 @@ public class LevelManager : MonoBehaviour
 {
     public static event UnityAction off;
     public static event UnityAction sendToMain;
-    
+    public static event UnityAction<bool> levelFinished;
     private int currentLevel;
     // Start is called before the first frame update
     void OnEnable() {
@@ -36,7 +36,10 @@ public class LevelManager : MonoBehaviour
     }
     private void OnLevelFinishedLoading(Scene arg0, LoadSceneMode arg1) {
         StartCoroutine(ResetActiveScene());
-        
+        if (levelFinished != null) {
+            levelFinished(false);
+        }
+        print("level finished loading");
     }
     private IEnumerator ResetActiveScene() {
         YieldInstruction wait = new WaitForSeconds(0.2f);

@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     private float l;
     private bool cantDoubleJump = true;
     private bool inputSealed;
+    bool inTeleport;
     #region Attacking
     [Space]
     [Header("Attacking")]
@@ -343,12 +344,13 @@ public class Player : MonoBehaviour
 
     public bool Blocking { get => blocking; set => blocking = value; }
     public GameObject MainCam { get => mainCam; set => mainCam = value; }
-    public bool AttackState { get => attackState; set { attackState = value;  } }
+    public bool AttackState { get => attackState; set { attackState = value; } }
 
     public CharacterController CharCon { get => charCon; set => charCon = value; }
-    public bool Attack { get => attack; set { attack = value;anim.SetBool("Attacking", attack); } }
+    public bool Attack { get => attack; set { attack = value; anim.SetBool("Attacking", attack); } }
     public PlayerMovement PlayerMove { get => playerMove; set => playerMove = value; }
     public bool AirAttack { get => airAttack; set => airAttack = value; }
+    public bool InTeleport { get => inTeleport; set => inTeleport = value; }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 
@@ -368,7 +370,7 @@ public class Player : MonoBehaviour
         #region Event Subs
         Enemy.onHit += MpRegain;
         Enemy.guardBreak += GuardBreak;
-
+        LevelManager.levelFinished += SetInTeleport;
 
         GameController.respawn += RestoreHealth;
         GroundChecker.landed += SoundEffects;
@@ -430,7 +432,8 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate() {
-       // Move();
+        // Move();
+        //transform.position = transform.position +  new Vector3(0, 0, 1);
     }
     #region Helper Methods
     private void CheckPlayerHealth() {
@@ -475,10 +478,26 @@ public class Player : MonoBehaviour
 
     #region Ability Functions
     private void Teleportto() {
-        if (battleMode.EnemyTarget.Grounded)
+        inTeleport = true;
+        if (battleMode.EnemyTarget.Grounded) {
+            print("In the air i go");
             transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 4, -0.5f);
-        else
+        }
+        else {
             transform.position = battleMode.EnemyTarget.gameObject.transform.position + new Vector3(0, 0.5f, -0.5f);
+            print("In the air i go not");
+        }
+        StartCoroutine(WaitToLoad(false));
+    }
+    private void SetInTeleport(bool val) {
+        StartCoroutine(WaitToLoad(val));
+        print(val);
+    }
+    private IEnumerator WaitToLoad(bool val) {
+        yield return null;
+        yield return null;
+        inTeleport = val; 
+
     }
     private void ShootShadow() {
         Instantiate(effects.ShadowShot, leftHand.transform.position, Quaternion.identity);
@@ -679,7 +698,7 @@ public class Player : MonoBehaviour
         stats.MPLeft += 2;
     }
     private void GroundSlamForce(float force) {
-       /// RBody.mass = force;
+        /// RBody.mass = force;
     }
     private void Respawn() {
         transform.position = GameController.GetGameController().Spawn.transform.position;

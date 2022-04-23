@@ -91,22 +91,24 @@ public class PlayerInputs : MonoBehaviour
         }
     }
     private void OnAbility(InputValue value) {
-        if (!player.SkillButton) {
-            print("Circle");
-            if (value.isPressed) {
-                print("Circle has been pressed");
-                if (relic != null) {
-                    Relic.Circle();
-                }
-            }
-            else {
-                print("Circle has been released");
-                Relic.CircleReleased();
-            }
-        }
-        else {
-            player.SkillCircle();
-        }
+         if (!player.SkillButton) {
+             print("Circle");
+             if (value.isPressed) {
+                 print("Circle has been pressed");
+                 if (relic != null) {
+                     Relic.Circle();
+                 }
+             }
+             else {
+                 print("Circle has been released");
+                 Relic.CircleReleased();
+             }
+         }
+         else {
+             player.SkillCircle();
+         }
+        print("ran");
+        //transform.position = transform.position+ new Vector3(0,0, 1);
     }
     private void OnLockOn(InputValue value) {
         if (value.isPressed) {

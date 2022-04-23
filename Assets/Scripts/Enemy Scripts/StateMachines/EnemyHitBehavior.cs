@@ -9,5 +9,7 @@ public class EnemyHitBehavior : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         Enemy.UnsetHit();
         Debug.Log("Okay Im good now");
+        //enemy.Rbody.useGravity = false;
     }
+
 }
