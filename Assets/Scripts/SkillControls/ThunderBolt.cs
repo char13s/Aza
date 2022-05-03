@@ -10,6 +10,6 @@ public class ThunderBolt : StateMachineBehaviour
         pc = Player.GetPlayer();
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        Instantiate(bolt, pc.BattleCamTarget.transform);
+        Instantiate(bolt, pc.PlayerBody.BattleCamTarget.transform);
     }
 }

@@ -29,7 +29,7 @@ public class SuperSaiyanBehavior : StateMachineBehaviour
         if (Player.GetPlayer().PoweredUp) { 
         Instantiate(release, Player.GetPlayer().transform.position,Quaternion.identity);
         Instantiate(Aura, Player.GetPlayer().transform);
-        Player.GetPlayer().ZendHair.GetComponent<SkinnedMeshRenderer>().material= colorChange;
+        //Player.GetPlayer().ZendHair.GetComponent<SkinnedMeshRenderer>().material= colorChange;
         
         }Player.GetPlayer().stats.Attack *= 2;
         Player.GetPlayer().stats.Defense *= 2;

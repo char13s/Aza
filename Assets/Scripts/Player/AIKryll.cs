@@ -28,6 +28,8 @@ public class AIKryll : MonoBehaviour
     private AxisButton DpadUp = new AxisButton("DPad Up");
     private float maxTeleportLength=5;
     private float distFromZend;
+    [SerializeField]private float moveSpeed;
+
     public bool Kryll
     {
         get => kryll; set
@@ -227,7 +229,7 @@ private void Movement()
         if (Distance() >= 1)
         {
             transform.rotation = spawn.transform.rotation;
-            transform.position=Vector3.MoveTowards(transform.position, spawn.transform.position, 5.9f*Time.deltaTime);
+            transform.position=Vector3.MoveTowards(transform.position, spawn.transform.position, moveSpeed*Time.deltaTime);
             AnimStates = 1;
         }
         else {

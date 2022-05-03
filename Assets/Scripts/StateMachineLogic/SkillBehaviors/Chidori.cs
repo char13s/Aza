@@ -18,6 +18,6 @@ public class Chidori : StateMachineBehaviour
         }
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        Instantiate(chidori,pc.RightHand.transform);
+        Instantiate(chidori,pc.PlayerBody.RightHand.transform);
     }
 }

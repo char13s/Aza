@@ -7,7 +7,7 @@ public class SwordThrow : StateMachineBehaviour
     [SerializeField] private GameObject sword;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
-        Instantiate(sword, Player.GetPlayer().RightHand.transform.position, Quaternion.identity);
+        //Instantiate(sword, Player.GetPlayer().RightHand.transform.position, Quaternion.identity);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {

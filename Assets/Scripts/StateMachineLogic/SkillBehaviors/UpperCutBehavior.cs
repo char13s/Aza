@@ -24,7 +24,7 @@ public class UpperCutBehavior : StateMachineBehaviour
         if (pc.L >= 0)
             GoingUp = false;
         if (stateInfo.normalizedTime > 0.99f&&GoingUp) {
-            pc.transform.position = Vector3.MoveTowards(pc.transform.position, pc.HighPoint.transform.position, move * Time.deltaTime);
+            //pc.transform.position = Vector3.MoveTowards(pc.transform.position, pc.HighPoint.transform.position, move * Time.deltaTime);
             //pc.RBody.useGravity = false;
         }
     }

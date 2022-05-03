@@ -125,7 +125,6 @@ public class Player : MonoBehaviour
     #region Random stuff
     [Space]
     [Header("OtherFunctions")]
-    private Rigidbody rBody;
     private AudioSource sfx;
     private AudioSource clothesSfx;
     private PlayerEffects effects;
@@ -137,41 +136,30 @@ public class Player : MonoBehaviour
     private int arrowType;
     [Space]
     [Header("References To Things on Zend")]
-    [SerializeField] private GameObject leftPoint;
+    
     //[SerializeField] private GameObject arrowPoint;
-    [SerializeField] private GameObject farHitPoint;
+    
 
     //[SerializeField] private GameObject groundChecker;
-    [SerializeField] private GameObject battleCamTarget;
+    
     [SerializeField] private GameObject zend;
-    [SerializeField] private GameObject zendHair;
-    [SerializeField] private GameObject zendHead;
     //[SerializeField] private GameObject fireTrail;
     //[SerializeField] private GameObject fireCaster;
     [SerializeField] private GameObject devilFoot;
-    [SerializeField] private GameObject leftHand;
-    [SerializeField] private GameObject rightHand;
+
     [SerializeField] private GameObject zaWarudosRange;
     //[SerializeField] private GameObject pauseMenu;
-    [SerializeField] private GameObject centerPoint;
-    [SerializeField] private GameObject centerBodyPoint;
-    [SerializeField] private GameObject highPoint;
-    [SerializeField] private GameObject hitPoint;
-    [SerializeField] private GameObject jumpPoint;
+    
     //[SerializeField] private GameObject woodenSword;
 
     [Space]
     [Header("OtherWorldyFeatures")]
     [SerializeField] private GameObject zendsRHorn;
     [SerializeField] private GameObject zendsLHorn;
-    [SerializeField] private GameObject lightning;
-    [SerializeField] private GameObject fireAura;
+    
     [SerializeField] private GameObject halo;
-    [SerializeField] private GameObject fireTrailR;
-    [SerializeField] private GameObject fireTrailL;
-    [SerializeField] private GameObject demonScabbard;
-    [SerializeField] private GameObject angelScabbard;
-    [SerializeField] private GameObject angelSwordSide;
+    
+    
 
     //[SerializeField] private GameObject reactionRange;
     [Space]
@@ -209,7 +197,7 @@ public class Player : MonoBehaviour
     private Vector3 displacement;//world space 
     private int skullMask;
     private int bulbs;
-    private Rigidbody rbody;
+    private PlayerBodyObjects playerBody;
     private BasicHeadController headController;
     private PlayerMovement playerMove;
     #region Constructors
@@ -282,7 +270,7 @@ public class Player : MonoBehaviour
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public bool PowerUp { get => powerUp; set { powerUp = value; anim.SetBool("PowerUp", powerUp); } }
 
-    public GameObject ZendHair { get => zendHair; set => zendHair = value; }//move this to another script 
+
     public AudioSource Sfx { get => sfx; set => sfx = value; }
     public bool PoweredUp { get => poweredUp; set { poweredUp = value; } }
     public bool Transforming { get => transforming; set => transforming = value; }
@@ -292,33 +280,31 @@ public class Player : MonoBehaviour
     private bool castItem;
     private bool endure;
 
-    public GameObject LeftHand { get => leftHand; set => leftHand = value; }
-    public GameObject RightHand { get => rightHand; set => rightHand = value; }
     public int Cinemations { get => cinemations; set { cinemations = value; anim.SetInteger("Cinemaitions", cinemations); } }
 
     public bool TeleportTriggered { get => teleportTriggered; set => teleportTriggered = value; }
 
     public GameObject FistHitBox { get => fistHitBox; set => fistHitBox = value; }
     public bool StopTime { get => stopTime; set { stopTime = value; anim.SetBool("TimeStop", stopTime); } }
-    public GameObject BattleCamTarget { get => battleCamTarget; set => battleCamTarget = value; }
-    public GameObject CenterPoint { get => centerPoint; set => centerPoint = value; }
-    public GameObject HitPoint { get => hitPoint; set => hitPoint = value; }
+
+
+
     public GameObject StabHitBox { get => stabHitBox; set => stabHitBox = value; }
-    public GameObject CenterBodyPoint { get => centerBodyPoint; set => centerBodyPoint = value; }
+
     public int CombatAnimations { get => combatAnimations; set { combatAnimations = value; anim.SetInteger("CombatAnimation", combatAnimations); } }
 
     public GameObject RapidHitBox { get => rapidHitBox; set => rapidHitBox = value; }
     public int GuardAnimations { get => guardAnimations; set { guardAnimations = value; anim.SetInteger("GuardAnimations", guardAnimations); } }
 
     public float JumpForce { get => jumpForce; set => jumpForce = value; }
-    public GameObject JumpPoint { get => jumpPoint; set => jumpPoint = value; }
+
     //public GameObject ShieldHitBox { get => shieldHitBox; set => shieldHitBox = value; }
     public AudioSource ClothesSfx { get => clothesSfx; set => clothesSfx = value; }
     public bool Drawn { get => drawn; set { drawn = value; anim.SetBool("Drawn", drawn); } }
 
     public bool CastItem { get => castItem; set { castItem = value; anim.SetBool("Cast", castItem); } }
     public Transform MovementBone { get => movementBone; set => movementBone = value; }
-    public GameObject LeftPoint { get => leftPoint; set => leftPoint = value; }
+
     public int ArrowType { get => arrowType; set => arrowType = value; }
     //public GameObject ArrowPoint { get => arrowPoint; set => arrowPoint = value; }
     public GameObject KatanaHitbox { get => katanaHitbox; set => katanaHitbox = value; }
@@ -329,7 +315,7 @@ public class Player : MonoBehaviour
 
     public bool SpinAttack { get => spinAttack; set { spinAttack = value; anim.SetBool("SpinAttack", spinAttack); } }
 
-    public GameObject HighPoint { get => highPoint; set => highPoint = value; }
+
     public bool BoutaSpin { get => boutaSpin; set => boutaSpin = value; }
     public bool Weak { get => weak; set { weak = value; anim.SetBool("Weak", weak); } }
 
@@ -337,7 +323,7 @@ public class Player : MonoBehaviour
     public bool Charging { get => charging; set { charging = value; anim.SetBool("Charging", charging); } }
     public Vector3 DirectionV { get => directionV; set => directionV = value; }
     public Vector2 DisplacementV { get => displacementV; set => displacementV = value; }
-    public GameObject FarHitPoint { get => farHitPoint; set => farHitPoint = value; }
+
     public bool SkillButton { get => skillButton; set => skillButton = value; }
     public float SpeedInc { get => speedInc; set => speedInc = value; }
     public int AirCombo { get => airCombo; set { airCombo = value; anim.SetInteger("AirCombo", airCombo); } }
@@ -351,6 +337,7 @@ public class Player : MonoBehaviour
     public PlayerMovement PlayerMove { get => playerMove; set => playerMove = value; }
     public bool AirAttack { get => airAttack; set => airAttack = value; }
     public bool InTeleport { get => inTeleport; set => inTeleport = value; }
+    public PlayerBodyObjects PlayerBody { get => playerBody; set => playerBody = value; }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 
@@ -414,6 +401,7 @@ public class Player : MonoBehaviour
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
         effects = GetComponent<PlayerEffects>();
+        PlayerBody = GetComponent<PlayerBodyObjects>();
     }
 
     void Start() {
@@ -500,7 +488,7 @@ public class Player : MonoBehaviour
 
     }
     private void ShootShadow() {
-        Instantiate(effects.ShadowShot, leftHand.transform.position, Quaternion.identity);
+        Instantiate(effects.ShadowShot, playerBody.LeftHand.transform.position, Quaternion.identity);
     }
     private void ShootLayer(int val) {
         anim.SetLayerWeight(shootLayer, val);

@@ -79,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
         
         Anim.SetBool("Grounded", charCon.isGrounded);
         if (!player.InTeleport) { 
-        if (!player.AirAttack) {
+        if (!player.AirAttack&&!player.LockedOn) {
             charCon.Move(speed * Time.deltaTime);
             Gravity();
         }

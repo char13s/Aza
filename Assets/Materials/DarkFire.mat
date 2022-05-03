@@ -120,7 +120,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_51F53411: {r: 0, g: 0, b: 0, a: 0}
-    - Color_75F91B37: {r: 7.8232727, g: 0, b: 32, a: 1}
+    - Color_75F91B37: {r: 190.96838, g: 190.96838, b: 190.96838, a: 1}
     - Color_A7A5E00B: {r: 0, g: 0, b: 0, a: 0}
     - Color_C81BDEAE: {r: 0.23818898, g: 1, b: 0, a: 0}
     - Color_DC2A9B2B: {r: 0, g: 0, b: 0, a: 0}

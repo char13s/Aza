@@ -18,7 +18,7 @@ public class Cast : StateMachineBehaviour
         
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        Instantiate(burst,Player.GetPlayer().LeftHand.transform.position,Quaternion.identity);
+        //Instantiate(burst,Player.GetPlayer().LeftHand.transform.position,Quaternion.identity);
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         if (setWeightBack != null) {

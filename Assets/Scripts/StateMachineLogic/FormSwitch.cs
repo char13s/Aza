@@ -20,7 +20,7 @@ public class FormSwitch : StateMachineBehaviour
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         if (animatorStateInfo.normalizedTime < 0.9) {
-            Instantiate(gatherEffect,pc.CenterPoint.transform);
+            //Instantiate(gatherEffect,pc.CenterPoint.transform);
         }
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {

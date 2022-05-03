@@ -41,10 +41,12 @@ public class Stats {
     public static event UnityAction onShowingStats;
     public static event UnityAction onBaseStatsUpdate;
     public static event UnityAction onObjectiveComplete;
+    public static event UnityAction<int> onPowerlv;
     //Properties
+    #region Getters and Setters
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
-    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health); if (onHealthChange != null) { onHealthChange(); } } }
-    public int MPLeft { get { return mpLeft; } set { mpLeft = Mathf.Clamp(value, 0, mp); if (onMPLeft != null) { onMPLeft(); } } }
+    public int HealthLeft { get { return healthLeft; } set { healthLeft = Mathf.Clamp(value, 0, health); CalculateStatsOutput(); if (onHealthChange != null) { onHealthChange(); } } }
+    public int MPLeft { get { return mpLeft; } set { mpLeft = Mathf.Clamp(value, 0, mp); CalculateStatsOutput(); if (onMPLeft != null) { onMPLeft(); } } }
 
     public int Attack { get { return attack; } set { attack = value; } }
     public int Defense { get { return defense; } set { defense = value; } }
@@ -53,8 +55,8 @@ public class Stats {
 
     public byte Level { get => level; set => level = value; }
     public int Exp { get => exp; set { exp = value; UpdateUi(); } }
-    public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
-    public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+    public int BaseAttack { get => baseAttack; set { baseAttack = Mathf.Clamp(value, 0, 300); CalculateStatsOutput(); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+    public int BaseDefense { get => baseDefense; set { baseDefense = Mathf.Clamp(value, 0, 300); CalculateStatsOutput(); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
     public int BaseMp { get => baseMp; set { baseMp = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
     public int BaseHealth { get => baseHealth; set { baseHealth = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
 
@@ -72,6 +74,7 @@ public class Stats {
 
     public int CalculateExpNeed() { int expNeeded = 4 * (Level * Level * Level); return Mathf.Abs(Exp - expNeeded); }
     public int ExpCurrent() { return Exp - (4 * ((Level - 1) * (Level - 1) * (Level - 1))); }
+    #endregion
     public void AddExp(int points) {
         exp += points;
     }
@@ -81,18 +84,7 @@ public class Stats {
         }
     }
     public void Start() {
-        baseHealth = 12;
-        healthLeft = baseHealth;
-        baseMp = 15;
-        mpLeft = baseMp;
-        baseAttack = 5;
-        baseDefense = 5;
-        intellect = 6;
-        level = 1;
-        exp = 0;
-        SwordLevel = 1;
-        demonFistLevel = 1;
-        requiredExp = 50;
+        
         SetStats();
         Player.weaponSwitch += SetStats;
         GameController.onGameWasStarted += UpdateUi;
@@ -115,12 +107,34 @@ public class Stats {
         if (onLevelUp != null) { onLevelUp(); }
     }
     private void SetStats() {
-        Attack = baseAttack;// + attackBoost+WeaponBoost()
-        Defense = baseDefense;// + defenseBoost
-        MP = baseMp;// + mpBoost
+        // + mpBoost
+        baseHealth = 12;
+        healthLeft = baseHealth;
+        baseMp = 15;
         Health = baseHealth;// + healthBoost
+        MP = baseMp;
+        //mpLeft = baseMp;
+        BaseAttack = 5;
+        BaseDefense = 5;
+        onHealthChange.Invoke();
+        onMPLeft.Invoke();
+        CalculateStatsOutput();
     }
     private void ChangeMpLeft(int amt) => MPLeft += amt;
+    private void CalculateStatsOutput() {
+        //calculated everytime health or Mp is changed.
+        Attack=(HealthLeft/Health+mpLeft)+baseAttack;
+        Defense=(HealthLeft/Health+mpLeft)+baseDefense;
+        onPowerlv.Invoke((HealthLeft / Health + mpLeft) * (baseDefense+baseAttack));
+    }
+    private void AddToAttackBoost() { 
+        //weapon in use should add to attack
+        //
+    }
+    private void OnTransformation() { 
+    //An Mp boost should be given here which would contribute to an attack otput boost
+    //but also drains Mp and stamina the longer its held.
+    }
     /*private int WeaponBoost() {
 
         switch (Player.GetPlayer().Weapon) {
