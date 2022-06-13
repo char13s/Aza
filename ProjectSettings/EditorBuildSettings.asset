@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Void.unity
     guid: 014f6663f21ec9447a7b41d1a217841b
+  - enabled: 1
+    path: Assets/Scenes/LevelDesigntest.unity
+    guid: d3dbc57dc96cdb2468b308cbc5aad24d
   - enabled: 0
     path: Assets/Scenes/Town.unity
     guid: 4bcb38927653d4447907f28342b1faa2

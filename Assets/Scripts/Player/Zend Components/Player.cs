@@ -193,6 +193,7 @@ public class Player : MonoBehaviour
     //private NavMeshAgent nav;
     private PlayerBattleSceneMovement battleMode;
     private Animator anim;
+    private Animator topAnim;
     private CharacterController charCon;
     private Vector3 displacement;//world space 
     private int skullMask;
@@ -235,6 +236,8 @@ public class Player : MonoBehaviour
     public static event UnityAction<AudioClip> sendSfx;
     public static event UnityAction<int> playSound;
     public static event UnityAction<int> formChange;
+
+    public static event UnityAction<int> zoom;
 
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
@@ -338,6 +341,8 @@ public class Player : MonoBehaviour
     public bool AirAttack { get => airAttack; set => airAttack = value; }
     public bool InTeleport { get => inTeleport; set => inTeleport = value; }
     public PlayerBodyObjects PlayerBody { get => playerBody; set => playerBody = value; }
+    public PlayerEffects Effects { get => effects; set => effects = value; }
+    public Animator TopAnim { get => topAnim; set => topAnim = value; }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 
@@ -355,6 +360,7 @@ public class Player : MonoBehaviour
         sfx = GetComponent<AudioSource>();
         weaponMax = 1;
         #region Event Subs
+        Stats.sendSpeed += IncreaseSpeed;
         Enemy.onHit += MpRegain;
         Enemy.guardBreak += GuardBreak;
         LevelManager.levelFinished += SetInTeleport;
@@ -381,12 +387,13 @@ public class Player : MonoBehaviour
         ShadowShot.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
         AttackStates.sendAttack += RecieveAttack;
+        LevelManager.levelTransition += OnLevelTransition;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
         #endregion
         #region Power HookUps
-        AngelicRelic.lightSpeed += Teleportto;
+        AngelicRelic.teleportTo += Teleportto;
         DefensePowers.defense += Block;
         #endregion
         #region 
@@ -395,12 +402,13 @@ public class Player : MonoBehaviour
         PlayerMove = GetComponent<PlayerMovement>();
         ClothesSfx = zend.GetComponent<AudioSource>();
         Anim = zend.GetComponent<Animator>();
+        TopAnim = GetComponent<Animator>();
         //rbody = GetComponent<Rigidbody>();
         charCon = GetComponent<CharacterController>();
         //anim = GetComponent<Animator>();
         battleMode = GetComponent<PlayerBattleSceneMovement>();
         headController = GetComponent<BasicHeadController>();
-        effects = GetComponent<PlayerEffects>();
+        Effects = GetComponent<PlayerEffects>();
         PlayerBody = GetComponent<PlayerBodyObjects>();
     }
 
@@ -479,7 +487,6 @@ public class Player : MonoBehaviour
     }
     private void SetInTeleport(bool val) {
         StartCoroutine(WaitToLoad(val));
-        print(val);
     }
     private IEnumerator WaitToLoad(bool val) {
         yield return null;
@@ -488,7 +495,7 @@ public class Player : MonoBehaviour
 
     }
     private void ShootShadow() {
-        Instantiate(effects.ShadowShot, playerBody.LeftHand.transform.position, Quaternion.identity);
+        Instantiate(Effects.ShadowShot, playerBody.LeftHand.transform.position, Quaternion.identity);
     }
     private void ShootLayer(int val) {
         anim.SetLayerWeight(shootLayer, val);
@@ -507,18 +514,20 @@ public class Player : MonoBehaviour
     #region Time Stuff
     private void ZaWarudo() {
         Debug.Log("Za BITCH");
-        if (!timeStopped) {
+        
             Debug.Log("ZA HOE");
-            zaWarudosRange.SetActive(true);
+            //zaWarudosRange.SetActive(true);
             Debug.Log("za warudo?");
             timeStopped = true;
             //StopTime = true;
+            Time.timeScale = 0.1f;
             if (zaWarudo != null) {
                 zaWarudo();
             }
-            StartCoroutine(ResetTimeStop());
+        zoom.Invoke(4);
+        StartCoroutine(ResetTimeStop());
             StartCoroutine(UndoZaWarudo());
-        }
+        
     }
     private IEnumerator UndoZaWarudo() {
         YieldInstruction wait = new WaitForSeconds(1f);
@@ -543,8 +552,10 @@ public class Player : MonoBehaviour
         headController.Weight = result;
     }
     #endregion
-
-
+    private void OnLevelTransition(bool val) {
+        playerMove.enabled = val;
+    }
+    
 
 
     #region Coroutines
@@ -593,9 +604,12 @@ public class Player : MonoBehaviour
 
     }
     private IEnumerator ResetTimeStop() {
-        YieldInstruction wait = new WaitForSeconds(2);
-        yield return wait;
+        //YieldInstruction wait = new WaitForSeconds(2);
+
+        yield return new WaitForSecondsRealtime(2);
+        zoom.Invoke(7);
         timeStopped = false;
+        Time.timeScale = 1;
     }
     private IEnumerator SetLayerWait() {
         YieldInstruction wait = new WaitForSeconds(0.1f);
@@ -660,7 +674,9 @@ public class Player : MonoBehaviour
 
     #region Event handlers
 
-
+    private void IncreaseSpeed() {
+        anim.SetFloat("SpeedInc",stats.Speed);
+    }
     private void DrawSwordOut(AudioClip sound) {
 
         demonSwordBack.SetActive(false);

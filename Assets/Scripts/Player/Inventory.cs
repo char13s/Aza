@@ -35,8 +35,6 @@ public class Inventory {
     public void Start() {
         ItemData.ItemDataUpdate += UpdateInvent;
         GameController.onGameWasStarted += UpdateInvent;
-
-        Debug.Log(Items.Count);
     }
 
     #region Quick Item Menu

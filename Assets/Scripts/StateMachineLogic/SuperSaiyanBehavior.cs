@@ -15,9 +15,9 @@ public class SuperSaiyanBehavior : StateMachineBehaviour
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Instantiate(gatherEnergy, Player.GetPlayer().transform.position, Quaternion.identity);
-        PostProcessorManager.GetProcessorManager().Transformation();
-        Player.GetPlayer().Transforming = true;
+        //Instantiate(gatherEnergy, Player.GetPlayer().transform.position, Quaternion.identity);
+        //PostProcessorManager.GetProcessorManager().Transformation();
+        //Player.GetPlayer().Transforming = true;
         //Player.GetPlayer().MoveSpeed *= 2;
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

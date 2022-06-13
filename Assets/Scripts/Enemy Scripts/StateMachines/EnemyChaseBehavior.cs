@@ -9,6 +9,6 @@ public class EnemyChaseBehavior : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         Enemy.Chasing();
         //enemy.Rbody.velocity=enemy.transform.forward*10;
-        enemy.transform.position += enemy.transform.forward * 0.5f*Time.deltaTime;
+        //enemy.transform.position += enemy.transform.forward * 0.5f*Time.deltaTime;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 //using XInputDotNetPure;
 #pragma warning disable 0649
 public class HitBox : MonoBehaviour {
-    private Player pc;
+    private Player player;
     
     
     [SerializeField] private GameObject effects;
@@ -20,12 +20,13 @@ public class HitBox : MonoBehaviour {
     public static UnityAction onEnemyHit;
     public static event UnityAction<Enemy,float> sendFlying;
     public static event UnityAction<AudioClip> sendsfx;
+    public static event UnityAction<int> sendHitReaction;
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
 
     // Start is called before the first frame update
     void Start() {
-        pc = Player.GetPlayer();
-        audio = pc.Sfx;
+        player = Player.GetPlayer();
+        audio = player.Sfx;
         
     }
     private void OnDisable() {
@@ -80,6 +81,7 @@ public class HitBox : MonoBehaviour {
                 //other.GetComponent<Enemy>().Grounded = false;
                 //GamePad.SetVibration(0, 0.2f, 0.2f);
                 StartCoroutine(StopRumble());
+                //sendHitReaction.Invoke(2);
             }
         }
 

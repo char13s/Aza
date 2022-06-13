@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+[RequireComponent(typeof(BoxCollider))]
 #pragma warning disable 0649
 public class EnemyHitBox : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class EnemyHitBox : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other) {
         if (!player.Guard) {
-            Instantiate(effect, transform.position, Quaternion.identity);
+           // Instantiate(effect, transform.position, Quaternion.identity);
             enemy.CalculateAttack();
         }
         //    {

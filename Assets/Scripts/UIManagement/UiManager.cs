@@ -433,7 +433,7 @@ public class UiManager : MonoBehaviour {
 		sfxVolume.onValueChanged.AddListener(OnSFXVolumeChange);
         OnMasterVolumeChange(0.3f);
         OnSFXVolumeChange(0.3f);
-        pc = Player.GetPlayer();
+        //pc = Player.GetPlayer();
         sprites = SpriteAssign.GetSprite();
         //GameController.returnToLevelSelect += SetPlayerUIOff;
         //playerUi.SetActive(false);
@@ -1077,9 +1077,7 @@ public class UiManager : MonoBehaviour {
         }
         loadingIcon.SetActive(false);
         if (!dialogue) {
-            if (unsealPlayerInput != null) {
-                unsealPlayerInput();
-            }
+
         }
         
         if (killAll != null) {

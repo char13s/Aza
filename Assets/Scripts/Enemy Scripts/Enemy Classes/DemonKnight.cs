@@ -29,6 +29,17 @@ public class DemonKnight : Enemy
     // Start is called before the first frame update
     public override void Start() {
         base.Start();
+EnemyHitBoxBehavior[] hitBoxBehaviors = Anim.GetBehaviours<EnemyHitBoxBehavior>();
+        for (int i = 0; i < hitBoxBehaviors.Length; i++)
+            hitBoxBehaviors[i].HitBox = hitBox;
+
+        EnemyHitBehavior[] hitBehaviors = Anim.GetBehaviours<EnemyHitBehavior>();
+        for (int i = 0; i < hitBehaviors.Length; i++)
+            hitBehaviors[i].Enemy = this;
+
+        EnemyChaseBehavior[] chaseBehaviors = Anim.GetBehaviours<EnemyChaseBehavior>();
+        for (int i = 0; i < chaseBehaviors.Length; i++)
+            chaseBehaviors[i].Enemy = this;
     }
 
     // Update is called once per frame
@@ -59,7 +70,7 @@ public class DemonKnight : Enemy
         }
 
         if (State == EnemyAiStates.Chasing) {
-            Chasing();
+            //Chasing();
 
 
         }

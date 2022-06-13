@@ -21,9 +21,13 @@ public class LevelSpawner : MonoBehaviour
         
         print("Ran");
     }*/
+    private void Awake() {
+        //Instantiate(GameController.GetGameController().Player, transform.position, Quaternion.identity);
+    }
     private void Start() {
         Player.GetPlayer().InTeleport = true;
         Player.GetPlayer().transform.position = Spawn.transform.position;
+        
         //Player.GetPlayer().InTeleport = false;
     }
 }

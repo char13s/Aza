@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour {
     [SerializeField] private GameObject loadRespawn;
     [SerializeField] private GameObject normalCamera;
     [SerializeField] private Player pc;
+    [SerializeField] private GameObject player;
     [Space]
     [SerializeField] private GameObject cinematicManager;
     [SerializeField]private GameObject spawn;
@@ -56,6 +57,7 @@ public class GameController : MonoBehaviour {
     public int GameMode { get => gameMode; set { gameMode = value;  }  }
 
     public int NextLevel { get => nextLevel; set => nextLevel = value; }
+    public GameObject Player { get => player; set => player = value; }
 
     public static GameController GetGameController() => instance.GetComponent<GameController>();
     public void Awake() {
@@ -93,7 +95,7 @@ public class GameController : MonoBehaviour {
     }
     void Start() {
         
-        Player.onPlayerDeath += OnPlayerDead;
+        global::Player.onPlayerDeath += OnPlayerDead;
         SpawnSetters.saveGame += SaveGame;
         EventManager.sceneChanger += SetNextLevel;
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0)) {
@@ -112,13 +114,10 @@ public class GameController : MonoBehaviour {
         if (update != null)
             update();
         //SceneManagement();
-        if (!Player.GetPlayer().Pause) { 
+       // if (!global::Player.GetPlayer().Pause) { 
         //if (Input.GetKey(KeyCode.F9)) {
         //    Time.timeScale = 4;
-        }
-        else {
-            Time.timeScale = 1;
-        }
+       // }
         //Debug.Log(SceneManager.);
     }
     private void SetSpawner(GameObject newSpawn) {
@@ -349,7 +348,7 @@ public class GameController : MonoBehaviour {
         pc.transform.position = Spawn.transform.position;
         pc.transform.rotation = Spawn.transform.rotation;
         pc.items.Items = new List<ItemData>();
-        Player.GetPlayer().Pause = false;
+        global::Player.GetPlayer().Pause = false;
     }
     public void MenuLoadGame() {
         instance.load = true;

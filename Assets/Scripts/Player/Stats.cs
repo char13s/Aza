@@ -9,7 +9,7 @@ public class Stats {
     private int defense;
 
     private int mp;
-    private int intellect;
+    private float speed;
     private int healthLeft;
 
     private int mpLeft;
@@ -42,6 +42,7 @@ public class Stats {
     public static event UnityAction onBaseStatsUpdate;
     public static event UnityAction onObjectiveComplete;
     public static event UnityAction<int> onPowerlv;
+    public static event UnityAction sendSpeed;
     //Properties
     #region Getters and Setters
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
@@ -51,7 +52,7 @@ public class Stats {
     public int Attack { get { return attack; } set { attack = value; } }
     public int Defense { get { return defense; } set { defense = value; } }
     public int MP { get { return mp; } set { mp = value; } }
-    public int Intellect { get { return intellect; } set { intellect = value; } }
+    public float Speed { get { return speed; } set { speed = value; sendSpeed.Invoke(); } }
 
     public byte Level { get => level; set => level = value; }
     public int Exp { get => exp; set { exp = value; UpdateUi(); } }
@@ -89,6 +90,7 @@ public class Stats {
         Player.weaponSwitch += SetStats;
         GameController.onGameWasStarted += UpdateUi;
         PerfectGuardBox.sendAmt += ChangeMpLeft;
+        PlayerInputs.transformed += OnTransformation;
         if (onHealthChange != null) {
             onHealthChange();
         }
@@ -108,7 +110,7 @@ public class Stats {
     }
     private void SetStats() {
         // + mpBoost
-        baseHealth = 12;
+        baseHealth = 120;
         healthLeft = baseHealth;
         baseMp = 15;
         Health = baseHealth;// + healthBoost
@@ -123,17 +125,32 @@ public class Stats {
     private void ChangeMpLeft(int amt) => MPLeft += amt;
     private void CalculateStatsOutput() {
         //calculated everytime health or Mp is changed.
-        Attack=(HealthLeft/Health+mpLeft)+baseAttack;
+        /*Attack=(HealthLeft/Health+mpLeft)+baseAttack;
         Defense=(HealthLeft/Health+mpLeft)+baseDefense;
-        onPowerlv.Invoke((HealthLeft / Health + mpLeft) * (baseDefense+baseAttack));
+        onPowerlv.Invoke((HealthLeft / Health + mpLeft) * (baseDefense+baseAttack));*/
+        Attack = BaseAttack+AttackBoost;
+        Defense = BaseDefense + DefenseBoost;
     }
-    private void AddToAttackBoost() { 
-        //weapon in use should add to attack
+    private void AddToAttackBoost() {
+        //Upgrading Attacks on Attack boost affect here
         //
+        CalculateStatsOutput();
     }
-    private void OnTransformation() { 
-    //An Mp boost should be given here which would contribute to an attack otput boost
-    //but also drains Mp and stamina the longer its held.
+    private void AddToDefenseBoost() {
+        //Upgrading Defense boost affect here
+        //
+        CalculateStatsOutput();
+    }
+    private void OnTransformation(bool val) {
+        if (val) {
+            AttackBoost=BaseAttack;
+        }
+        else {
+            AttackBoost = 0;
+        }
+        //An Mp boost should be given here which would contribute to an attack otput boost
+        //but also drains Mp and stamina the longer its held.
+        CalculateStatsOutput();
     }
     /*private int WeaponBoost() {
 

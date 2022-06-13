@@ -71,7 +71,7 @@ public class Mage : Enemy
 
         if (State == EnemyAiStates.Chasing)
         {
-            Chasing();
+            //Chasing();
 
 
         }

@@ -10,7 +10,7 @@ public class KnockBack : MonoBehaviour
 
         Enemy enemy = other.gameObject.GetComponent<Enemy>();
         if (enemy != null) {
-            enemy.Knocked();
+            enemy.Knocked(); 
         }
         /* Rigidbody rb = other.gameObject.GetComponent<Rigidbody>();
         if (rb != null) {

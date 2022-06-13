@@ -11,5 +11,5 @@ public class PlayerEffects : MonoBehaviour
     [SerializeField] private GameObject fireTrailL;
 
     public GameObject ShadowShot { get => shadowShot; set => shadowShot = value; }
-
+    public GameObject Lightning { get => lightning; set => lightning = value; }
 }

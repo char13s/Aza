@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Cinemachine;
+using Cinemachine.PostFX;
+
 public class VirtualCameraManager : MonoBehaviour
 {
     //[SerializeField] private CinemachineVirtualCamera main;
@@ -24,6 +26,7 @@ public class VirtualCameraManager : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera firstDemonSpawn;
     [SerializeField] private CinemachineVirtualCamera nextCam;
     [SerializeField] private CinemachineVirtualCamera dedCam;
+    
     [Header("ObjectRefs")]
     [SerializeField] private GameObject lookAtTarget;
     [SerializeField] private GameObject body;
@@ -32,7 +35,8 @@ public class VirtualCameraManager : MonoBehaviour
     [SerializeField] private GameObject fire;
     [SerializeField] private GameObject lightning;
     [Space]
-
+    [Header("Effects Camera")]
+    [SerializeField] private GameObject zoomIn;
     private Player pc;
     private bool freelook;
     private Vector3 currentEulerAngles;
@@ -62,7 +66,7 @@ public class VirtualCameraManager : MonoBehaviour
     }
     void Start()
     {
-        pc = Player.GetPlayer();
+        //pc = Player.GetPlayer();
         EventManager.endOfDeathIntro += WeakZendCamTransitions;
         EventManager.demonSpawning += FirstDemonSpawn;
         EventManager.demonWryed += DemonWryed;
@@ -73,18 +77,20 @@ public class VirtualCameraManager : MonoBehaviour
         UiManager.bothSwords += SwordsCamDown;
         EventManager.nextCam += NextCam;
         EventManager.demoRestart += RestartDemo;
+        Player.zoom += ZoomIn;
        //EventManager.demoRestart += DedCamDown;
        //Player.Player
-        aimingPoint = Player.GetPlayer().AimmingPoint;
+        //aimingPoint = Player.GetPlayer().AimmingPoint;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //if (Input.GetButtonDown("R3")) {
-        //
-        //    FreeLookControls();
-        //}
+
+    private void ZoomIn(int val) {
+        main.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = val;
+        if(val==4)
+            main.GetComponent<CinemachineVolumeSettings>().enabled = true;
+        else
+            main.GetComponent<CinemachineVolumeSettings>().enabled = false;
     }
     private void FreeLookControls() {
         if (freelook) {

@@ -44906,7 +44906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shadowShot: {fileID: 8613598726144335354, guid: dbff70d8cacd1ed4e84f865882710f30,
     type: 3}
-  lightning: {fileID: 0}
+  lightning: {fileID: 3705034525098680008}
   fireAura: {fileID: 0}
   fireTrailR: {fileID: 0}
   fireTrailL: {fileID: 0}

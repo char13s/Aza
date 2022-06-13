@@ -9,11 +9,9 @@ public class BackFlip : StateMachineBehaviour
         //Player.GetPlayer().MoveSpeed = 0;
         //Player.GetPlayer().Nav.enabled = false;
         //.GetPlayer().RBody.isKinematic = false;
-        
-        Debug.Log("ENter hit!");
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        Player.GetPlayer().CharCon.Move(Player.GetPlayer().transform.forward * -move*Time.deltaTime);
+        Player.GetPlayer().CharCon.Move(-move * Time.deltaTime * Player.GetPlayer().transform.forward);
         //Player.GetPlayer().Rbody.AddForce(Player.GetPlayer().transform.forward * -move, ForceMode.Impulse);
         //Player.GetPlayer().transform.position -= Player.GetPlayer().transform.forward * move * Time.deltaTime;
         //Player.GetPlayer().RBody.velocity = Player.GetPlayer().transform.forward * -move;

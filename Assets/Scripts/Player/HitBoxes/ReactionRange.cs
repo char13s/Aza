@@ -4,37 +4,24 @@ using UnityEngine;
 using UnityEngine.Events;
 public class ReactionRange : MonoBehaviour
 {
-
     public static event UnityAction dodged;
-    private bool activated;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public static event UnityAction<int> zoom;
     private void OnTriggerStay(Collider other) {
-        if (other.CompareTag("Enemy")) {
-            
-            if (Player.GetPlayer().CombatAnimations!=0&&!activated) {
-                if (dodged != null) {
-                    dodged();
-                }
-                activated = true;
-                StartCoroutine(WaitToReset());
+        if (other.GetComponent<EnemyHitBox>()) {
+            Debug.Log("Enemy Hit Box Detected");
+            if (dodged != null) {
+                dodged();
             }
-
+            //Time.timeScale = 0.1f;
+            //zoom.Invoke(4);
+            //StartCoroutine(ResetTimeStop());
         }
-
     }
-    private IEnumerator WaitToReset() {
-        YieldInstruction wait = new WaitForSeconds(5);
-        yield return wait;
-        activated = false;
+    private IEnumerator ResetTimeStop() {
+        //YieldInstruction wait;
+        yield return new WaitForSecondsRealtime(2);
+        Time.timeScale = 1;
+        zoom.Invoke(7);
+        print("Reset");
     }
 }

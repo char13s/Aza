@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 public class PlayerMovement : MonoBehaviour
 {
+
     [SerializeField] protected float rotationSpeed;
     [SerializeField] protected GameObject mainCam;
     private float moveSpeed;
@@ -60,32 +62,26 @@ public class PlayerMovement : MonoBehaviour
         player = GetComponent<Player>();
         Anim = player.Anim;
         CharCon = GetComponent<CharacterController>();
-        if (anim != null) {
-            print("Anim aquired");
-        }
-        else {
-            print("fuck that anim");
-        }
         SetUpJump();
         MovingStates.returnSpeed += Move;
         //PlayerAnimationEvents.setjump += Jumping;
         //DashBehavior.dash += Dash;
     }
     private void FixedUpdate() {
+ 
         Rotate();
-        //print(speed);
+                //print(speed);
         //print(charCon.isGrounded);
         
         
         Anim.SetBool("Grounded", charCon.isGrounded);
-        if (!player.InTeleport) { 
-        if (!player.AirAttack&&!player.LockedOn) {
+        if (!player.AirAttack) {
             charCon.Move(speed * Time.deltaTime);
             Gravity();
         }
         else {
             charCon.Move(new Vector3(0,-0.5f,0) * Time.deltaTime);
-        }}
+        }
             
         HandleJump();
     }
@@ -133,6 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
     void HandleJump() {
+        //charCon.Move(speed * Time.deltaTime);
         if (!isJumping && charCon.isGrounded && isJumpPressed) {
             isJumping = true;
             speed.y = intialJumpVelocity * .5f;

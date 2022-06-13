@@ -15,6 +15,7 @@ public class PlayerInputs : MonoBehaviour
 
     [SerializeField] private DarkPowerSet darkPowers;
     [SerializeField] private EquipmentObj relic;
+    private EnemyTimelineTriggers trigger;
     [SerializeField] private AbilityUIHolder relicUp;
     [SerializeField] private AbilityUIHolder relicDown;
     [SerializeField] private AbilityUIHolder relicRight;
@@ -26,6 +27,8 @@ public class PlayerInputs : MonoBehaviour
     public static event UnityAction pause;
     public static event UnityAction close;
     public static event UnityAction<int> turnPage;
+    public static event UnityAction rotate;
+    public static event UnityAction<bool> transformed;
     #endregion
 
     // Start is called before the first frame update
@@ -36,6 +39,7 @@ public class PlayerInputs : MonoBehaviour
         anim = GetComponent<Animator>();
         DialogueManager.switchControls += SwitchMaps;
         GameManager.switchMap += SwitchMaps;
+        EnemyTimelineTriggers.sendTrigger += RecieveTrigger;
     }
 
     #region Base Controls
@@ -69,8 +73,11 @@ public class PlayerInputs : MonoBehaviour
     private void OnEnergy() {
         if (!player.SkillButton) {
             print("Triangle");
-            if (!player.Attack) {
-                darkPowers.Triangle();
+            /*if (!player.Attack) {
+                relic.Triangle();
+            }*/
+            if (trigger != null) {
+                trigger.PlayTimeline();
             }
         }
         else {
@@ -121,12 +128,28 @@ public class PlayerInputs : MonoBehaviour
     }
     private void OnSkillUp(InputValue value) {
         if (value.isPressed) {
-            player.SkillButton = true;
+            //player.SkillButton = true;
+            Time.timeScale = 0.1f;
             print("Locked or should be anyway");
         }
         else {
+            Time.timeScale = 1;
             player.SkillButton = false;
         }
+    }
+    private void OnTransform() {
+        if (!player.PoweredUp) {
+            player.PoweredUp = true;
+            player.Effects.Lightning.SetActive(true);
+            player.Anim.SetTrigger("Transform");
+            print("Super Zend!");
+        }
+        else {
+            player.Effects.Lightning.SetActive(false);
+            player.PoweredUp = false;
+            print("Oh no");
+        }
+        transformed.Invoke(player.PoweredUp);
     }
     private void OnDUp() {
         //Relic = relicUp.Relic;
@@ -188,6 +211,12 @@ public class PlayerInputs : MonoBehaviour
             case 4:
                 map.SwitchCurrentActionMap("Dialogue Controls");
                 break;
+            case 5:
+                map.SwitchCurrentActionMap("");
+                break;
         }
+    }
+    private void RecieveTrigger(EnemyTimelineTriggers obj) {
+        trigger = obj;
     }
 }

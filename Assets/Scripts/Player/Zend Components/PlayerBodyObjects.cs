@@ -39,4 +39,7 @@ public class PlayerBodyObjects : MonoBehaviour
         
     }
 
+    private void Vanish(bool val) {
+        body.SetActive(val);
+    }
 }

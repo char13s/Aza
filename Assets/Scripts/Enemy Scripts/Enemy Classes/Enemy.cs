@@ -19,9 +19,10 @@ public class Enemy : MonoBehaviour
     internal StatusEffects status = new StatusEffects();
     [SerializeField]
     internal StatsController stats = new StatsController();
+    [Header("Enemy Health Bar")]
     #region Enemy Health Bar
     [SerializeField] private GameObject canvas;
-    [SerializeField] private Text levelText;
+    //[SerializeField] private Text levelText;
     [SerializeField] private GameObject lockOnArrow;
     #endregion
     #region Special Effects
@@ -38,14 +39,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool standby;
     [Space]
     [Header("Object Refs")]
-    [SerializeField] private GameObject hitBox;
+    [SerializeField] protected GameObject hitBox;
     [SerializeField] private GameObject hitSplat;
     [SerializeField] private GameObject drop;
     [SerializeField] private GameObject soul;
     [SerializeField] private GameObject cut;
     [SerializeField] private Slider EnemyHp;
     [SerializeField] private float speed;
-    [SerializeField] private GameObject body;
+    [SerializeField] private GameObject model;
+    [SerializeField] private GameObject finisherTrigger;
     #region Script References
 
     private Player pc;
@@ -88,7 +90,7 @@ public class Enemy : MonoBehaviour
     public static event UnityAction<AudioClip> sendsfx;
     #region Getters and Setters
     public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
-    public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); if (stats.HealthLeft <= 0 && !dead) { Dead = true; } } }
+    public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); canvas.GetComponent<EnemyCanvas>().SetEnemyHealth(); if (stats.HealthLeft <= 0 && !dead) { Dead = true; } } }
 
     public bool Attack { get => attack; set { attack = value; Anim.SetBool("Attack", attack); } }
     public bool Walk { get => walk; set { walk = value; Anim.SetBool("Walking", walk); } }
@@ -148,7 +150,7 @@ public class Enemy : MonoBehaviour
     public static int TotalCount => Enemies.Count;
 
     public virtual void Awake() {
-        Anim = body.GetComponent<Animator>();
+        Anim = model.GetComponent<Animator>();
         //sound = GetComponent<AudioSource>();
         Rbody = GetComponent<Rigidbody>();
         //StatusEffects.onStatusUpdate += StatusControl;
@@ -175,6 +177,13 @@ public class Enemy : MonoBehaviour
         for (int i = 0; i < chaseBehaviors.Length; i++)
             chaseBehaviors[i].Enemy = this;
         #endregion
+        if (hitBoxBehaviors.Length>0) {
+           print("Behavior check!");
+            if (hitBoxBehaviors[0].HitBox != null) {
+            print("Hit Box check!");
+        }
+        }
+        
         pc = Player.GetPlayer();
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
@@ -192,6 +201,7 @@ public class Enemy : MonoBehaviour
     }
     // Update is called once per frame
     public virtual void Update() {
+        Distance = Vector3.Distance(pc.transform.position, transform.position);
         if (status.Status != StatusEffects.Statuses.stunned && state != EnemyAiStates.Null) {
             StateSwitch();
 
@@ -232,6 +242,7 @@ public class Enemy : MonoBehaviour
     public void OnPlayerDeath() {
         Enemies.Clear();
     }
+    #region Reactions
     public void Knocked() {
         Vector3 delta = (pc.transform.position-transform.position);
         delta.y = 0;
@@ -249,19 +260,21 @@ public class Enemy : MonoBehaviour
     private void KillEnemy() {
         Destroy(this);
     }
-    #region Event handlers
+    #region old freeze
     private void SwitchFreezeOn() {
         Frozen = true;
     }
     private void FreezeEnemy() {
         Debug.Log("Froze");
-        anim.speed = 0;
-        State = EnemyAiStates.Null;
+        Anim.SetFloat("Speed",0.1f);
+        //anim.speed = 0;
+        //State = EnemyAiStates.Null;
         StartCoroutine(UnFreeze());
     }
     private IEnumerator UnFreeze() {
         YieldInstruction wait = new WaitForSeconds(4);
         yield return wait;
+        Anim.SetFloat("Speed", 0.1f);
         UnFreezeEnemy();
     }
     private void UnFreezeEnemy() {
@@ -271,6 +284,11 @@ public class Enemy : MonoBehaviour
     private void NullEnemy() {
         State = EnemyAiStates.Null;
     }
+    #endregion
+#endregion
+    #region Event handlers
+
+
     #endregion
 
     #region State Logic
@@ -282,6 +300,10 @@ public class Enemy : MonoBehaviour
                 break;
 
         }*/
+        if (HealthLeft < Health / 4) {
+            lowHealth = true;
+            finisherTrigger.SetActive(true);
+        }
         if (state == EnemyAiStates.Chasing) {
             SwitchToAttack();
             BackToIdle();
@@ -351,7 +373,8 @@ public class Enemy : MonoBehaviour
                 //LowHealth();
                 break;
             case EnemyAiStates.Chasing:
-                Chasing();
+                Walk = true;
+                //Chasing();
                 break;
             default:
                 break;
@@ -440,8 +463,8 @@ public class Enemy : MonoBehaviour
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
         Rbody.velocity = transform.forward * speed;
-        Debug.Log(state + " a bitch");
-        Debug.Log("Chasing");
+        //Debug.Log(state + " a bitch");
+        //Debug.Log("Chasing");
         //transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
         //transform.position = Vector3.MoveTowards(transform.position, pc.transform.position, 4 * Time.deltaTime);
         //Debug.Log(Vector3.MoveTowards(transform.position, pc.transform.position, 4 * Time.deltaTime));
@@ -454,7 +477,7 @@ public class Enemy : MonoBehaviour
     #endregion
     private void UIMaintence() {
 
-        levelText.GetComponent<Text>().text = "Lv. " + stats.Level;
+        //levelText.GetComponent<Text>().text = "Lv. " + stats.Level;
         EnemyHp.maxValue = stats.Health;
         EnemyHp.value = stats.HealthLeft;
     }
@@ -486,7 +509,7 @@ public class Enemy : MonoBehaviour
     }
     #endregion
 
-    private float Distance => Vector3.Distance(pc.transform.position, transform.position);
+    private float Distance ;
 
     public int AttackDelay { get => attackDelay; set => attackDelay = value; }
     public Rigidbody Rbody { get => rbody; set => rbody = value; }
@@ -498,9 +521,9 @@ public class Enemy : MonoBehaviour
     //    }
     //}
     private void SlowEnemy() {
-        if (striking) {
+        
             FreezeEnemy();
-        }
+        print("Wth?????");
     }
     public void OnDefeat() {
         //onAnyDefeated(this);
@@ -516,6 +539,7 @@ public class Enemy : MonoBehaviour
     public void UnsetHit() {
         print("Unset Hit");
         Hit = false;
+        Anim.ResetTrigger("Attack 0");
         State=EnemyAiStates.Idle;
     }
     public void CalculateDamage(float addition) {
