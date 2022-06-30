@@ -195,13 +195,10 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
 
         float x = player.DisplacementV.x;
         float y = player.DisplacementV.y;
-        RotateSpeed = 18 - EnDist(aimPoint);
+        RotateSpeed = 18 - EnDist(player.PlayerBody.BattleCamTarget);
         Vector3 delta = player.PlayerBody.BattleCamTarget.transform.position;
         delta.y = 0;
-        if (!rotLock) {
-            transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
-
-        }
+        transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
         //transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, player.MoveSpeed * y * Time.deltaTime);
     }
 
@@ -225,7 +222,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
                 transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
             }
             player.PlayerBody.FarHitPoint.transform.position = (Enemies[T].transform.position - transform.position) / 2;
-            transform.RotateAround(target.transform.position, player.PlayerBody.FarHitPoint.transform.up, -x * RotateSpeed * player.MoveSpeed * Time.deltaTime);
+            transform.RotateAround(target.transform.position, target.transform.up, -x * RotateSpeed * player.MoveSpeed * Time.deltaTime);
 
             if (y != 0) {
                 Vector3 speed;

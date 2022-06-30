@@ -21,4 +21,10 @@ public class DefensePowers : EquipmentObj
     public override void CircleReleased() {
         defense.Invoke(false);
     }
+    public override void UpCircle() {
+        //Lay out a sheild around a specific area
+    }
+    public override void DownCircle() {
+        //Cast a bubble shield around yourself for a limited time
+    }
 }

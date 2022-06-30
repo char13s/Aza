@@ -57,18 +57,18 @@ public class PlayerInputs : MonoBehaviour
                 player.SkillSquare();
             }
         }
-        else if (holdAttack) {
+        /*else if (holdAttack) {
             print("rELEASE");
             player.Anim.SetTrigger("Attack");
             holdAttack = false;
-        }
+        }*/
     }
     private void OnHoldAttack(InputValue value) {
-        if (value.isPressed) {
+        /*if (value.isPressed) {
             holdAttack = true;
             print("hOLD");
             player.Anim.SetTrigger("HoldAttack");
-        }
+        }*/
     }
     private void OnEnergy() {
         if (!player.SkillButton) {

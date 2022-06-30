@@ -35,7 +35,7 @@ public class SpellTag : EquipmentObj
 
     // Update is called once per frame
     public override void Circle() {
-        base.Circle();
+
         if (triggerZaWarudo != null) {
             triggerZaWarudo();
         }
@@ -102,11 +102,23 @@ public class SpellTag : EquipmentObj
                 break;
         }
     }
-    /*#region Coroutines
-    private IEnumerator ResetTimeStop() {
-        YieldInstruction wait = new WaitForSeconds(2);
-        yield return wait;
-        timeStopped = false;
+
+    public override void CircleReleased() {
+        throw new System.NotImplementedException();
     }
-    #endregion*/
+
+    public override void UpCircle() {
+        throw new System.NotImplementedException();
+    }
+
+    public override void DownCircle() {
+        throw new System.NotImplementedException();
+    }
+    /*#region Coroutines
+private IEnumerator ResetTimeStop() {
+   YieldInstruction wait = new WaitForSeconds(2);
+   yield return wait;
+   timeStopped = false;
+}
+#endregion*/
 }

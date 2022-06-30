@@ -18,4 +18,12 @@ public class AngelicRelic : EquipmentObj
         teleportTo.Invoke();
         print("boom");
     }
+
+    public override void CircleReleased() {
+
+    }
+
+    public override void DownCircle() {
+
+    }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentObj : MonoBehaviour
+public abstract class EquipmentObj : MonoBehaviour
 {
 
     // Start is called before the first frame update
@@ -24,18 +24,10 @@ public class EquipmentObj : MonoBehaviour
         PlayerCommands.holdCircle -= HoldCircle;
         //PlayerCommands.triangle -= Triangle;
     }
-    public virtual void Circle() {
-
-    }
-    public virtual void CircleReleased(){
-    
-    }
-    public virtual void UpCircle() {
-
-    }
-    public virtual void DownCircle() {
-
-    }
+    public abstract void Circle();
+    public abstract void CircleReleased();
+    public abstract void UpCircle();
+    public abstract void DownCircle();
     public virtual void HoldCircle() {
 
     }
