@@ -43,6 +43,7 @@ public class Stats {
     public static event UnityAction onObjectiveComplete;
     public static event UnityAction<int> onPowerlv;
     public static event UnityAction sendSpeed;
+    public static event UnityAction<int> onOrbGain;
     //Properties
     #region Getters and Setters
     public int Health { get { return health; } set { health = Mathf.Max(0, value); } }
@@ -67,7 +68,7 @@ public class Stats {
     public int HealthBoost { get => healthBoost; set { healthBoost = Mathf.Clamp(value, 0, 300); if (onBaseStatsUpdate != null) onBaseStatsUpdate(); SetStats(); } }
 
     public int RequiredExp { get => requiredExp; set => requiredExp = value; }
-    public int Abilitypoints { get => abilitypoints; set { abilitypoints = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate(); } }
+    public int Abilitypoints { get => abilitypoints; set { abilitypoints = value; if (onBaseStatsUpdate != null) onBaseStatsUpdate();onOrbGain.Invoke(abilitypoints); } }
 
     public int SwordProficency { get => swordProficency; set => swordProficency = value; }
     public int SwordLevel { get => swordLevel; set => swordLevel = value; }
@@ -91,6 +92,8 @@ public class Stats {
         GameController.onGameWasStarted += UpdateUi;
         PerfectGuardBox.sendAmt += ChangeMpLeft;
         PlayerInputs.transformed += OnTransformation;
+        SkillTreeNode.sendOrbs += AdjustOrbs;
+        Enemy.sendOrbs += AdjustOrbs;
         if (onHealthChange != null) {
             onHealthChange();
         }
@@ -121,6 +124,7 @@ public class Stats {
         onHealthChange.Invoke();
         onMPLeft.Invoke();
         CalculateStatsOutput();
+
     }
     private void ChangeMpLeft(int amt) => MPLeft += amt;
     private void CalculateStatsOutput() {
@@ -151,6 +155,9 @@ public class Stats {
         //An Mp boost should be given here which would contribute to an attack otput boost
         //but also drains Mp and stamina the longer its held.
         CalculateStatsOutput();
+    }
+    private void AdjustOrbs(int val) {
+        Abilitypoints = val;
     }
     /*private int WeaponBoost() {
 

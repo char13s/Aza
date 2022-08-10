@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
-    [SerializeField] private Enemy enemy;
+    [SerializeField] private GameObject enemy;
+    [SerializeField] float spawnTime;
+    private void Start() {
+        StartCoroutine(DelaySpawn());
+    }
     private void OnEnable() {
         
     }
     public void SpawnEnemy() {
         Instantiate(enemy, transform.position, Quaternion.identity);
     }
-    
+    IEnumerator DelaySpawn() {
+        YieldInstruction wait = new WaitForSeconds(spawnTime);
+        yield return wait;
+        SpawnEnemy();
+    }
 }

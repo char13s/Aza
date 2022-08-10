@@ -54,7 +54,7 @@ public class Arrow : MonoBehaviour {
         if (other.gameObject.CompareTag("Enemy"))
         {
             if (other.gameObject.GetComponent<Enemy>()) {
-                other.gameObject.GetComponent<Enemy>().CalculateDamage(power);
+
                 ArrowEffects(other.gameObject.GetComponent<Enemy>());
             }
             

@@ -6,13 +6,12 @@ using UnityEngine.Events;
 #pragma warning disable 0649
 public class HitBox : MonoBehaviour {
     private Player player;
-    
-    
+
+    [SerializeField] private HitBoxType type;
     [SerializeField] private GameObject effects;
     [SerializeField] private GameObject fire;
     [SerializeField] private GameObject smallFire;
-    [SerializeField] private GameObject farHitPoint;
-    [SerializeField] private GameObject highHitPoint;
+    [SerializeField] private float additionalDamage;
     private AudioSource audio;
     private List<GameObject> enemies = new List<GameObject>();
     private GameObject enemyImAttacking;
@@ -22,6 +21,8 @@ public class HitBox : MonoBehaviour {
     public static event UnityAction<AudioClip> sendsfx;
     public static event UnityAction<int> sendHitReaction;
     public GameObject EnemyImAttacking { get => enemyImAttacking; set => enemyImAttacking = value; }
+    public HitBoxType Type { get => type; set => type = value; }
+    public float AdditionalDamage { get => additionalDamage; set => additionalDamage = value; }
 
     // Start is called before the first frame update
     void Start() {

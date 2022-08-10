@@ -9,6 +9,7 @@ public class PlayerInputs : MonoBehaviour
     private PlayerMovement playerMovement;
     private PlayerInput map;
     private Animator anim;
+    private Vector2 rotationLook;
     #region Extra attack logic
     bool holdAttack;
     #endregion
@@ -22,6 +23,7 @@ public class PlayerInputs : MonoBehaviour
     [SerializeField] private AbilityUIHolder relicLeft;
     public DarkPowerSet DarkPowers { get => darkPowers; set => darkPowers = value; }
     public EquipmentObj Relic { get => relic; set => relic = value; }// Need code to create relic on player in specific spot so it can be used or just carry them all will they really take up alot of data?
+    public Vector2 RotationLook { get => rotationLook; set => rotationLook = value; }
     #region Events
     public static event UnityAction nextLine;
     public static event UnityAction pause;
@@ -29,17 +31,26 @@ public class PlayerInputs : MonoBehaviour
     public static event UnityAction<int> turnPage;
     public static event UnityAction rotate;
     public static event UnityAction<bool> transformed;
+    public static event UnityAction<bool> energized;
+    public static event UnityAction<bool> strenghtened;
     #endregion
-
+    private void OnEnable() {
+        DialogueManager.switchControls += SwitchMaps;
+        GameManager.switchMap += SwitchMaps;
+        EnemyTimelineTriggers.sendTrigger += RecieveTrigger;
+    }
+    private void OnDisable() {
+        DialogueManager.switchControls -= SwitchMaps;
+        GameManager.switchMap -= SwitchMaps;
+        EnemyTimelineTriggers.sendTrigger -= RecieveTrigger;
+    }
     // Start is called before the first frame update
     void Start() {
         player = GetComponent<Player>();
         playerMovement = GetComponent<PlayerMovement>();
         map = GetComponent<PlayerInput>();
         anim = GetComponent<Animator>();
-        DialogueManager.switchControls += SwitchMaps;
-        GameManager.switchMap += SwitchMaps;
-        EnemyTimelineTriggers.sendTrigger += RecieveTrigger;
+        
     }
 
     #region Base Controls
@@ -48,13 +59,19 @@ public class PlayerInputs : MonoBehaviour
     }
     private void OnAttack(InputValue value) {
         if (value.isPressed) {
-            if (!player.SkillButton) {
+            if (player.Energized && player.Strenghtened) { 
+            //Well dont know what to do with that....
+            }
+            if (!player.Energized&&player.Strenghtened) {
+                player.Anim.SetTrigger("HeavyAttack");
+            }
+            else if (player.Energized && !player.Strenghtened) {
+                player.Anim.SetTrigger("EnergyAttack");
+            }
+            else {
                 print("Square");
                 player.Anim.SetTrigger("Attack");
                 player.Attack = true;
-            }
-            else {
-                player.SkillSquare();
             }
         }
         /*else if (holdAttack) {
@@ -81,7 +98,7 @@ public class PlayerInputs : MonoBehaviour
             }
         }
         else {
-            player.SkillTriangle();
+
         }
     }
     private void OnJump(InputValue value) {
@@ -91,29 +108,29 @@ public class PlayerInputs : MonoBehaviour
             }
         }
         else {
-            player.SkillX();
+
         }
         if (!value.isPressed) {
             playerMovement.IsJumpPressed = false;
         }
     }
     private void OnAbility(InputValue value) {
-         if (!player.SkillButton) {
-             print("Circle");
-             if (value.isPressed) {
-                 print("Circle has been pressed");
-                 if (relic != null) {
-                     Relic.Circle();
-                 }
-             }
-             else {
-                 print("Circle has been released");
-                 Relic.CircleReleased();
-             }
-         }
-         else {
-             player.SkillCircle();
-         }
+        if (!player.SkillButton) {
+            print("Circle");
+            if (value.isPressed) {
+                print("Circle has been pressed");
+                if (relic != null) {
+                    Relic.Circle();
+                }
+            }
+            else {
+                print("Circle has been released");
+                Relic.CircleReleased();
+            }
+        }
+        else {
+
+        }
         print("ran");
         //transform.position = transform.position+ new Vector3(0,0, 1);
     }
@@ -126,17 +143,31 @@ public class PlayerInputs : MonoBehaviour
             player.TargetingLogic(false);
         }
     }
-    private void OnSkillUp(InputValue value) {
+    private void OnSkillUp(InputValue value) {//R2
         if (value.isPressed) {
-            //player.SkillButton = true;
-            Time.timeScale = 0.1f;
-            print("Locked or should be anyway");
+            player.Energized = true;
+            energized.Invoke(true);
+            Debug.Log("energy");
         }
         else {
-            Time.timeScale = 1;
-            player.SkillButton = false;
+            player.Energized = false;
+            energized.Invoke(false);
         }
+
     }
+    private void OnStrenghtened(InputValue value) {//L2
+        if (value.isPressed) {
+            player.Strenghtened = true;
+            strenghtened.Invoke(true);
+            Debug.Log("strength");
+        }
+        else {
+            player.Strenghtened = false;
+            strenghtened.Invoke(false);
+        }
+
+    }
+
     private void OnTransform() {
         if (!player.PoweredUp) {
             player.PoweredUp = true;
@@ -166,6 +197,10 @@ public class PlayerInputs : MonoBehaviour
     private void OnDRight() {
         //Relic = relicRight.Relic;
         Debug.Log(Relic); ;
+    }
+    private void OnLook(InputValue value) {
+        //print("Looking");
+        RotationLook = value.Get<Vector2>();
     }
     #endregion
 

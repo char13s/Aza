@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3f59b332e46d8545bda7bfc4ce5d048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 2
   stats:
     level: 1
     baseHealth: 34
@@ -184,7 +185,7 @@ MonoBehaviour:
   deathEffect: {fileID: 0}
   attackDelay: 0
   attackDistance: 0
-  standby: 0
+  standby: 1
   hitBox: {fileID: 6618314719069934556}
   hitSplat: {fileID: 3403200122732432855, guid: 4aa6fb711ab6cc6468b28b91f4931e7b,
     type: 3}
@@ -194,7 +195,8 @@ MonoBehaviour:
   EnemyHp: {fileID: 3456176397255974283}
   speed: 5.18
   model: {fileID: 8577426436965113072}
-  finisherTrigger: {fileID: 0}
+  finisherTrigger: {fileID: 8570530412275139997}
+  orbWorth: 100
   flip: 0
   boss: 0
 --- !u!54 &9058030351987577721
@@ -370,6 +372,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 9181738492646816672}
+  bodyMat: {fileID: 2100000, guid: 0e521f578a499db4785811c0863cce81, type: 2}
+  attMat: {fileID: 2100000, guid: df0f2b603a72d9741a5e27f0f8a38871, type: 2}
+  attHeavyMat: {fileID: 2100000, guid: 3e6d35eaa67698541b6ccde8e0568c1d, type: 2}
+  attMagicMat: {fileID: 2100000, guid: 803ed33ba30bea54097665e64950ca27, type: 2}
+  mesh: {fileID: 68293459400187357}
 --- !u!1 &2010372795434427182
 GameObject:
   m_ObjectHideFlags: 0
@@ -5401,6 +5408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeline: {fileID: 768380685}
+  timelineAsset: {fileID: 0}
 --- !u!65 &5049172068807102867
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5558,6 +5566,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f, type: 3}
+--- !u!1 &3456176396784089615 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+    type: 3}
+  m_PrefabInstance: {fileID: 299716905691662171}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &63693259923413901 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 345236062496103638, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
@@ -5579,12 +5593,6 @@ MonoBehaviour:
 --- !u!224 &3456176396784089614 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3160965015419878741, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
-    type: 3}
-  m_PrefabInstance: {fileID: 299716905691662171}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3456176396784089615 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3160965015419878740, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
     type: 3}
   m_PrefabInstance: {fileID: 299716905691662171}
   m_PrefabAsset: {fileID: 0}
@@ -5639,7 +5647,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 2f55b4fcf01c60d459e6fca8ee97ab49, type: 2}
+      objectReference: {fileID: 2100000, guid: 0e521f578a499db4785811c0863cce81, type: 2}
     - target: {fileID: -8684251187902555887, guid: c3db2e81840a6984a9f65e579581647c,
         type: 3}
       propertyPath: m_IsActive
@@ -5744,7 +5752,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 614eb01704399334baf62e12d49709d8, type: 2}
+      objectReference: {fileID: 2100000, guid: 0237887bd1f25594bb01e20d51245c4f, type: 2}
     - target: {fileID: -6984002361558842191, guid: c3db2e81840a6984a9f65e579581647c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7267,6 +7275,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3db2e81840a6984a9f65e579581647c, type: 3}
+--- !u!137 &68293459400187357 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -8873658644368910300, guid: c3db2e81840a6984a9f65e579581647c,
+    type: 3}
+  m_PrefabInstance: {fileID: 299716906889692665}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6800914139661213521 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2717502839321077080, guid: c3db2e81840a6984a9f65e579581647c,

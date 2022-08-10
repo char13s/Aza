@@ -15,7 +15,7 @@ public class ZendAuraRenderer : MonoBehaviour
         
     }
     private void Update() {
-        transform.rotation = Quaternion.LookRotation(player.MainCam.transform.position-transform.position);
+        //transform.rotation = Quaternion.LookRotation(player.MainCam.transform.position-transform.position);
         
     }
     void Rotate() {

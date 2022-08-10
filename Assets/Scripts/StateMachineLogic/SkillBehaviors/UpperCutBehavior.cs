@@ -15,14 +15,13 @@ public class UpperCutBehavior : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (stateInfo.normalizedTime > 0.99f && Input.GetButton("Triangle")&&!GoingUp&&pc.L<=0) {
+        if (stateInfo.normalizedTime > 0.99f && Input.GetButton("Triangle")&&!GoingUp) {
             GoingUp = true;
         }
         if (Input.GetButtonUp("Triangle")) {
             GoingUp = false;
         }
-        if (pc.L >= 0)
-            GoingUp = false;
+        
         if (stateInfo.normalizedTime > 0.99f&&GoingUp) {
             //pc.transform.position = Vector3.MoveTowards(pc.transform.position, pc.HighPoint.transform.position, move * Time.deltaTime);
             //pc.RBody.useGravity = false;

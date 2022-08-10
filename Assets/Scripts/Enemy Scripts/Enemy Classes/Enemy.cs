@@ -13,7 +13,8 @@ public class Enemy : MonoBehaviour
 {
 
     private EnemyAiStates state;
-
+    public enum EnemyType { soft, hard, absorbent }
+    [SerializeField] private EnemyType type;
 
     public enum EnemyAiStates { Null, Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
     internal StatusEffects status = new StatusEffects();
@@ -48,6 +49,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private GameObject model;
     [SerializeField] private GameObject finisherTrigger;
+    [SerializeField] private int orbWorth;
     #region Script References
 
     private Player pc;
@@ -72,7 +74,7 @@ public class Enemy : MonoBehaviour
     private bool lockedOn;
     private bool dead;
     private bool lowHealth;
-    
+
     // [SerializeField] private bool weak;
 
     private bool striking;
@@ -88,6 +90,7 @@ public class Enemy : MonoBehaviour
     public static event UnityAction onHit;
     public static event UnityAction guardBreak;
     public static event UnityAction<AudioClip> sendsfx;
+    public static event UnityAction<int> sendOrbs;
     #region Getters and Setters
     public int Health { get { return stats.Health; } set { stats.Health = Mathf.Max(0, value); } }
     public int HealthLeft { get { return stats.HealthLeft; } set { stats.HealthLeft = Mathf.Max(0, value); UIMaintence(); canvas.GetComponent<EnemyCanvas>().SetEnemyHealth(); if (stats.HealthLeft <= 0 && !dead) { Dead = true; } } }
@@ -105,7 +108,7 @@ public class Enemy : MonoBehaviour
         }
     }
     public EnemyAiStates State { get => state; set { state = value; States(); } }
-    public bool Grounded { get => grounded; set { grounded = value; Anim.SetBool("Grounded",grounded); } }
+    public bool Grounded { get => grounded; set { grounded = value; Anim.SetBool("Grounded", grounded); } }
     public bool LockedOn {
         get => lockedOn; set {
             lockedOn = value; if (lockedOn) {
@@ -177,13 +180,13 @@ public class Enemy : MonoBehaviour
         for (int i = 0; i < chaseBehaviors.Length; i++)
             chaseBehaviors[i].Enemy = this;
         #endregion
-        if (hitBoxBehaviors.Length>0) {
-           print("Behavior check!");
+        if (hitBoxBehaviors.Length > 0) {
+            print("Behavior check!");
             if (hitBoxBehaviors[0].HitBox != null) {
-            print("Hit Box check!");
+                print("Hit Box check!");
+            }
         }
-        }
-        
+
         pc = Player.GetPlayer();
         GameController.onQuitGame += OnPlayerDeath;
         Player.onPlayerDeath += OnPlayerDeath;
@@ -244,7 +247,7 @@ public class Enemy : MonoBehaviour
     }
     #region Reactions
     public void Knocked() {
-        Vector3 delta = (pc.transform.position-transform.position);
+        Vector3 delta = (pc.transform.position - transform.position);
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
         timelines.KnockedBack();
@@ -266,7 +269,7 @@ public class Enemy : MonoBehaviour
     }
     private void FreezeEnemy() {
         Debug.Log("Froze");
-        Anim.SetFloat("Speed",0.1f);
+        Anim.SetFloat("Speed", 0.1f);
         //anim.speed = 0;
         //State = EnemyAiStates.Null;
         StartCoroutine(UnFreeze());
@@ -285,7 +288,7 @@ public class Enemy : MonoBehaviour
         State = EnemyAiStates.Null;
     }
     #endregion
-#endregion
+    #endregion
     #region Event handlers
 
 
@@ -379,7 +382,8 @@ public class Enemy : MonoBehaviour
             default:
                 break;
         }
-    } public virtual void Idle() {
+    }
+    public virtual void Idle() {
         Walk = false;
         Debug.Log("Idle asf");
     }
@@ -502,18 +506,18 @@ public class Enemy : MonoBehaviour
 
 
     #region Coroutines
-    IEnumerator waitToFall() { 
-        YieldInstruction wait =new WaitForSeconds(1);
+    IEnumerator waitToFall() {
+        YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
         rbody.useGravity = true;
     }
     #endregion
 
-    private float Distance ;
+    private float Distance;
 
     public int AttackDelay { get => attackDelay; set => attackDelay = value; }
     public Rigidbody Rbody { get => rbody; set => rbody = value; }
-    public bool Standby { get => standby; set { standby = value; StandbyState(); } } 
+    public bool Standby { get => standby; set { standby = value; StandbyState(); } }
 
     //private void OnTriggerStay(Collider other) {
     //    if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack")) {
@@ -521,17 +525,18 @@ public class Enemy : MonoBehaviour
     //    }
     //}
     private void SlowEnemy() {
-        
-            FreezeEnemy();
+
+        FreezeEnemy();
         print("Wth?????");
     }
     public void OnDefeat() {
         //onAnyDefeated(this);
         SlimeHasDied();
         Enemies.Remove(this);
-        if (deathEffect != null) { 
-        Instantiate(deathEffect, transform);
+        if (deathEffect != null) {
+            Instantiate(deathEffect, transform);
         }
+        sendOrbs.Invoke(orbWorth);
         //deathEffect.transform.position = transform.position;
         Destroy(gameObject, 2.5f);
         //drop.transform.SetParent(null);
@@ -540,32 +545,65 @@ public class Enemy : MonoBehaviour
         print("Unset Hit");
         Hit = false;
         Anim.ResetTrigger("Attack 0");
-        State=EnemyAiStates.Idle;
+        State = EnemyAiStates.Idle;
     }
-    public void CalculateDamage(float addition) {
+    public void CalculateDamage(float addition, HitBoxType dmgType) {
         if (!dead) {
+            float dmgModifier = 1;
+            dmgModifier=DmgMod(dmgModifier,dmgType);
             Debug.Log((addition));
-            Debug.Log((pc.stats.Attack));
-            int dmg = (int)Mathf.Clamp(((pc.stats.Attack*addition) - stats.Defense), 1, 999);
+            int dmg = (int)Mathf.Clamp(((pc.stats.Attack * addition) - stats.Defense) * dmgModifier, 1, 999);
             Debug.Log((pc.stats.Attack * addition));
-            Debug.Log(stats.Defense);
             HealthLeft -= dmg;
-            /*hitSplat.GetComponent<HitText>().Text = dmg.ToString();
             //HitText hitSplat= new HitText();
             //Debug.Log(hitSplat.Text.ToString());
-
-            Instantiate(hitSplat, transform.position, Quaternion.identity);*/
+            hitSplat.GetComponent<HitText>().Text = dmg.ToString();
+            Instantiate(hitSplat, transform.position, Quaternion.identity);
             Hit = true;
             if (HealthLeft <= Health / 4 && !lowHealth) {
                 //StartCoroutine(StateControlCoroutine());
                 lowHealth = true;
             }
+
             //OnHit();
         }
 
-    }//(Mathf.Max(1, (int)(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
+    }//(Mathf.Max(1, (int)
+     //(Mathf.Pow(stats.Attack - 2.6f * pc.stats.Defense, 1.4f) / 30 + 3))) / n; }
+    private float DmgMod(float dmg, HitBoxType dmgType) {
+        switch (type) {
+            case EnemyType.absorbent:
+                switch (dmgType) {
+                    case HitBoxType.Heavy:
+                        return dmg;
+                    case HitBoxType.Magic:
+                        return dmg / 4;
+                    default:
+                        return dmg * 1.5f;
+                }
+            case EnemyType.soft:
+                switch (dmgType) {
+                    case HitBoxType.Heavy:
+                        return dmg / 4;
+                    case HitBoxType.Magic:
+                        return dmg;
+                    default:
+                        return dmg * 1.5f;
+                }
+            case EnemyType.hard:
+                switch (dmgType) {
+                    case HitBoxType.Heavy:
+                        return dmg * 1.5f;
+                    case HitBoxType.Magic:
+                        return dmg;
+                    default:
+                        return dmg / 4;
+                }
+        }
+        return dmg;
+    }
     public void CalculateAttack() {
-            pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
+        pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
     }
     public void HitGuard() {
         if (pc.stats.MPLeft > 0) {

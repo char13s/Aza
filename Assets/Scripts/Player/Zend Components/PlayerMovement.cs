@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public CharacterController CharCon { get => charCon; set => charCon = value; }
     public bool IsJumpPressed { get => isJumpPressed; set => isJumpPressed = value; }
-    public bool IsFalling { get => isFalling; set { isFalling = value; anim.SetBool("isFalling", isFalling); } }
+    public bool IsFalling { get => isFalling; set { isFalling = value; } }
     #endregion
     private void Start() {
         player = GetComponent<Player>();
@@ -64,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
         CharCon = GetComponent<CharacterController>();
         SetUpJump();
         MovingStates.returnSpeed += Move;
+        mainCam = GameManager.GetManager().Camera;
         //PlayerAnimationEvents.setjump += Jumping;
         //DashBehavior.dash += Dash;
     }
@@ -139,6 +140,9 @@ public class PlayerMovement : MonoBehaviour
         else if (isJumping && charCon.isGrounded && !isJumpPressed) {
             isJumping = false;
         }
+    }
+    void ResetMove() {
+        speed = new Vector3(0,0,0);
     }
     private void Move(float move) => MoveSpeed = move;
     void SetUpJump() {

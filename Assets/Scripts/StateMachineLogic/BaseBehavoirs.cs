@@ -24,7 +24,6 @@ public class BaseBehavoirs : StateMachineBehaviour
         pc.SkillId = 0;
         pc.CmdInput = 0;
         //pc.MoveSpeed = 6;
-        pc.SpinAttack = false;
         pc.AirCombo = 0;
        
     }

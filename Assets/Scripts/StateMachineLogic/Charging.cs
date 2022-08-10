@@ -10,7 +10,7 @@ public class Charging : StateMachineBehaviour
     GameObject flame;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
         pc = Player.GetPlayer();
-        pc.Charging = true;
+
         //flame=Instantiate(sparks, pc.DemonSword.transform);
     }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
@@ -18,7 +18,7 @@ public class Charging : StateMachineBehaviour
             Instantiate(sparks, pc.DemonSword.transform);
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex) {
-        pc.Charging = false;
+
         //Destroy(flame);
     }
 }

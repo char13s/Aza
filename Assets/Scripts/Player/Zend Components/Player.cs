@@ -9,46 +9,36 @@ public class Player : MonoBehaviour
     //private bool usingController;
     [Header("Movement")]
     private bool moving;
-    private bool weak;
     private int style;
 
     //public float speed;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
-    [SerializeField] private float burstForce;
     [SerializeField] private float rotationSpeed;
     Vector3 directionV;
     Vector2 displacementV;
     Quaternion qTo;
-    private float l;
-    private bool cantDoubleJump = true;
-    private bool inputSealed;
+
     bool inTeleport;
     #region Attacking
     [Space]
     [Header("Attacking")]
     [SerializeField] private GameObject hitBox;
-    [SerializeField] private GameObject fistHitBox;
     [SerializeField] private GameObject stabHitBox;
     [SerializeField] private GameObject rapidHitBox;
-    [SerializeField] private GameObject katanaHitbox;
-    [SerializeField] private GameObject scytheHitBox;
-    [SerializeField] private GameObject woodenSwordHitBox;
 
 
     private bool attacking;
     private bool attackState;
     private bool boutaSpin;
     private bool skillButton;
-    private bool lockedOn;
-    [SerializeField] private GameObject swordSpawn;
-    [SerializeField] private GameObject swordDSpawn;
 
+    private bool strenghtened;
+    private bool energized;
+
+    private bool lockedOn;
     private bool skillIsActive;
     [SerializeField] GameObject aimmingPoint;
-    private int weapon;
-    private int weaponMax;
-    private int weaponMin;
     #endregion
     [Space]
     [Header("rotations")]
@@ -93,8 +83,6 @@ public class Player : MonoBehaviour
     private bool blocking;
     private bool transforming;
 
-    private bool leftDash;
-    private bool rightDash;
     private bool guard;
     private bool hit;
     private bool dead;
@@ -106,21 +94,24 @@ public class Player : MonoBehaviour
     private bool powerUp;
 
     private int cmdInput;
-    private int animations;
-    private bool bowUp;
+
     private bool poweredUp;
     private bool jumping;
     private int cinemations;
-    private bool inHouse;
+
     private int combatAnimations;
     private int guardAnimations;
-    private bool doubleJump;
+
     private bool spinAttack;
     private float speedInc;
 
     private int shootLayer;
     private int guardLayer;
     private int airCombo;
+
+    private bool hasTarget;
+
+    private int magicLevel;
     #endregion
     #region Random stuff
     [Space]
@@ -136,21 +127,12 @@ public class Player : MonoBehaviour
     private int arrowType;
     [Space]
     [Header("References To Things on Zend")]
-    
-    //[SerializeField] private GameObject arrowPoint;
-    
-
-    //[SerializeField] private GameObject groundChecker;
-    
     [SerializeField] private GameObject zend;
-    //[SerializeField] private GameObject fireTrail;
-    //[SerializeField] private GameObject fireCaster;
+
     [SerializeField] private GameObject devilFoot;
 
     [SerializeField] private GameObject zaWarudosRange;
-    //[SerializeField] private GameObject pauseMenu;
-    
-    //[SerializeField] private GameObject woodenSword;
+
 
     [Space]
     [Header("OtherWorldyFeatures")]
@@ -158,10 +140,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject zendsLHorn;
     
     [SerializeField] private GameObject halo;
-    
-    
 
-    //[SerializeField] private GameObject reactionRange;
     [Space]
     [Header("HitBoxes")]
     [SerializeField] private GameObject aoeHitbox;
@@ -169,18 +148,7 @@ public class Player : MonoBehaviour
     //[SerializeField] private GameObject shieldHitBox;
     #endregion
     [Space]
-    [Header("Buttons")]
-    [SerializeField] private SkillButton triangle;
-    [SerializeField] private SkillButton circle;
-    [SerializeField] private SkillButton square;
-    [SerializeField] private SkillButton x;
-    //[SerializeField] private SpellTagSlot L1Triangle;
-    //[SerializeField] private SpellTagSlot L1Circle;
-    //[SerializeField] private SpellTagSlot L1Square;
-    //[SerializeField] private SpellTagSlot L1X;
     private static Player instance;
-
-
     private Coroutine guardCoroutine;
     private Coroutine hitDefuse;
     private Coroutine dodgeCoroutine;
@@ -203,9 +171,6 @@ public class Player : MonoBehaviour
     private PlayerMovement playerMove;
     #region Constructors
     internal Inventory items = new Inventory();
-    internal Inventory weaponInvent = new Inventory();
-    internal Inventory shieldInvent = new Inventory();
-    internal Inventory maskInvent = new Inventory();
     internal Stats stats = new Stats();
     internal StatusEffects status = new StatusEffects();
 
@@ -242,7 +207,7 @@ public class Player : MonoBehaviour
     #endregion
     //Optimize these to use only one Animation parameter in 9/14
     #region Getters and Setters
-    public bool Grounded { get => grounded; set { grounded = value; anim.SetBool("Grounded", grounded); } }
+    public bool Grounded { get => grounded; set { grounded = value;  } }//anim.SetBool("Grounded", grounded);
     public bool Guard { get => guard; set { guard = value; anim.SetBool("Guard", guard); } }
     public bool Moving { get => moving; set { moving = value; anim.SetBool("Moving", moving); } }
     public GameObject Body { get => body; set => body = value; }
@@ -265,15 +230,13 @@ public class Player : MonoBehaviour
     //public GameObject FireTrail { get => fireTrail; set => fireTrail = value; }//might have to get rid of
     public GameObject AoeHitbox { get => aoeHitbox; set => aoeHitbox = value; }
 
-    public bool LockedOn { get => lockedOn; set { lockedOn = value; anim.SetBool("Lock", lockedOn); anim.SetBool("AttackStance", lockedOn); if (!LockedOn) { if (unlocked != null) unlocked(); Direction = 0; } } }//actual player locked on
+    public bool LockedOn { get => lockedOn; set { lockedOn = value; anim.SetBool("Lock", lockedOn); anim.SetBool("AttackStance", lockedOn); if (!LockedOn) { if (unlocked != null) unlocked();} } }//actual player locked on
 
     public bool SkillIsActive { get => skillIsActive; set { skillIsActive = value; if (skillIsActive) { Guard = false; } } }
     public int CmdInput { get => cmdInput; set { cmdInput = value; anim.SetInteger("CommandInput", cmdInput); } }//see if you can get rid of this
 
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public bool PowerUp { get => powerUp; set { powerUp = value; anim.SetBool("PowerUp", powerUp); } }
-
-
     public AudioSource Sfx { get => sfx; set => sfx = value; }
     public bool PoweredUp { get => poweredUp; set { poweredUp = value; } }
     public bool Transforming { get => transforming; set => transforming = value; }
@@ -287,11 +250,7 @@ public class Player : MonoBehaviour
 
     public bool TeleportTriggered { get => teleportTriggered; set => teleportTriggered = value; }
 
-    public GameObject FistHitBox { get => fistHitBox; set => fistHitBox = value; }
     public bool StopTime { get => stopTime; set { stopTime = value; anim.SetBool("TimeStop", stopTime); } }
-
-
-
     public GameObject StabHitBox { get => stabHitBox; set => stabHitBox = value; }
 
     public int CombatAnimations { get => combatAnimations; set { combatAnimations = value; anim.SetInteger("CombatAnimation", combatAnimations); } }
@@ -309,24 +268,6 @@ public class Player : MonoBehaviour
     public Transform MovementBone { get => movementBone; set => movementBone = value; }
 
     public int ArrowType { get => arrowType; set => arrowType = value; }
-    //public GameObject ArrowPoint { get => arrowPoint; set => arrowPoint = value; }
-    public GameObject KatanaHitbox { get => katanaHitbox; set => katanaHitbox = value; }
-    //public GameObject Scythe { get => scythe; set => scythe = value; }
-    //public GameObject AngelSword { get => angelSword; set => angelSword = value; }
-    public GameObject ScytheHitBox { get => scytheHitBox; set => scytheHitBox = value; }
-    public float L { get => l; set { l = value; anim.SetFloat("LStick", l); } }
-
-    public bool SpinAttack { get => spinAttack; set { spinAttack = value; anim.SetBool("SpinAttack", spinAttack); } }
-
-
-    public bool BoutaSpin { get => boutaSpin; set => boutaSpin = value; }
-    public bool Weak { get => weak; set { weak = value; anim.SetBool("Weak", weak); } }
-
-    public GameObject WoodenSwordHitBox { get => woodenSwordHitBox; set => woodenSwordHitBox = value; }
-    public bool Charging { get => charging; set { charging = value; anim.SetBool("Charging", charging); } }
-    public Vector3 DirectionV { get => directionV; set => directionV = value; }
-    public Vector2 DisplacementV { get => displacementV; set => displacementV = value; }
-
     public bool SkillButton { get => skillButton; set => skillButton = value; }
     public float SpeedInc { get => speedInc; set => speedInc = value; }
     public int AirCombo { get => airCombo; set { airCombo = value; anim.SetInteger("AirCombo", airCombo); } }
@@ -339,10 +280,13 @@ public class Player : MonoBehaviour
     public bool Attack { get => attack; set { attack = value; anim.SetBool("Attacking", attack); } }
     public PlayerMovement PlayerMove { get => playerMove; set => playerMove = value; }
     public bool AirAttack { get => airAttack; set => airAttack = value; }
-    public bool InTeleport { get => inTeleport; set => inTeleport = value; }
     public PlayerBodyObjects PlayerBody { get => playerBody; set => playerBody = value; }
     public PlayerEffects Effects { get => effects; set => effects = value; }
     public Animator TopAnim { get => topAnim; set => topAnim = value; }
+    public bool Strenghtened { get => strenghtened; set => strenghtened = value; }
+    public bool Energized { get => energized; set => energized = value; }
+    public bool HasTarget { get => hasTarget; set => hasTarget = value; }
+    public int MagicLevel { get => magicLevel; set { magicLevel = value; anim.SetInteger("MagicLevel",magicLevel); } }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 
@@ -350,6 +294,7 @@ public class Player : MonoBehaviour
     #endregion
     public static Player GetPlayer() => instance.GetComponent<Player>();
     // Start is called before the first frame update
+    
     private void Awake() {
         if (instance != null && instance != this) {
             Destroy(gameObject);
@@ -357,8 +302,33 @@ public class Player : MonoBehaviour
         else {
             instance = this;
         }
+        
+        PlayerMove = GetComponent<PlayerMovement>();
+        ClothesSfx = zend.GetComponent<AudioSource>();
+        Anim = zend.GetComponent<Animator>();
+        TopAnim = GetComponent<Animator>();
+        //rbody = GetComponent<Rigidbody>();
+        charCon = GetComponent<CharacterController>();
+        //anim = GetComponent<Animator>();
+        battleMode = GetComponent<PlayerBattleSceneMovement>();
+        headController = GetComponent<BasicHeadController>();
+        Effects = GetComponent<PlayerEffects>();
+        PlayerBody = GetComponent<PlayerBodyObjects>();
+    }
+
+    void Start() {
+        //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
+        stats.Start();
+        MagicLevel = 1;
+        items.Start();
+        Stats.onHealthChange += CheckPlayerHealth;
+        guardLayer = anim.GetLayerIndex("GuardLayer");
+        shootLayer = anim.GetLayerIndex("Shooting Layer");
+    }
+    
+    private void OnEnable() {
         sfx = GetComponent<AudioSource>();
-        weaponMax = 1;
+        mainCam = GameManager.GetManager().Camera;
         #region Event Subs
         Stats.sendSpeed += IncreaseSpeed;
         Enemy.onHit += MpRegain;
@@ -396,36 +366,60 @@ public class Player : MonoBehaviour
         AngelicRelic.teleportTo += Teleportto;
         DefensePowers.defense += Block;
         #endregion
-        #region 
+        #region Animation Events
         PlayerAnimationEvents.kickback += AddForceToPlayer;
         #endregion
-        PlayerMove = GetComponent<PlayerMovement>();
-        ClothesSfx = zend.GetComponent<AudioSource>();
-        Anim = zend.GetComponent<Animator>();
-        TopAnim = GetComponent<Animator>();
-        //rbody = GetComponent<Rigidbody>();
-        charCon = GetComponent<CharacterController>();
-        //anim = GetComponent<Animator>();
-        battleMode = GetComponent<PlayerBattleSceneMovement>();
-        headController = GetComponent<BasicHeadController>();
-        Effects = GetComponent<PlayerEffects>();
-        PlayerBody = GetComponent<PlayerBodyObjects>();
-    }
-
-    void Start() {
-        //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
-        stats.Start();
-        items.Start();
-        Stats.onHealthChange += CheckPlayerHealth;
-        guardLayer = anim.GetLayerIndex("GuardLayer");
-        shootLayer = anim.GetLayerIndex("Shooting Layer");
-    }
-    private void OnEnable() {
+        #region Skill Tree Subs
+        MagicComboExtend.sendUpgrade += UpMagicMagicCombo;
+        #endregion
         if (onPlayerEnabled != null) {
             onPlayerEnabled();
         }
     }
+    private void OnDisable() {
+        sfx = GetComponent<AudioSource>();
+        MagicComboExtend.sendUpgrade -= UpMagicMagicCombo;
+        #region Event Subs
+        Stats.sendSpeed -= IncreaseSpeed;
+        Enemy.onHit -= MpRegain;
+        Enemy.guardBreak -= GuardBreak;
+        LevelManager.levelFinished -= SetInTeleport;
 
+        GameController.respawn -= RestoreHealth;
+        GroundChecker.landed -= SoundEffects;
+
+        DoubleJump.doubleJump -= SoundEffects;
+        SpellTag.triggerZaWarudo -= ZaWarudo;
+        JudgementCut.stop -= ZaWarudo;
+        DrawSword.hideSword -= DrawSwordOut;
+        Dash.dash -= SoundEffects;
+        EnemyHitBox.hit -= OnHit;
+        ReactionRange.dodged -= ZaWarudo;
+
+        UiManager.disablePlayer -= DisableBody;
+        UiManager.unsealPlayerInput -= EnableBody;
+
+        GroundSound.sendSound -= GroundSoundManagement;
+        FormSwitch.inviciblity -= Endure;
+        //MovingStates.returnSpeed += MoveBro;
+        //BaseBehavoirs.grounded += ZeroVelocity;
+        PoisonLake.poisoned -= TakeDamage;
+        ShadowShot.shoot -= ShootShadow;
+        ShootBehavior.shoot -= ShootLayer;
+        AttackStates.sendAttack -= RecieveAttack;
+        LevelManager.levelTransition -= OnLevelTransition;
+        #region Item subs
+        ItemData.mask -= PowerUpp;
+        #endregion
+        #endregion
+        #region Power HookUps
+        AngelicRelic.teleportTo -= Teleportto;
+        DefensePowers.defense -= Block;
+        #endregion
+        #region 
+        PlayerAnimationEvents.kickback -= AddForceToPlayer;
+        #endregion
+    }
     // Update is called once per frame
     void FixedUpdate() {
         // Move();
@@ -439,34 +433,6 @@ public class Player : MonoBehaviour
     #endregion
 
     #region new code
-    /*private void Move() {
-        DirectionV = MainCam.transform.TransformDirection(new Vector3(DisplacementV.x, 0, DisplacementV.y).normalized);
-        if (DisplacementV.magnitude >= 0.1f) {
-            Moving = true;
-            if (!lockedOn) {
-                directionV.y = 0;
-                Vector3 rot = Vector3.Normalize(DirectionV);
-                rot.y = 0;
-                qTo = Quaternion.LookRotation(DirectionV);
-                transform.rotation = Quaternion.Slerp(transform.rotation, qTo, Time.deltaTime * rotationSpeed);
-            }
-        }
-        else {
-            Moving = false;
-        }
-    }
-    private void MoveBro(float move) {
-        moveSpeed = move;
-        if (!lockedOn) {
-            Vector3 speed;
-            speed = move * DirectionV.normalized;
-            //speed.y = RBody.velocity.y;
-            //RBody.velocity = speed;
-            // RBody.MovePosition(RBody.position+(speed*Time.deltaTime));
-        }
-        //rBody.MovePosition(rBody.position+speed);
-        //charaCon.SimpleMove(speed);
-    }*/
     private void RecieveAttack() {
         Attack = false;
     }
@@ -619,43 +585,6 @@ public class Player : MonoBehaviour
     }
     #endregion
     #region Inputs
-    public void SkillSquare() {
-        if (square.SkillAssigned != null && stats.MPLeft >= square.MpRequired) {
-            stats.MPLeft -= square.MpRequired;
-            square.UseSkill();
-            skillIsActive = true;
-        }
-    }
-    public void SkillX() {
-        if (x.SkillAssigned != null && stats.MPLeft >= x.MpRequired) {
-            stats.MPLeft -= x.MpRequired;
-            x.UseSkill();
-            skillIsActive = true;
-        }
-    }
-    public void SkillTriangle() {
-        if (triangle.SkillAssigned != null && stats.MPLeft >= triangle.MpRequired) {
-            stats.MPLeft -= triangle.MpRequired;
-            triangle.UseSkill();
-            skillIsActive = true;
-        }
-    }
-    public void SkillCircle() {
-        if (circle.SkillAssigned != null && stats.MPLeft >= circle.MpRequired) {
-            stats.MPLeft -= circle.MpRequired;
-            circle.UseSkill();
-            skillIsActive = true;
-            //Guard = false;
-        }
-    }
-
-    //private void Dodge(float move) {
-    //    //RBody.velocity = transform.right * move;
-    //}
-    //private void Jump() {
-    //    SkillId = 10;
-    //    //RBody.AddForce(new Vector3(0, 333, 0), ForceMode.Impulse);
-    //}
     public void TargetingLogic(bool val) {
         if (val) {
             LockedOn = true;
@@ -726,7 +655,13 @@ public class Player : MonoBehaviour
     //   //rBody.velocity = new Vector3(0, 0, 0);
     //}
     #endregion
-
+    #region Skill tree Upgrades
+    private void UpMagicMagicCombo() {
+        MagicLevel++;
+        print("Magic level upgraded");
+    }
+    
+    #endregion
     #region Sounds
     //private void LandingSound(AudioClip sound) {
     //    sfx.PlayOneShot(sound);

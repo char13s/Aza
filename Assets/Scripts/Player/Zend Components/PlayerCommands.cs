@@ -134,7 +134,7 @@ public class PlayerCommands : MonoBehaviour
             if (sendInput != null) {
                 sendInput("X");
             }
-            if (player.CombatAnimations == 0 && player.Grounded) {
+            if (player.CombatAnimations == 0 && player.CharCon.isGrounded) {
                 anim.SetTrigger("Jump");
             }
             StartCoroutine(EmptyChain());

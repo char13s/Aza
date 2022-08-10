@@ -7,10 +7,11 @@ public class ZendHairControl : MonoBehaviour
     [SerializeField] private GameObject hair;
     [SerializeField] private Material normalState;
     [SerializeField] private Material energizedState;
-    // Start is called before the first frame update
-    void Start()
-    {
+    private void OnEnable() {
         PlayerInputs.transformed += TransformControl;
+    }
+    private void OnDisable() {
+        PlayerInputs.transformed -= TransformControl;
     }
     private void TransformControl(bool val) {
         if (val) {

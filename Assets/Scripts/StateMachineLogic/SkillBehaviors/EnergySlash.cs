@@ -5,11 +5,13 @@ using UnityEngine;
 public class EnergySlash : StateMachineBehaviour {
     [SerializeField] private GameObject energyWave;
     [SerializeField] private float blastTime;
-    [SerializeField] private bool archery;
+    [SerializeField] private SlashSpawner slashSpawner;
     private bool preformed;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         preformed = false;
-        Instantiate(energyWave, Player.GetPlayer().transform.position + new Vector3(0, 0.4F, 0), Quaternion.identity);
+        slashSpawner=Player.GetPlayer().PlayerBody.SlashSpawner;
+        //Instantiate(energyWave, transform.position , Quaternion.identity);
+        slashSpawner.SpawnSlash();
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         if (stateInfo.normalizedTime >= 0.49 && !preformed) {

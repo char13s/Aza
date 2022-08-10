@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class PlayerBattleSceneMovement : MonoBehaviour {
     private List<Enemy> enemies = new List<Enemy>(16);
     private Player player;
+    private PlayerMovement playerMove;
     private int t;//targeted enemy in the array of enemies
     private Enemy enemyTarget;
     public static event UnityAction onLockOn;
@@ -53,6 +54,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private void Start() {
 
         player = Player.GetPlayer();
+        playerMove = GetComponent<PlayerMovement>();
         aimPoint = player.AimmingPoint;
         //leftPoint = Player.GetPlayer().PlayerBody.LeftPoint;
     }
@@ -87,9 +89,12 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         
         if (player.LockedOn) {
             if (enemies.Count == 0) {
+                player.Direction = 0;
+                player.HasTarget = false;
                 BasicMovement();
             }
             else {
+                player.HasTarget = true;
                 GetInput();
             }
 
@@ -128,7 +133,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private void GetInput() {
         if (Enemies.Count != 0 && T < Enemies.Count) {
 
-            LockOn(Enemies[T], player.DisplacementV.x, player.DisplacementV.y);
+            LockOn(Enemies[T], playerMove.Displacement.x, playerMove.Displacement.y);
         }
     }
 
@@ -192,13 +197,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         rotLock = false;
     }
     private void BasicMovement() {
-
-        float x = player.DisplacementV.x;
-        float y = player.DisplacementV.y;
+        print("Basic moving");
+        float x = playerMove.Displacement.x;
+        float y = playerMove.Displacement.y;
         RotateSpeed = 18 - EnDist(player.PlayerBody.BattleCamTarget);
         Vector3 delta = player.PlayerBody.BattleCamTarget.transform.position;
         delta.y = 0;
-        transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
+        //transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
         //transform.position = Vector3.MoveTowards(transform.position, aimPoint.transform.position, player.MoveSpeed * y * Time.deltaTime);
     }
 
@@ -209,7 +214,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         EnemyLockedTo();
         //if (!slide) { 
         MovementInputs(x, y);
-
+        //print("Lockon moving");
         if (Enemies[T] != null && !slide) {
 
             if (onLockOn != null) {

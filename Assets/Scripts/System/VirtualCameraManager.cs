@@ -167,7 +167,7 @@ public class VirtualCameraManager : MonoBehaviour
     private void WeakZendCam() {
         deathCam.m_Priority = 0;
         Debug.Log("wtf");
-        pc.Weak=true;
+
     }
     private void TurnWeakZendCamOff() {
         weakZendCam.m_Priority = 0;

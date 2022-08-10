@@ -9,6 +9,9 @@ public class LevelManager : MonoBehaviour
     public static event UnityAction sendToMain;
     public static event UnityAction<bool> levelFinished;
     public static event UnityAction<bool> levelTransition;
+    public static event UnityAction<bool> gameMode;
+    public static event UnityAction newScene;
+    private int nextLevel;
     private int currentLevel;
     // Start is called before the first frame update
     void OnEnable() {
@@ -21,23 +24,38 @@ public class LevelManager : MonoBehaviour
         //onNewGame -= OnNewGame;
     }
     void Start() {
-        currentLevel = 1;
+        nextLevel = 1;
+        LevelTransition(1);
+        LoadingCanvas.changeScene += WaitToChange;
+
     }
     public void LevelTransition(int lvl) {
-
+        print("new level requested");
         if (lvl == 1) {
-            sendToMain.Invoke();
+            //sendToMain.Invoke();
+            gameMode.Invoke(false);
         }
-        if (currentLevel != 0) {
-            SceneManager.UnloadSceneAsync(currentLevel);
-        }
-        off.Invoke();
-        currentLevel = lvl;
-        SceneManager.LoadSceneAsync(lvl, LoadSceneMode.Additive);
+        else {
 
+        }
+
+        off.Invoke();
+
+        nextLevel = lvl;
         if (levelTransition != null) {
             levelTransition(false);
         }
+    }
+    private void WaitToChange() {
+        if (nextLevel != 0) {
+            print("new level cuz it wasnt 0");
+            SceneManager.UnloadSceneAsync(currentLevel);
+            currentLevel = nextLevel;
+            SceneManager.LoadSceneAsync(currentLevel, LoadSceneMode.Additive);
+
+        }
+
+
     }
     private void OnLevelFinishedLoading(Scene arg0, LoadSceneMode arg1) {
         StartCoroutine(ResetActiveScene());
@@ -60,5 +78,9 @@ public class LevelManager : MonoBehaviour
         if (levelTransition != null) {
             levelTransition(true);
         }
+        gameMode.Invoke(true);
+    }
+    private void RepositionPlayer() { 
+    
     }
 }
