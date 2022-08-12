@@ -181,9 +181,7 @@ public class Enemy : MonoBehaviour
             chaseBehaviors[i].Enemy = this;
         #endregion
         if (hitBoxBehaviors.Length > 0) {
-            print("Behavior check!");
             if (hitBoxBehaviors[0].HitBox != null) {
-                print("Hit Box check!");
             }
         }
 

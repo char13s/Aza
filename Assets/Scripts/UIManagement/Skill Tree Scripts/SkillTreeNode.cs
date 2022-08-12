@@ -25,11 +25,11 @@ public abstract class SkillTreeNode : MonoBehaviour
     void Start() {
         gm = GameManager.GetManager();
         if (!CheckPrevNodes()) {
-            button.enabled = false;
+            button.interactable=false;
         }
     }
     public void ButtonAvailable() {
-        button.enabled = true;
+        button.interactable = true;
     }
     public abstract void OutsideEffect();
     private bool CheckPrevNodes() {
@@ -47,7 +47,7 @@ public abstract class SkillTreeNode : MonoBehaviour
         if (CheckPrevNodes() && gm.OrbAmt >= cost) {
             Unlocked = true;
             sendOrbs.Invoke(gm.OrbAmt - cost);
-            button.enabled = false;
+            button.interactable = false;
             foreach (SkillTreeNode node in next) {
                 node.ButtonAvailable();
             }

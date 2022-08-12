@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 {
     public static event UnityAction off;
     public static event UnityAction sendToMain;
+    public static event UnityAction turnOnMain;
     public static event UnityAction<bool> levelFinished;
     public static event UnityAction<bool> levelTransition;
     public static event UnityAction<bool> gameMode;
@@ -30,9 +31,8 @@ public class LevelManager : MonoBehaviour
 
     }
     public void LevelTransition(int lvl) {
-        print("new level requested");
         if (lvl == 1) {
-            //sendToMain.Invoke();
+            sendToMain.Invoke();
             gameMode.Invoke(false);
         }
         else {
@@ -47,8 +47,10 @@ public class LevelManager : MonoBehaviour
         }
     }
     private void WaitToChange() {
+        if (nextLevel == 1) {
+            turnOnMain.Invoke();
+        }
         if (nextLevel != 0) {
-            print("new level cuz it wasnt 0");
             SceneManager.UnloadSceneAsync(currentLevel);
             currentLevel = nextLevel;
             SceneManager.LoadSceneAsync(currentLevel, LoadSceneMode.Additive);

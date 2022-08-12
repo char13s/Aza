@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static event UnityAction<bool> pauseScreen;
     public static event UnityAction<int> switchMap;
     [SerializeField] private GameObject camera;
+
     private int orbAmt;
     public enum GameState {Paused, PlayMode }
     private GameState currentState;
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
             //close.Invoke();
         }
         pauseScreen.Invoke(pause);
+        Debug.Log("Pause");
     }
     private void GameStateControl(bool val) {
         if (val) {

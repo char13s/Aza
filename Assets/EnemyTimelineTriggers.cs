@@ -18,7 +18,6 @@ public class EnemyTimelineTriggers : MonoBehaviour
         //Debug.Log(timeline.SetGenericBinding(timelineAsset.GetOutputTrack(1), Player.GetPlayer());
         timeline.SetGenericBinding(timelineAsset.GetOutputTrack(2), Player.GetPlayer().Anim);
         timeline.SetGenericBinding(timelineAsset.GetOutputTrack(3), Player.GetPlayer().TopAnim);
-        Debug.Log(timelineAsset); ;
     }
 
     private void OnTriggerEnter(Collider other) {

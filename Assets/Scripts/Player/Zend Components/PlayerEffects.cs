@@ -19,7 +19,6 @@ public class PlayerEffects : MonoBehaviour
     private void OnEnable() {
         PlayerInputs.energized += SwordAuraControl;
         PlayerInputs.strenghtened += SwordAuraControl2;
-        print("enabled");
     }
     private void OnDisable() {
         PlayerInputs.energized -= SwordAuraControl;

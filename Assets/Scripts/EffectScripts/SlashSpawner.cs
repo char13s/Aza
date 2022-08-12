@@ -6,7 +6,7 @@ public class SlashSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject slash;
     private void OnEnable() {
-        SpawnSlash();
+        //SpawnSlash();
     }
     // Start is called before the first frame update
     void Start() {

@@ -213,29 +213,33 @@ public class PlayerInputs : MonoBehaviour
 
     private void OnPause() {
         pause.Invoke();
-        print("pause");
+        Debug.Log("Fuck is this doing?");
     }
     private void OnNextPage() {
-        turnPage.Invoke(1);
-        print("next page");
+        if (turnPage != null) {
+            turnPage(1);
+        }
     }
     private void OnPreviousPage() {
-        turnPage.Invoke(-1);
+        if (turnPage != null) { 
+            turnPage(-1);
+        }
     }
     private void OnClose() {
-        //close.Invoke();
-
+        if (close != null) { 
+            close(); 
+        }
     }
     #endregion
     private void SwitchMaps(int val) {
         switch (val) {
             case 0:
                 map.SwitchCurrentActionMap("Default Controls");
-                print("Switched to default controls");
+                //print("Switched to default controls");
                 break;
             case 1:
                 map.SwitchCurrentActionMap("PauseControls");
-                print("Switched to pause controls");
+                //print("Switched to pause controls");
                 break;
             case 2:
                 map.SwitchCurrentActionMap("Air Controls");

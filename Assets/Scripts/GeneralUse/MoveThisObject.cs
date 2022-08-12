@@ -9,15 +9,17 @@ public class MoveThisObject : MonoBehaviour
     void Start()
     {
         master = SceneManager.GetSceneByBuildIndex(0);
-        LevelManager.sendToMain += SendToMainScene;
+        
     }
     void OnEnable() {
         //pc = Player.GetPlayer();
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
+        LevelManager.sendToMain += SendToMainScene;
     }
 
     void OnDisable() {
         SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+        LevelManager.sendToMain -= SendToMainScene;
         //onNewGame -= OnNewGame;
     }
     private void SendToMainScene() { 

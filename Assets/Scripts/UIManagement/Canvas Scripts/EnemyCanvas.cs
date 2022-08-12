@@ -22,7 +22,7 @@ public class EnemyCanvas : MonoBehaviour
         qTo = Quaternion.LookRotation(direction);
         transform.rotation = qTo;
     }
-    public void SetEnemyHealth() {print(hpSlider.value);
+    public void SetEnemyHealth() {
         if (hpSlider.value < (hpSlider.maxValue / 4)) {
             
             fillRef.color = Color.yellow;

@@ -31,8 +31,9 @@ public class LoadingCanvas :CanvasManager
             FadeToBlack();
         }
         if (black.color.a >= 0.99) {
-            changeScene.Invoke();
-            print("blackened");
+            if (changeScene != null) {
+                changeScene();
+            }
         }
     }
     private void FadeToBlack() {
