@@ -11,6 +11,6 @@ public class EnemySpawnManager : MonoBehaviour
         
     }
     public void SpawnKnight() {
-        demonKnight.SpawnEnemy();
+        //demonKnight.SpawnEnemy();
     }
 }

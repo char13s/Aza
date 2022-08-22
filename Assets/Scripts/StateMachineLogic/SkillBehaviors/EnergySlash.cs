@@ -9,9 +9,9 @@ public class EnergySlash : StateMachineBehaviour {
     private bool preformed;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         preformed = false;
-        slashSpawner=Player.GetPlayer().PlayerBody.SlashSpawner;
+        //slashSpawner=Player.GetPlayer().PlayerBody.SlashSpawner;
         //Instantiate(energyWave, transform.position , Quaternion.identity);
-        slashSpawner.SpawnSlash();
+        //slashSpawner.SpawnSlash();
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         if (stateInfo.normalizedTime >= 0.49 && !preformed) {

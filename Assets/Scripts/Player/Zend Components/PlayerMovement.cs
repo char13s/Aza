@@ -69,12 +69,7 @@ public class PlayerMovement : MonoBehaviour
         //DashBehavior.dash += Dash;
     }
     private void FixedUpdate() {
- 
         Rotate();
-                //print(speed);
-        //print(charCon.isGrounded);
-        
-        
         Anim.SetBool("Grounded", charCon.isGrounded);
         if (!player.AirAttack) {
             charCon.Move(speed * Time.deltaTime);
@@ -82,11 +77,9 @@ public class PlayerMovement : MonoBehaviour
         }
         else {
             charCon.Move(new Vector3(0,-0.5f,0) * Time.deltaTime);
-        }
-            
+        }   
         HandleJump();
     }
-
     private void Gravity() {
         IsFalling = speed.y <= 0.0f;
         //float fallMultipler =0.5f;

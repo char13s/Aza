@@ -6,12 +6,15 @@ public class Dodge : StateMachineBehaviour
     public static event UnityAction stopMove;
     public static event UnityAction resetMove;
     public static event UnityAction dodge;
+    Player player;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //Player.GetPlayer().MoveSpeed = 0;
+        player = Player.GetPlayer();
+        player.Dodge = true;
+        //MoveSpeed = 0;
         //Player.GetPlayer().Nav.enabled = false;
         //Player.GetPlayer().RBody.isKinematic = false;
-        Player.GetPlayer().CombatAnimations = 0;
+        player.CombatAnimations = 0;
         //if (stopMove != null) {
         //    stopMove();
         //}
@@ -19,11 +22,12 @@ public class Dodge : StateMachineBehaviour
         //Player.GetPlayer().MoveSpeed = 10;
     }
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        Player.GetPlayer().CharCon.SimpleMove(Player.GetPlayer().transform.right * move);
+        player.CharCon.SimpleMove(Player.GetPlayer().transform.right * move);
         //MoveSpeed = 13;  
     }
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        player.Dodge = false;
         //if (stopMove != null) {
         //    resetMove();
         //}

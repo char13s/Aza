@@ -7,12 +7,15 @@ public class EnemySpawnPoint : MonoBehaviour
     [SerializeField] private GameObject enemy;
     [SerializeField] float spawnTime;
     private void Start() {
-        StartCoroutine(DelaySpawn());
-    }
-    private void OnEnable() {
         
     }
-    public void SpawnEnemy() {
+    private void OnEnable() {
+
+    }
+    public void Spawn() {
+        StartCoroutine(DelaySpawn());
+    }
+    private void SpawnEnemy() {
         Instantiate(enemy, transform.position, Quaternion.identity);
     }
     IEnumerator DelaySpawn() {

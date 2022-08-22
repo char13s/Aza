@@ -33,11 +33,13 @@ public class PlayerInputs : MonoBehaviour
     public static event UnityAction<bool> transformed;
     public static event UnityAction<bool> energized;
     public static event UnityAction<bool> strenghtened;
+    public static event UnityAction playerEnabled;
     #endregion
     private void OnEnable() {
         DialogueManager.switchControls += SwitchMaps;
         GameManager.switchMap += SwitchMaps;
         EnemyTimelineTriggers.sendTrigger += RecieveTrigger;
+        
     }
     private void OnDisable() {
         DialogueManager.switchControls -= SwitchMaps;
@@ -50,7 +52,7 @@ public class PlayerInputs : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         map = GetComponent<PlayerInput>();
         anim = GetComponent<Animator>();
-        
+        playerEnabled.Invoke();
     }
 
     #region Base Controls
@@ -107,11 +109,12 @@ public class PlayerInputs : MonoBehaviour
                 playerMovement.IsJumpPressed = true;
             }
         }
-        else {
-
-        }
         if (!value.isPressed) {
             playerMovement.IsJumpPressed = false;
+        }
+        if (!player.PlayerMove.CharCon.isGrounded&& value.isPressed) {
+            player.Anim.SetTrigger("Dash");
+            print("Dash ho");
         }
     }
     private void OnAbility(InputValue value) {
@@ -137,7 +140,6 @@ public class PlayerInputs : MonoBehaviour
     private void OnLockOn(InputValue value) {
         if (value.isPressed) {
             player.TargetingLogic(true);
-            print("Locked or should be anyway");
         }
         else {
             player.TargetingLogic(false);
@@ -250,8 +252,8 @@ public class PlayerInputs : MonoBehaviour
             case 4:
                 map.SwitchCurrentActionMap("Dialogue Controls");
                 break;
-            case 5:
-                map.SwitchCurrentActionMap("");
+            case 99:
+                map.SwitchCurrentActionMap("EmptyControls");
                 break;
         }
     }

@@ -8,13 +8,14 @@ public class GameManager : MonoBehaviour
     private bool pause;
     public static event UnityAction<bool> pauseScreen;
     public static event UnityAction<int> switchMap;
+    public static event UnityAction gameOver;
     [SerializeField] private GameObject camera;
 
     private int orbAmt;
-    public enum GameState {Paused, PlayMode }
+    public enum GameState { Paused, PlayMode }
     private GameState currentState;
 
-    public GameState CurrentState { get => currentState; set => currentState = value; }
+    public GameState CurrentState { get => currentState; set { currentState = value; StateMappings(); } }
     public GameObject Camera { get => camera; set => camera = value; }
     public int OrbAmt { get => orbAmt; set => orbAmt = value; }
 
@@ -33,22 +34,31 @@ public class GameManager : MonoBehaviour
         PlayerInputs.pause += PauseGame;
         LevelManager.gameMode += GameStateControl;
         Stats.onOrbGain += Collect;
+        PlayerInputs.playerEnabled += StateMappings;
+        Player.onPlayerDeath += HandlePlayerDeath;
         //PauseCanvas.pause += PauseGame;
     }
     public void PauseGame() {
         if (pause) {
             pause = false;
             Time.timeScale = 1;
-            switchMap.Invoke(0);
+            CurrentState = GameState.PlayMode;
         }
         else {
             pause = true;
             Time.timeScale = 0;
-            switchMap.Invoke(1);
+            CurrentState = GameState.Paused;
             //close.Invoke();
         }
         pauseScreen.Invoke(pause);
         Debug.Log("Pause");
+    }
+    private void HandlePlayerDeath() {
+        //kill player controls
+        //tell level manager to send back to main menu
+        if (switchMap != null)
+            switchMap(99);
+        gameOver.Invoke();
     }
     private void GameStateControl(bool val) {
         if (val) {
@@ -56,6 +66,18 @@ public class GameManager : MonoBehaviour
         }
         else {
             CurrentState = GameState.Paused;
+        }
+    }
+    void StateMappings() {
+        switch (currentState) {
+            case GameState.PlayMode:
+                if(switchMap!=null)
+                    switchMap(0);
+                break;
+            case GameState.Paused:
+                if (switchMap != null)
+                    switchMap(1);
+                break;
         }
     }
     private void Collect(int amt) {

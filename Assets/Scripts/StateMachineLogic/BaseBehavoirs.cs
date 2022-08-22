@@ -20,6 +20,7 @@ public class BaseBehavoirs : StateMachineBehaviour
         animator.ResetTrigger("Attack");
 
     }
+
     private void Defaults() {
         pc.SkillId = 0;
         pc.CmdInput = 0;

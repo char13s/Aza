@@ -11,9 +11,10 @@ public class CombatZone : MonoBehaviour {
   
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")&&!activated) {
-            ActivateTheWalls();
+            //ActivateTheWalls();
             ActivateTheEnemies();
             activated = true;
+            Destroy(gameObject);
         }
     }
     private void ActivateTheWalls() {
@@ -23,7 +24,7 @@ public class CombatZone : MonoBehaviour {
     }
     private void ActivateTheEnemies() {
         foreach(EnemySpawnPoint point in enemies){
-           // point.Spawn = true;
+            point.Spawn();
         }
     }
 }

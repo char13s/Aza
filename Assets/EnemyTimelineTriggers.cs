@@ -9,7 +9,7 @@ public class EnemyTimelineTriggers : MonoBehaviour
     [SerializeField] private PlayableDirector timeline;
     [SerializeField] private TimelineAsset timelineAsset;
     public static event UnityAction<EnemyTimelineTriggers> sendTrigger;
-
+    public static event UnityAction demonKnightTakedown;
     // Start is called before the first frame update
     void Start()
     {

@@ -133,6 +133,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 6346844626392979197}
+        m_TargetAssemblyTypeName: CanvasManager, Assembly-CSharp
+        m_MethodName: CanvasControl
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2014850341
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,7 +481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3920902641731919423
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1973,6 +1985,8 @@ MonoBehaviour:
   prev: []
   next:
   - {fileID: 6346844627719131683}
+  - {fileID: 8094626506950018335}
+  - {fileID: 8643195357258986826}
   cost: 0
 --- !u!1 &6346844626268921451
 GameObject:
@@ -6432,7 +6446,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0.37169808, g: 0.80142725, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.02745098, g: 0.03137255, b: 0.14117648, a: 1}
-    m_SelectedColor: {r: 0.09019608, g: 0.11372549, b: 0.43529412, a: 0.5019608}
+    m_SelectedColor: {r: 0, g: 0.068181515, b: 1, a: 0.5019608}
     m_DisabledColor: {r: 0.09170521, g: 0.11309628, b: 0.4339623, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -13941,7 +13955,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6346844627929685252
 RectTransform:
   m_ObjectHideFlags: 0

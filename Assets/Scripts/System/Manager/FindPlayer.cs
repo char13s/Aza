@@ -10,8 +10,12 @@ public class FindPlayer : MonoBehaviour
     {
         vcam = GetComponent<CinemachineVirtualCamera>();
         PlayerSpawnPoint.targetMe += SwitchPoint;
+        CameraPoint.sendThis += LookATME;
     }
     void SwitchPoint(GameObject val) {
         vcam.Follow = val.transform;
+    }
+    void LookATME(GameObject val) { 
+        vcam.LookAt= val.transform;
     }
 }

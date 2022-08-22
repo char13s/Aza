@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Cinemachine;
 #pragma warning disable 0649
-public class PlayerBattleSceneMovement : MonoBehaviour {
+public class PlayerBattleSceneMovement : MonoBehaviour
+{
     private List<Enemy> enemies = new List<Enemy>(16);
     private Player player;
     private PlayerMovement playerMove;
     private int t;//targeted enemy in the array of enemies
     private Enemy enemyTarget;
-    public static event UnityAction onLockOn;
+    public static event UnityAction<bool> onLockOn;
     public static event UnityAction<int> playBattleTheme;
     private Enemy closestEnemy;
-    private bool slide;
-    private bool pressed;
     private bool locked;
     private float rotateSpeed;
     private GameObject aimPoint;
     //private GameObject leftPoint;
     private bool rotLock;
-    private bool cutscening;
-    private bool playing;
-    private bool casual; 
     private float rotationSpeed;
+
+    [SerializeField] private CinemachineVirtualCamera main;
+    [SerializeField] private CinemachineVirtualCamera battleCam;
     public float RotationSpeed { get => rotationSpeed; set { rotationSpeed = value; Mathf.Clamp(value, 5, 8); } }
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
     public int T { get => t; set { t = value; Mathf.Clamp(t, 0, Enemies.Count); } }
@@ -45,10 +45,15 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         CommandInputBehavior.resetMove += ResetLock;
         Dodge.stopMove += SetLock;
         Dodge.resetMove += ResetLock;
-        UiManager.killAll += Cutscening;
         //UiManager.nullEnemies+=RemoveAllEnemies;
         //Dash.dashu += RemoveAllEnemies;
         T = 0;
+
+    }
+    private void OnEnable() {
+
+    }
+    private void OnDisable() {
 
     }
     private void Start() {
@@ -64,47 +69,45 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
     private void RemoveAllEnemies() {
         Enemies.Clear();
     }
-    private void Cutscening(bool val) {
-        cutscening = val;
-        ClosestEnemy = null;
-
-    }
     private void Update() {
         Vector3 position = transform.position;
-            for (int i = 0; i < Enemy.TotalCount; i++) {
-                Enemy current = Enemy.GetEnemy(i);
-                bool shouldBeInList = false;
-                if (current != null) { shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 361; }
-                int index = enemies.IndexOf(current);
-                if (shouldBeInList != index >= 0) {
-                    if (shouldBeInList) {
-                        enemies.Add(current);
-                        if (enemies.Count > 1) {
-                            GetClosestEnemy();
-                        }
+        for (int i = 0; i < Enemy.TotalCount; i++) {
+            Enemy current = Enemy.GetEnemy(i);
+            bool shouldBeInList = false;
+            if (current != null) { shouldBeInList = Vector3.SqrMagnitude(current.transform.position - position) <= 40000; }
+            int index = enemies.IndexOf(current);
+            if (shouldBeInList != index >= 0) {
+                if (shouldBeInList) {
+                    enemies.Add(current);
+                    if (enemies.Count > 1) {
+                        GetClosestEnemy();
                     }
-                    else { enemies.RemoveAt(index); }
                 }
+                else { enemies.RemoveAt(index); }
             }
-        
+        }
+
         if (player.LockedOn) {
+            LockedOn(true);
             if (enemies.Count == 0) {
                 player.Direction = 0;
                 player.HasTarget = false;
                 BasicMovement();
+
             }
             else {
                 player.HasTarget = true;
                 GetInput();
             }
-
+        }
+        else {
+            LockedOn(false);
         }
 
         if (enemies.Count == 0) {
             ClosestEnemy = null;
         }
         if (t > enemies.Count && t > 0) {
-            Debug.Log("wtf are you doing, imma move this down");
             T--;
         }
         if (T == Enemies.Count) {
@@ -137,13 +140,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         }
     }
 
-    private void LockOff() {
-        foreach (Enemy en in Enemies) {
-            if (Enemy.GetEnemy(T) != en) {
-                en.LockedOn = false;
-            }
-        }
-    }
+
     private void TeleportAttacking(Vector3 location, int t) {
         transform.position = location;
         player.CmdInput = 101;
@@ -215,11 +212,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
         //if (!slide) { 
         MovementInputs(x, y);
         //print("Lockon moving");
-        if (Enemies[T] != null && !slide) {
+        if (Enemies[T] != null) {
 
-            if (onLockOn != null) {
-                onLockOn();
-            }
             RotateSpeed = 18 - EnDist(target.gameObject);
             Vector3 delta = target.transform.position - player.transform.position;
             delta.y = 0;
@@ -227,7 +221,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
                 transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
             }
             player.PlayerBody.FarHitPoint.transform.position = (Enemies[T].transform.position - transform.position) / 2;
-            transform.RotateAround(target.transform.position, target.transform.up, -x * RotateSpeed * player.MoveSpeed * Time.deltaTime);
+            if (!player.Dodge)
+                transform.RotateAround(target.transform.position, target.transform.up, -x * RotateSpeed * player.MoveSpeed * Time.deltaTime);
 
             if (y != 0) {
                 Vector3 speed;
@@ -238,7 +233,24 @@ public class PlayerBattleSceneMovement : MonoBehaviour {
             }
         }
     }
+    private void LockOff() {
+        foreach (Enemy en in Enemies) {
+            if (Enemy.GetEnemy(T) != en) {
+                en.LockedOn = false;
+                onLockOn.Invoke(false);
+            }
+        }
+    }
+    private void LockedOn(bool val) {
+        if (val) {
+            battleCam.m_Priority = 1000;
+        }
+        else {
+            battleCam.m_Priority = 0;
+            //main.m_Priority = 1000;
+        }
 
+    }
     private void MovementInputs(float x, float y) {
         if (x == 0) {
             if (y > 0)//forward

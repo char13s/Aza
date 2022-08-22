@@ -117,7 +117,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5613601515702726124}
-  - {fileID: 8831544219986345305}
   - {fileID: 3638610465022431722}
   m_Father: {fileID: 4706958970916400867}
   m_RootOrder: 3
@@ -157,6 +156,7 @@ Transform:
   - {fileID: 3456176396784089614}
   - {fileID: 3348459584640805092}
   - {fileID: 4706958970916400867}
+  - {fileID: 8831544219986345305}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -183,9 +183,10 @@ MonoBehaviour:
   canvas: {fileID: 3456176396784089615}
   lockOnArrow: {fileID: 63693259923413901}
   deathEffect: {fileID: 0}
+  reach: 0.1
   attackDelay: 0
   attackDistance: 0
-  standby: 1
+  standby: 0
   hitBox: {fileID: 6618314719069934556}
   hitSplat: {fileID: 3403200122732432855, guid: 4aa6fb711ab6cc6468b28b91f4931e7b,
     type: 3}
@@ -5329,12 +5330,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7746685499305144589}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.112, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.014, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 299716907477706353}
-  m_RootOrder: 1
+  m_Father: {fileID: 299716907513946316}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5530879796305846300
 BoxCollider:
@@ -5393,7 +5394,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 299716907477706353}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3751918760017292314
 MonoBehaviour:
@@ -5572,9 +5573,9 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 299716905691662171}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &63693259923413901 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 345236062496103638, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+--- !u!224 &3456176396784089614 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3160965015419878741, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
     type: 3}
   m_PrefabInstance: {fileID: 299716905691662171}
   m_PrefabAsset: {fileID: 0}
@@ -5590,9 +5591,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &3456176396784089614 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3160965015419878741, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
+--- !u!1 &63693259923413901 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 345236062496103638, guid: 9c85e3cfa7b6b8a4fb5eff97e43d717f,
     type: 3}
   m_PrefabInstance: {fileID: 299716905691662171}
   m_PrefabAsset: {fileID: 0}

@@ -8,7 +8,6 @@ using XInputDotNetPure;
 
 [RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent(typeof(EnemyTimelines))]
-[RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
 
@@ -16,7 +15,8 @@ public class Enemy : MonoBehaviour
     public enum EnemyType { soft, hard, absorbent }
     [SerializeField] private EnemyType type;
 
-    public enum EnemyAiStates { Null, Idle, Attacking, Chasing, LowHealth, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
+    public enum EnemyAiStates { Null, Idle, Attacking, Chasing, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
+    public enum EnemyHealthStatus { FullHealth, MeduimHealth,LowHealth }
     internal StatusEffects status = new StatusEffects();
     [SerializeField]
     internal StatsController stats = new StatsController();
@@ -28,7 +28,8 @@ public class Enemy : MonoBehaviour
     #endregion
     #region Special Effects
     [SerializeField] private GameObject deathEffect;
-
+    [SerializeField] private float reach;
+    private float distanceGround;
     #endregion
     [Space]
     [Header("Enemy Parameters")]
@@ -57,6 +58,7 @@ public class Enemy : MonoBehaviour
     private EnemyTimelines timelines;
     //private AudioSource sound;
     private Rigidbody rbody;
+    private CharacterController charCon;
     #endregion
 
     #region Coroutines
@@ -157,6 +159,7 @@ public class Enemy : MonoBehaviour
         //sound = GetComponent<AudioSource>();
         Rbody = GetComponent<Rigidbody>();
         //StatusEffects.onStatusUpdate += StatusControl;
+        charCon = GetComponent<CharacterController>();
         StatCalculation();
         state = EnemyAiStates.Idle;
         ZaWarudo.timeFreeze += FreezeEnemy;
@@ -167,6 +170,7 @@ public class Enemy : MonoBehaviour
 
     }
     public virtual void Start() {
+        distanceGround = GetComponent<Collider>().bounds.extents.y;
         #region Grabbing Behaviors here
         EnemyHitBoxBehavior[] hitBoxBehaviors = Anim.GetBehaviours<EnemyHitBoxBehavior>();
         for (int i = 0; i < hitBoxBehaviors.Length; i++)
@@ -209,6 +213,20 @@ public class Enemy : MonoBehaviour
         }
         //canvas.transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
+    /*private void FixedUpdate() {
+        RaycastHit hit;
+        Debug.DrawRay(transform.position, -Vector2.up, Color.red, distanceGround + reach);
+        if (Physics.Raycast(transform.position, -Vector2.up, out hit, distanceGround + reach)) {
+            Grounded = true;
+
+            //Gizmos.DrawRay(ray);
+        }
+        else {
+
+            Grounded = false;
+        }
+        //+" is Enemy";
+    }*/
     /*private IEnumerator WaitToState() {
         YieldInstruction wait = new WaitForSeconds(0.5f);
         yield return wait;
@@ -248,11 +266,11 @@ public class Enemy : MonoBehaviour
         Vector3 delta = (pc.transform.position - transform.position);
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
-        timelines.KnockedBack();
+        timelines.KnockedBack();//swap this with an anim controlled interaction
     }
     public void CancelKnocked() {
         timelines.CancelKnockUp();
-        Rbody.AddForce(new Vector3(0, -150, 0), ForceMode.VelocityChange);
+        //Rbody.AddForce(new Vector3(0, -150, 0), ForceMode.VelocityChange);
     }
     public void KnockedUp() {
         print("Knocked up");
@@ -348,7 +366,7 @@ public class Enemy : MonoBehaviour
         }
     }
     private void ChasePlayer() {
-        if (Distance > 1.5f && Distance < 6f && !dead && !Hit) {
+        if (Distance > 1.5f  && !dead && !Hit) {
             State = EnemyAiStates.Chasing;
         }
         else {
@@ -367,12 +385,10 @@ public class Enemy : MonoBehaviour
                 Idle();
                 break;
             case EnemyAiStates.Attacking:
-                Rbody.velocity = new Vector3(0, 0, 0);
+                //Rbody.velocity = new Vector3(0, 0, 0);
                 Anim.SetTrigger("Attack 0");
                 break;
-            case EnemyAiStates.LowHealth:
                 //LowHealth();
-                break;
             case EnemyAiStates.Chasing:
                 Walk = true;
                 //Chasing();
@@ -383,7 +399,7 @@ public class Enemy : MonoBehaviour
     }
     public virtual void Idle() {
         Walk = false;
-        Debug.Log("Idle asf");
+
     }
     //public  void FixedUpdate() {  }
     /*public virtual void Attacking() {
@@ -464,7 +480,7 @@ public class Enemy : MonoBehaviour
         Vector3 delta = pc.transform.position - transform.position;
         delta.y = 0;
         transform.rotation = Quaternion.LookRotation(delta);
-        Rbody.velocity = transform.forward * speed;
+       Rbody.velocity = transform.forward * speed;
         //Debug.Log(state + " a bitch");
         //Debug.Log("Chasing");
         //transform.rotation = Quaternion.LookRotation((flip) * (transform.position - pc.transform.position));
@@ -498,7 +514,7 @@ public class Enemy : MonoBehaviour
          Hit = false;
          State = EnemyAiStates.Idle;
      }*/
-        rbody.useGravity = false;
+        //rbody.useGravity = false;
         StartCoroutine(waitToFall());
     }
 
@@ -507,15 +523,17 @@ public class Enemy : MonoBehaviour
     IEnumerator waitToFall() {
         YieldInstruction wait = new WaitForSeconds(1);
         yield return wait;
-        rbody.useGravity = true;
+        //rbody.useGravity = true;
     }
     #endregion
 
     private float Distance;
 
     public int AttackDelay { get => attackDelay; set => attackDelay = value; }
-    public Rigidbody Rbody { get => rbody; set => rbody = value; }
+    //public Rigidbody Rbody { get => rbody; set => rbody = value; }
     public bool Standby { get => standby; set { standby = value; StandbyState(); } }
+
+    public Rigidbody Rbody { get => rbody; set => rbody = value; }
 
     //private void OnTriggerStay(Collider other) {
     //    if (other != null && !other.CompareTag("Enemy") && other.CompareTag("Attack")) {
@@ -542,7 +560,7 @@ public class Enemy : MonoBehaviour
     public void UnsetHit() {
         print("Unset Hit");
         Hit = false;
-        Anim.ResetTrigger("Attack 0");
+        //Anim.ResetTrigger("Attack 0");
         State = EnemyAiStates.Idle;
     }
     public void CalculateDamage(float addition, HitBoxType dmgType) {

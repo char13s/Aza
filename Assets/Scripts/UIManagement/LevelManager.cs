@@ -26,9 +26,12 @@ public class LevelManager : MonoBehaviour
     }
     void Start() {
         nextLevel = 1;
-        LevelTransition(1);
+        GameStart();
         LoadingCanvas.changeScene += WaitToChange;
-
+        GameManager.gameOver += GameStart;
+    }
+    private void GameStart() {
+        LevelTransition(1);
     }
     public void LevelTransition(int lvl) {
         if (lvl == 1) {
@@ -80,7 +83,8 @@ public class LevelManager : MonoBehaviour
         if (levelTransition != null) {
             levelTransition(true);
         }
-        gameMode.Invoke(true);
+        if(currentLevel>1)
+            gameMode.Invoke(true);
     }
     private void RepositionPlayer() { 
     

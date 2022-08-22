@@ -87,6 +87,7 @@ public class Player : MonoBehaviour
     private bool hit;
     private bool dead;
     private int direction;
+    private bool dodge;
 
     private bool charging;
 
@@ -287,6 +288,8 @@ public class Player : MonoBehaviour
     public bool Energized { get => energized; set => energized = value; }
     public bool HasTarget { get => hasTarget; set => hasTarget = value; }
     public int MagicLevel { get => magicLevel; set { magicLevel = value; anim.SetInteger("MagicLevel",magicLevel); } }
+
+    public bool Dodge { get => dodge; set => dodge = value; }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 

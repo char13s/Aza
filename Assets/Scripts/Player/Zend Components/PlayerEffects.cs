@@ -10,11 +10,12 @@ public class PlayerEffects : MonoBehaviour
     [SerializeField] private GameObject swordAura2;
     [SerializeField] private GameObject fireTrailR;
     [SerializeField] private GameObject fireTrailL;
-
+    [SerializeField] private GameObject teleportEffect;
     public GameObject ShadowShot { get => shadowShot; set => shadowShot = value; }
     public GameObject Lightning { get => lightning; set => lightning = value; }
     public GameObject SwordAura { get => swordAura; set => swordAura = value; }
     public GameObject SwordAura2 { get => swordAura2; set => swordAura2 = value; }
+    public GameObject TeleportEffect { get => teleportEffect; set => teleportEffect = value; }
 
     private void OnEnable() {
         PlayerInputs.energized += SwordAuraControl;

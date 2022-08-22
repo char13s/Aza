@@ -13,22 +13,18 @@ public class FireBall : MonoBehaviour
         //LayerMask.GetMask("Ground");
         Destroy(gameObject, 9f);
     }
-
     // Update is called once per frame
     private void Update() {
         transform.position += transform.forward * speed * Time.deltaTime;
     }
     private void OnTriggerEnter(Collider other) {
         Debug.Log(other.name);
-        if (other.gameObject.CompareTag("Enemy")) {
-            if (other.gameObject.GetComponent<Enemy>() != null) {
-                //other.gameObject.GetComponent<Enemy>().CalculateDamage(0,HitBoxType.Magic);}
-            }
-            if (other != null) {
-                Instantiate(boom, transform.position, transform.rotation);
-                Destroy(gameObject);
-            }
-
+        if (other.gameObject.GetComponent<Enemy>() != null) {
+            //other.gameObject.GetComponent<Enemy>().CalculateDamage(0,HitBoxType.Magic);}
+        }
+        if (other != null) {
+            Instantiate(boom, transform.position, transform.rotation);
+            Destroy(gameObject);
         }
     }
 }

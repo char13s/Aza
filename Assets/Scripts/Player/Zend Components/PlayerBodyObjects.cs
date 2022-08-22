@@ -10,6 +10,8 @@ public class PlayerBodyObjects : MonoBehaviour
     [SerializeField] private GameObject body;
     [SerializeField] private GameObject literalBody;
     [SerializeField] private GameObject hair;
+    [SerializeField] private GameObject eyes;
+    //[SerializeField] private Game
     [SerializeField] private GameObject leftHand;
     [SerializeField] private GameObject rightHand;
 
@@ -24,7 +26,9 @@ public class PlayerBodyObjects : MonoBehaviour
     [SerializeField] private GameObject jumpPoint;
     [SerializeField] private SlashSpawner slashSpawner;
 
+    [SerializeField] private GameObject shield;
     [SerializeField] private GameObject demonScabbard;
+    [SerializeField] private GameObject demonSword;
     [SerializeField] private GameObject angelScabbard;
     [SerializeField] private GameObject angelSwordSide;
 
@@ -37,6 +41,11 @@ public class PlayerBodyObjects : MonoBehaviour
     public GameObject LeftHand { get => leftHand; set => leftHand = value; }
     public GameObject RightHand { get => rightHand; set => rightHand = value; }
     public SlashSpawner SlashSpawner { get => slashSpawner; set => slashSpawner = value; }
+    public GameObject Eyes { get => eyes; set => eyes = value; }
+    public GameObject LiteralBody { get => literalBody; set => literalBody = value; }
+    public GameObject Hair { get => hair; set => hair = value; }
+    public GameObject Shield { get => shield; set => shield = value; }
+    public GameObject DemonSword { get => demonSword; set => demonSword = value; }
 
     private void Vanish(bool val) {
         body.SetActive(val);
@@ -49,10 +58,10 @@ public class PlayerBodyObjects : MonoBehaviour
     }
     private void TransformControl(bool val) {
         if (val) {
-            literalBody.GetComponent<SkinnedMeshRenderer>().material = energizedState;
+            LiteralBody.GetComponent<SkinnedMeshRenderer>().material = energizedState;
         }
         else {
-            literalBody.GetComponent<SkinnedMeshRenderer>().material = normalState;
+            LiteralBody.GetComponent<SkinnedMeshRenderer>().material = normalState;
         }
     }
 }

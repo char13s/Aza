@@ -13,7 +13,7 @@ public class EnemyGroundCheck : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         distanceGround = GetComponent<Collider>().bounds.extents.y;
-        //enemy=GetComponentInParent<Enemy>();
+        //enemy=GetComponent<Enemy>();
     }
     private void FixedUpdate() {
         RaycastHit hit;
