@@ -333,7 +333,7 @@
                 {
                     "name": "up",
                     "id": "e1489870-16bb-4eae-9990-66cf74360c19",
-                    "path": "<Keyboard>/upArrow",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -344,7 +344,7 @@
                 {
                     "name": "down",
                     "id": "24e41ef8-d521-4bc4-b863-47588ec512c3",
-                    "path": "<Keyboard>/downArrow",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -355,7 +355,7 @@
                 {
                     "name": "left",
                     "id": "17d4797d-5cbe-4812-a92c-6ba6c25ff19b",
-                    "path": "<Keyboard>/leftArrow",
+                    "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -366,7 +366,7 @@
                 {
                     "name": "right",
                     "id": "76816e9c-078f-4c7e-bc7b-c7380cdb4a28",
-                    "path": "<Keyboard>/rightArrow",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -555,7 +555,7 @@
                     "id": "0242bf57-8b76-4467-9ccb-27af644f6fcb",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "StickDeadzone",
+                    "processors": "StickDeadzone(min=0.525)",
                     "groups": "",
                     "action": "Look",
                     "isComposite": false,

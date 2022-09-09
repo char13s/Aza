@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.Timeline;
 public class EnemyTimelineTriggers : MonoBehaviour
 {
+    [SerializeField]private Enemy enemy;
     [SerializeField] private PlayableDirector timeline;
     [SerializeField] private TimelineAsset timelineAsset;
     public static event UnityAction<EnemyTimelineTriggers> sendTrigger;
@@ -17,7 +18,7 @@ public class EnemyTimelineTriggers : MonoBehaviour
         //var track = (TrackAsset)timelineAsset.outputs[i].sourceObject;
         //Debug.Log(timeline.SetGenericBinding(timelineAsset.GetOutputTrack(1), Player.GetPlayer());
         timeline.SetGenericBinding(timelineAsset.GetOutputTrack(2), Player.GetPlayer().Anim);
-        timeline.SetGenericBinding(timelineAsset.GetOutputTrack(3), Player.GetPlayer().TopAnim);
+        timeline.SetGenericBinding(timelineAsset.GetOutputTrack(6), Player.GetPlayer().TopAnim);
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -27,7 +28,7 @@ public class EnemyTimelineTriggers : MonoBehaviour
         sendTrigger.Invoke(null);
     }
     public void PlayTimeline() {
-        
+        enemy.TeleportPlayer();
         timeline.Play();
     }
 }

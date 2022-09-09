@@ -194,7 +194,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         rotLock = false;
     }
     private void BasicMovement() {
-        print("Basic moving");
+        //print("Basic moving");
         float x = playerMove.Displacement.x;
         float y = playerMove.Displacement.y;
         RotateSpeed = 18 - EnDist(player.PlayerBody.BattleCamTarget);

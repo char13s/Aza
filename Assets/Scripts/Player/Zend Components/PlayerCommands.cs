@@ -262,7 +262,7 @@ public class PlayerCommands : MonoBehaviour
                 sendInput("Up + Square");
             }
             ResetChain();
-            anim.Play("Stab");
+            anim.Play("HoldStab");
             anim.ResetTrigger("Attack");
         }
         if (inputs == Inputs.Square && direction == Inputs.Down) {

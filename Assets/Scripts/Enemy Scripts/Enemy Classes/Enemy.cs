@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
 
     public enum EnemyAiStates { Null, Idle, Attacking, Chasing, ReturnToSpawn, Dead, Hit, UniqueState, UniqueState2, UniqueState3, UniqueState4, StatusEffect };
     public enum EnemyHealthStatus { FullHealth, MeduimHealth,LowHealth }
+    EnemyHealthStatus healthStatus;
     internal StatusEffects status = new StatusEffects();
     [SerializeField]
     internal StatsController stats = new StatsController();
@@ -41,6 +42,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool standby;
     [Space]
     [Header("Object Refs")]
+    [SerializeField] private GameObject teleportTo;
     [SerializeField] protected GameObject hitBox;
     [SerializeField] private GameObject hitSplat;
     [SerializeField] private GameObject drop;
@@ -620,6 +622,19 @@ public class Enemy : MonoBehaviour
     }
     public void CalculateAttack() {
         pc.stats.HealthLeft -= Mathf.Max(1, stats.Attack);
+    }
+    public void TeleportPlayer() {
+        //turnoff characterController
+        Debug.Log("ported");
+        Player.GetPlayer().PlayerMove.enabled = false;
+        //move player to teleportTo
+        Player.GetPlayer().transform.position = teleportTo.transform.position;
+        StartCoroutine(WaitToCharCon());
+    }
+    IEnumerator WaitToCharCon() {
+        YieldInstruction wait = new WaitForSeconds(0.1f);
+        yield return wait;
+        Player.GetPlayer().PlayerMove.enabled = true;
     }
     public void HitGuard() {
         if (pc.stats.MPLeft > 0) {
