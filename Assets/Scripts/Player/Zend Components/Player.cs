@@ -9,7 +9,8 @@ public class Player : MonoBehaviour
     //private bool usingController;
     [Header("Movement")]
     private bool moving;
-    private int style;
+    public enum Power {Neutral, Heavy, Range }
+    private Power style;
 
     //public float speed;
     [SerializeField] private float moveSpeed;
@@ -290,6 +291,7 @@ public class Player : MonoBehaviour
     public int MagicLevel { get => magicLevel; set { magicLevel = value; anim.SetInteger("MagicLevel",magicLevel); } }
 
     public bool Dodge { get => dodge; set => dodge = value; }
+    public Power Style { get => style; set => style = value; }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 

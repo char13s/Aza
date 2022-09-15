@@ -66,12 +66,24 @@ public class PlayerCommands : MonoBehaviour
         if (stick.sqrMagnitude == 0) {
             ResetDirection();
         }
+
     }
     private void GetInputs() {
         InputChains();
         if (player.LockedOn) {
             if (player.CharCon.isGrounded) {
-                InputCombinations();
+                switch (player.Style) {
+                    case Player.Power.Neutral:
+                        NeutralInputCombinations();
+                        break;
+                    case Player.Power.Heavy:
+                        HeavyInputCombinations();
+                        break;
+                    case Player.Power.Range:
+                        RangeInputCombinations();
+                        break;
+                }
+                
             }
             else {
                 AirCombinations();
@@ -255,7 +267,7 @@ public class PlayerCommands : MonoBehaviour
             ResetChain();
         }
     }
-    private void InputCombinations() {
+    private void NeutralInputCombinations() {
         if (inputs == Inputs.Square && direction == Inputs.Up) {
             Debug.Log("Up Attack!");
             if (sendInput != null) {
@@ -272,7 +284,7 @@ public class PlayerCommands : MonoBehaviour
             }
             ResetChain();
             anim.ResetTrigger("Attack");
-            anim.Play("SwordUppercut");
+            anim.Play("SpinAttack2");
             player.MoveSpeed = 0;
         }
         if (inputs == Inputs.Triangle && direction == Inputs.Down) {
@@ -297,10 +309,98 @@ public class PlayerCommands : MonoBehaviour
                 upTriangle();
             }
         }
-        
+
+    }
+    private void HeavyInputCombinations() {
+        if (inputs == Inputs.Square && direction == Inputs.Up) {
+            Debug.Log("Up Attack!");
+            if (sendInput != null) {
+                sendInput("Up + Square");
+            }
+            ResetChain();
+            anim.Play("HoldStab");
+            anim.ResetTrigger("HeavyAttack");
+        }
+        if (inputs == Inputs.Square && direction == Inputs.Down) {
+            Debug.Log("Down Attack!");
+            if (sendInput != null) {
+                sendInput("Down + Square");
+            }
+            ResetChain();
+            anim.Play("SpinAttack2");
+            anim.ResetTrigger("HeavyAttack");
+            player.MoveSpeed = 0;
+        }
+        if (inputs == Inputs.Triangle && direction == Inputs.Down) {
+            Debug.Log("Down Element!");
+            if (sendInput != null) {
+                sendInput("Down + Triangle");
+            }
+            //playerInputs.DarkPowers.TriangleDown();
+            ResetChain();
+            if (downTriangle != null) {
+                downTriangle();
+            }
+        }
+        if (inputs == Inputs.Triangle && direction == Inputs.Up) {
+            Debug.Log("Up Element");
+            if (sendInput != null) {
+                sendInput("Up + Triangle");
+            }
+            //playerInputs.DarkPowers.TriangleUp();
+            ResetChain();
+            if (upTriangle != null) {
+                upTriangle();
+            }
+        }
+
+    }
+    private void RangeInputCombinations() {
+        if (inputs == Inputs.Square && direction == Inputs.Up) {
+            Debug.Log("Up Attack!");
+            if (sendInput != null) {
+                sendInput("Up + Square");
+            }
+            ResetChain();
+            anim.Play("MagicSnipe");
+            anim.ResetTrigger("EnergyAttack");
+        }
+        if (inputs == Inputs.Square && direction == Inputs.Down) {
+            Debug.Log("Down Attack!");
+            if (sendInput != null) {
+                sendInput("Down + Square");
+            }
+            ResetChain();
+            anim.Play("AoeMagicAttack");
+            anim.ResetTrigger("EnergyAttack");
+            player.MoveSpeed = 0;
+        }
+        if (inputs == Inputs.Triangle && direction == Inputs.Down) {
+            Debug.Log("Down Element!");
+            if (sendInput != null) {
+                sendInput("Down + Triangle");
+            }
+            //playerInputs.DarkPowers.TriangleDown();
+            ResetChain();
+            if (downTriangle != null) {
+                downTriangle();
+            }
+        }
+        if (inputs == Inputs.Triangle && direction == Inputs.Up) {
+            Debug.Log("Up Element");
+            if (sendInput != null) {
+                sendInput("Up + Triangle");
+            }
+            //playerInputs.DarkPowers.TriangleUp();
+            ResetChain();
+            if (upTriangle != null) {
+                upTriangle();
+            }
+        }
+
     }
     private void AdvancedMovement() {
-        
+
         if (inputs == Inputs.X && direction == Inputs.Up) {
             ResetChain();
             player.CombatAnimations = 5;

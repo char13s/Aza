@@ -136,7 +136,7 @@ public class Enemy : MonoBehaviour
                 GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("dead", 1);
 
                 OnDefeat();
-                Anim.SetBool("Dead", dead);
+                //Anim.SetBool("Dead", dead);
                 if (onAnyDefeated != null) {
                     onAnyDefeated(this);
                 }

@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: New Material
-  m_Shader: {fileID: -6465566751694194690, guid: 444f23355c9516c47b7e1c1063a9022e,
+  m_Shader: {fileID: -6465566751694194690, guid: 9e4ba45cc7e309d49a8a7a7ca86edc6b,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_3691163F:
-        m_Texture: {fileID: 2800000, guid: 72095724cf8cf07448e055209d8b0c47, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture3D_63278F81:
@@ -56,7 +56,22 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_23a87aca93e04d4285e08932fb05708a: 2.08
+    - Vector1_c19da7eb44934278bea73dc1a5facef3: -24.08
+    - Vector1_cdf4e975866d4cd5bada53d6a80bf4f5: 21.65
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -79,10 +94,17 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_4b616dc8620a4ba1b17e478c907742dc: {r: 0.5491652, g: 0, b: 19.468573, a: 1}
+    - Color_882F31BA: {r: 0, g: 27.678564, b: 32.167553, a: 0}
+    - Color_912ae8b6244942d0aa733a535fb03627: {r: 0.50757366, g: 0.02352941, b: 1,
+        a: 1}
+    - Color_aaaffe95eda94476b03f96568ff16273: {r: 0.47843137, g: 0, b: 1.4980392,
+        a: 1}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+  m_BuildTextureStacks: []
 --- !u!114 &6547024532496193570
 MonoBehaviour:
   m_ObjectHideFlags: 11

@@ -18,7 +18,8 @@ public class EnemyTimelineTriggers : MonoBehaviour
         //var track = (TrackAsset)timelineAsset.outputs[i].sourceObject;
         //Debug.Log(timeline.SetGenericBinding(timelineAsset.GetOutputTrack(1), Player.GetPlayer());
         timeline.SetGenericBinding(timelineAsset.GetOutputTrack(2), Player.GetPlayer().Anim);
-        timeline.SetGenericBinding(timelineAsset.GetOutputTrack(6), Player.GetPlayer().TopAnim);
+        timeline.SetGenericBinding(timelineAsset.GetOutputTrack(3), Player.GetPlayer().TopAnim);
+        timeline.SetGenericBinding(timelineAsset.GetOutputTrack(4), Player.GetPlayer().BattleMode);
     }
 
     private void OnTriggerEnter(Collider other) {

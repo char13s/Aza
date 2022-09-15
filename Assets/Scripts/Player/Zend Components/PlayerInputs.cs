@@ -149,9 +149,11 @@ public class PlayerInputs : MonoBehaviour
         if (value.isPressed) {
             player.Energized = true;
             energized.Invoke(true);
+            player.Style = Player.Power.Range;
             Debug.Log("energy");
         }
         else {
+            player.Style = Player.Power.Neutral;
             player.Energized = false;
             energized.Invoke(false);
         }
@@ -162,8 +164,10 @@ public class PlayerInputs : MonoBehaviour
             player.Strenghtened = true;
             strenghtened.Invoke(true);
             Debug.Log("strength");
+            player.Style = Player.Power.Heavy;
         }
         else {
+            player.Style = Player.Power.Neutral;
             player.Strenghtened = false;
             strenghtened.Invoke(false);
         }

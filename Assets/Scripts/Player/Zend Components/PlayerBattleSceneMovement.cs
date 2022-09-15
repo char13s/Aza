@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Cinemachine;
+using UnityEngine.Timeline;
 #pragma warning disable 0649
 public class PlayerBattleSceneMovement : MonoBehaviour
 {
     private List<Enemy> enemies = new List<Enemy>(16);
     private Player player;
     private PlayerMovement playerMove;
+    private SignalReceiver signal;
     private int t;//targeted enemy in the array of enemies
     private Enemy enemyTarget;
     public static event UnityAction<bool> onLockOn;
@@ -20,6 +22,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     //private GameObject leftPoint;
     private bool rotLock;
     private float rotationSpeed;
+    private bool takedown;
 
     [SerializeField] private CinemachineVirtualCamera main;
     [SerializeField] private CinemachineVirtualCamera battleCam;
@@ -30,6 +33,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour
     public float RotateSpeed { get => rotateSpeed; set { rotateSpeed = value; Mathf.Clamp(value, 5, 8); } }
 
     public Enemy ClosestEnemy { get => closestEnemy; set => closestEnemy = value; }
+    public bool Takedown { get => takedown; set => takedown = value; }
+    public SignalReceiver Signal { get => signal; set => signal = value; }
 
     private void Awake() {
         //Player.attackModeUp += LockOnFuctionality;
@@ -60,6 +65,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
         player = Player.GetPlayer();
         playerMove = GetComponent<PlayerMovement>();
+        signal = GetComponent<SignalReceiver>();
         aimPoint = player.AimmingPoint;
         //leftPoint = Player.GetPlayer().PlayerBody.LeftPoint;
     }
@@ -86,7 +92,9 @@ public class PlayerBattleSceneMovement : MonoBehaviour
                 else { enemies.RemoveAt(index); }
             }
         }
-
+        if (Takedown) {
+            StayLockedToTarget();
+        }
         if (player.LockedOn) {
             LockedOn(true);
             if (enemies.Count == 0) {
@@ -231,6 +239,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour
             if (Enemies[T].Dead) {
                 GetClosestEnemy();
             }
+        }
+    }
+    private void StayLockedToTarget() {
+        Vector3 delta = enemyTarget.transform.position - player.transform.position;
+        delta.y = 0;
+        if (!rotLock) {
+            transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
         }
     }
     private void LockOff() {
