@@ -109,6 +109,7 @@ public class Player : MonoBehaviour
 
     private int shootLayer;
     private int guardLayer;
+    private int fallingLayer;
     private int airCombo;
 
     private bool hasTarget;
@@ -329,6 +330,7 @@ public class Player : MonoBehaviour
         Stats.onHealthChange += CheckPlayerHealth;
         guardLayer = anim.GetLayerIndex("GuardLayer");
         shootLayer = anim.GetLayerIndex("Shooting Layer");
+        fallingLayer= anim.GetLayerIndex("Fall Layer");
     }
     
     private void OnEnable() {
@@ -361,6 +363,7 @@ public class Player : MonoBehaviour
         PoisonLake.poisoned += TakeDamage;
         ShadowShot.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
+        SwitchToFallGame.switchToFall += SwitchToFallingLayer;
         AttackStates.sendAttack += RecieveAttack;
         LevelManager.levelTransition += OnLevelTransition;
         #region Item subs
@@ -411,6 +414,7 @@ public class Player : MonoBehaviour
         PoisonLake.poisoned -= TakeDamage;
         ShadowShot.shoot -= ShootShadow;
         ShootBehavior.shoot -= ShootLayer;
+        SwitchToFallGame.switchToFall -= SwitchToFallingLayer;
         AttackStates.sendAttack -= RecieveAttack;
         LevelManager.levelTransition -= OnLevelTransition;
         #region Item subs
@@ -468,7 +472,7 @@ public class Player : MonoBehaviour
     private void ShootShadow() {
         Instantiate(Effects.ShadowShot, playerBody.LeftHand.transform.position, Quaternion.identity);
     }
-    private void ShootLayer(int val) {
+    public void ShootLayer(int val) {
         anim.SetLayerWeight(shootLayer, val);
     }
     private void Block(bool val) => Guard = val;
@@ -481,7 +485,16 @@ public class Player : MonoBehaviour
         CombatAnimations = 0;
     }
     #endregion
+    #region Layer control
+    private void SwitchToFallingLayer(int val) {
+        if (val >= 1) {
+            val = 1;
+        }
 
+        //transform.rotation = new Quaternion(87,0,0,0);
+        anim.SetLayerWeight(fallingLayer,val);
+    }
+    #endregion
     #region Time Stuff
     private void ZaWarudo() {
         Debug.Log("Za BITCH");
@@ -497,7 +510,7 @@ public class Player : MonoBehaviour
             }
         zoom.Invoke(4);
         StartCoroutine(ResetTimeStop());
-            StartCoroutine(UndoZaWarudo());
+        StartCoroutine(UndoZaWarudo());
         
     }
     private IEnumerator UndoZaWarudo() {

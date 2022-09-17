@@ -47,35 +47,16 @@ public class VirtualCameraManager : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        UiManager.portal += ControlMainCam;
+
     }
     private void OnEnable() {
         Player.playerIsLockedOn += LookingForTarget;
         Player.notAiming += NotAiming;
         Player.zoom += ZoomIn;
-        PlayerBattleSceneMovement.onLockOn += LockedOn;
+
     }
     private void OnDisable() {
         
-    }
-    void Start()
-    {
-       
-       //EventManager.demoRestart += DedCamDown;
-       //Player.Player
-        //aimingPoint = Player.GetPlayer().AimmingPoint;
-    }
-
-    // Update is called once per frame
-    private void LockedOn(bool val) {
-        //if (val) {
-        //    battleCam.m_Priority = 1000;
-        //}
-        //else {
-        //    battleCam.m_Priority = 0;
-        //    //main.m_Priority = 1000;
-        //}
-    
     }
     private void ZoomIn(int val) {
         main.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = val;
@@ -83,20 +64,6 @@ public class VirtualCameraManager : MonoBehaviour
             main.GetComponent<CinemachineVolumeSettings>().enabled = true;
         else
             main.GetComponent<CinemachineVolumeSettings>().enabled = false;
-    }
-
-    private void ControlMainCam(int portal) {
-        switch (portal) {
-            case 0:
-                Debug.Log("Cam off");
-                main.GetComponent<ThreeDCamera>().enabled=false;
-                break;
-            default:
-                Debug.Log("Cam on");
-                main.GetComponent<ThreeDCamera>().enabled = true;
-                break;
-        }
-        
     }
 
     private void LookingForTarget() {

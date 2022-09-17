@@ -85,9 +85,22 @@ Material:
         m_Texture: {fileID: 2800000, guid: a66ecfd36cc1d3943a42868d1db69dbe, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - Boolean_B8FD8DD: 1
     - Vector1_F277E768: 1
+    - Vector1_cdf4e975866d4cd5bada53d6a80bf4f5: 7.59
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -113,10 +126,13 @@ Material:
     - _dead: 1
     - _onOrOff: 0
     m_Colors:
+    - Color_4b616dc8620a4ba1b17e478c907742dc: {r: 0, g: 0, b: 0, a: 0}
     - Color_882F31BA: {r: 15.127475, g: 0, b: 23.498878, a: 0}
+    - Color_912ae8b6244942d0aa733a535fb03627: {r: 2.9893923, g: 0, b: 4.020943, a: 1}
     - Color_C454D203: {r: 1.5058824, g: 0.5019608, b: 6.5254903, a: 0.078431375}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+  m_BuildTextureStacks: []

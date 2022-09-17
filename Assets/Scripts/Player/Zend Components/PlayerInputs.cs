@@ -38,6 +38,7 @@ public class PlayerInputs : MonoBehaviour
     private void OnEnable() {
         DialogueManager.switchControls += SwitchMaps;
         GameManager.switchMap += SwitchMaps;
+        SwitchToFallGame.switchToFall += SwitchMaps;
         EnemyTimelineTriggers.sendTrigger += RecieveTrigger;
         
     }
@@ -45,6 +46,7 @@ public class PlayerInputs : MonoBehaviour
         DialogueManager.switchControls -= SwitchMaps;
         GameManager.switchMap -= SwitchMaps;
         EnemyTimelineTriggers.sendTrigger -= RecieveTrigger;
+        SwitchToFallGame.switchToFall -= SwitchMaps;
     }
     // Start is called before the first frame update
     void Start() {
@@ -103,6 +105,9 @@ public class PlayerInputs : MonoBehaviour
 
         }
     }
+    private void OnShoot() {
+        anim.SetTrigger("DarkForcePush");
+    }
     private void OnJump(InputValue value) {
         if (!player.SkillButton) {
             if (player.CombatAnimations == 0) {
@@ -147,33 +152,23 @@ public class PlayerInputs : MonoBehaviour
     }
     private void OnSkillUp(InputValue value) {//R2
         if (value.isPressed) {
-            player.Energized = true;
-            energized.Invoke(true);
-            player.Style = Player.Power.Range;
-            Debug.Log("energy");
+            
         }
         else {
-            player.Style = Player.Power.Neutral;
-            player.Energized = false;
-            energized.Invoke(false);
+            
         }
 
     }
     private void OnStrenghtened(InputValue value) {//L2
         if (value.isPressed) {
-            player.Strenghtened = true;
-            strenghtened.Invoke(true);
-            Debug.Log("strength");
-            player.Style = Player.Power.Heavy;
+            
         }
         else {
-            player.Style = Player.Power.Neutral;
-            player.Strenghtened = false;
-            strenghtened.Invoke(false);
+            
         }
 
     }
-
+    #region transformations
     private void OnTransform() {
         if (!player.PoweredUp) {
             player.PoweredUp = true;
@@ -189,21 +184,42 @@ public class PlayerInputs : MonoBehaviour
         transformed.Invoke(player.PoweredUp);
     }
     private void OnDUp() {
+        Neutral();
         //Relic = relicUp.Relic;
+        //This will be a balanced transformed state that boost both physical and magic attributes but not as much as either form alone would.
         Debug.Log(Relic); ;
     }
     private void OnDDown() {
+        player.Style = Player.Power.Neutral;
+            
         //Relic = relicDown.Relic;
         Debug.Log(Relic); ;
     }
+    private void Neutral() { 
+    player.Strenghtened = false;
+            strenghtened.Invoke(false);
+            player.Energized = false;
+            energized.Invoke(false);
+    }
     private void OnDLeft() {
+        Neutral();
+        player.Style = Player.Power.Heavy;
+        player.Strenghtened = true;
+            strenghtened.Invoke(true);
+            Debug.Log("strength");
         //Relic = relicLeft.Relic;
         Debug.Log(Relic); ;
     }
     private void OnDRight() {
+        Neutral();
+        player.Style = Player.Power.Range;
+        player.Energized = true;
+            energized.Invoke(true);
+            Debug.Log("energy");
         //Relic = relicRight.Relic;
         Debug.Log(Relic); ;
     }
+    #endregion
     private void OnLook(InputValue value) {
         //print("Looking");
         RotationLook = value.Get<Vector2>();
@@ -248,7 +264,8 @@ public class PlayerInputs : MonoBehaviour
                 //print("Switched to pause controls");
                 break;
             case 2:
-                map.SwitchCurrentActionMap("Air Controls");
+                map.SwitchCurrentActionMap("Fall Controls");
+                Debug.Log("Falling");
                 break;
             case 3:
                 map.SwitchCurrentActionMap("Timeline Controls");

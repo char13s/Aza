@@ -35,34 +35,6 @@ public class HitBox : MonoBehaviour {
         enemies.Clear();
     }
 
-    private void Knockback(GameObject enemy) {
-
-        switch (KnockBackBehavior.HitId) {
-            case 0:
-                if (sendFlying != null) {
-                    sendFlying(enemy.GetComponent<Enemy>(),400);
-                }
-                //enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, Player.GetPlayer().HitPoint.transform.position, 10 * Time.deltaTime);
-                break;
-            case 1:
-                if (sendFlying != null) {
-                    sendFlying(enemy.GetComponent<Enemy>(), 1750);
-                }
-                Debug.Log("K");
-                //enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 );//Vector3.MoveTowards(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime); //;;(enemy.transform.position, farHitPoint.transform.position, 10 * Time.deltaTime
-                break;
-            case 2:
-                if (sendFlying != null) {
-                    sendFlying(enemy.GetComponent<Enemy>(), 400);
-                }
-                //enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, highHitPoint.transform.position, 10 * Time.deltaTime);
-                break;
-            
-        }
-
-    }
-
-
     private void OnTriggerEnter(Collider other) {
         if (!enemies.Contains(other.gameObject)) {
             Instantiate(effects, other.gameObject.transform);
@@ -78,7 +50,6 @@ public class HitBox : MonoBehaviour {
                 enemies.Add(other.gameObject);
                 //other.GetComponent<Enemy>().CalculateDamage(0);
                 //other.GetComponent<Enemy>().KnockBack(HitKnockback());
-                Knockback(other.gameObject);
                 //other.GetComponent<Enemy>().Grounded = false;
                 //GamePad.SetVibration(0, 0.2f, 0.2f);
                 StartCoroutine(StopRumble());
