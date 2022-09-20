@@ -4,23 +4,30 @@ using UnityEngine;
 using UnityEngine.Events;
 public class SwitchToFallGame : MonoBehaviour
 {
+    [Tooltip("2 for entering, 0 for exiting")]
+    [SerializeField] private int controlSet;
+    [Tooltip("1000000 for entering, 0 for exiting")]
+    [SerializeField] private int camPriority;
+    [SerializeField] private int level;
     public static event UnityAction<int> switchToFall;
     public static event UnityAction<int> switchCam;
     public static event UnityAction changeControls;
+    public static event UnityAction<int> unloadLevel;
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other) {
         //switch controls
-        switchToFall.Invoke(2);
+        switchToFall.Invoke(controlSet);
         //switch camera
 
         //change gravity fall speed
-        switchCam.Invoke(100000);
+        if (switchCam != null) {
+            switchCam(camPriority);
+        }
         //Switch animation layer
 
+        //unload level where portal is
+        if (level > 0) {
+            unloadLevel.Invoke(level);
+        }
     }
 }

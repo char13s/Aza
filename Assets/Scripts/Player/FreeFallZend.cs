@@ -54,7 +54,7 @@ public class FreeFallZend : MonoBehaviour
         //WallDetector.left += LeftDetector;
         //WallDetector.right += RightDetector;
         GameController.onNewGame += StartGame;
-        EndOfPortal.prepareToLand += ReadyToLand;
+
     }
     // Start is called before the first frame update
     void Start()

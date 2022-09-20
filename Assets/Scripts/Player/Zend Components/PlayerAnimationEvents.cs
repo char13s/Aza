@@ -6,6 +6,7 @@ public class PlayerAnimationEvents : MonoBehaviour
 {
     #region Events
 public static event UnityAction<float> kickback;
+    public static event UnityAction shoot;
     #endregion
     #region variables
 [SerializeField] private float kickBack;
@@ -41,6 +42,9 @@ public static event UnityAction<float> kickback;
     }
     public void SetNextAttack() { 
     
+    }
+    public void ShadowShot() {
+        shoot.Invoke();
     }
     #endregion
     #region Effects

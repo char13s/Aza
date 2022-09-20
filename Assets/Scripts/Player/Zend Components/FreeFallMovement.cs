@@ -5,8 +5,19 @@ using Cinemachine;
 public class FreeFallMovement : MonoBehaviour
 {
     [SerializeField] private float gravity;
-    [SerializeField] private CinemachineVirtualCamera vcam;
+    private CinemachineVirtualCamera freeCam;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private GameObject camFocalPoint;
+    private GameObject mainCam;
+    private Vector3 direction;
+    private Vector2 displacement;
+    private Vector3 speed;
     private CharacterController charCon;
+    public Vector3 Direction { get => direction; set => direction = value; }
+    public Vector2 Displacement { get => displacement; set => displacement = value; }
+    public CinemachineVirtualCamera FreeCam { get => freeCam; set => freeCam = value; }
+    public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
+    public float Gravity { get => gravity; set => gravity = value; }
 
     private void OnEnable() {
         SwitchToFallGame.switchCam += Vcam;
@@ -15,15 +26,37 @@ public class FreeFallMovement : MonoBehaviour
         SwitchToFallGame.switchCam -= Vcam;
     }
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
+        mainCam = GameManager.GetManager().Camera;
         //transform.rotation = new Quaternion(87, 0, 0, 0);
         charCon = GetComponent<CharacterController>();
     }
     private void FixedUpdate() {
-        charCon.Move(new Vector3(0, -gravity, 0) * Time.deltaTime);
+        CalculateMove();
+        //charCon.Move(speed * Time.deltaTime);
+        charCon.Move(new Vector3(speed.x, -Gravity, -speed.y) * Time.deltaTime);
+    }
+    private void CalculateMove() {
+        Direction = mainCam.transform.TransformDirection(new Vector3(Displacement.x, 0, Displacement.y).normalized);
+        if (Displacement.magnitude >= 0.1f) {
+            direction.z = 0;
+            Vector3 vector = Direction.normalized;
+            speed.x = MoveSpeed * vector.x;
+            speed.y = MoveSpeed * vector.y;
+        }
+        else {
+            speed.x = 0;
+            speed.y = 0;
+        }
     }
     private void Vcam(int val) {
-        vcam.m_Priority = val;
+        if (val > 1) {
+            freeCam.m_Follow = camFocalPoint.transform;
+            freeCam.m_LookAt = camFocalPoint.transform;
+            freeCam.m_Priority = val;
+        }
+        else {
+            freeCam.m_Priority = val;
+        }
     }
 }

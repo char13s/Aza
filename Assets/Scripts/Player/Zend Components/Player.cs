@@ -89,7 +89,7 @@ public class Player : MonoBehaviour
     private bool dead;
     private int direction;
     private bool dodge;
-
+    private bool dash;
     private bool charging;
 
     private int skillId;
@@ -163,6 +163,7 @@ public class Player : MonoBehaviour
     private bool perfectGuard;
     //private NavMeshAgent nav;
     private PlayerBattleSceneMovement battleMode;
+    private FreeFallMovement freeFallMode;
     private Animator anim;
     private Animator topAnim;
     private CharacterController charCon;
@@ -293,6 +294,8 @@ public class Player : MonoBehaviour
 
     public bool Dodge { get => dodge; set => dodge = value; }
     public Power Style { get => style; set => style = value; }
+    public FreeFallMovement FreeFallMode { get => freeFallMode; set => freeFallMode = value; }
+    public bool Dash { get => dash; set { dash = value;anim.SetBool("Dash", dash); } }
 
     //public Rigidbody Rbody { get => rbody; set => rbody = value; }
 
@@ -320,6 +323,7 @@ public class Player : MonoBehaviour
         headController = GetComponent<BasicHeadController>();
         Effects = GetComponent<PlayerEffects>();
         PlayerBody = GetComponent<PlayerBodyObjects>();
+        FreeFallMode = GetComponent<FreeFallMovement>();
     }
 
     void Start() {
@@ -349,7 +353,7 @@ public class Player : MonoBehaviour
         SpellTag.triggerZaWarudo += ZaWarudo;
         JudgementCut.stop += ZaWarudo;
         DrawSword.hideSword += DrawSwordOut;
-        Dash.dash += SoundEffects;
+        global::Dash.dash += SoundEffects;
         EnemyHitBox.hit += OnHit;
         ReactionRange.dodged += ZaWarudo;
 
@@ -361,9 +365,10 @@ public class Player : MonoBehaviour
         //MovingStates.returnSpeed += MoveBro;
         //BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned += TakeDamage;
-        ShadowShot.shoot += ShootShadow;
+        PlayerAnimationEvents.shoot += ShootShadow;
         ShootBehavior.shoot += ShootLayer;
         SwitchToFallGame.switchToFall += SwitchToFallingLayer;
+        TimelineTrigger.disableCodeMove += SwitchToFallingLayer;
         AttackStates.sendAttack += RecieveAttack;
         LevelManager.levelTransition += OnLevelTransition;
         #region Item subs
@@ -400,7 +405,7 @@ public class Player : MonoBehaviour
         SpellTag.triggerZaWarudo -= ZaWarudo;
         JudgementCut.stop -= ZaWarudo;
         DrawSword.hideSword -= DrawSwordOut;
-        Dash.dash -= SoundEffects;
+        global::Dash.dash -= SoundEffects;
         EnemyHitBox.hit -= OnHit;
         ReactionRange.dodged -= ZaWarudo;
 
@@ -412,9 +417,10 @@ public class Player : MonoBehaviour
         //MovingStates.returnSpeed += MoveBro;
         //BaseBehavoirs.grounded += ZeroVelocity;
         PoisonLake.poisoned -= TakeDamage;
-        ShadowShot.shoot -= ShootShadow;
+        PlayerAnimationEvents.shoot -= ShootShadow;
         ShootBehavior.shoot -= ShootLayer;
         SwitchToFallGame.switchToFall -= SwitchToFallingLayer;
+        TimelineTrigger.disableCodeMove -= SwitchToFallingLayer;
         AttackStates.sendAttack -= RecieveAttack;
         LevelManager.levelTransition -= OnLevelTransition;
         #region Item subs
@@ -487,12 +493,24 @@ public class Player : MonoBehaviour
     #endregion
     #region Layer control
     private void SwitchToFallingLayer(int val) {
-        if (val >= 1) {
-            val = 1;
+        switch (val) {
+            case 0:
+                CodeMovementControls(false, true);
+                break;
+            case 2:
+                CodeMovementControls(true, false);
+                break;
+            default:
+                CodeMovementControls(false, false);
+                break;
+           
         }
-
         //transform.rotation = new Quaternion(87,0,0,0);
         anim.SetLayerWeight(fallingLayer,val);
+    }
+    private void CodeMovementControls(bool freeVal,bool moaveVal) {
+        FreeFallMode.enabled = freeVal;
+        playerMove.enabled = moaveVal;
     }
     #endregion
     #region Time Stuff
@@ -539,9 +557,6 @@ public class Player : MonoBehaviour
     private void OnLevelTransition(bool val) {
         playerMove.enabled = val;
     }
-    
-
-
     #region Coroutines
 
     private IEnumerator SetLayerWeightCoroutine(int layerIndex, float weight, float duration, UnityAction<float> onFade) {

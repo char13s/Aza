@@ -8,12 +8,13 @@ public class PlayerInputs : MonoBehaviour
     private Player player;
     private PlayerMovement playerMovement;
     private PlayerInput map;
-    private Animator anim;
+    private FreeFallMovement freeFallMode;
+    //private Animator anim;
     private Vector2 rotationLook;
     #region Extra attack logic
     bool holdAttack;
     #endregion
-
+    [SerializeField] private float increasedSpeed;
     [SerializeField] private DarkPowerSet darkPowers;
     [SerializeField] private EquipmentObj relic;
     private EnemyTimelineTriggers trigger;
@@ -40,7 +41,7 @@ public class PlayerInputs : MonoBehaviour
         GameManager.switchMap += SwitchMaps;
         SwitchToFallGame.switchToFall += SwitchMaps;
         EnemyTimelineTriggers.sendTrigger += RecieveTrigger;
-        
+
     }
     private void OnDisable() {
         DialogueManager.switchControls -= SwitchMaps;
@@ -52,21 +53,23 @@ public class PlayerInputs : MonoBehaviour
     void Start() {
         player = GetComponent<Player>();
         playerMovement = GetComponent<PlayerMovement>();
+        freeFallMode = GetComponent<FreeFallMovement>();
         map = GetComponent<PlayerInput>();
-        anim = GetComponent<Animator>();
+        //anim = GetComponent<Animator>();
         playerEnabled.Invoke();
     }
 
     #region Base Controls
     private void OnMovement(InputValue value) {
         playerMovement.Displacement = value.Get<Vector2>();
+        freeFallMode.Displacement = value.Get<Vector2>();
     }
     private void OnAttack(InputValue value) {
         if (value.isPressed) {
-            if (player.Energized && player.Strenghtened) { 
-            //Well dont know what to do with that....
+            if (player.Energized && player.Strenghtened) {
+                //Well dont know what to do with that....
             }
-            if (!player.Energized&&player.Strenghtened) {
+            if (!player.Energized && player.Strenghtened) {
                 player.Anim.SetTrigger("HeavyAttack");
             }
             else if (player.Energized && !player.Strenghtened) {
@@ -105,9 +108,7 @@ public class PlayerInputs : MonoBehaviour
 
         }
     }
-    private void OnShoot() {
-        anim.SetTrigger("DarkForcePush");
-    }
+
     private void OnJump(InputValue value) {
         if (!player.SkillButton) {
             if (player.CombatAnimations == 0) {
@@ -117,7 +118,7 @@ public class PlayerInputs : MonoBehaviour
         if (!value.isPressed) {
             playerMovement.IsJumpPressed = false;
         }
-        if (!player.PlayerMove.CharCon.isGrounded&& value.isPressed) {
+        if (!player.PlayerMove.CharCon.isGrounded && value.isPressed) {
             player.Anim.SetTrigger("Dash");
             print("Dash ho");
         }
@@ -152,22 +153,42 @@ public class PlayerInputs : MonoBehaviour
     }
     private void OnSkillUp(InputValue value) {//R2
         if (value.isPressed) {
-            
+
         }
         else {
-            
+
         }
 
     }
     private void OnStrenghtened(InputValue value) {//L2
         if (value.isPressed) {
-            
+
         }
         else {
-            
+
         }
 
     }
+    #region Freefall
+    private void OnShoot() {
+        print("Shoot");
+        player.Anim.SetTrigger("DarkForcePush");
+    }
+    private void OnSpinAttack() {
+        player.Anim.SetTrigger("Attack");
+    }
+    private void OnDash(InputValue value) {
+        if (value.isPressed) {
+            player.Dash = true;
+            freeFallMode.Gravity = increasedSpeed;
+        }
+        else {
+            player.Dash = false;
+            freeFallMode.Gravity = 2;
+        }
+
+    }
+    #endregion
     #region transformations
     private void OnTransform() {
         if (!player.PoweredUp) {
@@ -191,22 +212,22 @@ public class PlayerInputs : MonoBehaviour
     }
     private void OnDDown() {
         player.Style = Player.Power.Neutral;
-            
+
         //Relic = relicDown.Relic;
         Debug.Log(Relic); ;
     }
-    private void Neutral() { 
-    player.Strenghtened = false;
-            strenghtened.Invoke(false);
-            player.Energized = false;
-            energized.Invoke(false);
+    private void Neutral() {
+        player.Strenghtened = false;
+        strenghtened.Invoke(false);
+        player.Energized = false;
+        energized.Invoke(false);
     }
     private void OnDLeft() {
         Neutral();
         player.Style = Player.Power.Heavy;
         player.Strenghtened = true;
-            strenghtened.Invoke(true);
-            Debug.Log("strength");
+        strenghtened.Invoke(true);
+        Debug.Log("strength");
         //Relic = relicLeft.Relic;
         Debug.Log(Relic); ;
     }
@@ -214,8 +235,8 @@ public class PlayerInputs : MonoBehaviour
         Neutral();
         player.Style = Player.Power.Range;
         player.Energized = true;
-            energized.Invoke(true);
-            Debug.Log("energy");
+        energized.Invoke(true);
+        Debug.Log("energy");
         //Relic = relicRight.Relic;
         Debug.Log(Relic); ;
     }
@@ -225,7 +246,20 @@ public class PlayerInputs : MonoBehaviour
         RotationLook = value.Get<Vector2>();
     }
     #endregion
+    #region Timeline Controls
+    private void OnTriangleReaction() {
+    
+    }
+    private void OnXReaction() {
 
+    }
+    private void OnSquareReaction() {
+
+    }
+    private void OnCircleReaction() {
+
+    }
+    #endregion
     #region Dialogue Controls
     private void OnNextLine() {
         nextLine.Invoke();

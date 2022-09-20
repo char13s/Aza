@@ -9,13 +9,15 @@ public class FireBall : MonoBehaviour
     [SerializeField] private float speed;
     // Start is called before the first frame update
     private void Start() {
-        //direction = Player.GetPlayer().transform.forward;
+        // Player.GetPlayer().PlayerBody.LeftHand.transform.forward;
+        direction = new Vector3(0,-1,0);
         //LayerMask.GetMask("Ground");
         Destroy(gameObject, 9f);
+        Debug.Log(direction);
     }
     // Update is called once per frame
     private void Update() {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        transform.position += speed * Time.deltaTime * direction;
     }
     private void OnTriggerEnter(Collider other) {
         Debug.Log(other.name);
