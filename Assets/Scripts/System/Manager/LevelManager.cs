@@ -30,6 +30,7 @@ public class LevelManager : MonoBehaviour
         GameManager.gameOver += GameStart;
         EndOfPortal.loadInLevel += ChangeSceneDiscretely;
         SwitchToFallGame.unloadLevel += UnLoadSceneDiscretely;
+        VoidSettings.resetVoid += ResetLevel;
     }
     private void GameStart() {
         LevelTransition(1);
@@ -68,11 +69,7 @@ public class LevelManager : MonoBehaviour
             SceneManager.UnloadSceneAsync(currentLevel);
             currentLevel = nextLevel;
             SceneManager.LoadSceneAsync(currentLevel, LoadSceneMode.Additive);
-            
-
         }
-
-
     }
     private void OnLevelFinishedLoading(Scene arg0, LoadSceneMode arg1) {
         StartCoroutine(ResetActiveScene());
@@ -102,5 +99,8 @@ public class LevelManager : MonoBehaviour
     private void RepositionPlayer() {
         if(Player.GetPlayer().gameObject!=null)
             SceneManager.MoveGameObjectToScene(Player.GetPlayer().gameObject, SceneManager.GetSceneByBuildIndex(currentLevel));
+    }
+    public void ResetLevel() {
+        LevelTransition(currentLevel);
     }
 }

@@ -15,10 +15,9 @@ public class PlayerSpawnPoint : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
-
-        targetMe.Invoke(gameObject);
-        // LevelManager.levelFinished += CreatePlayer;
-        //
+        if (targetMe != null) { 
+            targetMe(gameObject);
+        }
         StartCoroutine(DelaySpawn());
         StartCoroutine(ParticleSpawn());
     }

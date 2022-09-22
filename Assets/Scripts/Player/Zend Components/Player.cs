@@ -371,6 +371,8 @@ public class Player : MonoBehaviour
         TimelineTrigger.disableCodeMove += SwitchToFallingLayer;
         AttackStates.sendAttack += RecieveAttack;
         LevelManager.levelTransition += OnLevelTransition;
+
+        ParryBox.parry += Parry;
         #region Item subs
         ItemData.mask += PowerUpp;
         #endregion
@@ -411,7 +413,7 @@ public class Player : MonoBehaviour
 
         UiManager.disablePlayer -= DisableBody;
         UiManager.unsealPlayerInput -= EnableBody;
-
+        ParryBox.parry -= Parry;
         GroundSound.sendSound -= GroundSoundManagement;
         FormSwitch.inviciblity -= Endure;
         //MovingStates.returnSpeed += MoveBro;
@@ -545,7 +547,9 @@ public class Player : MonoBehaviour
             onPlayerDeath();
         }
     }
-
+    private void Parry() {
+        anim.Play("Parry");
+    }
     private void GuardBreak() {
         GuardAnimations = 3;
     }

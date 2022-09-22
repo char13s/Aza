@@ -38,6 +38,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     private void Awake() {
         //Player.attackModeUp += LockOnFuctionality;
+        FindPlayer.sendThisCam += GetMainCam;
         Enemy.onAnyDefeated += RemoveTheDead;
         Player.onPlayerDeath += RemoveAllEnemies;
         AIKryll.teleport += TeleportAttacking;
@@ -62,7 +63,6 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     }
     private void Start() {
-
         player = Player.GetPlayer();
         playerMove = GetComponent<PlayerMovement>();
         signal = GetComponent<SignalReceiver>();
@@ -92,11 +92,13 @@ public class PlayerBattleSceneMovement : MonoBehaviour
                 else { enemies.RemoveAt(index); }
             }
         }
-        if (Takedown) {
-            StayLockedToTarget();
-        }
+        //if (Takedown) {
+        //    StayLockedToTarget();
+        //}
+        LockedOn(player.LockedOn);
+
         if (player.LockedOn) {
-            LockedOn(true);
+
             if (enemies.Count == 0) {
                 player.Direction = 0;
                 player.HasTarget = false;
@@ -107,9 +109,6 @@ public class PlayerBattleSceneMovement : MonoBehaviour
                 player.HasTarget = true;
                 GetInput();
             }
-        }
-        else {
-            LockedOn(false);
         }
 
         if (enemies.Count == 0) {
@@ -257,15 +256,14 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         }
     }
     private void LockedOn(bool val) {
-        if (val) {
-            battleCam.m_Priority = 1000;
+        print("Cam recentering is " + val);
+        //Debug.Log(main.GetCinemachineComponent<CinemachinePOV>());
+        main.GetCinemachineComponent<CinemachinePOV>().m_HorizontalRecentering.m_enabled = val;
+        if (main.GetCinemachineComponent<CinemachinePOV>().m_HorizontalRecentering.m_enabled == true) {
+            print("Okay what the actual fuck");
         }
-        else {
-            battleCam.m_Priority = 0;
-            //main.m_Priority = 1000;
-        }
-
     }
+
     private void MovementInputs(float x, float y) {
         if (x == 0) {
             if (y > 0)//forward
@@ -290,5 +288,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         }
         if (Mathf.Abs(x) >= 0.001 || Mathf.Abs(y) >= 0.001) { }
 
+    }
+    private void GetMainCam(CinemachineVirtualCamera cam) {
+        main = cam;
     }
 }

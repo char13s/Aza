@@ -13,6 +13,7 @@ public class SwitchToFallGame : MonoBehaviour
     public static event UnityAction<int> switchCam;
     public static event UnityAction changeControls;
     public static event UnityAction<int> unloadLevel;
+    public static event UnityAction unparent;
     // Start is called before the first frame update
     private void OnTriggerEnter(Collider other) {
         //switch controls
@@ -24,7 +25,7 @@ public class SwitchToFallGame : MonoBehaviour
             switchCam(camPriority);
         }
         //Switch animation layer
-
+        unparent.Invoke();
         //unload level where portal is
         if (level > 0) {
             unloadLevel.Invoke(level);

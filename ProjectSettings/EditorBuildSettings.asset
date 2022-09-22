@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/LevelDesigntest.unity
     guid: d3dbc57dc96cdb2468b308cbc5aad24d
   - enabled: 1
+    path: Assets/Scenes/Ep. 5 scenes/Void Ep.5.unity
+    guid: de35d6e74fac4524ba6068b5de08b954
+  - enabled: 1
     path: Assets/Scenes/Ep. 5 scenes/Ep.5 portal.unity
     guid: 77b90cbce4210ee4e9663139f855b84f
   - enabled: 1

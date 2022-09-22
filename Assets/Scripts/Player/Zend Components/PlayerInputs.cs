@@ -97,6 +97,7 @@ public class PlayerInputs : MonoBehaviour
     private void OnEnergy() {
         if (!player.SkillButton) {
             print("Triangle");
+            player.Anim.Play("FireBall");
             /*if (!player.Attack) {
                 relic.Triangle();
             }*/
@@ -150,24 +151,6 @@ public class PlayerInputs : MonoBehaviour
         else {
             player.TargetingLogic(false);
         }
-    }
-    private void OnSkillUp(InputValue value) {//R2
-        if (value.isPressed) {
-
-        }
-        else {
-
-        }
-
-    }
-    private void OnStrenghtened(InputValue value) {//L2
-        if (value.isPressed) {
-
-        }
-        else {
-
-        }
-
     }
     #region Freefall
     private void OnShoot() {

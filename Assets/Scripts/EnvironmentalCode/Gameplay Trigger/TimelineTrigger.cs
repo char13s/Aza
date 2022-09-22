@@ -13,6 +13,12 @@ public class TimelineTrigger : MonoBehaviour
     public static event UnityAction<int> disableCodeMove;
     //public static event UnityAction demonKnightTakedown;
     // Start is called before the first frame update
+    private void OnEnable() {
+        SwitchToFallGame.unparent += End;
+    }
+    private void OnDisable() {
+        SwitchToFallGame.unparent -= End;
+    }
     void Start() {
         timelineAsset = (TimelineAsset)timeline.playableAsset;
         //var track = (TrackAsset)timelineAsset.outputs[i].sourceObject;
@@ -31,6 +37,6 @@ public class TimelineTrigger : MonoBehaviour
     }
     public void End() {
         print("End of the timeline");
-        Player.GetPlayer().transform.SetParent(Player.GetPlayer().transform);
+        Player.GetPlayer().transform.SetParent(null);
     }
 }

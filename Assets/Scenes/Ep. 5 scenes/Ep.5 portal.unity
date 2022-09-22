@@ -6379,8 +6379,6 @@ PlayableDirector:
     value: {fileID: 1304510699}
   - key: {fileID: -2581329342252139786, guid: e09059e9e48875643b18b0191720571f, type: 2}
     value: {fileID: 916486067}
-  - key: {fileID: -1224588110290002499, guid: e09059e9e48875643b18b0191720571f, type: 2}
-    value: {fileID: 2069631872}
   m_ExposedReferences:
     m_References: []
 --- !u!65 &2069631868
@@ -6457,16 +6455,4 @@ MonoBehaviour:
     - {fileID: 11400000, guid: c2bdb96a65b8dab41ab09b0e20de02c9, type: 2}
     m_Events:
     - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2069631870}
-          m_TargetAssemblyTypeName: TimelineTrigger, Assembly-CSharp
-          m_MethodName: End
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []

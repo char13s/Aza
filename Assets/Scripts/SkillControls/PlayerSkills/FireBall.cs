@@ -4,13 +4,15 @@ using UnityEngine;
 #pragma warning disable 0649
 public class FireBall : MonoBehaviour
 {
-    private Vector3 direction;
+    bool setDirection;
+    [SerializeField]private Vector3 direction;
     [SerializeField] private GameObject boom;
     [SerializeField] private float speed;
     // Start is called before the first frame update
     private void Start() {
-        // Player.GetPlayer().PlayerBody.LeftHand.transform.forward;
-        direction = new Vector3(0,-1,0);
+        
+        if(!setDirection)
+            direction =Player.GetPlayer().transform.forward;
         //LayerMask.GetMask("Ground");
         Destroy(gameObject, 9f);
         Debug.Log(direction);

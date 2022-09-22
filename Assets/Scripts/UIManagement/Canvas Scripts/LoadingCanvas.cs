@@ -7,6 +7,8 @@ public class LoadingCanvas :CanvasManager
 {
     public static event UnityAction changeScene;
     [SerializeField] private Image black;
+    [SerializeField] private float fadeSpeed;
+    [SerializeField] private float fadeTime;
     private void Awake() {
          canvas.SetActive(true);
     }
@@ -38,7 +40,7 @@ public class LoadingCanvas :CanvasManager
     }
     private void FadeToBlack() {
         Color color = black.color;
-        color.a += 0.03f;
+        color.a += fadeSpeed;
         black.color = color;
 
     }
@@ -46,7 +48,7 @@ public class LoadingCanvas :CanvasManager
         StartCoroutine(WaitToUnFade());
     }
     private IEnumerator WaitToUnFade() {
-        YieldInstruction wait = new WaitForSeconds(1);
+        YieldInstruction wait = new WaitForSeconds(fadeTime);
         yield return wait;
         StartCoroutine(FadeBackIn());
     }
@@ -54,7 +56,7 @@ public class LoadingCanvas :CanvasManager
         while (isActiveAndEnabled && black.color.a >= 0) {
             yield return null;
             Color color = black.color;
-            color.a -= 0.03f;
+            color.a -= fadeSpeed;
             black.color = color;
         }
     }
