@@ -46,6 +46,9 @@ public static event UnityAction<float> kickback;
     public void ShadowShot() {
         shoot.Invoke();
     }
+    public void ShadowBlast() {
+        effects.FireShadowBlast();
+    }
     #endregion
     #region Effects
     public void BodyOn() {

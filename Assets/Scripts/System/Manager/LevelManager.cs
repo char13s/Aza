@@ -31,6 +31,7 @@ public class LevelManager : MonoBehaviour
         EndOfPortal.loadInLevel += ChangeSceneDiscretely;
         SwitchToFallGame.unloadLevel += UnLoadSceneDiscretely;
         VoidSettings.resetVoid += ResetLevel;
+        PlayerInputs.reset += ResetLevel;
     }
     private void GameStart() {
         LevelTransition(1);
@@ -52,10 +53,10 @@ public class LevelManager : MonoBehaviour
         }
     }
     private void ChangeSceneDiscretely(int val) {
-        
+
         currentLevel = val;
         SceneManager.LoadSceneAsync(val, LoadSceneMode.Additive);
-        
+
     }
     private void UnLoadSceneDiscretely(int val) {
         RepositionPlayer();
@@ -65,13 +66,23 @@ public class LevelManager : MonoBehaviour
         if (nextLevel == 1) {
             turnOnMain.Invoke();
         }
+        Debug.Log("Wait to change ran");
         if (nextLevel != 0) {
+            Debug.Log("Levels shouldve been accessed");
             SceneManager.UnloadSceneAsync(currentLevel);
             currentLevel = nextLevel;
             SceneManager.LoadSceneAsync(currentLevel, LoadSceneMode.Additive);
+            Debug.Log(currentLevel);
         }
     }
+    IEnumerator WaitToLoad() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        yield return wait;
+        print("ughghhhhh");
+
+    }
     private void OnLevelFinishedLoading(Scene arg0, LoadSceneMode arg1) {
+        print("New level loaded");
         StartCoroutine(ResetActiveScene());
         if (levelFinished != null) {
             levelFinished(false);
@@ -83,7 +94,7 @@ public class LevelManager : MonoBehaviour
         yield return wait;
         if (SceneManager.GetSceneByBuildIndex(currentLevel).isLoaded) {
             //CameraLogic.Switchable = true;
-            
+
             SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(currentLevel));
         }
     }
@@ -93,14 +104,16 @@ public class LevelManager : MonoBehaviour
         //if (levelTransition != null) {
         //    levelTransition(true);
         //}
-        if(currentLevel>1)
+        if (currentLevel > 1)
             gameMode.Invoke(true);
     }
     private void RepositionPlayer() {
-        if(Player.GetPlayer().gameObject!=null)
+        if (Player.GetPlayer().gameObject != null)
             SceneManager.MoveGameObjectToScene(Player.GetPlayer().gameObject, SceneManager.GetSceneByBuildIndex(currentLevel));
     }
     public void ResetLevel() {
+        sendToMain.Invoke();
         LevelTransition(currentLevel);
+        //off.Invoke();
     }
 }

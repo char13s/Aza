@@ -95,6 +95,15 @@ public class PlayerInputs : MonoBehaviour
         }*/
     }
     private void OnEnergy() {
+        switch (player.Style) {
+            case Player.Power.Heavy:
+                break;
+            case Player.Power.Neutral:
+                break;
+            case Player.Power.Range:
+                player.Anim.Play("ShadowBall");
+                break;
+        }
         if (!player.SkillButton) {
             print("Triangle");
             player.Anim.Play("FireBall");
@@ -297,5 +306,9 @@ public class PlayerInputs : MonoBehaviour
     }
     private void RecieveTrigger(EnemyTimelineTriggers obj) {
         trigger = obj;
+    }
+    public static event UnityAction reset;
+    private void OnReset() {
+        //reset.Invoke();
     }
 }

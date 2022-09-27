@@ -57,3 +57,16 @@ The following packages were updated:
   com.unity.shadergraph from version 7.3.1 to 10.8.1
   com.unity.textmeshpro from version 2.1.4 to 3.0.6
   com.unity.timeline from version 1.2.18 to 1.4.8
+
+=== Fri Sep 23 11:54:34 2022
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 1.15.12 to 1.17.2
+  com.unity.ide.rider from version 2.0.7 to 3.0.15
+  com.unity.inputsystem from version 1.3.0 to 1.4.1
+  com.unity.render-pipelines.universal from version 10.8.1 to 10.10.0
+  com.unity.shadergraph from version 10.8.1 to 10.10.0
+  com.unity.xr.legacyinputhelpers from version 2.1.9 to 2.1.10

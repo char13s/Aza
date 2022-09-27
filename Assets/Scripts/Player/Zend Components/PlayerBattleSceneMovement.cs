@@ -95,7 +95,8 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         //if (Takedown) {
         //    StayLockedToTarget();
         //}
-        LockedOn(player.LockedOn);
+        if(!player.Moving)
+            LockedOn(player.LockedOn);
 
         if (player.LockedOn) {
 
@@ -158,7 +159,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
 
     }
     private void GetClosestEnemy() {
-        if (T < enemies.Count) {
+        if (T < enemies.Count&&enemies[T]!=null) {
             float enDist = EnDist(enemies[T].gameObject);
 
             foreach (Enemy en in Enemies) {
@@ -256,12 +257,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         }
     }
     private void LockedOn(bool val) {
-        print("Cam recentering is " + val);
-        //Debug.Log(main.GetCinemachineComponent<CinemachinePOV>());
         main.GetCinemachineComponent<CinemachinePOV>().m_HorizontalRecentering.m_enabled = val;
-        if (main.GetCinemachineComponent<CinemachinePOV>().m_HorizontalRecentering.m_enabled == true) {
-            print("Okay what the actual fuck");
-        }
     }
 
     private void MovementInputs(float x, float y) {

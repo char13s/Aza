@@ -12,6 +12,7 @@ public class HitBox : MonoBehaviour {
     [SerializeField] private GameObject fire;
     [SerializeField] private GameObject smallFire;
     [SerializeField] private float additionalDamage;
+    [SerializeField] private bool multihitter;
     private AudioSource audio;
     private List<GameObject> enemies = new List<GameObject>();
     private GameObject enemyImAttacking;
@@ -36,7 +37,7 @@ public class HitBox : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (!enemies.Contains(other.gameObject)) {
+        if (!enemies.Contains(other.gameObject)&&!multihitter) {
             Instantiate(effects, other.gameObject.transform);
 
             if (other != null && other.GetComponent<EnemyBody>() && !enemies.Contains(other.gameObject)) {
@@ -66,6 +67,12 @@ public class HitBox : MonoBehaviour {
             //Instantiate(effects, other.gameObject.transform);
             other.GetComponent<Dummy>().Hit = true;
         }
+        else {
+            Instantiate(effects, other.gameObject.transform);
+        }
+    }
+    private void OnTriggerStay(Collider other) {
+
     }
     private IEnumerator StopRumble() {
         YieldInstruction wait = new WaitForSeconds(1);

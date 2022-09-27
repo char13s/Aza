@@ -136,7 +136,7 @@ public class Enemy : MonoBehaviour
                 GetComponentInChildren<SkinnedMeshRenderer>().material.SetFloat("dead", 1);
 
                 OnDefeat();
-                //Anim.SetBool("Dead", dead);
+                Anim.SetBool("Hurt", dead);
                 if (onAnyDefeated != null) {
                     onAnyDefeated(this);
                 }
@@ -164,12 +164,31 @@ public class Enemy : MonoBehaviour
         charCon = GetComponent<CharacterController>();
         StatCalculation();
         state = EnemyAiStates.Idle;
-        ZaWarudo.timeFreeze += FreezeEnemy;
-        UiManager.nullEnemies += FreezeEnemy;
+        
     }
     // Start is called before the first frame update
     public void OnEnable() {
+        ZaWarudo.timeFreeze += FreezeEnemy;
+        UiManager.nullEnemies += FreezeEnemy;
+        pc = Player.GetPlayer();
+        GameController.onQuitGame += OnPlayerDeath;
+        Player.onPlayerDeath += OnPlayerDeath;
+        PortalConnector.backToLevelSelect += OnPlayerDeath;
+        ReactionRange.dodged += SlowEnemy;
+        Enemies.Add(this);
+        timelines = GetComponent<EnemyTimelines>();
+        HealthLeft = stats.Health;
+        StandbyState();
 
+    }
+    private void OnDisable() {
+        ZaWarudo.timeFreeze -= FreezeEnemy;
+        UiManager.nullEnemies -= FreezeEnemy;
+        GameController.onQuitGame -= OnPlayerDeath;
+        Player.onPlayerDeath -= OnPlayerDeath;
+        PortalConnector.backToLevelSelect -= OnPlayerDeath;
+        ReactionRange.dodged -= SlowEnemy;
+        Enemies.Remove(this);
     }
     public virtual void Start() {
         distanceGround = GetComponent<Collider>().bounds.extents.y;
@@ -191,17 +210,8 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        pc = Player.GetPlayer();
-        GameController.onQuitGame += OnPlayerDeath;
-        Player.onPlayerDeath += OnPlayerDeath;
-        PortalConnector.backToLevelSelect += OnPlayerDeath;
-        ReactionRange.dodged += SlowEnemy;
-        Enemies.Add(this);
-        timelines = GetComponent<EnemyTimelines>();
-        HealthLeft = stats.Health;
-        StandbyState();
+       
     }
-
 
     private void EnemiesNeedToRespawn(int c) {
         Destroy(gameObject);
@@ -270,6 +280,7 @@ public class Enemy : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(delta);
         timelines.KnockedBack();//swap this with an anim controlled interaction
     }
+     
     public void CancelKnocked() {
         timelines.CancelKnockUp();
         //Rbody.AddForce(new Vector3(0, -150, 0), ForceMode.VelocityChange);
@@ -336,6 +347,7 @@ public class Enemy : MonoBehaviour
         if (state == EnemyAiStates.Attacking) {
             ChasePlayer();
             BackToIdle();
+            SwitchToAttack();
         }
         /*if (state != EnemyAiStates.LowHealth) {
             if (state != EnemyAiStates.Chasing && !dead) {
@@ -552,11 +564,11 @@ public class Enemy : MonoBehaviour
         SlimeHasDied();
         Enemies.Remove(this);
         if (deathEffect != null) {
-            Instantiate(deathEffect, transform);
+            Instantiate(deathEffect, transform.position,Quaternion.identity);
         }
         sendOrbs.Invoke(orbWorth);
         //deathEffect.transform.position = transform.position;
-        Destroy(gameObject, 2.5f);
+        Destroy(gameObject, 0.5f);
         //drop.transform.SetParent(null);
     }
     public void UnsetHit() {

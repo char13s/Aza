@@ -7,13 +7,18 @@ public class PlayerBodyObjects : MonoBehaviour
     /// <summary>
     /// For objects parented to player object mesh
     /// </summary>
+    [Header("Blast points")]
+    [SerializeField] private GameObject rightHandBlastPoint;
+    [Header("General points")]
     [SerializeField] private GameObject body;
     [SerializeField] private GameObject literalBody;
     [SerializeField] private GameObject hair;
     [SerializeField] private GameObject eyes;
     //[SerializeField] private Game
+    
     [SerializeField] private GameObject leftHand;
     [SerializeField] private GameObject rightHand;
+    
 
     [SerializeField] private GameObject leftPoint;
     [SerializeField] private GameObject farHitPoint;
@@ -46,6 +51,7 @@ public class PlayerBodyObjects : MonoBehaviour
     public GameObject Hair { get => hair; set => hair = value; }
     public GameObject Shield { get => shield; set => shield = value; }
     public GameObject DemonSword { get => demonSword; set => demonSword = value; }
+    public GameObject RightHandBlastPoint { get => rightHandBlastPoint; set => rightHandBlastPoint = value; }
 
     private void Vanish(bool val) {
         body.SetActive(val);

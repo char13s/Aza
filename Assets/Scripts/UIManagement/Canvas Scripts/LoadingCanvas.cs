@@ -46,6 +46,7 @@ public class LoadingCanvas :CanvasManager
     }
     private void UnFade(bool val) {
         StartCoroutine(WaitToUnFade());
+        print("Unfade requested");
     }
     private IEnumerator WaitToUnFade() {
         YieldInstruction wait = new WaitForSeconds(fadeTime);
@@ -55,6 +56,7 @@ public class LoadingCanvas :CanvasManager
     private IEnumerator FadeBackIn() {
         while (isActiveAndEnabled && black.color.a >= 0) {
             yield return null;
+            print("FADING");
             Color color = black.color;
             color.a -= fadeSpeed;
             black.color = color;
