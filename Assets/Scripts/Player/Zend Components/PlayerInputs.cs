@@ -62,7 +62,7 @@ public class PlayerInputs : MonoBehaviour
     #region Base Controls
     private void OnMovement(InputValue value) {
         playerMovement.Displacement = value.Get<Vector2>();
-        freeFallMode.Displacement = value.Get<Vector2>();
+        //freeFallMode.Displacement = value.Get<Vector2>();
     }
     private void OnAttack(InputValue value) {
         if (value.isPressed) {
@@ -93,6 +93,9 @@ public class PlayerInputs : MonoBehaviour
             print("hOLD");
             player.Anim.SetTrigger("HoldAttack");
         }*/
+    }
+    private void OnUp() {
+        Debug.Log("Bullshit");
     }
     private void OnEnergy() {
         switch (player.Style) {

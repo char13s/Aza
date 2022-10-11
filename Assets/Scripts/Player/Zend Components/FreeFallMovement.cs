@@ -8,6 +8,8 @@ public class FreeFallMovement : MonoBehaviour
     private CinemachineVirtualCamera freeCam;
     [SerializeField] private float moveSpeed;
     [SerializeField] private GameObject camFocalPoint;
+    private bool stun;
+    private int stunTimer;
     private GameObject mainCam;
     private Vector3 direction;
     private Vector2 displacement;
@@ -18,9 +20,12 @@ public class FreeFallMovement : MonoBehaviour
     public CinemachineVirtualCamera FreeCam { get => freeCam; set => freeCam = value; }
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public float Gravity { get => gravity; set => gravity = value; }
+    public bool Stun { get => stun; set => stun = value; }
+    public int StunTimer { get => stunTimer; set { stunTimer = value; if (stunTimer <= 0) { Stun = false; } } }
 
     private void OnEnable() {
         SwitchToFallGame.switchCam += Vcam;
+        ParaylsisPoints.stun += Stunned;
     }
     private void OnDisable() {
         SwitchToFallGame.switchCam -= Vcam;
@@ -34,7 +39,8 @@ public class FreeFallMovement : MonoBehaviour
     private void FixedUpdate() {
         CalculateMove();
         //charCon.Move(speed * Time.deltaTime);
-        charCon.Move(new Vector3(speed.x, -Gravity, -speed.y) * Time.deltaTime);
+        if(!Stun)
+            charCon.Move(new Vector3(speed.x, -Gravity, -speed.y) * Time.deltaTime);
     }
     private void CalculateMove() {
         Direction = mainCam.transform.TransformDirection(new Vector3(Displacement.x, 0, Displacement.y).normalized);
@@ -57,6 +63,18 @@ public class FreeFallMovement : MonoBehaviour
         }
         else {
             freeCam.m_Priority = val;
+        }
+    }
+    private void Stunned() {
+        Stun = true;
+        StunTimer = 10;
+        StartCoroutine(waitToUnStun());
+    }
+    IEnumerator waitToUnStun() {
+        YieldInstruction wait = new WaitForSeconds(1);
+        while (isActiveAndEnabled & StunTimer>0) {
+            yield return wait;
+            StunTimer--;
         }
     }
 }

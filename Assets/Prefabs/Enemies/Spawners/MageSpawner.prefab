@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3579314388120287123}
   - component: {fileID: 3579314388120287120}
   m_Layer: 0
-  m_Name: SlimeSpawner
+  m_Name: MageSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,5 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cedf1b2985fb514b9310e8ccd47b8ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 2313167134750843311, guid: e4e1576c7c45eb146ba9b4189cf369ca, type: 3}
+  enemy: {fileID: 419500661700232825, guid: b410bbe6eaa0a7043983a996d08127de, type: 3}
   spawnTime: 5

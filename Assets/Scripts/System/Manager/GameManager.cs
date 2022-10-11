@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     private int orbAmt;
     public enum GameState { Paused, PlayMode }
     private GameState currentState;
-
     public GameState CurrentState { get => currentState; set { currentState = value; StateMappings(); } }
     public GameObject Camera { get => camera; set => camera = value; }
     public int OrbAmt { get => orbAmt; set => orbAmt = value; }

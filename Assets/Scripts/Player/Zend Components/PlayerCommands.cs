@@ -21,6 +21,7 @@ public class PlayerCommands : MonoBehaviour
 
     private Coroutine fakeUpdate;
     private bool lockon;
+    private bool still;
     #region Outside Scripts
     private Animator anim;
     private Animator animObject;
@@ -65,6 +66,10 @@ public class PlayerCommands : MonoBehaviour
         GetInputs();
         if (stick.sqrMagnitude == 0) {
             ResetDirection();
+            still = true;
+        }
+        else {
+            still = false;
         }
 
     }
@@ -119,6 +124,7 @@ public class PlayerCommands : MonoBehaviour
     }
     private void OnUp(InputValue value) {
         direction = Inputs.Up;
+        Debug.Log("Up");
         if (!value.isPressed) {
             //ResetDirection();
         }

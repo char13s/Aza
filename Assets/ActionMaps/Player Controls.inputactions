@@ -114,6 +114,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Forward",
+                    "type": "Button",
+                    "id": "a1e52d7a-c491-4d8b-abc2-18bb2981f89e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Down",
                     "type": "Button",
                     "id": "27979705-96a8-409f-b59d-6f482599cdd7",
@@ -589,6 +598,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ce02ae0-5360-4d0b-8b76-8ef292cdfb5f",
+                    "path": "<Gamepad>/leftStick/up",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Forward",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

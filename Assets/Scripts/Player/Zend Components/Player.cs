@@ -329,7 +329,7 @@ public class Player : MonoBehaviour
     void Start() {
         //Stats.onStaminaChange+=StartCoroutine(StaminaRec());
         stats.Start();
-        MagicLevel = 1;
+       // MagicLevel = 1;
         items.Start();
         Stats.onHealthChange += CheckPlayerHealth;
         guardLayer = anim.GetLayerIndex("GuardLayer");

@@ -95,7 +95,7 @@ public class PlayerBattleSceneMovement : MonoBehaviour
         //if (Takedown) {
         //    StayLockedToTarget();
         //}
-        if(!player.Moving)
+        if(!player.PlayerMove.Moving)
             LockedOn(player.LockedOn);
 
         if (player.LockedOn) {

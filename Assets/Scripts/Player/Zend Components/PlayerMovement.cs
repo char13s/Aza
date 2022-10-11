@@ -30,13 +30,9 @@ public class PlayerMovement : MonoBehaviour
     bool isFalling;
     protected bool grounded;
     //protected bool lockedOn;
-    private bool skillButton;
-    private int rolls;
-    private bool doubleJump;
     //public bool Grounded { get => grounded; set { grounded = value; Anim.SetBool("Grounded", grounded); } }
     public bool Moving { get => moving; set { moving = value; Anim.SetBool("Moving", moving); } }//  } }
     //public bool LockedOn { get => lockedOn; set { lockedOn = value; Anim.SetBool("LockedOn", lockedOn); } }
-    public bool SkillButton { get => skillButton; set => skillButton = value; }
     #endregion
     #region Outside Scripts
     //private DefaultInputs inputs;
@@ -52,7 +48,6 @@ public class PlayerMovement : MonoBehaviour
     public Animator Anim { get => anim; set => anim = value; }
     public Vector3 Direction { get => direction; set => direction = value; }
     public Vector2 Displacement { get => displacement; set => displacement = value; }
-
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public CharacterController CharCon { get => charCon; set => charCon = value; }
     public bool IsJumpPressed { get => isJumpPressed; set => isJumpPressed = value; }

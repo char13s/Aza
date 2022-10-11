@@ -14435,6 +14435,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
         type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1.0000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104441392863020348, guid: 27e6e0b4099678947b7b0b69afaf3989,
+        type: 3}
       propertyPath: InheritVelocityModule.enabled
       value: 0
       objectReference: {fileID: 0}

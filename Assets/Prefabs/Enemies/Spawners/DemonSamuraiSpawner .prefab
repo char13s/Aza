@@ -43,6 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cedf1b2985fb514b9310e8ccd47b8ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isQuestTriggered: 0
-  enemy: {fileID: 3860060113349175541, guid: c7c5ea947fc3ac14aa88183ac1f06458, type: 3}
-  spawnIn: {fileID: 2020061169180018092, guid: 14809bb15aff7194291a72567c7f1351, type: 3}
+  enemy: {fileID: 5093673634293854715, guid: c7c5ea947fc3ac14aa88183ac1f06458, type: 3}
+  spawnTime: 5
