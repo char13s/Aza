@@ -142,12 +142,12 @@ public class PlayerInputs : MonoBehaviour
             if (value.isPressed) {
                 print("Circle has been pressed");
                 if (relic != null) {
-                    //Relic.Circle();
+                    Relic.Circle();
                 }
             }
             else {
                 print("Circle has been released");
-                //Relic.CircleReleased();
+                Relic.CircleReleased();
             }
         }
         else {
